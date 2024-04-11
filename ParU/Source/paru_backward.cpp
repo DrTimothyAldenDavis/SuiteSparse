@@ -25,8 +25,10 @@ ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
 {
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% inside backward\n"));
-    if(Sym == NULL || Num == NULL || x1 == NULL || A == NULL)
-        return PARU_INVALID;
+    if(!Sym || !Num || !x1 || !A)
+    {
+        return (PARU_INVALID) ;
+    }
 
     int64_t m = Sym->m;
 #ifndef NDEBUG

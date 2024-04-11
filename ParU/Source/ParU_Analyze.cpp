@@ -401,10 +401,12 @@ ParU_Info ParU_Analyze
         FREE_WORK;
         paru_free(1, sizeof(ParU_Symbolic), Sym);
         *Sym_handle = NULL;
-        return PARU_INVALID;
+        // FIXME: translate UMFPACK status to Paru_Info
+        return (PARU_INVALID) ;     // UMFPACK symbolic analysis failed
     }
+
     /* ---------------------------------------------------------------------- */
-    /* startegy UMFPACK used*/
+    /* strategy UMFPACK used */
     /* ---------------------------------------------------------------------- */
     int64_t strategy = Info[UMFPACK_STRATEGY_USED];
     if (Control->paru_strategy == PARU_STRATEGY_AUTO)

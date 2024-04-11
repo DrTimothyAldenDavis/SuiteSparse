@@ -45,12 +45,12 @@
 
 typedef enum ParU_Info
 {
-    PARU_SUCCESS = 0,
-    PARU_OUT_OF_MEMORY = -1,  
-    PARU_INVALID = -2,
-    PARU_SINGULAR = -3,
-    PARU_TOO_LARGE = -4
-} ParU_Info;
+    PARU_SUCCESS = 0,           // everying is fine
+    PARU_OUT_OF_MEMORY = -1,    // ParU ran out of memory
+    PARU_INVALID = -2,          // inputs are invalid (NULL, for example)
+    PARU_SINGULAR = -3,         // matrix is numerically singular
+    PARU_TOO_LARGE = -4         // problem too large for the BLAS
+} ParU_Info ;
 
 #define PARU_MEM_CHUNK (1024*1024)
 
@@ -289,11 +289,10 @@ struct ParU_Control
     double piv_toler = 0.1;     // tolerance for accepting sparse pivots
     double diag_toler = 0.001;  // tolerance for accepting symmetric pivots
     int64_t trivial = 4; //dgemms with sizes less than trivial doesn't call BLAS
-    int64_t worthwhile_dgemm = 512;  // dgemms bigger than worthwhile are tasked
-    int64_t worthwhile_trsm = 4096;  // trsm bigger than worthwhile are tasked
-    int32_t paru_max_threads = 0;  //It will be initialized with omp_max_threads
-                                 // if the user do not provide a smaller number
-};
+    int64_t worthwhile_dgemm = 512; // dgemms bigger than worthwhile are tasked
+    int64_t worthwhile_trsm = 4096; // trsm bigger than worthwhile are tasked
+    int32_t paru_max_threads = 0;   // initialized with omp_max_threads
+} ;
 
 // =============================================================================
 // =========================== ParU_Numeric ====================================
@@ -359,7 +358,7 @@ struct ParU_Numeric
 
 // return the version and date of the ParU library.
 
-ParU_Info ParU_Version (int ver [3], char date [128]);
+ParU_Info ParU_Version (int ver [3], char date [128]) ;
 
 //------------------------------------------------------------------------------
 // ParU_Analyze: Symbolic analysis is done in this routine. UMFPACK is called
@@ -407,7 +406,7 @@ ParU_Info ParU_Factorize
 // storage.
 
 //-------- x = A\x -------------------------------------------------------------
-ParU_Info ParU_Solve
+ParU_Info ParU_Solve        // solve Ax=b, overwriting b with the solution x
 (
     // input:
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -420,7 +419,7 @@ ParU_Info ParU_Solve
 ) ;
 
 //-------- x = A\b -------------------------------------------------------------
-ParU_Info ParU_Solve
+ParU_Info ParU_Solve        // solve Ax=b
 (
     // input:
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -433,7 +432,7 @@ ParU_Info ParU_Solve
 ) ;
 
 //-------- X = A\X -------------------------------------------------------------
-ParU_Info ParU_Solve
+ParU_Info ParU_Solve        // solve AX=B, overwriting B with the solution X
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -447,7 +446,7 @@ ParU_Info ParU_Solve
 ) ;
 
 //-------- X = A\B -------------------------------------------------------------
-ParU_Info ParU_Solve
+ParU_Info ParU_Solve        // solve AX=B
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -716,7 +715,7 @@ typedef struct ParU_C_Numeric_struct
 // ParU_Version: return the version and date of ParU
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_C_Version (int ver [3], char date [128]);
+ParU_Info ParU_C_Version (int ver [3], char date [128]) ;
 
 //------------------------------------------------------------------------------
 // ParU_C_Init_Control: initialize C data structure
@@ -728,7 +727,7 @@ ParU_Info ParU_C_Init_Control (ParU_C_Control *Control_C) ;
 // ParU_C_Analyze: Symbolic analysis is done in this routine. UMFPACK is called
 // here and after that some more speciaized symbolic computation is done for
 // ParU. ParU_Analyze can be called once and can be used for different
-// ParU_Factorize calls. 
+// ParU_Factorize calls.
 //------------------------------------------------------------------------------
 
 ParU_Info ParU_C_Analyze

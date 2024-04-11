@@ -41,8 +41,8 @@ Timothy A. Davis}
 
 ParU is an implementation of the multifrontal sparse LU factorization
 method.  Parallelism is exploited both in the BLAS and across different frontal
-matrices using OpenMP tasking, a shared-memory programming model for modern 
-multicore architectures. The package is written in C++ and real sparse matrices 
+matrices using OpenMP tasking, a shared-memory programming model for modern
+multicore architectures. The package is written in C++ and real sparse matrices
 are supported.
 
 ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
@@ -64,8 +64,8 @@ and use of ParU.
 ParU is a parallel sparse direct solver. This package uses OpenMP
 tasking for parallelism. ParU calls UMFPACK for the symbolic analysis phase,
 after that, some symbolic analysis is done by ParU itself, and  then the numeric
-phase starts. The numeric computation is a task parallel phase using OpenMP, 
-and each task calls parallel BLAS; i.e. nested parallelism. 
+phase starts. The numeric computation is a task parallel phase using OpenMP,
+and each task calls parallel BLAS; i.e. nested parallelism.
 The performance of BLAS has a heavy impact on the performance of ParU. Moreover,
 the way parallel BLAS can be called in a nested environment can also be very
 important for ParU's performance.
@@ -91,10 +91,10 @@ This ordering strategy use COLAMD instead of METIS in those cases.
 \section{Using ParU in C and C++}
 %-------------------------------------------------------------------------------
 
-ParU relies on CHOLMOD for its basic sparse matrix data structure, a compressed 
+ParU relies on CHOLMOD for its basic sparse matrix data structure, a compressed
 sparse column format.  CHOLMOD provides interfaces to the AMD, COLAMD, and METIS
-ordering methods and many other functions. ParU also relies on UMFPACK Version 
-6.0 or higher for symbolic analysis. 
+ordering methods and many other functions. ParU also relies on UMFPACK Version
+6.0 or higher for symbolic analysis.
 
 %-------------------------------------------------------------------------------
 \subsection{Installing the C/C++ library on any system}
@@ -110,9 +110,9 @@ on all systems.
 \subsection{Installing the C/C++ library on Linux/Unix}
 %-------------------------------------------------------------------------------
 
-In Linux/MacOs, type \verb'make' at the command line in either the 
-\verb'SuiteSparse' directory (which compiles all of SuiteSparse) or in the 
-\verb'SuiteSparse/ParU' directory (which just compiles ParU and the libraries 
+In Linux/MacOs, type \verb'make' at the command line in either the
+\verb'SuiteSparse' directory (which compiles all of SuiteSparse) or in the
+\verb'SuiteSparse/ParU' directory (which just compiles ParU and the libraries
 it requires).  ParU will be compiled; you can type \verb'make demos' to run a
 set of simple demos.
 
@@ -130,7 +130,7 @@ To install the shared library (by default, into \verb'/usr/local/lib' and
 \subsection{C/C++ Example}
 %-------------------------------------------------------------------------------
 
-The C++ interface is written using only real matrices (double precision).  
+The C++ interface is written using only real matrices (double precision).
 
 The simplest function computes the MATLAB equivalent of
 \verb'x=A\b' and is almost as simple as MATLAB.
@@ -247,55 +247,199 @@ int main(int argc, char **argv)
 \end{minted}
 
 %-------------------------------------------------------------------------------
-\subsection{C/C++ Syntax}
+\subsection{C++ Syntax}
 %-------------------------------------------------------------------------------
-
-All ParU C and C++ routines return an enum of type \verb'ParU_Info'.  The user
-should check the output before continuing and computing further the result of
-prior routine. You can see the user callable routines in
-\verb'ParU/Include/ParU.h'.  The following is a list of user-callable C++
-functions, their prototypes, and a description of what they do:
 
 \verb'FIXME: add prototypes and description of each parameter' % FIXME
 
-\begin{enumerate}
+\subsubsection{{\sf ParU\_Info}: return values of each ParU method}
 
-    \item \verb'ParU_Version': return the version of the ParU package 
-        you are using.
+    All ParU C and C++ routines return an enum of type \verb'ParU_Info'.  The
+    user should check the output before continuing and computing further the
+    result of prior routine.
 
-    \item \verb'ParU_Analyze': Symbolic analysis is done in this routine. 
-        UMFPACK is called here and after that, some more specialized symbolic
-        computation is done for ParU. 
-        \verb'ParU_Analyze' is called once and can be used for different 
-        \verb'ParU_Factorize' calls for the matrices that have the same pattern.
-    \item \verb'ParU_Factorize': 
-        Numeric factorization is done in this routine. Scaling and
-        making $Sx$ (scaled and staircase structure) matrix, computing factors,
-        and permutations are here. \verb'ParU_Symbolic' structure which is 
-        computed in \verb'ParU_Analyze' is an input in this routine.
+    {\footnotesize
+    \begin{verbatim}
+    typedef enum ParU_Info
+    {
+        PARU_SUCCESS = 0,           // everying is fine
+        PARU_OUT_OF_MEMORY = -1,    // ParU ran out of memory
+        PARU_INVALID = -2,          // inputs are invalid (NULL, for example)
+        PARU_SINGULAR = -3,         // matrix is numerically singular
+        PARU_TOO_LARGE = -4         // problem too large for the BLAS
+    } ParU_Info ; \end{verbatim}}
 
-    \item \verb'ParU_Solve':  
-        Using symbolic analysis and factorization phase output to solve $Ax=b$.
-        In all the solve routines Num structure must come with the same 
-        Sym struct that comes from \verb'ParU_Factorize'. 
-        This routine is overloaded and can solve different systems. It has 
-        versions that keep a copy of x or overwrite it. Also, it can solve 
-        multiple right-hand side problems.
+\subsubsection{{\sf ParU\_Version}: return ParU version}
 
-    \item \verb'ParU_LSolve':       % FIXME
-    \item \verb'ParU_USolve':       % FIXME
-    \item \verb'ParU_Perm':         % FIXME
-    \item \verb'ParU_InvPerm':      % FIXME
+    ParU has two mechanisms for informing the user application of its date and
+    version: macros that are \verb'#define'd in \verb'ParU.h', and a
+    \verb'ParU_Version' function.  Both methods are provided since it's
+    possible that the \verb'ParU.h' header found when a user application was
+    compiled might not match the same version found when the same user
+    application was linked.
 
-    \item \verb'ParU_Residual':  
+    {\footnotesize
+    \begin{verbatim}
+    #define PARU_DATE "Apr XX, 2024"    // FIXME
+    #define PARU_VERSION_MAJOR  1
+    #define PARU_VERSION_MINOR  0
+    #define PARU_VERSION_UPDATE 0
+    ParU_Info ParU_Version (int ver [3], char date [128]) ; \end{verbatim}}
+
+    \verb'ParU_Version' returns the version in \verb'ver' array (major, minor,
+    and update, in that order), and the date in the \verb'date' array provided
+    by the user application.
+
+\subsubsection{{\sf ParU\_Control}: parameters that control ParU}
+
+    {\footnotesize
+    \begin{verbatim}
+    struct ParU_Control
+    {
+        int64_t mem_chunk = PARU_MEM_CHUNK ;  // chunk size for memset and memcpy
+
+        // Symbolic controls
+        int64_t umfpack_ordering = UMFPACK_ORDERING_METIS;
+        int64_t umfpack_strategy = UMFPACK_STRATEGY_AUTO; //symmetric or unsymmetric
+        int64_t umfpack_default_singleton = 1; //filter singletons if true
+
+        int64_t relaxed_amalgamation_threshold =
+            32;  // symbolic analysis tries that each front have more pivot columns
+                 // than this threshold
+
+        // Numeric controls
+        int64_t scale = 1;         // if 1 matrix will be scaled using max_row
+        int64_t panel_width = 32;  // width of panel for dense factorizaiton
+        int64_t paru_strategy = PARU_STRATEGY_AUTO;//the same strategy umfpack used
+
+        double piv_toler = 0.1;     // tolerance for accepting sparse pivots
+        double diag_toler = 0.001;  // tolerance for accepting symmetric pivots
+        int64_t trivial = 4; //dgemms with sizes less than trivial doesn't call BLAS
+        int64_t worthwhile_dgemm = 512;  // dgemms bigger than worthwhile are tasked
+        int64_t worthwhile_trsm = 4096;  // trsm bigger than worthwhile are tasked
+        int32_t paru_max_threads = 0;  //It will be initialized with omp_max_threads
+                                     // if the user do not provide a smaller number
+    } ; \end{verbatim}}
+
+\subsubsection{{\sf ParU\_Analyze}: symbolic analysis}
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Analyze
+    (
+        // input:
+        cholmod_sparse *A,  // input matrix to analyze of size n-by-n
+        // output:
+        ParU_Symbolic **Sym_handle,  // output, symbolic analysis
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim}}
+
+    \verb'ParU_Analyze' takes as input a sparse matrix in the CHOLMOD data
+    structure, \verb'A'.  The matrix must be square and not held in the CHOLMOD
+    symmetric storage format.  Refer to the CHOLMOD documentation for details.
+    On output, the symbolic analysis structure \verb'Sym' is created, passed in as
+    \verb'&Sym'.  The symbolic analysis can be used for different calls to
+    \verb'ParU_Factorize' for matrices that have the same sparsity pattern but
+    different numerical values.
+
+\subsubsection{{\sf ParU\_Factorize}: numerical factorization}
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Factorize
+    (
+        // input:
+        cholmod_sparse *A,  // input matrix to factorize
+        ParU_Symbolic *Sym, // symbolic analsys from ParU_Analyze
+        // output:
+        ParU_Numeric **Num_handle,
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim}}
+
+    \verb'ParU_Factorize' performs the numerical factorization of its input
+    sparse matrix \verb'A'.  The symbolic analsys \verb'Sym' must have been
+    created by a prior call to \verb'ParU_Analyze' with the same matrix
+    \verb'A', or one with the same sparsity pattern as the one passed to
+    \verb'ParU_Factorize'.  On output, the \verb'&Num' structure is created.
+
+\subsubsection{{\sf ParU\_Solve}: solve a linear system, $Ax=b$}
+
+    \verb'ParU_Solve' solves a sparse linear system $Ax=b$ for a sparse
+    matrix \verb'A' and vectors \verb'x' and \verb'b', or matrices
+    \verb'X' and \verb'B'.  The matrix \verb'A' must have been factorized
+    by \verb'ParU_Factorize', and the \verb'Sym' and \verb'Num' structures
+    from that call must be passed to this method.
+
+    The method has four overloaded signatures, so that it can handle a single
+    right-hand-side vector or a matrix with multiple right-hand-sides, and it
+    provides the option of overwriting the input right-hand-side(s) with the
+    solution(s).
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Solve        // solve Ax=b, overwriting b with the solution x
+    (
+        // input:
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        // input/output:
+        double *x,              // vector of size n-by-1; right-hand on input,
+                                // solution on output
+        // control:
+        ParU_Control *Control
+    ) ;
+
+    ParU_Info ParU_Solve        // solve Ax=b
+    (
+        // input:
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        double *b,              // vector of size n-by-1
+        // output
+        double *x,              // vector of size n-by-1
+        // control:
+        ParU_Control *Control
+    ) ;
+
+    ParU_Info ParU_Solve        // solve AX=B, overwriting B with the solution X
+    (
+        // input
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        int64_t nrhs,           // # of right-hand sides
+        // input/output:
+        double *X,              // X is n-by-nrhs, where A is n-by-n;
+                                // holds B on input, solution X on input
+        // control:
+        ParU_Control *Control
+    ) ;
+
+    ParU_Info ParU_Solve        // solve AX=B
+    (
+        // input
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        int64_t nrhs,           // # of right-hand sides
+        double *B,              // n-by-nrhs, in column-major storage
+        // output:
+        double *X,              // n-by-nrhs, in column-major storage
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+\subsubsection{{\sf ParU\_Residual}: compute the residual}
+
         This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
         $x$ (or $X$ for multiple right handside).
 
-    \item \verb'ParU_FreeNumeric':  frees the numerical part of factorization.
+\subsubsection{{\sf ParU\_FreeNumeric}: free a numeric factorization}
+\subsubsection{{\sf ParU\_FreeSymbolic}: free a symbolic factorization}
 
-    \item \verb'ParU_FreeSymbolic':  frees the symbolic part of factorization.
-
-\end{enumerate}
+%-------------------------------------------------------------------------------
+\subsection{C Syntax}
+%-------------------------------------------------------------------------------
 
 The C interface is quite similar to the C++ interface, and you can see the C
 user callable routines in \verb'ParU/Include/ParU.h'.  The following is a list
@@ -303,39 +447,39 @@ of user-callable C functions, their prototypes, and what they can do:
 
 \begin{enumerate}
 
-    \item \verb'ParU_C_Version': return the version of the ParU package 
+    \item \verb'ParU_C_Version': return the version of the ParU package
         you are using.
 
-    \item \verb'ParU_C_Init_Control': Initialize C Control object before using 
+    \item \verb'ParU_C_Init_Control': Initialize C Control structure before using
         it.
 
-    \item \verb'ParU_C_Analyze': Symbolic analysis is done in this routine. 
+    \item \verb'ParU_C_Analyze': Symbolic analysis is done in this routine.
         UMFPACK is called here; after that, some more specialized symbolic
-        computation is done for ParU. 
-        \verb'ParU_C_Analyze' is called once and can be used for different 
+        computation is done for ParU.
+        \verb'ParU_C_Analyze' is called once and can be used for different
         \verb'ParU_C_Factorize' calls for the matrices that have the same pattern.
-    \item \verb'ParU_C_Factorize': 
+    \item \verb'ParU_C_Factorize':
         Numeric factorization is done in this routine. Scaling and
-        making $Sx$ (scaled and staircase structure) matrix, computing factors,  
-        and permutations are here. \verb'ParU_C_Symbolic' structure which is 
+        making $Sx$ (scaled and staircase structure) matrix, computing factors,
+        and permutations are here. \verb'ParU_C_Symbolic' structure which is
         computed in \verb'ParU_C_Analyze' is an input in this routine.
 
-    \item \verb'ParU_C_Solve_Axx',  \verb'ParU_C_Solve_Axb', 
-        \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB',  
+    \item \verb'ParU_C_Solve_Axx',  \verb'ParU_C_Solve_Axb',
+        \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB',
         Using symbolic analysis and factorization phase output to solve $Ax=b$.
-        In all the solve routines Num structure must come with the same 
-        Sym struct that comes from \verb'ParU_C_Factorize'. 
+        In all the solve routines Num structure must come with the same
+        Sym struct that comes from \verb'ParU_C_Factorize'.
 
     \item \verb'ParU_C_LSolve':       % FIXME
     \item \verb'ParU_C_USolve':       % FIXME
     \item \verb'ParU_C_Perm':         % FIXME
     \item \verb'ParU_C_InvPerm':      % FIXME
 
-    \item \verb'ParU_C_Residual_bAx':  
+    \item \verb'ParU_C_Residual_bAx':
         This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
-        $x$ 
+        $x$
 
-    \item \verb'ParU_C_Residual_BAX':  
+    \item \verb'ParU_C_Residual_BAX':
         This function computes $|AX-B|$ one norm of matrix $A$ and one norme of
         $X$
 
@@ -356,9 +500,11 @@ definitions and descriptions in the \verb'SuiteSparse/ParU/Include/ParU.h'
 file, which describes each C++ and C function.  Only \verb'double' and square
 matrices are supported.
 
-There are C/C++ options to control ParU, which is an input argument to several 
-routines. When you make C++ \verb'ParU_Control' object, it is initialized with 
-default values. The user can change the values. When using C  
+FIXME: merge with subsection above on \verb'ParU_Control'   % FIXME
+
+There are C/C++ options to control ParU, which is an input argument to several
+routines. When you make C++ \verb'ParU_Control' structure, it is initialized with
+default values. The user can change the values. When using C
 \verb'ParU_C_Control', you have to fully initialize it or call
 \verb'ParU_C_Init_Control' before using it.
 
@@ -392,20 +538,20 @@ Here is the list of control options (both in C and C++):
 \vspace{0.1in}
 
 The first row of the options is either used in symbolic or numerical analysis.
-The second row of the options is used in the symbolic analysis. In the symbolic 
-analysis phase, only the matrix pattern is probed. 
-The third row of control options shows those that have an impact on numerical 
+The second row of the options is used in the symbolic analysis. In the symbolic
+analysis phase, only the matrix pattern is probed.
+The third row of control options shows those that have an impact on numerical
 analysis.
 
-\verb'paru_max_threads' is initalized by \verb'omp_max_threads' if the user do 
+\verb'paru_max_threads' is initalized by \verb'omp_max_threads' if the user do
 not provide a smaller number.
 
-If \verb'paru_strategy' is set to \verb'PARU_STRATEGY_AUTO' ParU uses the same 
-strategy as UMFPACK. However, the user can ask UMFPACK for an unsymmetric 
-strategy but use a symmetric strategy for ParU. Usually, UMFPACK chooses a good 
+If \verb'paru_strategy' is set to \verb'PARU_STRATEGY_AUTO' ParU uses the same
+strategy as UMFPACK. However, the user can ask UMFPACK for an unsymmetric
+strategy but use a symmetric strategy for ParU. Usually, UMFPACK chooses a good
 ordering; however, there might be cases where users prefer unsymmetric ordering on
 UMFPACK but symmetric computation on ParU.
-    
+
 %-------------------------------------------------------------------------------
 \section{Requirements and Availability}
 \label{summary}
@@ -414,13 +560,13 @@ UMFPACK but symmetric computation on ParU.
 ParU requires several Collected Algorithms of the ACM: CHOLMOD
 \cite{ChenDavisHagerRajamanickam09,DavisHager09} (version 1.7 or later), AMD
 \cite{AmestoyDavisDuff96,AmestoyDavisDuff03}, COLAMD
-\cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00} and UMFPACK 
+\cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00} and UMFPACK
 \cite{10.1145/992200.992206} for its
 ordering/analysis phase and for its basic sparse matrix data structure, and the
-BLAS \cite{dddh:90} for dense matrix computations on its frontal matrices. 
+BLAS \cite{dddh:90} for dense matrix computations on its frontal matrices.
 An efficient implementation of the BLAS is strongly recommended, either
-vendor-provided (such as the Intel MKL, the AMD ACML, or the 
-Sun Performance Library) or other high-performance BLAS such as those of 
+vendor-provided (such as the Intel MKL, the AMD ACML, or the
+Sun Performance Library) or other high-performance BLAS such as those of
 \cite{GotoVanDeGeijn08}. Note that while ParU uses nested parallelism heavily
 the right options for the BLAS library must be chosen to get a good performance.
 

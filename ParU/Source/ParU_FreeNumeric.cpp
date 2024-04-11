@@ -33,7 +33,7 @@ ParU_Info ParU_FreeNumeric
     }
     if (!Control)
     {
-        return PARU_INVALID ;
+        return (PARU_INVALID) ;
     }
 
     DEBUGLEVEL(0);
