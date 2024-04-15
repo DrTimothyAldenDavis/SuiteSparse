@@ -64,10 +64,10 @@ int main(int argc, char **argv)
     ParU_Control Control;
     ParU_Info info;
 
-    Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
+    // Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_SYMMETRIC;
-    // Control.umfpack_default_singleton = 0;
+    // Control.filter_singletons = 0 ;
     // Control.paru_max_threads = 6;
     Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
     std::cout << "\n--------- ParU_Analyze:\n";
@@ -227,11 +227,11 @@ int main(int argc, char **argv)
     // is used in umfpack_dl_symbolic; if
     // passed NULL it will use the defaults
     umfpack_dl_defaults(umf_Control);
-    // umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_AMD;
-    // umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
-    // umf_Control [UMFPACK_STRATEGY] =   UMFPACK_STRATEGY_UNSYMMETRIC;
-    // umf_Control [UMFPACK_STRATEGY] =   UMFPACK_STRATEGY_SYMMETRIC;
-    // umf_Control[UMFPACK_SINGLETONS] = Control.umfpack_default_singleton;
+    // umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_AMD;
+    // umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
+    // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC;
+    // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC;
+    // umf_Control [UMFPACK_SINGLETONS] = Control.filter_singletons ;
     umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS_GUARD;
 
     int64_t *Ap = (int64_t *)A->p;

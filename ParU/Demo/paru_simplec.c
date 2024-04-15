@@ -10,8 +10,6 @@
  * @brief   a simple test to show how to use ParU with C interface
  * @author Aznaveh
  * */
-#include <stdint.h>
-#include <math.h>
 
 #include "ParU.h"
 

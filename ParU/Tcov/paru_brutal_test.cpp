@@ -60,9 +60,9 @@ int main(int argc, char **argv)
     Control.umfpack_ordering = 23;
     Control.umfpack_strategy = 23;
     Control.paru_max_threads = -1;
-    Control.relaxed_amalgamation_threshold = -1;
+    Control.relaxed_amalgamation = -1;
     Control.paru_strategy = 23;
-    Control.scale = -1;
+    Control.prescale = -1;
     Control.panel_width = -1;
     Control.piv_toler = -1;
     Control.diag_toler = -1;

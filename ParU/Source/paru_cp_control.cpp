@@ -21,25 +21,19 @@
 
 void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C)
 {
-    Control->mem_chunk = Control_C->mem_chunk;
-
-    Control->umfpack_ordering = Control_C->umfpack_ordering;
-    Control->umfpack_strategy = Control_C->umfpack_strategy;
-    Control->umfpack_default_singleton = Control_C->umfpack_default_singleton;
-
-    Control->relaxed_amalgamation_threshold = 
-        Control_C->relaxed_amalgamation_threshold;
-
-    Control->scale = Control_C->scale;
-    Control->panel_width = Control_C->panel_width;
-    Control->paru_strategy = Control_C->paru_strategy;
-
-
-    Control->piv_toler = Control_C->piv_toler;
-    Control->diag_toler = Control_C->diag_toler;
-    Control->trivial = Control_C->trivial;
-    Control->worthwhile_dgemm = Control_C->worthwhile_dgemm;
-    Control->worthwhile_trsm = Control_C->worthwhile_trsm;
-    Control->paru_max_threads = Control_C->paru_max_threads;
+    Control->mem_chunk = Control_C->mem_chunk ;
+    Control->umfpack_ordering = Control_C->umfpack_ordering ;
+    Control->umfpack_strategy = Control_C->umfpack_strategy ;
+    Control->filter_singletons = Control_C->filter_singletons ;
+    Control->relaxed_amalgamation = Control_C->relaxed_amalgamation ;
+    Control->prescale = Control_C->prescale ;
+    Control->panel_width = Control_C->panel_width ;
+    Control->paru_strategy = Control_C->paru_strategy ;
+    Control->piv_toler = Control_C->piv_toler ;
+    Control->diag_toler = Control_C->diag_toler ;
+    Control->trivial = Control_C->trivial ;
+    Control->worthwhile_dgemm = Control_C->worthwhile_dgemm ;
+    Control->worthwhile_trsm = Control_C->worthwhile_trsm ;
+    Control->paru_max_threads = Control_C->paru_max_threads ;
 }
 

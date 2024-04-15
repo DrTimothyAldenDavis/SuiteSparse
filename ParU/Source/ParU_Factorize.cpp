@@ -48,39 +48,66 @@ ParU_Info ParU_Factorize
     {
         int64_t panel_width = my_Control.panel_width;
         if (panel_width < 0 || panel_width > Sym->m)
+        {
             my_Control.panel_width = 32;
+        }
         int64_t paru_strategy = my_Control.paru_strategy;
         // at this point the strategy should be known
-        // if the user didnot decide I
-        if (paru_strategy == PARU_STRATEGY_AUTO)  // user didn't specify
+        if (paru_strategy == PARU_STRATEGY_AUTO)
+        {
+            // user didn't specify
             // so I use the same strategy as umfpack
             my_Control.paru_strategy = Sym->strategy;
+        }
         else if (paru_strategy != PARU_STRATEGY_SYMMETRIC &&
                  paru_strategy != PARU_STRATEGY_UNSYMMETRIC)
+        {
             // user input is not correct so I go to default
             my_Control.paru_strategy = Sym->strategy;
+        }
         // else user already picked symmetric or unsymmetric
         // and it has been copied over
 
         double piv_toler = my_Control.piv_toler;
-        if (piv_toler > 1 || piv_toler < 0) my_Control.piv_toler = .1;
+        if (piv_toler > 1 || piv_toler < 0)
+        {
+            my_Control.piv_toler = .1;
+        }
         double diag_toler = my_Control.diag_toler;
-        if (diag_toler > 1 || diag_toler < 0) my_Control.diag_toler = .001;
+        if (diag_toler > 1 || diag_toler < 0)
+        {
+            my_Control.diag_toler = .001;
+        }
         int64_t trivial = my_Control.trivial;
-        if (trivial < 0) my_Control.trivial = 4;
+        if (trivial < 0)
+        {
+            my_Control.trivial = 4;
+        }
         int64_t worthwhile_dgemm = my_Control.worthwhile_dgemm;
-        if (worthwhile_dgemm < 0) my_Control.worthwhile_dgemm = 512;
+        if (worthwhile_dgemm < 0)
+        {
+            my_Control.worthwhile_dgemm = 512;
+        }
         int64_t worthwhile_trsm = my_Control.worthwhile_trsm;
-        if (worthwhile_trsm < 0) my_Control.worthwhile_trsm = 4096;
+        if (worthwhile_trsm < 0)
+        {
+            my_Control.worthwhile_trsm = 4096;
+        }
         int32_t max_threads = PARU_OPENMP_MAX_THREADS;
         if (my_Control.paru_max_threads > 0)
+        {
             my_Control.paru_max_threads =
                 std::min(max_threads, my_Control.paru_max_threads);
+        }
         else
+        {
             my_Control.paru_max_threads = max_threads;
-
-        int64_t scale = my_Control.scale;
-        if (scale != 0 && scale != 1) my_Control.scale = 1;
+        }
+        int32_t prescale = my_Control.prescale;
+        if (prescale != 0 && prescale != 1)
+        {
+            my_Control.prescale = 1;
+        }
     }
     ParU_Control *Control = &my_Control;
 
@@ -177,10 +204,10 @@ ParU_Info ParU_Factorize
     {
         PRLEVEL(1, ("Parallel\n"));
         // checking user input
-        PRLEVEL(1, ("Control: max_th=" LD " scale=" LD " piv_toler=%lf "
+        PRLEVEL(1, ("Control: max_th=" LD " prescale=%d piv_toler=%lf "
                     "diag_toler=%lf trivial =" LD " worthwhile_dgemm=" LD " "
                     "worthwhile_trsm=" LD "\n",
-                    Control->paru_max_threads, Control->scale,
+                    Control->paru_max_threads, Control->prescale,
                     Control->piv_toler, Control->diag_toler, Control->trivial,
                     Control->worthwhile_dgemm, Control->worthwhile_trsm));
 

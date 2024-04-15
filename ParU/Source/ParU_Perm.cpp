@@ -196,8 +196,8 @@ ParU_Info ParU_Perm
             int64_t j = P[k];  // k-new and j-old; P(new) = old
             for (int64_t l = 0; l < ncols; l++)
             {
-                // X(j,l) = B(k,l)
-                X[l * nrows + k] = B[l * nrows + j] ;
+                // X(k,l) = B(j,l)
+                X[k + l*nrows] = B[j + l*nrows] ;
             }
         }
     }
@@ -209,8 +209,8 @@ ParU_Info ParU_Perm
             int64_t j = P[k];  // k-new and j-old; P(new) = old
             for (int64_t l = 0; l < ncols; l++)
             {
-                // X(j,l) = B(k,l) / s(j)
-                X[l * nrows + k] = B[l * nrows + j] / s[j];
+                // X(k,l) = B(j,l) / s(j)
+                X[k + l*nrows] = B[j + l*nrows] / s[j];
             }
         }
     }
@@ -222,7 +222,7 @@ ParU_Info ParU_Perm
 #endif
 
 #ifndef NDEBUG
-    PRLEVEL(1, ("\n%% after applying permutaion X is:\n"));
+    PRLEVEL(1, ("\n%% after applying permutation X is:\n"));
     for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(1, ("%%"));

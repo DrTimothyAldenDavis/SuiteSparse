@@ -169,7 +169,7 @@ ParU_Info ParU_InvPerm
         for (int64_t l = 0; l < ncols; l++)
         {
             // X(j,l) = B(k,l)
-            X[l * nrows + j] = B[l * nrows + k];
+            X[j + l*nrows] = B[k + l*nrows];
         }
     }
 
@@ -181,7 +181,7 @@ ParU_Info ParU_InvPerm
             for (int64_t l = 0; l < ncols; l++)
             {
                 // X(j,l) = X(j,l) / s(j)
-                X[l * nrows + j] /= s [j] ;
+                X[j + l*nrows] /= s [j] ;
             }
         }
     }

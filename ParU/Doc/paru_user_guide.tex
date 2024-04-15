@@ -146,7 +146,6 @@ showing how the program works.  The full program can be found in
 #include <iostream>
 #include <iomanip>
 #include <ios>
-#include <cmath>
 #include "ParU.h"
 
 int main(int argc, char **argv)
@@ -197,10 +196,7 @@ A simple demo for the C interface is shown next. You can see the complete demo
 in \verb'ParU/Demo/paru_simplec.c'
 
 \begin{minted}{c}
-#include <stdint.h>
-#include <math.h>
 #include "ParU.h"
-
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
@@ -250,13 +246,10 @@ int main(int argc, char **argv)
 \subsection{C++ Syntax}
 %-------------------------------------------------------------------------------
 
-\verb'FIXME: add prototypes and description of each parameter' % FIXME
-
 \subsubsection{{\sf ParU\_Info}: return values of each ParU method}
 
     All ParU C and C++ routines return an enum of type \verb'ParU_Info'.  The
-    user should check the output before continuing and computing further the
-    result of prior routine.
+    user application should check the output before continuing.
 
     {\footnotesize
     \begin{verbatim}
@@ -292,33 +285,89 @@ int main(int argc, char **argv)
 
 \subsubsection{{\sf ParU\_Control}: parameters that control ParU}
 
+    The \verb'ParU_Control' structure contains parameters that control various
+    ParU options.  When declared, the structure is initialized with default
+    values.  The user can then change the values.
+
+    \vspace{0.1in}
+    {\footnotesize
+    \begin{tabular}{|lp{4in}|}
+    \hline
+    \verb'ParU_Control' & default value and explanation  \\
+    \hline\hline
+    \verb'mem_chunk' & default: $2^{20}$. Chunk size for parallel memset and memcpy\\
+    \verb'paru_max_threads' & default: $0$.  Initialized with \verb'omp_max_threads' \\
+    \hline
+    \verb'umfpack_ordering' & default: \verb'UMFPACK_ORDERING_AMD'. Default UMFPACK ordering\\
+    \verb'umfpack_strategy' & default: \verb'UMFPACK_STRATEGY_AUTO'. Default UMFPACK strategy\\
+    \verb'filter_singletons' & default: 1. If nonzero, singletons are
+        permuted to the front of the matrix before factorization.  Singletons
+        are rows or columns with a single entry (or have a single entry after
+        other singletons are removed). \\
+    \verb'relaxed_amalgamation' & default: 32. Threshold for relaxed amalgamation. When
+        constructing its frontal matrices, ParU attempts to ensure that all
+        frontal matrices contain at least this many pivot columns.  Values less
+        than zero are treated as 32, and values greater than 512 are treated
+        as 512. \\
+    \hline
+    \verb'prescale' & default: 1. 0: no scaling,
+        1: each row is scaled by the maximum
+        absolute value in the row. \\
+    \verb'panel_width' & default: 32. Width of panel for dense factorization \\
+    \verb'paru_strategy' & default: \verb'PARU_STRATEGY_AUTO'. Default strategy for ParU\\
+    \verb'piv_toler' & default: $0.1$. Tolerance for accepting sparse pivots\\
+    \verb'diag_toler' & default: $0.001$. Tolerance for accepting symmetric pivots\\
+    \verb'trivial' & default: $4$. Do not call BLAS for smaller dgemms\\
+    \verb'worthwhile_dgemm' & default: $512$. dgemms bigger than this are tasked\\
+    \verb'worthwhile_trsm' & default: $4096$. trsm bigger than this are tasked\\
+    \hline
+    \end{tabular}
+    }
+    \vspace{0.1in}
+
+    The first row of the options in the table above is used in both the
+    symbolic analysis and numerical factorization.  The second row of the
+    options is used in the symbolic analysis.  The third row of control options
+    shows those that have an impact on numerical factorization.
+
+    If set to zero, \verb'paru_max_threads' is initalized by
+    \verb'omp_max_threads'.
+
+    If \verb'paru_strategy' is set to \verb'PARU_STRATEGY_AUTO'.  ParU uses the
+    same strategy as UMFPACK. However, the user can ask UMFPACK for an
+    unsymmetric strategy but use a symmetric strategy for ParU. Usually,
+    UMFPACK chooses a good ordering; however, there might be cases where users
+    prefer unsymmetric ordering on UMFPACK but symmetric computation on ParU.
+
+    The \verb'ParU_Control' structure is defined below:
+
     {\footnotesize
     \begin{verbatim}
     struct ParU_Control
     {
+        // For all phases of ParU:
         int64_t mem_chunk = PARU_MEM_CHUNK ;  // chunk size for memset and memcpy
 
-        // Symbolic controls
-        int64_t umfpack_ordering = UMFPACK_ORDERING_METIS;
-        int64_t umfpack_strategy = UMFPACK_STRATEGY_AUTO; //symmetric or unsymmetric
-        int64_t umfpack_default_singleton = 1; //filter singletons if true
+        // Numeric factorization parameters:
+        double piv_toler = 0.1 ;    // tolerance for accepting sparse pivots
+        double diag_toler = 0.001 ; // tolerance for accepting symmetric pivots
+        int32_t panel_width = 32 ;  // width of panel for dense factorizaiton
+        int32_t trivial = 4 ;       // dgemms smaller than this do not call BLAS
+        int32_t worthwhile_dgemm = 512 ; // dgemms bigger than this are tasked
+        int32_t worthwhile_trsm = 4096 ; // trsm bigger than this are tasked
+        int32_t prescale = 1 ;  // 0: no scaling, 1: scale each row by the max
+            // absolute value in its row.
 
-        int64_t relaxed_amalgamation_threshold =
-            32;  // symbolic analysis tries that each front have more pivot columns
-                 // than this threshold
+        // Symbolic analysis parameters:
+        int32_t umfpack_ordering = UMFPACK_ORDERING_METIS ;
+        int32_t umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
+        int32_t relaxed_amalgamation = 32 ;  // symbolic analysis tries to ensure
+            // that each front have more pivot columns than this threshold
+        int32_t paru_strategy = PARU_STRATEGY_AUTO ;
+        int32_t filter_singletons = 1 ; // filter singletons if nonzero
 
-        // Numeric controls
-        int64_t scale = 1;         // if 1 matrix will be scaled using max_row
-        int64_t panel_width = 32;  // width of panel for dense factorizaiton
-        int64_t paru_strategy = PARU_STRATEGY_AUTO;//the same strategy umfpack used
-
-        double piv_toler = 0.1;     // tolerance for accepting sparse pivots
-        double diag_toler = 0.001;  // tolerance for accepting symmetric pivots
-        int64_t trivial = 4; //dgemms with sizes less than trivial doesn't call BLAS
-        int64_t worthwhile_dgemm = 512;  // dgemms bigger than worthwhile are tasked
-        int64_t worthwhile_trsm = 4096;  // trsm bigger than worthwhile are tasked
-        int32_t paru_max_threads = 0;  //It will be initialized with omp_max_threads
-                                     // if the user do not provide a smaller number
+        // For all phases of ParU:
+        int32_t paru_max_threads = 0 ;  // initialized with omp_max_threads
     } ; \end{verbatim}}
 
 \subsubsection{{\sf ParU\_Analyze}: symbolic analysis}
@@ -341,7 +390,8 @@ int main(int argc, char **argv)
     On output, the symbolic analysis structure \verb'Sym' is created, passed in as
     \verb'&Sym'.  The symbolic analysis can be used for different calls to
     \verb'ParU_Factorize' for matrices that have the same sparsity pattern but
-    different numerical values.
+    different numerical values.  Details of the \verb'ParU_Symbolic' structure
+    are available in the \verb'ParU.h' file.
 
 \subsubsection{{\sf ParU\_Factorize}: numerical factorization}
 
@@ -363,6 +413,7 @@ int main(int argc, char **argv)
     created by a prior call to \verb'ParU_Analyze' with the same matrix
     \verb'A', or one with the same sparsity pattern as the one passed to
     \verb'ParU_Factorize'.  On output, the \verb'&Num' structure is created.
+    Details of the \verb'ParU_Numeric' structure are available in the \verb'ParU.h' file.
 
 \subsubsection{{\sf ParU\_Solve}: solve a linear system, $Ax=b$}
 
@@ -429,13 +480,249 @@ int main(int argc, char **argv)
         ParU_Control *Control
     ) ; \end{verbatim} }
 
+\subsubsection{{\sf ParU\_LSolve}: solve $Lx=b$}
+
+    \verb'ParU_LSolve' solves a lower triangular system, $Lx=b$ with vectors
+    $x$ and $b$, or $LX=B$ with matrices $X$ and $B$, using the lower
+    triangular factor computed by \verb'ParU_Factorize'.  No scaling or
+    permutations are used.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_LSolve
+    (
+        // input
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        // input/output:
+        double *x,              // n-by-1, in column-major storage;
+                                // holds b on input, solution x on input
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_LSolve
+    (
+        // input
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        int64_t nrhs,           // # of right-hand-sides (# columns of X)
+        // input/output:
+        double *X,              // X is n-by-nrhs, where A is n-by-n;
+                                // holds B on input, solution X on input
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+\subsubsection{{\sf ParU\_USolve}: solve $Ux=b$}
+
+    \verb'ParU_USolve' solves a lower triangular system, $Ux=b$ with vectors
+    $x$ and $b$, or $UX=B$ with matrices $X$ and $B$, using the upper
+    triangular factor computed by \verb'ParU_Factorize'.  No scaling or
+    permutations are used.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_USolve
+    (
+        // input
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        // input/output
+        double *x,              // n-by-1, in column-major storage;
+                                // holds b on input, solution x on input
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_USolve
+    (
+        // input
+        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        int64_t nrhs,           // # of right-hand-sides (# columns of X)
+        // input/output:
+        double *X,              // X is n-by-nrhs, where A is n-by-n;
+                                // holds B on input, solution X on input
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+\subsubsection{{\sf ParU\_Perm}: permute and scale a dense vector or matrix}
+
+    \verb'ParU_Perm' permutes and optionally scales a vector $b$ or matrix $B$.
+    If the input \verb's' is \verb'NULL', no scaling is applied.  The
+    permutation vector \verb'P' has size \verb'n'.  If the $k$th index in the
+    permutation is row $i$, then \verb'i = P[k]'.
+
+    For the vector case, the output is $x(k) = b(P(k)) / s(P(k))$, or
+    $x(k) = b(P(k))$, or if \verb's' is \verb'NULL', for all $k$ in the range 0
+    to $n-1$.
+
+    For the matrix case, the output is $X(k,j) = B(P(k),j) / s(P(k))$ for all
+    rows $k$ and all columns $j$ of $X$ and $B$.  If \verb's' is \verb'NULL',
+    then the output is $X(k,j) = B(P(k),j)$.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Perm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size n
+        const double *s,    // vector of size n (optional)
+        const double *b,    // vector of size n
+        int64_t n,          // length of P, s, B, and X
+        // output
+        double *x,          // vector of size n
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Perm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size nrows
+        const double *s,    // vector of size nrows (optional)
+        const double *B,    // array of size nrows-by-ncols
+        int64_t nrows,      // # of rows of X and B
+        int64_t ncols,      // # of columns of X and B
+        // output
+        double *X,          // array of size nrows-by-ncols
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+\subsubsection{{\sf ParU\_InvPerm}: permute and scale a dense vector or matrix}
+
+    \verb'ParU_Perm' permutes and optionally scales a vector $b$ or matrix $B$.
+    If the input \verb's' is \verb'NULL', no scaling is applied.  The
+    permutation vector \verb'P' has size \verb'n', and its inverse is
+    implicitly used by this method.  If the $k$th index in the permutation is
+    row $i$, then \verb'i = P[k]'.  
+
+    For the vector case, the output is $x(P(k)) = b(k) / s(P(k))$, or
+    $x(P(k)) = b(k)$, or if \verb's' is \verb'NULL', for all $k$ in the range 0
+    to $n-1$.
+
+    For the matrix case, the output is $X(P(k),j) = B(k,j) / s(P(k))$ for all
+    rows $k$ and all columns $j$ of $X$ and $B$.  If \verb's' is \verb'NULL',
+    then the output is $X(P(k),j) = B(k,j)$.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_InvPerm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size n
+        const double *s,    // vector of size n (optional)
+        const double *b,    // vector of size n
+        int64_t n,          // length of P, s, B, and X
+        // output
+        double *x,          // vector of size n
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_InvPerm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size nrows
+        const double *s,    // vector of size nrows (optional)
+        const double *B,    // array of size nrows-by-ncols
+        int64_t nrows,      // # of rows of X and B
+        int64_t ncols,      // # of columns of X and B
+        // output
+        double *X,          // array of size nrows-by-ncols
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+    The \verb'ParU_LSolve', \verb'ParU_USolve', \verb'ParU_Perm', and
+    \verb'ParU_InvPerm' can be used together to solve $Ax=b$ or $AX=B$.  For
+    example, if \verb't' is a temporary vector of size \verb'n', and $A$ is an
+    $n$-by-$n$ matrix, calling \verb'ParU_Solve' to solve $Ax=b$ is identical
+    to the following (ignoring any tests for error conditions):
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Perm (Num->Pfin, Num->Rs, b, n, t, Control) ;
+    ParU_LSolve (Sym, Num, t, Control) ;
+    ParU_USolve (Sym, Num, t, Control) ;
+    ParU_InvPerm (Sym->Qfill, NULL, t, n, x, Control) ; \end{verbatim} }
+
+    The numeric factorization \verb'Num' contains the row permutation vector
+    \verb'Num->Pfin' from partial pivoting, and the row scaling vector
+    \verb'Num->Rs'.  The symbolic analysis structure \verb'Sym' contains the
+    fill-reducing column preordering, \verb'Sym->Qfill'.
+
 \subsubsection{{\sf ParU\_Residual}: compute the residual}
 
-        This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
-        $x$ (or $X$ for multiple right handside).
+    The \verb'ParU_Residual' function comptes the relative residual of
+    $Ax=b$ or $AX=B$, in the 1-norm.  It also computes the 1-norm of $A$
+    and the solution $X$ or $x$.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Residual
+    (
+        // inputs:
+        cholmod_sparse *A,  // an n-by-n sparse matrix
+        double *x,          // vector of size n
+        double *b,          // vector of size n
+        // output:
+        double &resid,      // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
+        double &anorm,      // 1-norm of A
+        double &xnorm,      // 1-norm of x
+        // control:
+        ParU_Control *Control
+    ) ;
+
+    ParU_Info ParU_Residual
+    (
+        // inputs:
+        cholmod_sparse *A,  // an n-by-n sparse matrix
+        double *X,          // array of size n-by-nrhs
+        double *B,          // array of size n-by-nrhs
+        int64_t nrhs,
+        // output:
+        double &resid,      // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
+        double &anorm,      // 1-norm of A
+        double &xnorm,      // 1-norm of X
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
 
 \subsubsection{{\sf ParU\_FreeNumeric}: free a numeric factorization}
-\subsubsection{{\sf ParU\_FreeSymbolic}: free a symbolic factorization}
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_FreeNumeric
+    (
+        // input/output:
+        ParU_Numeric **Num_handle,  // numeric object to free
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
+
+\subsubsection{{\sf ParU\_FreeSymbolic}: free a symbolic analysis}
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_FreeSymbolic
+    (
+        // input/output:
+        ParU_Symbolic **Sym_handle, // symbolic object to free
+        // control:
+        ParU_Control *Control
+    ) ; \end{verbatim} }
 
 %-------------------------------------------------------------------------------
 \subsection{C Syntax}
@@ -501,56 +788,6 @@ file, which describes each C++ and C function.  Only \verb'double' and square
 matrices are supported.
 
 FIXME: merge with subsection above on \verb'ParU_Control'   % FIXME
-
-There are C/C++ options to control ParU, which is an input argument to several
-routines. When you make C++ \verb'ParU_Control' structure, it is initialized with
-default values. The user can change the values. When using C
-\verb'ParU_C_Control', you have to fully initialize it or call
-\verb'ParU_C_Init_Control' before using it.
-
-Here is the list of control options (both in C and C++):
-
-\vspace{0.1in}
-{\footnotesize
-\begin{tabular}{|lll|}
-\hline
-    \verb'ParU_Control' & default value & explanation  \\
-\hline\hline
-\verb'mem_chunk' & $1024*1024$ & chunk size for memset and memcpy\\
-\verb'paru_max_threads' & $0$ & initialized with \verb'omp_max_threads' \\
-\hline
-\verb'umfpack_ordering' & \verb'UMFPACK_ORDERING_AMD' & default UMFPACK ordering\\
-\verb'umfpack_strategy' & \verb'UMFPACK_STRATEGY_AUTO'& default UMFPACK strategy\\
-\verb'umfpack_default_singleton' & $1$ & default filter singletons if true\\
-\verb'relaxed_amalgamation_threshold' & 32 & threshold for relaxed amalgamation \\
-\hline
-\verb'scale' & 1 & if 1 matrix will be scaled using \verb'max_row'\\
-\verb'panel_width' & 32 & width of panel for dense factorizaiton\\
-\verb'paru_strategy' & \verb'PARU_STRATEGY_AUTO' & default strategy for ParU\\
-\verb'piv_toler' & $0.1$ & tolerance for accepting sparse pivots\\
-\verb'diag_toler' & $0.001$ & tolerance for accepting symmetric pivots\\
-\verb'trivial' & $4$ & Do not call BLAS for smaller dgemms\\
-\verb'worthwhile_dgemm' & $512$ & dgemms bigger than worthwhile are tasked\\
-\verb'worthwhile_trsm' & $4096$ & trsm bigger than worthwhile are tasked\\
-\hline
-\end{tabular}
-}
-\vspace{0.1in}
-
-The first row of the options is either used in symbolic or numerical analysis.
-The second row of the options is used in the symbolic analysis. In the symbolic
-analysis phase, only the matrix pattern is probed.
-The third row of control options shows those that have an impact on numerical
-analysis.
-
-\verb'paru_max_threads' is initalized by \verb'omp_max_threads' if the user do
-not provide a smaller number.
-
-If \verb'paru_strategy' is set to \verb'PARU_STRATEGY_AUTO' ParU uses the same
-strategy as UMFPACK. However, the user can ask UMFPACK for an unsymmetric
-strategy but use a symmetric strategy for ParU. Usually, UMFPACK chooses a good
-ordering; however, there might be cases where users prefer unsymmetric ordering on
-UMFPACK but symmetric computation on ParU.
 
 %-------------------------------------------------------------------------------
 \section{Requirements and Availability}

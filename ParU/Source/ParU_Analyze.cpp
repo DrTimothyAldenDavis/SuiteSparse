@@ -24,7 +24,7 @@
 
  *                     2(1)
  *
- **********  Relaxed tree:  threshold=3  front(number of pivotal cols)##oldfront
+ **********  Relaxed tree:  relaxed_amalg=3  front(number of pivotal cols)##oldfront
  *          3(2)##5
  *          |       \
  *          0(1)##0 2(3)##2,3,4
@@ -332,46 +332,61 @@ ParU_Info ParU_Analyze
     // before using the Control checking user input
     ParU_Control my_Control = *user_Control;
     {
-        int64_t umfpack_ordering = my_Control.umfpack_ordering;
-        // I dont support UMFPACK_ORDERING_GIVEN or UMFPACK_ORDERING_USER now
+        int32_t umfpack_ordering = my_Control.umfpack_ordering;
+        // UMFPACK_ORDERING_GIVEN and UMFPACK_ORDERING_USER not supported
         if (umfpack_ordering != UMFPACK_ORDERING_METIS &&
             umfpack_ordering != UMFPACK_ORDERING_METIS_GUARD &&
             umfpack_ordering != UMFPACK_ORDERING_AMD &&
             umfpack_ordering != UMFPACK_ORDERING_CHOLMOD &&
             umfpack_ordering != UMFPACK_ORDERING_BEST &&
             umfpack_ordering != UMFPACK_ORDERING_NONE)
+        {
             //my_Control.umfpack_ordering = UMFPACK_ORDERING_METIS;
             my_Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
-        int64_t umfpack_strategy = my_Control.umfpack_strategy;
-        // I dont support UMFPACK_ORDERING_GIVEN or UMFPACK_ORDERING_USER now
+        }
+        int32_t umfpack_strategy = my_Control.umfpack_strategy;
         if (umfpack_strategy != UMFPACK_STRATEGY_AUTO &&
             umfpack_strategy != UMFPACK_STRATEGY_SYMMETRIC &&
             umfpack_strategy != UMFPACK_STRATEGY_UNSYMMETRIC)
+        {
             my_Control.umfpack_strategy = UMFPACK_STRATEGY_AUTO;
+        }
 
-        int64_t threshold = my_Control.relaxed_amalgamation_threshold;
-        if (threshold < 0 || threshold > 512)
-            my_Control.relaxed_amalgamation_threshold = 32;
-        int64_t paru_strategy = my_Control.paru_strategy;
+        int32_t relaxed_amalg = my_Control.relaxed_amalgamation ;
+        if (relaxed_amalg < 0)
+        {
+            my_Control.relaxed_amalgamation  = 32 ;
+        }
+        if (relaxed_amalg > 512)
+        {
+            my_Control.relaxed_amalgamation  = 512 ;
+        }
+
+        int32_t paru_strategy = my_Control.paru_strategy;
         if (paru_strategy != UMFPACK_STRATEGY_AUTO &&
             paru_strategy != UMFPACK_STRATEGY_SYMMETRIC &&
             paru_strategy != UMFPACK_STRATEGY_UNSYMMETRIC)
+        {
             my_Control.paru_strategy = PARU_STRATEGY_AUTO;
-        int64_t umfpack_default_singleton = my_Control.umfpack_default_singleton;
-        if (umfpack_default_singleton != 0 && umfpack_default_singleton != 1)
-            my_Control.umfpack_default_singleton = 1;
+        }
+
+        int32_t filter_singletons = my_Control.filter_singletons;
+        if (filter_singletons != 0)
+        {
+            my_Control.filter_singletons = 1 ;
+        }
     }
     ParU_Control *Control = &my_Control;
 
-    umf_Control[UMFPACK_SINGLETONS] = Control->umfpack_default_singleton;
-    umf_Control[UMFPACK_ORDERING] = Control->umfpack_ordering;
+    umf_Control[UMFPACK_SINGLETONS] = (double) Control->filter_singletons ;
+    umf_Control[UMFPACK_ORDERING] = (double) Control->umfpack_ordering;
     // umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
-    umf_Control[UMFPACK_FIXQ] = -1;
-    umf_Control[UMFPACK_STRATEGY] = Control->umfpack_strategy;
+    umf_Control[UMFPACK_FIXQ] = (double) -1;
+    umf_Control[UMFPACK_STRATEGY] = (double) Control->umfpack_strategy;
     // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_AUTO;
     // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC;
     // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC;
-    umf_Control[UMFPACK_STRATEGY_THRESH_SYM] = 0.3;
+    umf_Control[UMFPACK_STRATEGY_THRESH_SYM] = (double) 0.3;
 
 #ifndef NDEBUG
     /* print the control parameters */
@@ -410,7 +425,8 @@ ParU_Info ParU_Analyze
     /* ---------------------------------------------------------------------- */
     int64_t strategy = Info[UMFPACK_STRATEGY_USED];
     if (Control->paru_strategy == PARU_STRATEGY_AUTO)
-    {  // if user didn't choose the strategy I will pick the same strategy
+    {
+        // if user didn't choose the strategy I will pick the same strategy
         // as umfpack.        However I cannot save it in current control
         Sym->strategy = strategy;
     }
@@ -644,7 +660,8 @@ ParU_Info ParU_Analyze
     Sym->Parent = Parent;
     ASSERT(size <= static_cast<size_t>(n) + 1);
     if (size != static_cast<size_t>(nf) + 1)
-    {  // should not happen anyway it is always shrinking
+    {
+        // should not happen anyway it is always shrinking
         PRLEVEL(1, ("ParU: out of memory\n"));
         Sym->Parent = NULL;
         ParU_FreeSymbolic(Sym_handle, Control);
@@ -705,7 +722,7 @@ ParU_Info ParU_Analyze
     // The gist is to make a cumsum over Pivotal columns
     // then start from children and see if I merge it to the father how many
     // pivotal columns will it have;
-    // if it has less than threshold merge the child to the father
+    // if it has less than relaxed_amalg merge the child to the father
     //
     // Super and Parent  and upperbounds
     // Parent needs an extra work space
@@ -713,20 +730,21 @@ ParU_Info ParU_Analyze
     // Upperbound how to do: maximum of pervious upperbounds
     // Number of the columns of the root of each subtree
     //
-    int64_t threshold = Control->relaxed_amalgamation_threshold;
-    PRLEVEL(1, ("Relaxed amalgamation threshold = " LD "\n", threshold));
+    int64_t relaxed_amalg = (int64_t) (Control->relaxed_amalgamation) ;
+    PRLEVEL(1, ("Relaxed amalgamation relaxed_amalg = " LD "\n", relaxed_amalg));
     int64_t newF = 0;
 
     // int64_t num_roots = 0; //deprecated I dont use it anymore
 
     for (int64_t f = 0; f < nf; f++)
-    {  // finding representative for each front
+    {
+        // finding representative for each front
         int64_t repr = f;
         // amalgamate till number of pivot columns is small
         PRLEVEL(PR, ("%% repr = " LD " Parent =" LD "\n", repr, Parent[repr]));
         PRLEVEL(PR, ("%%size of Potential pivot= " LD "\n",
                      Super[Parent[repr] + 1] - Super[f]));
-        while (Super[Parent[repr] + 1] - Super[f] < threshold &&
+        while (Super[Parent[repr] + 1] - Super[f] < relaxed_amalg &&
                Parent[repr] != -1)
         {
             repr = Parent[repr];
@@ -773,7 +791,8 @@ ParU_Info ParU_Analyze
     ASSERT(newF <= nf);
 
     for (int64_t oldf = 0; oldf < nf; oldf++)
-    {  // maping old to new
+    {
+        // maping old to new
         int64_t newf = fmap[oldf];
         int64_t oldParent = Parent[oldf];
         newParent[newf] = oldParent >= 0 ? fmap[oldParent] : -1;
@@ -818,7 +837,8 @@ ParU_Info ParU_Analyze
         PRLEVEL(PR, ("next=" LD "\n", fmap[oldf + 1]));
 
         if (newf != fmap[oldf + 1])
-        {                                   // either root or not amalgamated
+        {
+            // either root or not amalgamated
             Fm[newf] += Front_nrows[oldf];  // + Front_npivcol[oldf];
             Cm[newf] = Front_ncols[oldf] - Front_npivcol[oldf];
             // newSuper[newf+1] = Super[oldf+1] ;
@@ -1138,7 +1158,8 @@ ParU_Info ParU_Analyze
     PR = 1;
 #endif
     for (int64_t newcol = 0; newcol < n1; newcol++)
-    {  // The columns that are just in singleton
+    {
+        // The columns that are just in singleton
         int64_t oldcol = Qinit[newcol];
         PRLEVEL(PR, ("newcol = " LD " oldcol=" LD "\n", newcol, oldcol));
         for (int64_t p = Ap[oldcol]; p < Ap[oldcol + 1]; p++)
@@ -1147,13 +1168,15 @@ ParU_Info ParU_Analyze
             int64_t newrow = Pinv[oldrow];
             PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n", newrow, oldrow));
             if (newrow < cs1)
-            {  // inside U singletons
+            {
+                // inside U singletons
                 PRLEVEL(PR, ("Counting phase,Inside U singletons\n"));
                 sunz++;
                 Sup[newrow + 1]++;
             }
             else
-            {  // inside L singletons
+            {
+                // inside L singletons
 #ifndef NDEBUG
                 PR = 1;
 #endif
@@ -1201,10 +1224,12 @@ ParU_Info ParU_Analyze
             PRLEVEL(1, ("\tnewrow=" LD " oldrow=" LD " srow=" LD "\n", newrow, oldrow,
                         srow));
             if (srow >= 0)
-            {  // it is insdie S otherwise it is part of singleton
+            {
+                // it is inside S otherwise it is part of singleton
                 // and update Diag_map
                 if (Sp[srow + 1] == 0)
-                {  // first time seen
+                {
+                    // first time seen
                     PRLEVEL(1, ("\tPs[" LD "]= " LD "\n", rowcount, srow));
                     Ps[rowcount] = srow;
                     Pinit[n1 + rowcount] = oldrow;
@@ -1229,7 +1254,8 @@ ParU_Info ParU_Analyze
                 Sp[srow + 1]++;
             }
             else
-            {  // inside the U singletons
+            {
+                // inside the U singletons
                 Sup[newrow + 1]++;
                 sunz++;
             }
@@ -1308,7 +1334,8 @@ ParU_Info ParU_Analyze
     ///////////////////////////////////////////////////////////////
     int64_t *cSp = Work;
     if (n1 == m)
-    {  // no fronts
+    {
+        // no fronts
         cSp[0] = 0;
     }
     else
@@ -1433,7 +1460,8 @@ ParU_Info ParU_Analyze
     PRLEVEL(PR, ("Constructing Sj and singletons\n"));
 #endif
     for (int64_t newcol = 0; newcol < n1; newcol++)
-    {  // The columns that are just in singleton
+    {
+        // The columns that are just in singleton
         int64_t oldcol = Qinit[newcol];
         PRLEVEL(PR, ("newcol = " LD " oldcol=" LD "\n", newcol, oldcol));
         for (int64_t p = Ap[oldcol]; p < Ap[oldcol + 1]; p++)
@@ -1442,10 +1470,12 @@ ParU_Info ParU_Analyze
             int64_t newrow = Pinv[oldrow];
             PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n", newrow, oldrow));
             if (newrow < cs1)
-            {  // inside U singletons CSR
+            {
+                // inside U singletons CSR
                 PRLEVEL(PR, ("Inside U singletons\n"));
                 if (newcol == newrow)
-                {  // diagonal entry
+                {
+                    // diagonal entry
                     Suj[Sup[newrow]] = newcol;
                 }
                 else
@@ -1454,10 +1484,12 @@ ParU_Info ParU_Analyze
                 }
             }
             else
-            {  // inside L singletons CSC
+            {
+                // inside L singletons CSC
                 PRLEVEL(PR, ("Inside L singletons\n"));
                 if (newcol == newrow)
-                {  // diagonal entry
+                {
+                    // diagonal entry
                     Sli[Slp[newcol - cs1]] = newrow;
                 }
                 else
@@ -1479,11 +1511,13 @@ ParU_Info ParU_Analyze
             int64_t srow = newrow - n1;
             int64_t scol = newcol - n1;
             if (srow >= 0)
-            {  // it is insdie S otherwise it is part of singleton
+            {
+                // it is insdie S otherwise it is part of singleton
                 Sj[cSp[srow]++] = scol;
             }
             else
-            {  // inside the U singletons
+            {
+                // inside the U singletons
                 PRLEVEL(PR, ("Usingleton rest newcol = " LD " newrow=" LD "\n",
                              newcol, newrow));
                 ASSERT(newrow != newcol);  // not a diagonal entry
@@ -1638,7 +1672,8 @@ ParU_Info ParU_Analyze
 
         int64_t numoforiginalChild = 0;
         if (lastChildFlag)
-        {  // the current node is the parent
+        {
+            // the current node is the parent
             PRLEVEL(PR, ("%% Childs of " LD ": ", f));
             numoforiginalChild = Childp[f + 1] - Childp[f];
 
@@ -1686,7 +1721,8 @@ ParU_Info ParU_Analyze
             1, ("\n %% f=" LD " numoforiginalChild=" LD "\n", f, numoforiginalChild));
 
         if (Parent[f] == f + 1)
-        {  // last child due to staircase
+        {
+            // last child due to staircase
             PRLEVEL(1, ("%% last Child =" LD "\n", f));
             lastChildFlag = 1;
         }
@@ -1728,7 +1764,8 @@ ParU_Info ParU_Analyze
                 task_helper[f] = -1;
             }
             else if (stree_flop_bound[f] < flop_thresh)
-            {  // getting rid of  small tasks
+            {
+                // getting rid of  small tasks
                 task_helper[f] = -1;
             }
             else

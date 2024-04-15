@@ -154,9 +154,14 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     Num->slnz = slnz;
     Num->Slx = Slx;
     double *Rs = NULL;
-    int64_t scale = Control->scale;  // if 1 the S will be scaled by max_row
-    if (scale == 1) Rs = static_cast<double*>(paru_calloc(Sym->m, sizeof(double)));
+    int64_t prescale = Control->prescale; 
+    if (prescale == 1)
+    {
+        // S will be scaled by the maximum absolute value in each row
+        Rs = static_cast<double*>(paru_calloc(Sym->m, sizeof(double)));
+    }
     Num->Rs = Rs;
+
     if ((nf != 0 &&
          (rowMark == NULL || elRow == NULL || elCol == NULL ||
           rowSize == NULL || Work->lacList == NULL || RowList == NULL ||
@@ -167,9 +172,8 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
           Work->time_stamp == NULL || Work->task_num_child == NULL ||
           (Sym->strategy == PARU_STRATEGY_SYMMETRIC &&
            (Diag_map == NULL || inv_Diag_map == NULL)))) ||
-
         // stuff that can be allocated even when nf==0
-        Sx == NULL || (scale == 1 && Rs == NULL) ||
+        Sx == NULL || (prescale == 1 && Rs == NULL) ||
         (cs1 > 0 && (Sux == NULL || cSup == NULL)) ||
         (rs1 > 0 && (Slx == NULL || cSlp == NULL)) || cSp == NULL)
     {

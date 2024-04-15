@@ -94,6 +94,8 @@ typedef enum ParU_Info
 #pragma clang diagnostic ignored "-Wc++11-extensions"
 #endif
 
+#include <cmath>
+
 // =============================================================================
 // =========================== ParU_Symbolic ===================================
 // =============================================================================
@@ -270,28 +272,29 @@ struct ParU_Symbolic
 
 struct ParU_Control
 {
+    // For all phases of ParU:
     int64_t mem_chunk = PARU_MEM_CHUNK ;  // chunk size for memset and memcpy
 
-    // Symbolic controls
-    int64_t umfpack_ordering = UMFPACK_ORDERING_METIS;
-    int64_t umfpack_strategy = UMFPACK_STRATEGY_AUTO; //symmetric or unsymmetric
-    int64_t umfpack_default_singleton = 1; //filter singletons if true
+    // Numeric factorization parameters:
+    double piv_toler = 0.1 ;    // tolerance for accepting sparse pivots
+    double diag_toler = 0.001 ; // tolerance for accepting symmetric pivots
+    int32_t panel_width = 32 ;  // width of panel for dense factorizaiton
+    int32_t trivial = 4 ;       // dgemms smaller than this do not call BLAS
+    int32_t worthwhile_dgemm = 512 ; // dgemms bigger than this are tasked
+    int32_t worthwhile_trsm = 4096 ; // trsm bigger than this are tasked
+    int32_t prescale = 1 ;  // 0: no scaling, 1: scale each row by the max
+        // absolute value in its row.
 
-    int64_t relaxed_amalgamation_threshold =
-        32;  // symbolic analysis tries that each front have more pivot columns
-             // than this threshold
+    // Symbolic analysis parameters:
+    int32_t umfpack_ordering = UMFPACK_ORDERING_METIS ;
+    int32_t umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
+    int32_t relaxed_amalgamation = 32 ;  // symbolic analysis tries to ensure
+        // that each front have more pivot columns than this threshold
+    int32_t paru_strategy = PARU_STRATEGY_AUTO ;
+    int32_t filter_singletons = 1 ; // filter singletons if nonzero
 
-    // Numeric controls
-    int64_t scale = 1;         // if 1 matrix will be scaled using max_row
-    int64_t panel_width = 32;  // width of panel for dense factorizaiton
-    int64_t paru_strategy = PARU_STRATEGY_AUTO;//the same strategy umfpack used
-
-    double piv_toler = 0.1;     // tolerance for accepting sparse pivots
-    double diag_toler = 0.001;  // tolerance for accepting symmetric pivots
-    int64_t trivial = 4; //dgemms with sizes less than trivial doesn't call BLAS
-    int64_t worthwhile_dgemm = 512; // dgemms bigger than worthwhile are tasked
-    int64_t worthwhile_trsm = 4096; // trsm bigger than worthwhile are tasked
-    int32_t paru_max_threads = 0;   // initialized with omp_max_threads
+    // For all phases of ParU:
+    int32_t paru_max_threads = 0 ;  // initialized with omp_max_threads
 } ;
 
 // =============================================================================
@@ -649,6 +652,8 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
+#include <math.h>
 
 // =============================================================================
 // ========================= ParU_C_Control ====================================
@@ -659,30 +664,30 @@ extern "C" {
 
 typedef struct ParU_C_Control_struct
 {
-    int64_t mem_chunk;  // chunk size for memset and memcpy
+    // For all phases of ParU:
+    int64_t mem_chunk ;                   // chunk size for memset and memcpy
 
-    // Symbolic controls
-    int64_t umfpack_ordering;
-    int64_t umfpack_strategy;  // symmetric or unsymmetric
-    int64_t umfpack_default_singleton; //filter singletons if true
+    // Numeric factorization parameters:
+    double piv_toler ;          // tolerance for accepting sparse pivots
+    double diag_toler ;         // tolerance for accepting symmetric pivots
+    int32_t panel_width ;       // width of panel for dense factorizaiton
+    int32_t trivial ;           // dgemms smaller than this do not call BLAS
+    int32_t worthwhile_dgemm ;       // dgemms bigger than this are tasked
+    int32_t worthwhile_trsm ;        // trsm bigger than this are tasked
+    int32_t prescale ;      // 0: no scaling, 1: scale each row by the max
+        // absolute value in its row.
 
-    int64_t relaxed_amalgamation_threshold;
-    // symbolic analysis tries that each front have more pivot columns
-    // than this threshold
+    // Symbolic analysis parameters:
+    int32_t umfpack_ordering ;
+    int32_t umfpack_strategy ;
+    int32_t relaxed_amalgamation ;       // symbolic analysis tries to ensure
+        // that each front have more pivot columns than this threshold
+    int32_t paru_strategy ;
+    int32_t filter_singletons ;     // filter singletons if nonzero
 
-    // Numeric controls
-    int64_t scale;         // if 1 matrix will be scaled using max_row
-    int64_t panel_width;  // width of panel for dense factorizaiton
-    int64_t paru_strategy;  // the same strategy umfpack used
-
-    double piv_toler;     // tolerance for accepting sparse pivots
-    double diag_toler;  // tolerance for accepting symmetric pivots
-    int64_t trivial;  // dgemms with sizes less than trivial doesn't call BLAS
-    int64_t worthwhile_dgemm;  // dgemms bigger than worthwhile are tasked
-    int64_t worthwhile_trsm;  // trsm bigger than worthwhile are tasked
-    int32_t paru_max_threads;    // It will be initialized with omp_max_threads
-    // if the user do not provide a smaller number
-} ParU_C_Control;
+    // For all phases of ParU:
+    int32_t paru_max_threads ;      // initialized with omp_max_threads
+} ParU_C_Control ;
 
 // =========================================================================
 // ========================= ParU_C_Symbolic ===============================

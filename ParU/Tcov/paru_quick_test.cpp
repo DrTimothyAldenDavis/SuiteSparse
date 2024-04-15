@@ -61,16 +61,16 @@ int main(int argc, char **argv)
     Control.umfpack_ordering = 23;
     Control.umfpack_strategy = 23;
     Control.paru_max_threads = 4;
-    Control.relaxed_amalgamation_threshold = -1;
+    Control.relaxed_amalgamation = -1;
     Control.paru_strategy = 23;
-    Control.scale = -1;
+    Control.prescale = -1;
     Control.panel_width = -1;
     Control.piv_toler = -1;
     Control.diag_toler = -1;
     Control.trivial = -1;
     Control.worthwhile_dgemm = -2;
     Control.worthwhile_trsm = -1;
-    Control.umfpack_default_singleton= -1;
+    Control.filter_singletons = 2 ;
     Control.paru_strategy = PARU_STRATEGY_SYMMETRIC;
 
     // A = mread (stdin) ; read in the sparse matrix A
@@ -82,6 +82,8 @@ int main(int argc, char **argv)
         TEST_ASSERT (expected_log10_resid == 101) ;
         TEST_PASSES ;
     }
+
+    Control.relaxed_amalgamation = (A->nrow == 48600) ? 1024 : (-1) ;
 
     /////This part is for covering the codes that cannot be covered through
     ///// factorizing 
