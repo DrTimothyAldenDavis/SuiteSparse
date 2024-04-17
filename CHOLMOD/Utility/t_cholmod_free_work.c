@@ -48,7 +48,7 @@ int CHOLMOD(free_work) (cholmod_common *Common)
     // free GPU workspace
     //--------------------------------------------------------------------------
 
-    #ifdef CHOLMOD_HAS_CUDA
+    #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
         CHOLMOD(gpu_deallocate) (Common) ;
     #endif
 

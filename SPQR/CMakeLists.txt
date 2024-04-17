@@ -45,16 +45,16 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.7.0
+    find_package ( SuiteSparse_config 7.8.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.2.1
+    find_package ( CHOLMOD 5.3.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.2.1 REQUIRED )
+        find_package ( CHOLMOD 5.3.0 REQUIRED )
     endif ( )
 endif ( )
 

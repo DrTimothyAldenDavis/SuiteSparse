@@ -71,8 +71,8 @@ typedef enum ParU_Info
 #endif
 
 #if !defined (CHOLMOD__VERSION) || \
-    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,2,1))
-#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@ requires CHOLMOD 5.2.1 or later"
+    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,0))
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@ requires CHOLMOD 5.3.0 or later"
 #endif
 
 //  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h

@@ -25,11 +25,11 @@ default: go
     # NVIDIA CUDA configuration for CHOLMOD and SPQR
     #---------------------------------------------------------------------------
 
-#   ifneq ($(CUDA),no)
-#       CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
-#   else
+    ifneq ($(CUDA),no)
+        CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
+    else
         CUDA_PATH =
-#   endif
+    endif
 
     ifeq ($(wildcard $(CUDA_PATH)),)
         # CUDA is not present
@@ -143,6 +143,7 @@ TEMPLATES =             \
     t_camdtest.c        \
     t_cctest.c          \
     t_cm.c              \
+    t_query.c           \
     t_read_triplet.c    \
     t_rhs.c             \
     t_znorm_diag.c      \
@@ -390,6 +391,7 @@ IUTIL_OBJ = \
     ui_start.o \
     ui_triplet_to_sparse.o \
     ui_version.o \
+    ui_query.o \
     ui_xtype.o \
     ui_zeros.o
 
@@ -460,6 +462,7 @@ LUTIL_OBJ = \
     ul_start.o \
     ul_triplet_to_sparse.o \
     ul_version.o \
+    ul_query.o \
     ul_xtype.o \
     ul_zeros.o
 
@@ -1450,6 +1453,10 @@ ui_version.o: ../Utility/cholmod_version.c
 	- ln -s $< ui_version.c
 	$(C) -c $(I) ui_version.c
 
+ui_query.o: ../Utility/cholmod_query.c
+	- ln -s $< ui_query.c
+	$(C) -c $(I) ui_query.c
+
 ui_xtype.o: ../Utility/cholmod_xtype.c
 	- ln -s $< ui_xtype.c
 	$(C) -c $(I) ui_xtype.c
@@ -1737,6 +1744,10 @@ ul_triplet_to_sparse.o: ../Utility/cholmod_l_triplet_to_sparse.c
 ul_version.o: ../Utility/cholmod_l_version.c
 	- ln -s $< ul_version.c
 	$(C) -c $(I) ul_version.c
+
+ul_query.o: ../Utility/cholmod_l_query.c
+	- ln -s $< ul_query.c
+	$(C) -c $(I) ul_query.c
 
 ul_xtype.o: ../Utility/cholmod_l_xtype.c
 	- ln -s $< ul_xtype.c

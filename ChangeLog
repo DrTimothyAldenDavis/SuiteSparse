@@ -1,3 +1,32 @@
+Apr XX, 2024: version 7.8.0
+
+    * ParU 1.0.0: first stable release
+    * CHOLMOD 5.3.0: added cholmod_query, and #define's in cholmod.h,
+        to query which Modules and features have been configured.
+    * GraphBLAS 9.1.x: FIXME
+    * All other packages: changes to reflect updates to CHOLMOD
+    * Package versions in this release: (* denotes a new version)
+        SuiteSparse_config 7.8.0    *
+        AMD 3.3.2
+        BTF 2.3.2
+        CAMD 3.3.2
+        CCOLAMD 3.3.3
+        CHOLMOD 5.3.0               *
+        COLAMD 3.3.3
+        CSparse 4.3.2
+        CXSparse 4.4.0
+        Example 1.8.0               *
+        GraphBLAS 9.1.x             *   FIXME
+        KLU 2.4.0                   *
+        LDL 3.3.2
+        LAGraph 1.1.3
+        SuiteSparse_Mongoose 3.3.3
+        ParU 1.0.0                  *
+        RBio 4.3.2
+        SPEX 3.1.0
+        SPQR 4.4.0                  *
+        UMFPACK 6.4.0               *
+
 Mar 22, 2024: version 7.7.0
 
     * SPEX 3.1.0: major revision to API, new methods.  Added SPEX_Cholesky,

@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Mar 22, 2024" )
+set ( CHOLMOD_DATE "Apr XX, 2024" ) # FIXME
 set ( CHOLMOD_VERSION_MAJOR 5 CACHE STRING "" FORCE )
-set ( CHOLMOD_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( CHOLMOD_VERSION_SUB   1 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_MINOR 3 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -112,10 +112,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.7.0
+    find_package ( SuiteSparse_config 7.8.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.2
@@ -301,6 +301,55 @@ endif ( )
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
+
+if ( CHOLMOD_CHECK )
+    set ( CHOLMOD_HAS_CHECK ON )
+else ( )
+    set ( CHOLMOD_HAS_CHECK OFF )
+endif ( )
+
+if ( CHOLMOD_CHOLESKY )
+    set ( CHOLMOD_HAS_CHOLESKY ON )
+else ( )
+    set ( CHOLMOD_HAS_CHOLESKY OFF )
+endif ( )
+
+if ( CHOLMOD_PARTITION )
+    set ( CHOLMOD_HAS_PARTITION ON )
+else ( )
+    set ( CHOLMOD_HAS_PARTITION OFF )
+endif ( )
+
+if ( CHOLMOD_CAMD )
+    # CHOLMOD has both CAMD and CCOLAMD
+    set ( CHOLMOD_HAS_CAMD ON )
+else ( )
+    set ( CHOLMOD_HAS_CAMD OFF )
+endif ( )
+
+if ( CHOLMOD_MATRIXOPS )
+    set ( CHOLMOD_HAS_MATRIXOPS ON )
+else ( )
+    set ( CHOLMOD_HAS_MATRIXOPS OFF )
+endif ( )
+
+if ( CHOLMOD_MODIFY )
+    set ( CHOLMOD_HAS_MODIFY ON )
+else ( )
+    set ( CHOLMOD_HAS_MODIFY OFF )
+endif ( )
+
+if ( CHOLMOD_SUPERNODAL )
+    set ( CHOLMOD_HAS_SUPERNODAL ON )
+else ( )
+    set ( CHOLMOD_HAS_SUPERNODAL OFF )
+endif ( )
+
+if ( CHOLMOD_GPL )
+    set ( CHOLMOD_HAS_GPL ON )
+else ( )
+    set ( CHOLMOD_HAS_GPL OFF )
+endif ( )
 
 configure_file ( "Config/cholmod.h.in"
     "${PROJECT_SOURCE_DIR}/Include/cholmod.h"

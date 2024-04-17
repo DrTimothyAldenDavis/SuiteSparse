@@ -127,6 +127,8 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/void \*cholmod_realloc/, /\*\) ;/' ../Include/cholmod.h > _realloc.tex 
 	./getproto '/int cholmod_realloc_multiple/, /\*\) ;/' ../Include/cholmod.h > _realloc_multiple.tex 
 	./getproto '/int cholmod_version/, /l_version/' ../Include/cholmod.h > _version.tex 
+	./getproto '/bool cholmod_query/, /l_query/' ../Include/cholmod.h > _query.tex 
+	./getproto '/typedef enum/, /cholmod_query_t/' ../Include/cholmod.h > _query_t.tex 
 	./getproto '/int cholmod_check_common/, /\*\) ;/' ../Include/cholmod.h > _check_common.tex 
 	./getproto '/int cholmod_print_common/, /\*\) ;/' ../Include/cholmod.h > _print_common.tex 
 	./getproto '/int cholmod_check_sparse/, /\*\) ;/' ../Include/cholmod.h > _check_sparse.tex 

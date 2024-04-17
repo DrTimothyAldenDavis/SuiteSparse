@@ -71,8 +71,8 @@ typedef enum ParU_Info
 #endif
 
 #if !defined (CHOLMOD__VERSION) || \
-    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,2,1))
-#error "ParU 1.0.0 requires CHOLMOD 5.2.1 or later"
+    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,0))
+#error "ParU 1.0.0 requires CHOLMOD 5.3.0 or later"
 #endif
 
 //  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h
@@ -285,7 +285,7 @@ struct ParU_Control
     int32_t prescale = 1 ;  // 0: no scaling, 1: scale each row by the max
         // absolute value in its row.
 
-    // Symbolic factorization parameters:
+    // Symbolic analysis parameters:
     int32_t umfpack_ordering = UMFPACK_ORDERING_METIS ;
     int32_t umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
     int32_t relaxed_amalgamation = 32 ;  // symbolic analysis tries to ensure
@@ -677,7 +677,7 @@ typedef struct ParU_C_Control_struct
     int32_t prescale ;      // 0: no scaling, 1: scale each row by the max
         // absolute value in its row.
 
-    // Symbolic factorization parameters:
+    // Symbolic analysis parameters:
     int32_t umfpack_ordering ;
     int32_t umfpack_strategy ;
     int32_t relaxed_amalgamation ;       // symbolic analysis tries to ensure
