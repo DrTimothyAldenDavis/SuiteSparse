@@ -359,7 +359,6 @@ int cholmod_l_version (int version [3]) ;
 #cmakedefine CHOLMOD_HAS_MATRIXOPS
 #cmakedefine CHOLMOD_HAS_MODIFY
 #cmakedefine CHOLMOD_HAS_SUPERNODAL
-#undef CHOLMOD_HAS_CUDA
 #cmakedefine CHOLMOD_HAS_CUDA
 #cmakedefine CHOLMOD_HAS_OPENMP
 

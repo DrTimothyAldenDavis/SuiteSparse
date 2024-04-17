@@ -45,12 +45,7 @@ default: go
     else
         # with CUDA for CHOLMOD and SPQR
         GPU_BLAS_PATH = $(CUDA_PATH)
-        # GPU_CONFIG must include -DCHOLMOD_HAS_CUDA to compile SuiteSparse for
-        # the GPU.  You can add additional GPU-related flags to it as well.
-        # with 4 cores (default):
-        GPU_CONFIG    = -DCHOLMOD_HAS_CUDA
-        # For example, to compile CHOLMOD for 10 CPU cores when using the GPU:
-        # GPU_CONFIG  = -DCHOLMOD_HAS_CUDA
+        GPU_CONFIG    = yes
         CUDART_LIB    = $(CUDA_PATH)/lib64/libcudart.so
         CUBLAS_LIB    = $(CUDA_PATH)/lib64/libcublas.so
         CUDA_INC_PATH = $(CUDA_PATH)/include/
@@ -60,8 +55,6 @@ default: go
                             -gencode=arch=compute_53,code=sm_53 \
                             -gencode=arch=compute_60,code=compute_60
     endif
-
-    CHOLMOD_CONFIG ?= $(GPU_CONFIG)
 
     # remove object files, but keep compiled libraries via 'make clean'
     CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d \
@@ -124,8 +117,6 @@ I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
         -I../../AMD/Source -I../../CAMD/Source \
         -I../../COLAMD/Source -I../../CCOLAMD/Source \
         -I../Utility
-
-I += $(GPU_CONFIG)
 
 ccode:  \
     di_test dl_test si_test sl_test \
@@ -2063,5 +2054,5 @@ l_super_solve.o: ../Supernodal/cholmod_l_super_solve.c
 # GPU kernels only use int64_t:
 l_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.cu
 	- ln -s $< l_gpu_kernels.cu
-	$(NVCC) $(CHOLMOD_CONFIG) -I../../SuiteSparse_config -Xcompiler -fPIC -O3 -c l_gpu_kernels.cu
+	$(NVCC) $(CHOLMOD_CONFIG) $(I) -Xcompiler -fPIC -O3 -c l_gpu_kernels.cu
 

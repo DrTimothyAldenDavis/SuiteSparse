@@ -359,7 +359,6 @@ int cholmod_l_version (int version [3]) ;
 #define CHOLMOD_HAS_MATRIXOPS
 #define CHOLMOD_HAS_MODIFY
 #define CHOLMOD_HAS_SUPERNODAL
-#undef CHOLMOD_HAS_CUDA
 #define CHOLMOD_HAS_CUDA
 #define CHOLMOD_HAS_OPENMP
 

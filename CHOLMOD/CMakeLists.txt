@@ -571,13 +571,15 @@ endif ( )
 
 # CHOLMOD_CUDA
 if ( CHOLMOD_HAS_CUDA )
-    if ( BUILD_SHARED_LIBS )
-        target_compile_definitions ( CHOLMOD PUBLIC "CHOLMOD_HAS_CUDA" )
-    endif ( )
-    set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DCHOLMOD_HAS_CUDA" )
-    if ( BUILD_STATIC_LIBS )
-        target_compile_definitions ( CHOLMOD_static PUBLIC "CHOLMOD_HAS_CUDA" )
-    endif ( )
+#   cmake now configures cholmod.h with "#define CHOLMOD_HAS_CUDA" if CHOLMOD is
+#   being compiled with CUDA, so the -DCHOLMOD_HAS_CUDA flag is no longer needed.
+#   if ( BUILD_SHARED_LIBS )
+#       target_compile_definitions ( CHOLMOD PUBLIC "CHOLMOD_HAS_CUDA" )
+#   endif ( )
+#   set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DCHOLMOD_HAS_CUDA" )
+#   if ( BUILD_STATIC_LIBS )
+#       target_compile_definitions ( CHOLMOD_static PUBLIC "CHOLMOD_HAS_CUDA" )
+#   endif ( )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
         target_include_directories ( CHOLMOD INTERFACE
