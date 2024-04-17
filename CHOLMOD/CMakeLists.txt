@@ -52,7 +52,7 @@ if ( NOT CHOLMOD_GPL )
     set ( CHOLMOD_MODIFY OFF )
     set ( CHOLMOD_SUPERNODAL OFF )
     set ( CHOLMOD_USE_CUDA "OFF" CACHE STRING "" FORCE ) # OK: disabled by user-setting of CHOLMOD_GPL
-    add_compile_definitions ( NGPL )
+    set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DNGPL" )
 endif ( )
 
 include ( CheckTypeSize )
@@ -165,7 +165,7 @@ endif ( )
     endif ( )
     if ( NOT CHOLMOD_CHECK )
         # if CHOLMOD_CHECK is OFF: do not build the Check module
-        add_compile_definitions ( NCHECK )
+        set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DNCHECK" )
     endif ( )
 
     #---------------------------------------------------------------------------
@@ -198,7 +198,7 @@ endif ( )
         # build the Supernodal or Modify modules that depend on it.
         set ( CHOLMOD_SUPERNODAL OFF )
         set ( CHOLMOD_MODIFY OFF )
-        add_compile_definitions ( NCHOLESKY )
+        set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DNCHOLESKY" )
     endif ( )
 
     #---------------------------------------------------------------------------
@@ -213,7 +213,7 @@ endif ( )
     endif ( )
     if ( NOT CHOLMOD_MODIFY )
         # if CHOLMOD_MODIFY is OFF: do not build the Modify module
-        add_compile_definitions ( NMODIFY )
+        set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DNMODIFY" )
     endif ( )
 
     #---------------------------------------------------------------------------
@@ -275,7 +275,7 @@ endif ( )
 
     if ( NOT CHOLMOD_CAMD )
         # if CHOLMOD_CAMD is OFF: do not build the CAMD and CCOLAMD interfaces
-        add_compile_definitions ( NCAMD )
+        set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DNCAMD" )
     endif ( )
 
     #---------------------------------------------------------------------------
@@ -291,7 +291,7 @@ endif ( )
 
     if ( NOT CHOLMOD_SUPERNODAL )
         # if CHOLMOD_SUPERNODAL is OFF: do not build Supernodal module
-        add_compile_definitions ( NSUPERNODAL )
+        set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DNSUPERNODAL" )
     else ( )
         # if CHOLMOD_SUPERNODAL is ON: build Supernodal, needs BLAS and LAPACK
         include ( SuiteSparseBLAS )     # requires cmake 3.22
@@ -348,6 +348,31 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( CHOLMOD
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
+    if ( NOT CHOLMOD_GPL )
+        # CHOLMOD_GPL: if OFF, do not include any GPL-licensed module
+        target_compile_definitions ( CHOLMOD PUBLIC NGPL )
+    endif ( )
+    if ( NOT CHOLMOD_CHECK )
+        # if CHOLMOD_CHECK is OFF: do not build the Check module
+        target_compile_definitions ( CHOLMOD PUBLIC NCHECK )
+    endif ( )
+    if ( NOT CHOLMOD_CHOLESKY )
+        # if CHOLMOD_CHOLESKY is OFF: do not build the Cholesky module
+        target_compile_definitions ( CHOLMOD PUBLIC NCHOLESKY )
+    endif ( )
+    if ( NOT CHOLMOD_MODIFY )
+        # if CHOLMOD_MODIFY is OFF: do not build the Modify module
+        target_compile_definitions ( CHOLMOD PUBLIC NMODIFY )
+    endif ( )
+    if ( NOT CHOLMOD_CAMD )
+        # if CHOLMOD_CAMD is OFF: do not build the CAMD and CCOLAMD interfaces
+        target_compile_definitions ( CHOLMOD PUBLIC NCAMD )
+    endif ( )
+    if ( NOT CHOLMOD_SUPERNODAL )
+        # if CHOLMOD_SUPERNODAL is OFF: do not build Supernodal module
+        target_compile_definitions ( CHOLMOD PUBLIC NSUPERNODAL )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -381,6 +406,30 @@ if ( BUILD_STATIC_LIBS )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
+    if ( NOT CHOLMOD_GPL )
+        # CHOLMOD_GPL: if OFF, do not include any GPL-licensed module
+        target_compile_definitions ( CHOLMOD_static PUBLIC NGPL )
+    endif ( )
+    if ( NOT CHOLMOD_CHECK )
+        # if CHOLMOD_CHECK is OFF: do not build the Check module
+        target_compile_definitions ( CHOLMOD_static PUBLIC NCHECK )
+    endif ( )
+    if ( NOT CHOLMOD_CHOLESKY )
+        # if CHOLMOD_CHOLESKY is OFF: do not build the Cholesky module
+        target_compile_definitions ( CHOLMOD_static PUBLIC NCHOLESKY )
+    endif ( )
+    if ( NOT CHOLMOD_MODIFY )
+        # if CHOLMOD_MODIFY is OFF: do not build the Modify module
+        target_compile_definitions ( CHOLMOD_static PUBLIC NMODIFY )
+    endif ( )
+    if ( NOT CHOLMOD_CAMD )
+        # if CHOLMOD_CAMD is OFF: do not build the CAMD and CCOLAMD interfaces
+        target_compile_definitions ( CHOLMOD_static PUBLIC NCAMD )
+    endif ( )
+    if ( NOT CHOLMOD_SUPERNODAL )
+        # if CHOLMOD_SUPERNODAL is OFF: do not build Supernodal module
+        target_compile_definitions ( CHOLMOD_static PUBLIC NSUPERNODAL )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
