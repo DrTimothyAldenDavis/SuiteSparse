@@ -182,6 +182,7 @@ double suitesparse_tests (void)
 {
 
     double maxerr = 0 ;
+    double t = SuiteSparse_time ( ) ;
 
     //--------------------------------------------------------------------------
     // hypot
@@ -255,7 +256,8 @@ double suitesparse_tests (void)
     // return results
     //--------------------------------------------------------------------------
 
-    printf ("suitesparse maxerr %g\n", maxerr) ;
+    t = SuiteSparse_time ( ) - t ;
+    printf ("suitesparse maxerr %g, test time: %g\n", maxerr, t) ;
     return (maxerr) ;
 }
 

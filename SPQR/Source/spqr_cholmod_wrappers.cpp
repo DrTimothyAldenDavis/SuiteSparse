@@ -991,7 +991,13 @@ template <> int spqr_gpu_memorysize <int32_t>
     cholmod_common *Common
 )
 {
+    (*total_mem) = 0 ;
+    (*available_mem) = 0 ;
+    #ifdef CHOLMOD_HAS_CUDA
     return cholmod_gpu_memorysize (total_mem, available_mem, Common) ;
+    #else
+    return (0) ;
+    #endif
 }
 
 template <> int spqr_gpu_memorysize <int64_t>
@@ -1001,7 +1007,13 @@ template <> int spqr_gpu_memorysize <int64_t>
     cholmod_common *Common
 )
 {
+    (*total_mem) = 0 ;
+    (*available_mem) = 0 ;
+    #ifdef CHOLMOD_HAS_CUDA
     return cholmod_l_gpu_memorysize (total_mem, available_mem, Common) ;
+    #else
+    return (0) ;
+    #endif
 }
 #endif
 

@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0)
-#error "This library requires SuiteSparse_config 7.7.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0)
+#error "This library requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #include "amd.h"
@@ -39,8 +39,8 @@
 #endif
 
 #include "cholmod.h"
-#if !defined (CHOLMOD__VERSION) || CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,2,1)
-#error "This library requires CHOLMOD 5.2.1 or later"
+#if !defined (CHOLMOD__VERSION) || CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,0)
+#error "This library requires CHOLMOD 5.3.0 or later"
 #endif
 
 #include "colamd.h"
@@ -89,8 +89,8 @@
 #endif
 
 #include "SuiteSparseQR_C.h"
-#if !defined (SPQR__VERSION) || SPQR__VERSION < SUITESPARSE__VERCODE(4,3,3)
-#error "This library requires SPQR 4.3.3 or later"
+#if !defined (SPQR__VERSION) || SPQR__VERSION < SUITESPARSE__VERCODE(4,3,4)
+#error "This library requires SPQR 4.3.4 or later"
 #endif
 
 #include "umfpack.h"

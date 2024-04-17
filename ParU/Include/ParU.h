@@ -61,8 +61,8 @@ typedef enum ParU_Info
 
 #define PARU__VERSION SUITESPARSE__VERCODE(1,0,0)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "ParU 1.0.0 requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "ParU 1.0.0 requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #if !defined (UMFPACK__VERSION) || \

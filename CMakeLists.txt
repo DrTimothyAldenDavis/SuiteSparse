@@ -137,7 +137,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_UMFPACK )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "umfpack" )
-    find_package ( UMFPACK 6.3.3 REQUIRED )     # FIXME
+    find_package ( UMFPACK 6.3.3 REQUIRED )
 else ( )
     if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # ParU requires UMFPACK.
