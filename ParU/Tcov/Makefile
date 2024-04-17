@@ -28,7 +28,8 @@ CF = -pg -O0 -g -fprofile-arcs -ftest-coverage \
 	 -Wdisabled-optimization -fexceptions -fopenmp 
 
 I = -I../../SuiteSparse_config -I../../UMFPACK/Source -I../../UMFPACK/Include \
-	-I../../CHOLMOD/Include -I../../AMD/Include   -I../Include -I../Source
+	-I../../CHOLMOD/Include -I../../AMD/Include   -I../Include -I../Source \
+        -I/usr/local/cuda/include
 
 C = $(CXX) $(CF) $(I) -Wno-write-strings -std=c++11 \
     -DPARU_COVERAGE -DPARU_ALLOC_TESTING -DBLAS32
