@@ -78,8 +78,9 @@ int main(int argc, char **argv)
         cholmod_l_finish(cc);
         return info;
     }
-    printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", Sym->m, Sym->n, Sym->anz);
-    printf("ParU: Symbolic factorization is done in %lfs!\n", my_time_analyze);
+    printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
+        Sym->m, Sym->n, Sym->anz);
+    printf("ParU: Symbolic factorization: %lf seconds\n", my_time_analyze);
     ParU_C_Numeric *Num;
     printf ("\n--------- ParU_C_Factorize:\n") ;
     double my_start_time_fac = omp_get_wtime();

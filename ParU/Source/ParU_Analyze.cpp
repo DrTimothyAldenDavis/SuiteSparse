@@ -100,7 +100,7 @@ ParU_Info ParU_Analyze
     Sym = static_cast<ParU_Symbolic*>(paru_alloc(1, sizeof(ParU_Symbolic)));
     if (!Sym)
     {
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
     *Sym_handle = Sym;
 
@@ -163,11 +163,12 @@ ParU_Info ParU_Analyze
     //~~~~~~~~~~~~  Calling UMFPACK and retrieving data structure ~~~~~~~~~~~~~~
 
     /* ---------------------------------------------------------------------- */
-    /*    The varialbes are needed for the UMFPACK symbolic analysis phase    */
+    /*    The variables are needed for the UMFPACK symbolic analysis phase    */
     /* ---------------------------------------------------------------------- */
 
     int64_t n1 = 0,  // The number of pivots with zero Markowitz cost.
-                 // Info[UMFPACK_COL_SINGLETONS]+Info[UMFPACK_ROW_SINGLETONS]
+                 // umf_Info[UMFPACK_COL_SINGLETONS] +
+                 // umf_Info[UMFPACK_ROW_SINGLETONS]
                  // They apper first in the output permutations P and Q
                  //
                  //
@@ -208,8 +209,8 @@ ParU_Info ParU_Analyze
 
         nfr,  // The number of frontam matrices; nf in SPQR analysis
 
-            // nchains,  // The frontal matrices are related to one another by
-            // the supernodal column elimination tree. Each nod in this tree is
+        // nchains,  // The frontal matrices are related to one another by
+            // the supernodal column elimination tree. Each node in this tree is
             // one frontal matrix. The tree is partitioned into a set of
             // disjoint paths, and a frontal matrix chaing is one path in this
             // tree.  UMFPACK uses unifrontal technique to factroize chains,
@@ -269,49 +270,47 @@ ParU_Info ParU_Analyze
         // with no entries
 
         *Front_parent = NULL;
-    // size = n_col +1;  actual size = nfr+1
-    // NOTE: This is not the case for SPQR
-    // Parent is the one I should use instead.
+        // size = n_col +1;  actual size = nfr+1
+        // NOTE: This is not the case for SPQR
+        // Parent is the one I should use instead.
 
-    // *Front_1strow,  // size = n_col +1;  actual size = nfr+1
-    // Front_1strow [k] is the row index of the first row in
-    // A (P,Q) whose leftmost entry is in pivot column for
-    // kth front.
-    // This is necessary only to properly factorize singular
-    // matrices. Rows in the range Front_1strow [k] to
-    // Front_1strow [k+1]-1 first become pivot row candidate
-    // at the kth front. Any rows not eliminated in the kth
-    // front maybe selected as pivot rows in the parent of k
-    // (Front_1strow [k]) and so on up the tree.
-    // Aznaveh: I am now using it at least for the rowMarks.
+        // *Front_1strow,  // size = n_col +1;  actual size = nfr+1
+        // Front_1strow [k] is the row index of the first row in
+        // A (P,Q) whose leftmost entry is in pivot column for
+        // kth front.
+        // This is necessary only to properly factorize singular
+        // matrices. Rows in the range Front_1strow [k] to
+        // Front_1strow [k+1]-1 first become pivot row candidate
+        // at the kth front. Any rows not eliminated in the kth
+        // front maybe selected as pivot rows in the parent of k
+        // (Front_1strow [k]) and so on up the tree.
+        // Aznaveh: I am now using it at least for the rowMarks.
 
-    // *Front_leftmostdesc,  // size = n_col +1;  actual size = nfr+1
-    // Aznaveh: I have a module computing leftmostdesc
-    // for my augmented tree; so maybe do not need it
+        // *Front_leftmostdesc,  // size = n_col +1;  actual size = nfr+1
+        // Aznaveh: I have a module computing leftmostdesc
+        // for my augmented tree; so maybe do not need it
 
-    //*Chain_start,  // size = n_col +1;  actual size = nfr+1
-    // The kth frontal matrix chain consists of frontal
-    // matrices Chain_start [k] through Chain_start [k+1]-1.
-    // Thus, Chain_start [0] is always 0 and
-    // Chain_start[nchains] is the total number of frontal
-    // matrices, nfr. For two adjacent fornts f and f+1
-    // within a single chian, f+1 is always the parent of f
-    // (that is, Front_parent [f] = f+1).
-    //
-    // *Chain_maxrows,  // size = n_col +1;  actual size = nfr+1
-    // *Chain_maxcols;  // The kth frontal matrix chain requires a single
-    // working array of dimension Chain_maxrows [k] by
-    // Chain_maxcols [k], for the unifrontal technique that
-    // factorizes the frontal matrix chain. Since the
-    // symbolic factorization only provides
+        //*Chain_start,  // size = n_col +1;  actual size = nfr+1
+        // The kth frontal matrix chain consists of frontal
+        // matrices Chain_start [k] through Chain_start [k+1]-1.
+        // Thus, Chain_start [0] is always 0 and
+        // Chain_start[nchains] is the total number of frontal
+        // matrices, nfr. For two adjacent fornts f and f+1
+        // within a single chian, f+1 is always the parent of f
+        // (that is, Front_parent [f] = f+1).
+        //
+        // *Chain_maxrows,  // size = n_col +1;  actual size = nfr+1
+        // *Chain_maxcols;  // The kth frontal matrix chain requires a single
+        // working array of dimension Chain_maxrows [k] by
+        // Chain_maxcols [k], for the unifrontal technique that
+        // factorizes the frontal matrix chain. Since the
+        // symbolic factorization only provides
 
     void *Symbolic;  // Output argument in umf_dl_symbolc;
     // holds a pointer to the Symbolic object  if succesful
     // and NULL otherwise
 
-    double status,           // Info [UMFPACK_STATUS]
-        Info[UMFPACK_INFO],  // Contains statistics about the symbolic analysis
-
+    double umf_Info[UMFPACK_INFO],  // umfpack symbolic analysis
         umf_Control[UMFPACK_CONTROL];  // it is set in umfpack_dl_defaults and
     // is used in umfpack_dl_symbolic; if
     // passed NULL it will use the defaults
@@ -397,18 +396,19 @@ ParU_Info ParU_Analyze
     /* performing the symbolic analysis */
 
     void *SW = NULL;
-    status = umfpack_dl_paru_symbolic(m, n, Ap, Ai, Ax,
+    int status = umfpack_dl_paru_symbolic(m, n, Ap, Ai, Ax,
                                       NULL,   // user provided ordering
                                       FALSE,  // No user ordering
                                       NULL,   // user params
                                       &Symbolic,
                                       &SW,  // new in/out
-                                      umf_Control, Info);
+                                      umf_Control, umf_Info);
 
+    ParU_Info info = paru_umfpack_info (status) ;
     if (status < 0)
     {
 #ifndef NDEBUG
-        umfpack_dl_report_info(umf_Control, Info);
+        umfpack_dl_report_info(umf_Control, umf_Info);
         umfpack_dl_report_status(umf_Control, status);
 #endif
         PRLEVEL(1, ("ParU: umfpack_dl_symbolic failed\n"));
@@ -416,14 +416,14 @@ ParU_Info ParU_Analyze
         FREE_WORK;
         paru_free(1, sizeof(ParU_Symbolic), Sym);
         *Sym_handle = NULL;
-        // FIXME: translate UMFPACK status to Paru_Info
-        return (PARU_INVALID) ;     // UMFPACK symbolic analysis failed
+        // translate UMFPACK status to Paru_Info
+        return (info) ;
     }
 
     /* ---------------------------------------------------------------------- */
     /* strategy UMFPACK used */
     /* ---------------------------------------------------------------------- */
-    int64_t strategy = Info[UMFPACK_STRATEGY_USED];
+    int64_t strategy = umf_Info[UMFPACK_STRATEGY_USED];
     if (Control->paru_strategy == PARU_STRATEGY_AUTO)
     {
         // if user didn't choose the strategy I will pick the same strategy
@@ -438,23 +438,23 @@ ParU_Info ParU_Analyze
     if (strategy == UMFPACK_STRATEGY_SYMMETRIC)
     {
         PRLEVEL(PR, ("\n%% strategy used:  symmetric\n"));
-        if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
+        if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
         {
             PRLEVEL(PR, ("%% ordering used:  amd on A+A'\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
         {
             PRLEVEL(PR, ("%% ordering used: user perm.\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
         {
             PRLEVEL(PR, ("%% ordering used:  user function\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
         {
             PRLEVEL(PR, ("%% ordering used: none\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
         {
             PRLEVEL(PR, ("%% ordering used: metis on A+A'\n"));
         }
@@ -466,23 +466,23 @@ ParU_Info ParU_Analyze
     else
     {
         PRLEVEL(PR, ("\n%% strategy used:unsymmetric\n"));
-        if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
+        if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
         {
             PRLEVEL(PR, ("%% ordering used: colamd on A\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
         {
             PRLEVEL(PR, ("%% ordering used: user perm.\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
         {
             PRLEVEL(PR, ("%% ordering used: user function\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
         {
             PRLEVEL(PR, ("%% ordering used: none\n"));
         }
-        else if (Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
+        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
         {
             PRLEVEL(PR, ("%% ordering used: metis on A'A\n"));
         }
@@ -521,7 +521,7 @@ ParU_Info ParU_Analyze
         umfpack_dl_free_symbolic(&Symbolic);
         umfpack_dl_paru_free_sw(&SW);
         FREE_WORK;
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
 
     n1 = Sym_umf->n1;
@@ -667,7 +667,7 @@ ParU_Info ParU_Analyze
         ParU_FreeSymbolic(Sym_handle, Control);
         umfpack_dl_paru_free_sw(&SW);
         FREE_WORK;
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
     Front_parent = NULL;
 
@@ -683,7 +683,7 @@ ParU_Info ParU_Analyze
             ParU_FreeSymbolic(Sym_handle, Control);
             umfpack_dl_paru_free_sw(&SW);
             FREE_WORK;
-            return PARU_OUT_OF_MEMORY;
+            return (PARU_OUT_OF_MEMORY) ;
         }
 
         Super[0] = 0;
@@ -786,7 +786,7 @@ ParU_Info ParU_Analyze
         ParU_FreeSymbolic(Sym_handle, Control);
         umfpack_dl_paru_free_sw(&SW);
         FREE_WORK;
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
     ASSERT(newF <= nf);
 
@@ -823,7 +823,7 @@ ParU_Info ParU_Analyze
             ParU_FreeSymbolic(Sym_handle, Control);
             umfpack_dl_paru_free_sw(&SW);
             FREE_WORK;
-            return PARU_OUT_OF_MEMORY;
+            return (PARU_OUT_OF_MEMORY) ;
         }
     }
 
@@ -974,7 +974,7 @@ ParU_Info ParU_Analyze
             PRLEVEL(1, ("ParU: out of memory\n"));
             ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
-            return PARU_OUT_OF_MEMORY;
+            return (PARU_OUT_OF_MEMORY) ;
         }
     }
 
@@ -1028,7 +1028,7 @@ ParU_Info ParU_Analyze
             PRLEVEL(1, ("ParU: out of memory\n"));
             ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
-            return PARU_OUT_OF_MEMORY;
+            return (PARU_OUT_OF_MEMORY) ;
         }
     }
     // copy of Childp using Work for other places also
@@ -1039,7 +1039,7 @@ ParU_Info ParU_Analyze
         PRLEVEL(1, ("ParU: out of memory\n"));
         ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
 
     if (nf > 0)
@@ -1074,7 +1074,7 @@ ParU_Info ParU_Analyze
         PRLEVEL(1, ("ParU: out of memory\n"));
         ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
     Sym->Pinv = Pinv;
 
@@ -1142,7 +1142,7 @@ ParU_Info ParU_Analyze
         PRLEVEL(1, ("ParU: rs1=" LD " cs1=" LD " memory problem\n", rs1, cs1));
         ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
     int64_t sunz = 0;  // U nnz: singlteton nnzero of s
     int64_t slnz = 0;  // L nnz: singlteton nnzero of s
@@ -1312,7 +1312,7 @@ ParU_Info ParU_Analyze
 #endif
         ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
-        return PARU_SINGULAR;
+        return (PARU_SINGULAR) ;
     }
     ASSERT(rowcount == m - n1);
 
@@ -1451,7 +1451,7 @@ ParU_Info ParU_Analyze
         PRLEVEL(1, ("ParU: out of memory\n"));
         ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
 
     // construct Sj and singltons
@@ -1624,7 +1624,7 @@ ParU_Info ParU_Analyze
             PRLEVEL(1, ("ParU: Out of memory in symbolic phase"));
             ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
-            return PARU_OUT_OF_MEMORY;
+            return (PARU_OUT_OF_MEMORY) ;
         }
         // initialization
         paru_memset(aParent, -1, (ms + nf) * sizeof(int64_t), Control);
@@ -1791,7 +1791,7 @@ ParU_Info ParU_Analyze
             PRLEVEL(1, ("ParU: Out of memory in symbolic phase"));
             ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
-            return PARU_OUT_OF_MEMORY;
+            return (PARU_OUT_OF_MEMORY) ;
         }
         task_map[0] = -1;
     }
@@ -1972,5 +1972,5 @@ ParU_Info ParU_Analyze
     PRLEVEL(1, ("%% mRHS ParU_Analyze %lf seconds\n", time));
 #endif
     FREE_WORK;
-    return PARU_SUCCESS;
+    return (PARU_SUCCESS) ;
 }

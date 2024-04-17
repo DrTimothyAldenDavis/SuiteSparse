@@ -465,6 +465,8 @@ void paru_print_element(int64_t e, paru_work *Work, ParU_Numeric *Num);
 void paru_print_paru_tupleList(paru_tupleList *listSet, int64_t index);
 #endif
 
+ParU_Info paru_umfpack_info (int status) ;
+
 /* add tuple functions defintions */
 ParU_Info paru_add_rowTuple(paru_tupleList *RowList, int64_t row, paru_tuple T);
 

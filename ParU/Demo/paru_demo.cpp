@@ -82,7 +82,8 @@ int main(int argc, char **argv)
     std::cout << "In: " << Sym->m << "x" << Sym->n
         << " nnz = " << Sym->anz << std::endl;
     std::cout << std::scientific << std::setprecision(1)
-        << "ParU: Symbolic factorization is done in " << my_time_analyze << "s!\n";
+        << "ParU: Symbolic factorization: " << my_time_analyze
+        << " seconds\n";
     ParU_Numeric *Num;
     std::cout << "\n--------- ParU_Factorize:" << std::endl;
     double my_start_time_fac = omp_get_wtime();
@@ -91,8 +92,8 @@ int main(int argc, char **argv)
     if (info != PARU_SUCCESS)
     {
         std::cout << std::scientific << std::setprecision(1)
-            << "ParU: factorization was NOT successful in " << my_time_fac
-            << " seconds!\n";
+            << "ParU: factorization was NOT successful: "
+            << my_time_fac << " seconds\n";
         if (info == PARU_OUT_OF_MEMORY)
             std::cout << "Out of memory\n";
         if (info == PARU_INVALID)
