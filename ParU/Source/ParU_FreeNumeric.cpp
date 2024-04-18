@@ -53,7 +53,7 @@ ParU_Info ParU_FreeNumeric
         paru_free(Num->slnz, sizeof(double), Num->Slx);
     }
 
-    paru_free(Num->sym_m, sizeof(int64_t), Num->Rs);  
+    paru_free(Num->sym_m, sizeof(int64_t), Num->Rs);
     paru_free(Num->sym_m, sizeof(int64_t), Num->Pfin);
     paru_free(Num->sym_m, sizeof(int64_t), Num->Ps);
 

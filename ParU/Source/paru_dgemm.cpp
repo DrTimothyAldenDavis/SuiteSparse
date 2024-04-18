@@ -79,7 +79,7 @@ int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
 
     // double beta = 0;  // U part is not initialized
 
-    int64_t blas_ok = paru_tasked_dgemm(f, mA, nB, nA, pF + fp, 
+    int64_t blas_ok = paru_tasked_dgemm(f, mA, nB, nA, pF + fp,
             lda, uPart, ldb, 0, el, ldc, Work, Num);
 
 #ifndef NDEBUG

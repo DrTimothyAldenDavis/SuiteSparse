@@ -110,7 +110,8 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
         PRLEVEL(1, ("%%##j=" LD " value= %2.4lf\n", j, F[j * m + j]));
 
         for (int64_t i = j + 1; i < row_end; i++)
-        {  // find max
+        {
+            // find max
             PRLEVEL(1, ("%%i=" LD " value= %2.4lf", i, F[j * m + i]));
             PRLEVEL(1, (" deg = " LD " \n", row_degree_bound[frowList[i]]));
             if (fabs(maxval) < fabs(F[j * m + i]))
@@ -190,7 +191,8 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
                 double value = F[j * m + i];
                 if (fabs(Control->piv_toler * maxval) < fabs(value) &&
                     row_degree_bound[frowList[i]] < row_deg_sp)
-                {  // numerically acceptalbe and sparser
+                {
+                    // numerically acceptalbe and sparser
                     // pragma omp critical
                     {
                         piv = value;
@@ -381,7 +383,7 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
         int64_t j1 = panel_num * panel_width;
         int64_t j2 = (panel_num + 1) * panel_width;
         // factorize current panel
-        int64_t blas_ok = 
+        int64_t blas_ok =
         paru_panel_factorize(f, rowCount, fp, panel_width, panel_num, row_end,
                              Work, Num);
         if (!blas_ok) return (PARU_TOO_LARGE);
@@ -397,7 +399,8 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
             // shared(panel_num, row_end, f, start_fac)
 
             if (Work->Sym->Cm[f] != 0)
-            {  // if there is potential column left
+            {
+                // if there is potential column left
                 paru_update_rowDeg(panel_num, row_end, f, start_fac, stl_colSet,
                                    pivotal_elements, Work, Num);
             }

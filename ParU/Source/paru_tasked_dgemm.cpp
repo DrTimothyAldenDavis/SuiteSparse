@@ -90,6 +90,9 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
 
         mkl_set_num_threads_local(0);
 #else
+        // FIXME NOW: Tcov can miss this, non-deterministically.
+        // It is supposed to be covered by the c-62 matrix,
+        // and often is covered, but sometimes it misses.
         PRLEVEL(1, ("%%YES tasking for DGEMM (" LD "x" LD ") in " LD " \n", M, N, f));
         int64_t num_col_blocks = N / L + 1;
         int64_t num_row_blocks = M / L + 1;

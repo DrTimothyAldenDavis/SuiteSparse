@@ -19,7 +19,7 @@
 
 #include <algorithm>
 
-#include "paru_internal.hpp" 
+#include "paru_internal.hpp"
 
 //------------------------------------------------------------------------------
 // ParU_Residual: compute residual b-A*x for vectors b and x

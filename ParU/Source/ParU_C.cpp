@@ -19,7 +19,7 @@ extern "C"
 {
 
 //------------------------------------------------------------------------------
-// ParU_Version: 
+// ParU_Version:
 //------------------------------------------------------------------------------
 
 // return the version
@@ -60,7 +60,7 @@ ParU_Info ParU_C_Init_Control (ParU_C_Control *Control_C)
 // ParU_C_Analyze: Symbolic analysis is done in this routine. UMFPACK is called
 // here and after that some more speciallized symbolic computation is done for
 // ParU. ParU_Analyze can be called once and can be used for different
-// ParU_C_Factorize calls. 
+// ParU_C_Factorize calls.
 //------------------------------------------------------------------------------
 
 ParU_Info ParU_C_Analyze
@@ -72,7 +72,7 @@ ParU_Info ParU_C_Analyze
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!A || !Sym_handle_C || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -119,7 +119,7 @@ ParU_Info ParU_C_Factorize
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!A || !Sym_C || !Num_handle_C || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -127,7 +127,7 @@ ParU_Info ParU_C_Factorize
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_C_Numeric *Num_C = 
+    ParU_C_Numeric *Num_C =
         static_cast<ParU_C_Numeric*>(paru_alloc(1, sizeof(ParU_C_Numeric)));
     if (!Num_C)
     {
@@ -241,7 +241,7 @@ ParU_Info ParU_C_Solve_Axb
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!Sym_C || !Num_C || !b || !x || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -266,7 +266,7 @@ ParU_Info ParU_C_Solve_AXX
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!Sym_C || !Num_C || !X || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -291,7 +291,7 @@ ParU_Info ParU_C_Solve_LXX
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!Sym_C || !Num_C || !X || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -316,7 +316,7 @@ ParU_Info ParU_C_Solve_UXX
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!Sym_C || !Num_C || !X || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -341,7 +341,7 @@ ParU_Info ParU_C_Solve_AXB
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!Sym_C || !Num_C || !B || !X || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -472,7 +472,7 @@ ParU_Info ParU_C_Residual_bAx
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!A || !x || !b || !residc || !anormc || !xnormc || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -482,7 +482,7 @@ ParU_Info ParU_C_Residual_bAx
     paru_cp_control (&Control, Control_C);
     double resid, anorm, xnorm;
     ParU_Info info;
-    info = ParU_Residual (A, x, b, resid, anorm, xnorm, &Control); 
+    info = ParU_Residual (A, x, b, resid, anorm, xnorm, &Control);
     *residc = resid;
     *anormc = anorm;
     *xnormc = xnorm;
@@ -505,7 +505,7 @@ ParU_Info ParU_C_Residual_BAX
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (!A || !X || !B || !residc || !anormc || !xnormc || !Control_C)
     {
         return (PARU_INVALID) ;
@@ -514,7 +514,7 @@ ParU_Info ParU_C_Residual_BAX
     paru_cp_control (&Control, Control_C);
     double resid, anorm, xnorm;
     ParU_Info info;
-    info = ParU_Residual (A, X, B, nrhs, resid, anorm, xnorm, &Control); 
+    info = ParU_Residual (A, X, B, nrhs, resid, anorm, xnorm, &Control);
     *residc = resid;
     *anormc = anorm;
     *xnormc = xnorm;
@@ -531,7 +531,7 @@ ParU_Info ParU_C_FreeNumeric
     // control:
     ParU_C_Control *Control_C
 )
-{ 
+{
     if (Num_handle_C == NULL || *Num_handle_C == NULL)
     {
         // nothing to do

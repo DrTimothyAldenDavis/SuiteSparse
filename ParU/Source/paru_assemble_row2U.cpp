@@ -17,7 +17,7 @@
 #include "paru_internal.hpp"
 
 void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
-                          std::vector<int64_t> &colHash, 
+                          std::vector<int64_t> &colHash,
                           paru_work *Work, ParU_Numeric *Num)
 {
     DEBUGLEVEL(0);
@@ -52,7 +52,8 @@ void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
     {
         int64_t rj = colRelIndex[j];
         if (el_colIndex[j] >= 0)
-        {  // If still valid
+        {
+            // If still valid
             ncolsSeen--;
             PRLEVEL(1,
                     ("%% sM [" LD "] =%2.5lf \n", mEl * j + sR, sM[mEl * j + sR]));

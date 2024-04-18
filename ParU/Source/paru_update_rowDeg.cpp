@@ -172,13 +172,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 if (curCol < 0)  // already deleted
                     continue;
 
-                
-                //Found this in coverage test
-                //It also makes sense while the pivotal columns have been 
-                //already deleted
-                ////is a pivotal col 
-                //if (curCol < col2 && curCol >= col1) continue;
-                ASSERT(curCol >= col2 || curCol < col1); 
+                // pivotal columns have been already deleted
+                ASSERT (curCol >= col2 || curCol < col1) ;
 
                 auto insertResult = stl_colSet.insert(curCol);
                 // inserted to stl_colSet => insert to stl_newColSet
@@ -280,20 +275,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
     for (int64_t e : pivotal_elements)
     {
         paru_element *el = elementList[e];
-        //Found this in coverage test
-        //It seems that I keep pivotal_elements really clean before this
-        //if (el == NULL)
-        //{
-        //    // removing the  element from the list
-        //    PRLEVEL(1, ("%% eli = " LD ", element= " LD "  \n", eli, e));
-        //    continue;
-        //}
-        //This next lines are also extra; I didn't have resize after them
-        //There is no NULL inside pivotal_elements here.
-        // keeping other elements inside the list
-        //pivotal_elements[ii++] = pivotal_elements[i];
-        
-        ASSERT(el != NULL);
+        ASSERT(el != NULL); // element list is clean
 
 #ifndef NDEBUG
         PRLEVEL(PR, ("%% pivotal element= " LD " lac=" LD " colsleft=" LD " \n", e,

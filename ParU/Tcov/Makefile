@@ -25,7 +25,7 @@ LIBS = -L../../lib -lumfpack -lcholmod -lamd -lcolamd -lm \
 # for statement coverage (with gcov; see go) and picky compiler warnings
 CF = -pg -O0 -g -fprofile-arcs -ftest-coverage \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
-	 -Wdisabled-optimization -fexceptions -fopenmp 
+	 -Wdisabled-optimization -fexceptions -fopenmp
 
 I = -I../../SuiteSparse_config -I../../UMFPACK/Source -I../../UMFPACK/Include \
 	-I../../CHOLMOD/Include -I../../AMD/Include   -I../Include -I../Source \
@@ -86,7 +86,8 @@ OBJ = \
         ParU_C.o \
         paru_cp_control.o \
 	ParU_Version.o  \
-	SuiteSparse_config.o 
+	paru_umfpack_info.o  \
+	SuiteSparse_config.o
 
 #	paru_print.o \   # These methods are used only in debug mode
 #	paru_write.o
@@ -95,18 +96,18 @@ OBJ = \
 $(OBJ): $(INC)
 
 VFLAGS = --leak-check=yes  --log-file="valgrindlogfile.log"\
-		   --show-leak-kinds=all --track-origins=yes 
+		   --show-leak-kinds=all --track-origins=yes
 
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
-paru_brutal_test: paru_brutal_test.cpp $(INC) $(OBJ) 
+paru_brutal_test: paru_brutal_test.cpp $(INC) $(OBJ)
 	$(C)  paru_brutal_test.cpp -o paru_brutal_test $(OBJ) $(LIBS)
 
-paru_quick_test: paru_quick_test.cpp $(INC) $(OBJ) 
+paru_quick_test: paru_quick_test.cpp $(INC) $(OBJ)
 	$(C)  paru_quick_test.cpp -o paru_quick_test $(OBJ) $(LIBS)
 
-paru_c_test: paru_c_test.cpp $(INC) $(OBJ) 
+paru_c_test: paru_c_test.cpp $(INC) $(OBJ)
 	$(C)  paru_c_test.cpp -o paru_c_test $(OBJ) $(LIBS)
 
 
@@ -321,12 +322,15 @@ paru_cp_control.o: ../Source/paru_cp_control.cpp
 ParU_Version.o: ../Source/ParU_Version.cpp
 	$(C) -c $<
 
+paru_umfpack_info.o: ../Source/paru_umfpack_info.cpp
+	$(C) -c $<
+
 SuiteSparse_config.o: ../../SuiteSparse_config/SuiteSparse_config.c
 	gcc -c -fopenmp -DBLAS32 $<
 
 #-------------------------------------------------------------------------------
 purge: clean
 
-clean: 
+clean:
 	- $(RM) cov.out parutest_out.txt *.o *.gcno  *.gcov *.gcda gmon.out
 	- $(RM) paru_brutal_test paru_c_test paru_quick_test

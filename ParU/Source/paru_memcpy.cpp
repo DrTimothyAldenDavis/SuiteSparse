@@ -15,7 +15,7 @@
 
 #include "paru_internal.hpp"
 
-void paru_memcpy(void *destination, const void *source, 
+void paru_memcpy(void *destination, const void *source,
         size_t num, ParU_Control *Control)
 {
 
@@ -23,14 +23,16 @@ void paru_memcpy(void *destination, const void *source,
     size_t mem_chunk = (size_t) control_mem_chunk (Control) ;
 
     if (num < mem_chunk || nthreads == 1)
-    {  // single task memcpy
+    {
+        // single task memcpy
         memcpy(destination, source, num);
     }
     else
-    {  // multiple task memcpy
+    {
+        // multiple task memcpy
         size_t nchunks = 1 + (num / mem_chunk);
         if (((size_t) nthreads) > nchunks)
-        { 
+        {
             nthreads = (int) nchunks ;
         }
 

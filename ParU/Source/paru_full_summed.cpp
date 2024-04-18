@@ -86,7 +86,8 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
     //|| next active column is out of current pivotal columns
     // However it requires searching through columns; I will just waste a
     // temp space
-    {  // No need for a temp space for active rows; no reuse
+    {
+        // No need for a temp space for active rows; no reuse
         PRLEVEL(PR, ("%% 1 col left\n %%"));
         double *sC = el_Num + mEl * el->lac;  // source column pointer
         int64_t fcolInd = el_colIndex[el->lac] - col1;
@@ -102,7 +103,8 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
             int64_t rowInd = el_rowIndex[i];
             PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
             if (rowInd >= 0 && rowRelIndex[i] != -1)
-            {  // active and do not contain zero in pivot
+            {
+                // active and do not contain zero in pivot
                 int64_t ri = rowRelIndex[i];
                 PRLEVEL(1, ("%% ri = " LD " \n", ri));
                 PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
@@ -148,7 +150,8 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         //#pragma omp single
         //#pragma omp taskgroup
         for (; j < nEl; j++)
-        {  // j already defined out of this scope while it is needed
+        {
+            // j already defined out of this scope while it is needed
             PRLEVEL(1, ("%% j =" LD " \n", j));
             double *sC = el_Num + mEl * j;  // source column pointer
             int64_t colInd = el_colIndex[j];
@@ -184,7 +187,8 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
     }
 
     if (el->ncolsleft == 0)
-    {  // free el
+    {
+        // free el
         PRLEVEL(PR, ("%% element " LD " is freed after pivotal assembly\n", e));
         paru_free_el(e, elementList);
     }

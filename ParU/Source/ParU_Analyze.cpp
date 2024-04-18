@@ -184,14 +184,14 @@ ParU_Info ParU_Analyze
                  //  ---   . . . x x s s s s
                  //
                  //  ---   The above example has 3 column singletons (the first
-                 //  ---  three   columns and their corresponding pivot rows) 
-                 //  ---  and 2 row   singletons.  The singletons are ordered 
+                 //  ---  three   columns and their corresponding pivot rows)
+                 //  ---  and 2 row   singletons.  The singletons are ordered
                  //  ---  first, because they  have zero Markowitz cost. The LU
                  //  ---  factorization for these first five rows and columns is
-                 //  ---  free - there is no work to do (except to scale the 
-                 //  ---  pivot columns for the 2 row singletons), and no 
-                 //  ---  fill-in occurs.  The remaining submatrix (4-by-4 in 
-                 //  ---  the above example) has no rows or columns with degree 
+                 //  ---  free - there is no work to do (except to scale the
+                 //  ---  pivot columns for the 2 row singletons), and no
+                 //  ---  fill-in occurs.  The remaining submatrix (4-by-4 in
+                 //  ---  the above example) has no rows or columns with degree
                  //  ---  one.  It may have empty rows or columns.
                  //
                  //
@@ -404,9 +404,12 @@ ParU_Info ParU_Analyze
                                       &SW,  // new in/out
                                       umf_Control, umf_Info);
 
+    // translate UMFPACK status to Paru_Info
     ParU_Info info = paru_umfpack_info (status) ;
+
     if (status < 0)
     {
+        // UMFPACK symbolic analysis failed
 #ifndef NDEBUG
         umfpack_dl_report_info(umf_Control, umf_Info);
         umfpack_dl_report_status(umf_Control, status);
@@ -416,7 +419,6 @@ ParU_Info ParU_Analyze
         FREE_WORK;
         paru_free(1, sizeof(ParU_Symbolic), Sym);
         *Sym_handle = NULL;
-        // translate UMFPACK status to Paru_Info
         return (info) ;
     }
 

@@ -49,7 +49,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     Work->task_num_child = NULL;
     std::vector<int64_t> **heapList = Work->heapList = NULL;
     int64_t *row_degree_bound = Work->row_degree_bound = NULL;
-   
+
     // initializing Numeric
     ParU_Numeric *Num = NULL;
     Num = static_cast<ParU_Numeric*>(paru_alloc(1, sizeof(ParU_Numeric)));
@@ -154,7 +154,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     Num->slnz = slnz;
     Num->Slx = Slx;
     double *Rs = NULL;
-    int64_t prescale = Control->prescale; 
+    int64_t prescale = Control->prescale;
     if (prescale == 1)
     {
         // S will be scaled by the maximum absolute value in each row
@@ -394,7 +394,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     if (Diag_map)
     {
         #pragma omp taskloop default(none) shared(Sym, Diag_map, inv_Diag_map) \
-        grainsize(512) 
+        grainsize(512)
         for (int64_t i = 0; i < Sym->n; i++)
         {
             Diag_map[i] = Sym->Diag_map[i];

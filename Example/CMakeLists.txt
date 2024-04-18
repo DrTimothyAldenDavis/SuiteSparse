@@ -53,7 +53,7 @@ message ( STATUS "MY prefix path:    ${CMAKE_PREFIX_PATH}" )
 #-------------------------------------------------------------------------------
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Apr XX, 2024" )  # FIXME
+set ( MY_DATE "Apr XX, 2024" )  # FIXME NOW
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 8 )
 set ( MY_VERSION_PATCH 0 )
@@ -95,7 +95,7 @@ find_package ( CCOLAMD 3.3.3 REQUIRED )
 find_package ( CHOLMOD 5.3.0 REQUIRED )
 find_package ( COLAMD 3.3.3 REQUIRED )
 find_package ( CXSparse 4.4.0 REQUIRED )
-find_package ( GraphBLAS 9.1.0 )            # FIXME
+find_package ( GraphBLAS 9.1.0 )            # FIXME NOW
 find_package ( KLU 2.3.3 REQUIRED )
 find_package ( KLU_CHOLMOD 2.3.3 REQUIRED )
 find_package ( LDL 3.3.2 REQUIRED )

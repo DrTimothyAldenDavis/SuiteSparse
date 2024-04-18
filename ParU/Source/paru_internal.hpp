@@ -383,15 +383,15 @@ inline int64_t *relRowInd(paru_element *curEl)
 }
 
 inline double *numeric_pointer(paru_element *curEl)
-// sizeof int64_t and double are same, but I keep it like this for clarity
-//{ return (double*)((int64_t*)(curEl+1) + 2*curEl->ncols + 2*curEl->nrows +
-//2);}
 {
     return (double *)((int64_t *)(curEl + 1) + 2 * curEl->ncols +
                       2 * curEl->nrows);
 }
 
-inline int64_t flip(int64_t colInd) { return -colInd - 2; }
+inline int64_t flip(int64_t colInd)
+{
+    return -colInd - 2;
+}
 
 inline int64_t lac_el(paru_element **elementList, int64_t eli)
 {

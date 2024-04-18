@@ -1,5 +1,5 @@
-#package minted is need for ParU user guide therfore python3-pygments must 
-#  be installed
+# package minted is need for ParU user guide therefore python3-pygments must be
+# installed
 
 # ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 # All Rights Reserved.
@@ -18,7 +18,7 @@ paru_user_guide.pdf: paru_user_guide.tex paru_user_guide.bib Makefile paru_versi
 distclean: purge
 
 clean:
-	- $(RM) -r $(CLEAN) 
+	- $(RM) -r $(CLEAN)
 
 purge: clean
 	- $(RM) -r $(PURGE) *.out *.aux *.log *.bbl *.blg _minted-paru_*

@@ -133,7 +133,7 @@ int main(int argc, char **argv)
         // printing out x
     #if 0
         printf("x = [");
-        for (int64_t i = 0; i < m; ++i) 
+        for (int64_t i = 0; i < m; ++i)
             printf (" %.2lf, ", xx[i]);
         printf("]\n");
     #endif
@@ -271,7 +271,7 @@ int main(int argc, char **argv)
     double umf_resid, umf_anorm, umf_xnorm;
     info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm,
                                &Control);
-    double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 ) 
+    double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 )
         ? 0 : (umf_resid/(umf_anorm*umf_xnorm));
     printf(
         "UMFPACK Residual is |%.2e|, anorm is %.2e, xnorm is %.2e, and rcond"

@@ -244,8 +244,8 @@ ParU_Info paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_eleme
     PRLEVEL(PR, ("%% the rest size = " LD "\n", size_of_rest));
 
     if (biggest_Child_id != -1)
-    // There are still elements remained in the heaps
     {
+        // There are still elements remaining in the heaps
         // shallow copy of the biggest child
         std::vector<int64_t> *curHeap = heapList[eli] = heapList[biggest_Child_id];
         heapList[biggest_Child_id] = NULL;

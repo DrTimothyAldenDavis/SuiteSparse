@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 
     // default log10 of expected residual.  +1 means failure is expected
     double expected_log10_resid = -16 ;
-    if (argc > 1)  
+    if (argc > 1)
     {
         expected_log10_resid = (double) atoi (argv [1]) ;
     }
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     Control.relaxed_amalgamation = (A->nrow == 48600) ? 1024 : (-1) ;
 
     /////This part is for covering the codes that cannot be covered through
-    ///// factorizing 
+    ///// factorizing
     // covering alloc lines
     int64_t *t = NULL;
 
@@ -467,6 +467,12 @@ int main(int argc, char **argv)
     sorted_list [1] = flip (4) ;
     result = paru_bin_srch_col (sorted_list, 0, 4, 4) ;
     TEST_ASSERT (result == 1) ;
+
+    info = paru_umfpack_info (UMFPACK_WARNING_singular_matrix) ;
+    TEST_ASSERT (info == PARU_SINGULAR) ;
+
+    info = paru_umfpack_info (UMFPACK_ERROR_out_of_memory) ;
+    TEST_ASSERT (info == PARU_OUT_OF_MEMORY) ;
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

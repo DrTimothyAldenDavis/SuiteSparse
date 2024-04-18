@@ -201,7 +201,7 @@ void *paru_realloc(
     size_t nnew,     // requested # of items
     size_t size_Entry,  // size of each Entry
     void *p,         // block memory to realloc
-    size_t *n)       // current size on input, nnew output if successful 
+    size_t *n)       // current size on input, nnew output if successful
 {
     DEBUGLEVEL(0);
 #ifndef NDEBUG
@@ -229,7 +229,6 @@ void *paru_realloc(
         // object is too big to allocate without causing integer overflow
         PRLEVEL(1, ("ParU: problem too large\n"));
     }
-
     else
     {
         // The object exists, and is changing to some other nonzero size.
@@ -267,8 +266,8 @@ void *paru_realloc(
             PRLEVEL(1, ("%% reallocated " LD " in %p and freed %p total= " LD "\n",
                         nnew* size_Entry, pnew, p, realloc_count));
 #endif
-	    p = pnew ;
-        *n = nnew;
+            p = pnew ;
+            *n = nnew;
         }
     }
     return p;
@@ -335,7 +334,7 @@ void paru_free_el(int64_t e, paru_element **elementList)
     PRLEVEL(1, ("%%Free the element e =" LD "\t", e));
     PRLEVEL(1, ("%% nrows =" LD " ", nrows));
     PRLEVEL(1, ("%% ncols =" LD "\n", ncols));
-    int64_t tot_size = 
+    int64_t tot_size =
         sizeof(paru_element) + sizeof(int64_t)
         * (2 * (nrows + ncols)) + sizeof(double) * nrows * ncols;
     paru_free(1, tot_size, el);

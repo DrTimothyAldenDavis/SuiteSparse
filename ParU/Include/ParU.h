@@ -306,7 +306,8 @@ struct ParU_Control
 // ParU_Numeric is size of S matrix in Symbolic analysis.
 
 struct ParU_Factors
-{               // dense factorized part pointer
+{
+    // dense factorized part pointer
     int64_t m, n;   //  mxn dense matrix
     double *p;  //  point to factorized parts
 };

@@ -48,7 +48,8 @@ ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     int64_t ip = 0;        // number of rows seen so far
     PRLEVEL(PR, ("%% singlton part"));
     for (int64_t k = 0; k < n1; k++)
-    {  // first singletons
+    {
+        // first singletons
         Pfin[ip++] = Pinit[k];
         PRLEVEL(PR, ("(" LD ")" LD " ", ip - 1, Pfin[ip - 1]));
     }
@@ -56,7 +57,8 @@ ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
 
     PRLEVEL(PR, ("%% the rest\n"));
     for (int64_t f = 0; f < nf; f++)
-    {  // rows for each front
+    {
+        // rows for each front
         int64_t col1 = Super[f];
         int64_t col2 = Super[f + 1];
         int64_t fp = col2 - col1;

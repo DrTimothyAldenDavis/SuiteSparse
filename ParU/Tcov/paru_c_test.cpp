@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 
     // default log10 of expected residual.  +1 means failure is expected
     double expected_log10_resid = -16 ;
-    if (argc > 1)  
+    if (argc > 1)
     {
         expected_log10_resid = (double) atoi (argv [1]) ;
     }
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
     }
 
     // compute residual for Ax=b
-    BRUTAL_ALLOC_TEST(info, ParU_C_Residual_bAx(A, xx, b, &resid, 
+    BRUTAL_ALLOC_TEST(info, ParU_C_Residual_bAx(A, xx, b, &resid,
                 &anorm, &xnorm, &Control));
     if (info != PARU_SUCCESS)
     {
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // solve AX=B
-    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, 
+    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_AXB(Sym, Num, nrhs, B, X,
                 &Control));
     if (info != PARU_SUCCESS)
     {
@@ -493,14 +493,14 @@ int main(int argc, char **argv)
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // compute the residual for Ax=b
-    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, 
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid,
             &umf_anorm, &umf_xnorm, &Control);
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 112) ;
         return (0) ;
     }
-    umf_resid = (umf_anorm == 0 || umf_xnorm == 0 ) ? 0 : 
+    umf_resid = (umf_anorm == 0 || umf_xnorm == 0 ) ? 0 :
         (umf_resid/(umf_anorm*umf_xnorm));
     printf("UMFPACK Residual is |%.2e| and anorm is %.2e and rcond is %.2e.\n",
            umf_resid, umf_anorm, Num->rcond);

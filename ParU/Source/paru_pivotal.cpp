@@ -117,9 +117,9 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     rowMarkp[eli] = rowMark;
 
     int64_t *isRowInFront = Work->rowSize;
-    ++rowMark; 
+    ++rowMark;
 
-    #ifndef PARU_COVERAGE  //overflow is very hard to test in coverage 
+    #ifndef PARU_COVERAGE  //overflow is very hard to test in coverage
     if (rowMark < 0)
     {
         // just look at the children
@@ -322,7 +322,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
 
     Num->frowCount[f] = rowCount;
     // No support for max and min in OpenMP C++
-    //pragma omp atomic capture 
+    //pragma omp atomic capture
     //{
     //    Num->max_row_count = std::max(Num->max_row_count, rowCount);
     //}
@@ -356,7 +356,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     size_t sz = (size_t) fm;
     if (rowCount != fm)
     {
-        frowList = 
+        frowList =
             static_cast<int64_t*>(paru_realloc(rowCount, sizeof(int64_t), frowList, &sz));
     }
     if (sz != (size_t) rowCount)

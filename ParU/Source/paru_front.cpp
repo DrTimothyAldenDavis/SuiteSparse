@@ -281,7 +281,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 
         // EXIT point HERE
         if (colCount == 0)
-        {  // there is no CB, Nothing to be done
+        {
+            // there is no CB, Nothing to be done
             Num->fcolCount[f] = 0;
             // if (zero_piv_rows > 0 )
             if (zero_piv_rows > 0 || rowCount > fp)
@@ -500,7 +501,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
             PRLEVEL(1, ("%% Created ele " LD " in curEl =%p\n", eli, curEl));
         }
         else  // EXIT point
-        {     // NO rows for current contribution block
+        {
+            // NO rows for current contribution block
             if (zero_piv_rows > 0)
             {
                 // keep the heap and do it for the parent.
@@ -616,7 +618,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
     }
 
     catch (std::bad_alloc const &)
-    {  // out of memory
+    {
+        // out of memory
         PRLEVEL(1, ("ParU: Out of memory, bad_alloc in front\n"));
         return PARU_OUT_OF_MEMORY;
     }

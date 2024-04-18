@@ -20,14 +20,16 @@ void paru_memset(void *ptr, int64_t value, size_t num, ParU_Control *Control)
     size_t mem_chunk = static_cast<size_t>(control_mem_chunk(Control));
 
     if (num < mem_chunk)
-    {  // single task memse
+    {
+        // single task memse
         memset(ptr, value, num);
     }
     else
-    {  // multiple task memset
+    {
+        // multiple task memset
         size_t nchunks = 1 + (num / mem_chunk);
         if (static_cast<size_t>(nthreads) > nchunks)
-        { 
+        {
             nthreads = static_cast<int>(nchunks);
         }
 

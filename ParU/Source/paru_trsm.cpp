@@ -54,7 +54,7 @@ int64_t paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp, int64_t rowC
     }
 #endif
 
-    int64_t blas_ok = paru_tasked_trsm(f, mB, nB, alpha, pF, 
+    int64_t blas_ok = paru_tasked_trsm(f, mB, nB, alpha, pF,
             lda, uPart, ldb, Work, Num);
 
 #ifndef NDEBUG  // Printing the  U part

@@ -111,7 +111,7 @@ include ( SuiteSparsePolicy )
 
 if ( SUITESPARSE_USE_SYSTEM_GRAPHBLAS )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "graphblas" )
-    find_package ( GraphBLAS 9.1.0 REQUIRED )       # FIXME
+    find_package ( GraphBLAS 9.1.0 REQUIRED )       # FIXME NOW
 else ( )
     if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # LAGraph requires GraphBLAS.

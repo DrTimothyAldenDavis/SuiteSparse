@@ -146,7 +146,8 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             || naft > max_threads / 2
             #endif
             )
-        {  // not enoght resources or very small assembly
+        {
+            // not enoght resources or very small assembly
             // sequential
             PRLEVEL(1,
                     ("Seqntial Assembly naft=" LD " colsleft=" LD " rowsleft=" LD " \n",
@@ -883,7 +884,8 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         if (rowInd < 0) continue;  // already gone
 
         if (rowRelIndex[ii] == -1)  // row with all zeros in piv
-        {                           // update lac
+        {
+            // update lac
             PRLEVEL(1, ("%%Searching for lac in " LD "\n%%", rowInd));
             PRLEVEL(1, ("%%col=" LD "\n%%", el->lac));
             for (int64_t jj = el->lac; jj < new_lac; jj++)

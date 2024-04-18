@@ -81,7 +81,7 @@ void mexFunction
 
     // get dense matrix B */
     B = sputil_get_dense (pargin [1], &Bmatrix, &dummy) ;
-    int64_t nrhs = B->ncol ; 
+    int64_t nrhs = B->ncol ;
 
     // create the solution X
     X = cholmod_l_allocate_dense (n, nrhs, n, CHOLMOD_REAL, cm) ;

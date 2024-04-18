@@ -15,7 +15,8 @@
 #include "paru_internal.hpp"
 
 int64_t paru_cumsum(int64_t n, int64_t *X, ParU_Control *Control)
-{  // n is size, X is size n and in/out
+{
+    // n is size, X is size n and in/out
     int64_t tot = 0;
     if (X == NULL) return tot;
 

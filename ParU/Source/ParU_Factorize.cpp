@@ -150,7 +150,8 @@ ParU_Info ParU_Factorize
         }
     }
     catch (std::bad_alloc const &)
-    {  // out of memory
+    {
+        // out of memory
         PRLEVEL(1, ("ParU: Out of memory: task_Q\n"));
         paru_free_work(Sym, Work);   // free the work DS
         ParU_FreeNumeric(Num_handle, Control);
@@ -340,10 +341,11 @@ ParU_Info ParU_Factorize
         #ifdef PARU_COVERAGE
         #define M1 1000
         #else
-        #define M1 65536 
+        #define M1 65536
         #endif
         if (Num-> m < M1)
-        { //Serial
+        {
+            //Serial
             for (int64_t f = 0; f < nf; f++)
             {
                 int64_t rowCount = Num->frowCount[f];
@@ -363,8 +365,9 @@ ParU_Info ParU_Factorize
                 }
             }
         }
-        else 
-        { //Parallel
+        else
+        {
+            //Parallel
             int64_t *Super = Sym->Super;
             #pragma omp parallel for reduction(max:max_rc)    \
             reduction(max: max_cc) if (nf > 65536)            \

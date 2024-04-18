@@ -6,7 +6,7 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/*! @brief 
+/*! @brief
  * The version number and date can also be obtained via compile-time constants
  * from ParU.h.  However, it is possible to compile a user application that
  * #includes one version of ParU.h and then links with another version of

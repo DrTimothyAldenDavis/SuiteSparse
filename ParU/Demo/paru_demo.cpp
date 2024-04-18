@@ -280,7 +280,7 @@ int main(int argc, char **argv)
     umf_time = omp_get_wtime() - umf_start_time;
     double umf_resid, umf_anorm, umf_xnorm;
     info = ParU_Residual(A, x, b, umf_resid, umf_anorm, umf_xnorm, &Control);
-    double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 ) 
+    double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 )
         ? 0 : (umf_resid/(umf_anorm*umf_xnorm));
     std::cout << std::scientific << std::setprecision(2)
         << "UMFPACK relative residual is |" << umf_rresid << "|, anorm is "

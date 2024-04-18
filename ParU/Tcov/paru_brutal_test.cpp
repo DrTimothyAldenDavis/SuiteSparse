@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
     // default log10 of expected residual.  +1 means failure is expected
     double expected_log10_resid = -16 ;
-    if (argc > 1)  
+    if (argc > 1)
     {
         expected_log10_resid = (double) atoi (argv [1]) ;
     }

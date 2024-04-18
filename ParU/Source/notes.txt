@@ -9,7 +9,7 @@ Notes:
             ...
         }
 
-    becomes
+    can become
 
         for (int64_t i1 : tempRow)
         {
@@ -24,7 +24,7 @@ Notes:
             ...
         }
 
-    becomes:
+    can become:
 
         for (int64_t e : *chHeap)
         {

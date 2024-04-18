@@ -9,7 +9,7 @@
 #ifndef PARU_OMP_H
 #define PARU_OMP_H
 //!
-// definitions of using OpenMP inside ParU 
+// definitions of using OpenMP inside ParU
 //  @author Aznaveh
 //
 
