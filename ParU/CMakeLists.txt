@@ -193,6 +193,7 @@ endif ( )
 if ( (APPLE OR WIN32) AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
     # Some parallelization levels don't work correctly with GCC on Windows or
     # Mac (because of emuTLS?). Omit them.
+    # FIXME NOW: user guide: state that gcc on Windows or Mac uses PARU_1TASK
     if ( BUILD_SHARED_LIBS )
         target_compile_definitions (ParU PRIVATE PARU_1TASK )
     endif ( )
