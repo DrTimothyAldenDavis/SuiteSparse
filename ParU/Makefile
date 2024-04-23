@@ -57,6 +57,19 @@ demos: library
 	( cd build && [ -f paru_democ$(EXEEXT) ] && ./paru_democ$(EXEEXT) < ../Matrix/west0067.mtx || true )
 	( cd build && [ -f paru_demo$(EXEEXT) ] && ./paru_demo$(EXEEXT) < ../Matrix/xenon1.mtx || true )
 
+V = valgrind --leak-check=full --show-leak-kinds=all
+
+vdemos: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && $(V) ./paru_simplec$(EXEEXT) < ../Matrix/b1_ss.mtx )
+	( cd build && $(V) ./paru_simple$(EXEEXT) < ../Matrix/west0067.mtx )
+	( cd build && [ -f paru_democ$(EXEEXT) ] && $(V) ./paru_democ$(EXEEXT) < ../Matrix/west0067.mtx || true )
+	( cd build && [ -f paru_demo$(EXEEXT) ] && $(V) ./paru_demo$(EXEEXT) < ../Matrix/xenon1.mtx || true )
+
+w: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && $(V) ./paru_demo$(EXEEXT) < ../Matrix/west0479.mtx )
+
 cov:
 	( cd Tcov && $(MAKE) )
 

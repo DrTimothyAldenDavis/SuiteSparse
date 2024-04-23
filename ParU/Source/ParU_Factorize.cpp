@@ -198,16 +198,24 @@ ParU_Info ParU_Factorize
     // execute the task tree
     //--------------------------------------------------------------------------
 
+    #ifdef MATLAB_MEX_FILE
+    // Force MATLAB to factorize one front at a time.
+    #ifndef PARU_1TASK
+    #define PARU_1TASK
+    #endif
+    #endif
+
 #if ! defined ( PARU_1TASK )
     // The parallel factorization gets stuck intermittently on Windows or Mac
     // with gcc, so always use the sequential factorization in that case.
+    // This case is handled by cmake.
     if (task_Q.size() * 2 > ((long unsigned int) (Control->paru_max_threads)))
     {
         PRLEVEL(1, ("Parallel\n"));
         // checking user input
-        PRLEVEL(1, ("Control: max_th=" LD " prescale=%d piv_toler=%lf "
-                    "diag_toler=%lf trivial =" LD " worthwhile_dgemm=" LD " "
-                    "worthwhile_trsm=" LD "\n",
+        PRLEVEL(1, ("Control: max_th=%d prescale=%d piv_toler=%lf "
+                    "diag_toler=%lf trivial=%d worthwhile_dgemm=%d "
+                    "worthwhile_trsm=%d\n",
                     Control->paru_max_threads, Control->prescale,
                     Control->piv_toler, Control->diag_toler, Control->trivial,
                     Control->worthwhile_dgemm, Control->worthwhile_trsm));
@@ -416,6 +424,6 @@ ParU_Info ParU_Factorize
     time -= my_start_time;
     PRLEVEL(1, ("factorization time took is %lf\n", time));
 #endif
-    return Num->res;
+    return (Num->res) ;
 }
 

@@ -254,7 +254,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
      * |          |       |     |       #  v    00000000   |           ...
      * rowCount   |==================================================
      * |          |       |     |     ooooooooooooooooooooo
-     * |          |       |     |     ooo HERE oooooooooooo
+     * |          |       |     |     ooo here oooooooooooo
      * |          |       |row_end    oooooooo EL ooooooooo
      * |          .       .      .    ooooooooooooooooooooo
      * |          .       .      .      .

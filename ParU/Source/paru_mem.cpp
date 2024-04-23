@@ -15,11 +15,223 @@
 
 #include "paru_internal.hpp"
 
+#define GBd LD
+#ifdef MATLAB_MEX_FILE
+    #undef printf
+    #define ABORT { mexErrMsgIdAndTxt ("ParU:abort", \
+        "abort %s %d", __FILE__, __LINE__) ; }
+#else
+    #define ABORT { printf ("line %d abort:\n", __LINE__) ; \
+        fflush (stdout) ; fflush (stderr) ; abort ( ) ; }
+#endif
+#define MEMASSERT(ok) { if (!(ok)) ABORT ; }
+
 #ifdef PARU_ALLOC_TESTING
+
 // global variables
 bool paru_malloc_tracking = false;
 int64_t paru_nmalloc = 0;
 
+#ifdef PARU_MEMTABLE_TESTING
+
+typedef struct
+{
+    #define PARU_MEMTABLE_SIZE 1000000
+    bool malloc_tracking ;          // true if allocations are being tracked
+    int64_t nmalloc ;               // number of blocks allocated but not freed
+    int8_t *memtable_p [PARU_MEMTABLE_SIZE] ;
+    size_t  memtable_s [PARU_MEMTABLE_SIZE] ;
+    int nmemtable ;
+}
+paru_Global_struct ;
+
+static paru_Global_struct paru_Global =
+{
+    // malloc tracking, for testing, statistics, and debugging only
+    .malloc_tracking = false,
+    .nmalloc = 0,                // memory block counter
+    .nmemtable = 0,             // memtable is empty
+} ;
+
+//------------------------------------------------------------------------------
+// malloc debuging
+//------------------------------------------------------------------------------
+
+// These functions keep a separate record of the pointers to all allocated
+// blocks of memory and their sizes, just for sanity checks.
+
+void paru_memtable_dump (void)
+{
+    #pragma omp critical(paru_memdump)
+    {
+        printf ("\nmemtable dump: %d nmalloc " GBd "\n",    // MEMDUMP
+            paru_Global.nmemtable, paru_Global.nmalloc) ;
+        for (int k = 0 ; k < paru_Global.nmemtable ; k++)
+        {
+            printf ("  %4d: %12p : %ld\n", k,               // MEMDUMP
+                paru_Global.memtable_p [k],
+                paru_Global.memtable_s [k]) ;
+        }
+    }
+}
+
+int paru_memtable_n (void)
+{
+    return (paru_Global.nmemtable) ;
+}
+
+void paru_memtable_clear (void)
+{
+    paru_Global.nmemtable = 0 ;
+}
+
+// add a pointer to the table of malloc'd blocks
+void paru_memtable_add (void *p, size_t size)
+{
+    if (p == NULL) return ;
+    if (paru_Global.malloc_tracking)
+    {
+        #pragma omp atomic
+        paru_Global.nmalloc++ ;
+    }
+
+    bool fail = false ;
+    #pragma omp critical(paru_memtable)
+    {
+        #ifdef PARU_MEMDUMP
+        #pragma omp critical(paru_memdump)
+        {
+            printf ("memtable add %p size %ld\n", p, size) ;    // MEMDUMP
+        }
+        #endif
+        int n = paru_Global.nmemtable ;
+        fail = (n > PARU_MEMTABLE_SIZE) ;
+        if (!fail)
+        {
+            for (int i = 0 ; i < n ; i++)
+            {
+                if (p == (void *) paru_Global.memtable_p [i])
+                {
+                    printf ("\nadd duplicate %p size %ld\n",    // MEMDUMP
+                        p, size) ;
+                    paru_memtable_dump ( ) ;
+                    fail = true ;
+                    break ;
+                }
+            }
+        }
+        if (!fail && p != NULL)
+        {
+            paru_Global.memtable_p [n] = (int8_t *) p ;
+            paru_Global.memtable_s [n] = size ;
+            paru_Global.nmemtable++ ;
+        }
+        #ifdef PARU_MEMDUMP
+        paru_memtable_dump ( ) ;
+        #endif
+    }
+    MEMASSERT (!fail) ;
+}
+
+// get the size of a malloc'd block
+size_t paru_memtable_size (void *p)
+{
+    size_t size = 0 ;
+
+    if (p == NULL) return (0) ;
+    bool found = false ;
+    #pragma omp critical(paru_memtable)
+    {
+        int n = paru_Global.nmemtable ;
+        for (int i = 0 ; i < n ; i++)
+        {
+            if (p == paru_Global.memtable_p [i])
+            {
+                size = paru_Global.memtable_s [i] ;
+                found = true ;
+                break ;
+            }
+        }
+    }
+    if (!found)
+    {
+        printf ("\nFAIL: %p not found\n", p) ;      // MEMDUMP
+        paru_memtable_dump ( ) ;
+        ABORT ;
+    }
+
+    return (size) ;
+}
+
+// test if a malloc'd block is in the table
+bool paru_memtable_find (void *p)
+{
+    bool found = false ;
+
+    if (p == NULL) return (false) ;
+    #pragma omp critical(paru_memtable)
+    {
+        int n = paru_Global.nmemtable ;
+        for (int i = 0 ; i < n ; i++)
+        {
+            if (p == (void *) paru_Global.memtable_p [i])
+            {
+                found = true ;
+                break ;
+            }
+        }
+    }
+
+    return (found) ;
+}
+
+// remove a pointer from the table of malloc'd blocks
+void paru_memtable_remove (void *p)
+{
+    if (p == NULL) return ;
+    if (paru_Global.malloc_tracking)
+    {
+        #pragma omp atomic
+        paru_Global.nmalloc-- ;
+    }
+
+    bool found = false ;
+    #pragma omp critical(paru_memtable)
+    {
+        #ifdef PARU_MEMDUMP
+        #pragma omp critical(paru_memdump)
+        {
+            printf ("memtable remove %p ", p) ;             // MEMDUMP
+        }
+        #endif
+        int n = paru_Global.nmemtable ;
+        for (int i = 0 ; i < n ; i++)
+        {
+            if (p == (void *) paru_Global.memtable_p [i])
+            {
+                // found p in the table; remove it
+                paru_Global.memtable_p [i] = paru_Global.memtable_p [n-1] ;
+                paru_Global.memtable_s [i] = paru_Global.memtable_s [n-1] ;
+                paru_Global.nmemtable -- ;
+                found = true ;
+                break ;
+            }
+        }
+        #ifdef PARU_MEMDUMP
+        paru_memtable_dump ( ) ;
+        #endif
+    }
+    if (!found)
+    {
+        printf ("remove %p NOT FOUND\n", p) ;       // MEMDUMP
+        paru_memtable_dump ( ) ;
+    }
+    MEMASSERT (found) ;
+}
+
+#endif
+
+//------------------------------------------------------------------------------
 
 bool paru_get_malloc_tracking(void)
 {
@@ -45,8 +257,6 @@ void paru_set_nmalloc(int64_t nmalloc)
     {
         paru_nmalloc = nmalloc;
     }
-    //printf("inside set nmalloc=" LD "",nmalloc);
-    PRLEVEL(1, ("inside set nmalloc=" LD "",nmalloc));
 }
 
 int64_t paru_decr_nmalloc(void)
@@ -59,8 +269,6 @@ int64_t paru_decr_nmalloc(void)
             nmalloc = paru_nmalloc--;
         }
     }
-    //printf("inside decr nmalloc=" LD "",nmalloc);
-    PRLEVEL(1, ("inside decr nmalloc=" LD "",nmalloc));
     return (nmalloc);
 }
 
@@ -71,22 +279,40 @@ int64_t paru_get_nmalloc(void)
     {
         nmalloc = paru_nmalloc;
     }
-    //printf("inside get nmalloc=" LD "",nmalloc);
-    PRLEVEL(1, ("inside get nmalloc=" LD "",nmalloc));
     return (nmalloc);
 }
 
 #endif
 
-//  Wrapper around malloc routine
-//
-//  Uses a pointer to the malloc routine.
-void *paru_alloc(size_t n, size_t size)
+//------------------------------------------------------------------------------
+// paru_malloc: wrapper around malloc routine
+//------------------------------------------------------------------------------
+
+#ifdef PARU_MALLOC_DEBUG
+void *paru_malloc_debug
+(
+    size_t n,
+    size_t size,
+    const char *filename,
+    int line
+)
+{
+    void *p = NULL ;
+    #pragma omp critical(paru_memdebug)
+    {
+        printf ("paru_malloc: n %zu size %zu file: %s line: %d\n",
+            n, size, filename, line) ;
+        p = paru_malloc (n, size) ;
+        printf ("paru_malloc: got %p file: %s line: %d\n",
+            p, filename, line) ;
+    }
+    return (p) ;
+}
+#endif
+
+void *paru_malloc(size_t n, size_t size)
 {
     DEBUGLEVEL(0);
-#ifndef NDEBUG
-    static int64_t alloc_count = 0;
-#endif
     void *p = NULL;
     if (size == 0)
     {
@@ -101,24 +327,41 @@ void *paru_alloc(size_t n, size_t size)
     }
     else
     {
-#ifdef PARU_ALLOC_TESTING
-        // brutal memory testing only
-        if (paru_get_malloc_tracking())
+
+        #ifdef PARU_ALLOC_TESTING
         {
-            int64_t nmalloc = paru_decr_nmalloc();
-            if (nmalloc > 0)
+            // brutal memory testing only
+            if (paru_get_malloc_tracking())
+            {
+                int64_t nmalloc = paru_decr_nmalloc();
+                if (nmalloc > 0)
+                {
+                    p = SuiteSparse_malloc(n, size);
+                }
+            }
+            else
             {
                 p = SuiteSparse_malloc(n, size);
             }
         }
-        else
+        #else
         {
-            p = SuiteSparse_malloc(n, size);
+            // in production
+            #ifdef MATLAB_MEX_FILE
+            {
+                // mxMalloc and friends are not thread-safe
+                #pragma omp critical (ParU_MATLAB_malloc_protection)
+                {
+                    p = SuiteSparse_malloc(n, size);
+                }
+            }
+            #else
+            {
+                p = SuiteSparse_malloc(n, size);
+            }
+            #endif
         }
-#else
-        // in production
-        p = SuiteSparse_malloc(n, size);
-#endif
+        #endif
 
         if (p == NULL)
         {
@@ -127,25 +370,43 @@ void *paru_alloc(size_t n, size_t size)
         }
         else
         {
-#ifndef NDEBUG
-            PRLEVEL(1, ("%% allocated " LD " in %p total= " LD "\n", n * size, p,
-                        alloc_count));
-            alloc_count += n * size;
-#endif
+            #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
+            paru_memtable_add (p, n * size) ;
+            #endif
         }
     }
     return p;
 }
 
-//  Wrapper around calloc routine
-//
-//  Uses a pointer to the calloc routine.
+//------------------------------------------------------------------------------
+// paru_calloc: wrapper around calloc routine
+//------------------------------------------------------------------------------
+
+#ifdef PARU_MALLOC_DEBUG
+void *paru_calloc_debug
+(
+    size_t n,
+    size_t size,
+    const char *filename,
+    int line
+)
+{
+    void *p = NULL ;
+    #pragma omp critical(paru_memdebug)
+    {
+        printf ("paru_calloc: n %zu size %zu file: %s line: %d\n",
+            n, size, filename, line) ;
+        p = paru_calloc (n, size) ;
+        printf ("paru_calloc: got %p file: %s line: %d\n",
+            p, filename, line) ;
+    }
+    return (p) ;
+}
+#endif
+
 void *paru_calloc(size_t n, size_t size)
 {
     DEBUGLEVEL(0);
-#ifndef NDEBUG
-    static int64_t calloc_count = 0;
-#endif
     void *p = NULL;
     if (size == 0)
     {
@@ -158,24 +419,41 @@ void *paru_calloc(size_t n, size_t size)
     }
     else
     {
-#ifdef PARU_ALLOC_TESTING
-        // brutal memory testing only
-        if (paru_get_malloc_tracking())
+
+        #ifdef PARU_ALLOC_TESTING
         {
-            int64_t nmalloc = paru_decr_nmalloc();
-            if (nmalloc > 0)
+            // brutal memory testing only
+            if (paru_get_malloc_tracking())
+            {
+                int64_t nmalloc = paru_decr_nmalloc();
+                if (nmalloc > 0)
+                {
+                    p = SuiteSparse_calloc(n, size);
+                }
+            }
+            else
             {
                 p = SuiteSparse_calloc(n, size);
             }
         }
-        else
+        #else
         {
-            p = SuiteSparse_calloc(n, size);
+            // in production
+            #ifdef MATLAB_MEX_FILE
+            {
+                // mxMalloc and friends are not thread-safe
+                #pragma omp critical (ParU_MATLAB_malloc_protection)
+                {
+                    p = SuiteSparse_calloc(n, size);
+                }
+            }
+            #else
+            {
+                p = SuiteSparse_calloc(n, size);
+            }
+            #endif
         }
-#else
-        // in production
-        p = SuiteSparse_calloc(n, size);
-#endif
+        #endif
 
         if (p == NULL)
         {
@@ -184,29 +462,51 @@ void *paru_calloc(size_t n, size_t size)
         }
         else
         {
-#ifndef NDEBUG
-            PRLEVEL(1, ("%% callocated " LD " in %p total= " LD "\n", n * size, p,
-                        calloc_count));
-            calloc_count += n * size;
-#endif
+            #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
+            paru_memtable_add (p, n * size) ;
+            #endif
         }
     }
     return p;
 }
 
-//  Wrapper around realloc routine
-//
-//  Uses a pointer to the realloc routine.
-void *paru_realloc(
+//------------------------------------------------------------------------------
+// paru_realloc: wrapper around realloc routine
+//------------------------------------------------------------------------------
+
+#ifdef PARU_MALLOC_DEBUG
+void *paru_realloc_debug
+(
+    size_t nnew,
+    size_t size_Entry,
+    void *p,
+    size_t *n,
+    const char *filename,
+    int line
+)
+{
+    void *pnew = NULL ;
+    #pragma omp critical(paru_memdebug)
+    {
+        printf ("paru_realloc: nnew %zu size %zu p %p n %zu file: %s line: %d\n",
+            nnew, size_Entry, p, *n, filename, line) ;
+        pnew = paru_realloc (nnew, size_Entry, p, n) ;
+        printf ("paru_realloc: got %p file: %s line: %d\n",
+            pnew, filename, line) ;
+    }
+    return (pnew) ;
+}
+#endif
+
+void *paru_realloc
+(
     size_t nnew,     // requested # of items
     size_t size_Entry,  // size of each Entry
     void *p,         // block memory to realloc
-    size_t *n)       // current size on input, nnew output if successful
+    size_t *n        // current size on input, nnew output if successful
+)
 {
     DEBUGLEVEL(0);
-#ifndef NDEBUG
-    static int64_t realloc_count = 0;
-#endif
     void *pnew;
     if (size_Entry == 0)
     {
@@ -216,7 +516,7 @@ void *paru_realloc(
     else if (p == NULL)
     {
         // A new alloc
-        p = paru_alloc(nnew, size_Entry);
+        p = paru_malloc (nnew, size_Entry);
         *n = (p == NULL) ? 0 : nnew;
     }
     else if (nnew == *n )
@@ -235,37 +535,52 @@ void *paru_realloc(
         PRLEVEL(1, ("realloc : " LD " to " LD ", " LD "\n", *n, nnew, size_Entry));
         int ok = TRUE;
 
-#ifdef PARU_ALLOC_TESTING
-        // brutal memory testing only
-        if (paru_get_malloc_tracking())
+        #ifdef PARU_ALLOC_TESTING
         {
-            int64_t nmalloc = paru_decr_nmalloc();
-            if (nmalloc > 0)
+            // brutal memory testing only
+            if (paru_get_malloc_tracking())
             {
-                pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
+                int64_t nmalloc = paru_decr_nmalloc();
+                if (nmalloc > 0)
+                {
+                    pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
+                }
+                else
+                {
+                    // pretend to fail
+                    ok = FALSE;
+                }
             }
             else
             {
-                // pretend to fail
-                ok = FALSE;
+                pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
             }
         }
-        else
+        #else
         {
-            pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
+            // in production
+            #ifdef MATLAB_MEX_FILE
+            {
+                // mxMalloc and friends are not thread-safe
+                #pragma omp critical (ParU_MATLAB_malloc_protection)
+                {
+                    pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
+                }
+            }
+            #else
+            {
+                pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
+            }
+            #endif
         }
-#else
-        // in production
-        pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
-#endif
+        #endif
 
         if (ok)
         {
-#ifndef NDEBUG
-            realloc_count += nnew * size_Entry - *n;
-            PRLEVEL(1, ("%% reallocated " LD " in %p and freed %p total= " LD "\n",
-                        nnew* size_Entry, pnew, p, realloc_count));
-#endif
+            #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
+            paru_memtable_remove (p) ;
+            paru_memtable_add (pnew, nnew*size_Entry) ;
+            #endif
             p = pnew ;
             *n = nnew;
         }
@@ -273,89 +588,126 @@ void *paru_realloc(
     return p;
 }
 
-//  Wrapper around free routine
-//
+//------------------------------------------------------------------------------
+// paru_free: Wrapper around free routine
+//------------------------------------------------------------------------------
+
+#ifdef PARU_MALLOC_DEBUG
+void paru_free_debug
+(
+    size_t n,
+    size_t size,
+    void *p,
+    const char *filename,
+    int line
+)
+{
+    #pragma omp critical(paru_memdebug)
+    {
+        printf ("paru_free: n %zu size %zu p %p file: %s line: %d\n",
+            n, size, p, filename, line) ;
+        paru_free (n, size, p) ;
+    }
+}
+#endif
+
 void paru_free(size_t n, size_t size, void *p)
 {
     DEBUGLEVEL(0);
-
-    // static int64_t free_count = 0;
-    // free_count += n * size;
-
-    // Valgrind is unhappy about some part here
-    //    PRLEVEL (1, ("%% free " LD " in %p total= " LD "\n",
-    //                n*size, p, free_count));
-
     if (p != NULL)
-        SuiteSparse_free(p);
+    {
+        #ifdef MATLAB_MEX_FILE
+        {
+            // mxMalloc and friends are not thread-safe
+            #pragma omp critical (ParU_MATLAB_malloc_protection)
+            {
+                SuiteSparse_free (p) ;
+            }
+        }
+        #else
+        {
+            SuiteSparse_free (p) ;
+        }
+        #endif
+        #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
+        paru_memtable_remove (p) ;
+        #endif
+    }
     else
     {
         PRLEVEL(1, ("%% freeing a NULL pointer  \n"));
     }
 }
 
+//------------------------------------------------------------------------------
+// new/delete: a wrapper for paru_malloc and paru_free 
+//------------------------------------------------------------------------------
+
 //  Global replacement of new and delete
-//
+
 void *operator new(size_t size)
 {
     // no inline, required by [replacement.functions]/3
     DEBUGLEVEL(0);
-#ifndef NDEBUG
-    static int64_t cpp_count = 0;
-    cpp_count += size;
-    PRLEVEL(1, ("global op new called, size = %zu tot=" LD "\n", size, cpp_count));
-#endif
 
     if (size == 0)
-        ++size;  // avoid malloc(0) which may return nullptr on success
+    {
+        ++size;  // make sure at least one byte is allocated
+    }
 
-    if (void *ptr = paru_alloc(1, size)) return ptr;
+    void *ptr = PARU_MALLOC (1, size) ;
+    if (ptr != nullptr)
+    {
+        return ptr;
+    }
+
     throw std::bad_alloc{};
 }
 
 void operator delete(void *ptr) noexcept
 {
     DEBUGLEVEL(0);
-    PRLEVEL(1, ("global op delete called"));
-    paru_free(0, 0, ptr);
+    PARU_FREE (0, 0, ptr) ;
 }
 
 //------------------------------------------------------------------------------
 // paru_free_el: free element e from elementList
 //------------------------------------------------------------------------------
 
+// Free element e, created by paru_create_element
+
 void paru_free_el(int64_t e, paru_element **elementList)
 {
     DEBUGLEVEL(0);
     paru_element *el = elementList[e];
     if (el == NULL) return;
-#ifndef NDEBUG
+// #ifndef NDEBUG
     int64_t nrows = el->nrows, ncols = el->ncols;
-    PRLEVEL(1, ("%%Free the element e =" LD "\t", e));
-    PRLEVEL(1, ("%% nrows =" LD " ", nrows));
-    PRLEVEL(1, ("%% ncols =" LD "\n", ncols));
-    int64_t tot_size =
-        sizeof(paru_element) + sizeof(int64_t)
-        * (2 * (nrows + ncols)) + sizeof(double) * nrows * ncols;
-    paru_free(1, tot_size, el);
-#else
-    paru_free(1, 0, el);
-#endif
-    elementList[e] = NULL;
+    size_t tot_size = sizeof(paru_element) +
+                      sizeof(int64_t) * (2 * (nrows + ncols)) +
+                      sizeof(double) * nrows * ncols;
+    PARU_FREE(1, tot_size, elementList [e]);
+// #else
+//  PARU_FREE(1, 0, elementList [e]);
+// #endif
 }
+
+//------------------------------------------------------------------------------
+// paru_free_work: free all workspace in Work object
+//------------------------------------------------------------------------------
 
 ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
 {
     int64_t m = Sym->m - Sym->n1;
     int64_t nf = Sym->nf;
     int64_t n = Sym->n - Sym->n1;
-    paru_free(m, sizeof(int64_t), Work->rowSize);
-    paru_free(m + nf + 1, sizeof(int64_t), Work->rowMark);
-    paru_free(m + nf, sizeof(int64_t), Work->elRow);
-    paru_free(m + nf, sizeof(int64_t), Work->elCol);
-    paru_free(Sym->ntasks, sizeof(int64_t), Work->task_num_child);
+    PARU_FREE(m, sizeof(int64_t), Work->rowSize);
+    PARU_FREE(m + nf + 1, sizeof(int64_t), Work->rowMark);
+    PARU_FREE(m + nf, sizeof(int64_t), Work->elRow);
+    PARU_FREE(m + nf, sizeof(int64_t), Work->elCol);
+    PARU_FREE(Sym->ntasks, sizeof(int64_t), Work->task_num_child);
 
-    paru_free(1, nf * sizeof(int64_t), Work->time_stamp);
+    PARU_FREE(1, nf * sizeof(int64_t), Work->time_stamp);
 
     paru_tupleList *RowList = Work->RowList;
     PRLEVEL(1, ("%% RowList =%p\n", RowList));
@@ -365,15 +717,15 @@ ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
         for (int64_t row = 0; row < m; row++)
         {
             int64_t len = RowList[row].len;
-            paru_free(len, sizeof(paru_tuple), RowList[row].list);
+            PARU_FREE(len, sizeof(paru_tuple), RowList[row].list);
         }
     }
-    paru_free(1, m * sizeof(paru_tupleList), RowList);
+    PARU_FREE(1, m * sizeof(paru_tupleList), Work->RowList);
 
     if (Work->Diag_map)
     {
-        paru_free(n, sizeof(int64_t), Work->Diag_map);
-        paru_free(n, sizeof(int64_t), Work->inv_Diag_map);
+        PARU_FREE(n, sizeof(int64_t), Work->Diag_map);
+        PARU_FREE(n, sizeof(int64_t), Work->inv_Diag_map);
     }
 
     paru_element **elementList;
@@ -400,9 +752,9 @@ ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
         }
     }
 
-    paru_free(1, (m + nf + 1) * sizeof(paru_element), elementList);
+    PARU_FREE(1, (m + nf + 1) * sizeof(paru_element), Work->elementList);
 
-    paru_free(m + nf, sizeof(int64_t), Work->lacList);
+    PARU_FREE(m + nf, sizeof(int64_t), Work->lacList);
 
     // in practice each parent should deal with the memory for the children
     std::vector<int64_t> **heapList = Work->heapList;
@@ -418,11 +770,11 @@ ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
                 delete heapList[eli];
                 heapList[eli] = NULL;
             }
-            ASSERT(heapList[eli] == NULL);
+            MEMASSERT(heapList[eli] == NULL);
         }
     }
-    paru_free(1, (m + nf + 1)*sizeof(std::vector<int64_t> **), Work->heapList);
-    paru_free(m, sizeof(int64_t), Work->row_degree_bound);
+    PARU_FREE(1, (m + nf + 1)*sizeof(std::vector<int64_t> **), Work->heapList);
+    PARU_FREE(m, sizeof(int64_t), Work->row_degree_bound);
 
     return PARU_SUCCESS;
 }

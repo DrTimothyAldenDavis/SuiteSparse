@@ -20,19 +20,6 @@ void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t 
     // This function also swap rows r1 and r2 wholly and indices
     if (r1 == r2) return;
     std::swap(frowList[r1], frowList[r2]);
-
-    // parallelism for this part is disabled ...
-    // int64_t naft; //number of active frontal tasks
-    // pragma omp atomic read
-    // naft = Num->naft;
-    // const int32_t max_threads = Control->paru_max_threads;
-    // if ( (naft == 1) && (n > 1024) )
-    // printf ("naft=" LD ", max_threads=" LD " num_tasks=" LD " n =" LD " \n",
-    //        naft, max_threads, max_threads/(naft), n);
-    // pragma omp parallel if ( (naft == 1) && (n > 1024) )
-    // pragma omp single
-    // pragma omp taskloop num_tasks(max_threads/(naft+1))
-
     for (int64_t j = 0; j < n; j++)
     {
         // each column
@@ -244,9 +231,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
 #pragma omp simd
             for (int64_t i = j + 1; i < row_end; i++)
             {
-                // printf("%%i=" LD " value= %2.4lf", i, F[j * m + i]);
                 F[j * m + i] /= piv;
-                // printf(" -> %2.4lf\n", F[j * m + i]);
             }
         }
 
@@ -314,7 +299,6 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
                 // lda); cblas_dger(CblasColMajor, M, N, alpha, X, Incx, Y,
                 // Incy, A, lda);
 #ifdef COUNT_FLOPS
-                // printf("dger adding to flop count " LD "\n", M*N*2);
 #pragma omp atomic update
             Num->flp_cnt_dger += (double)2 * M * N;
 #ifndef NDEBUG
@@ -527,10 +511,7 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
             blas_ok = paru_tasked_dgemm(f, M, N, K, A, lda, B, ldb, 1, C, ldc,
                                         Work, Num);
             if (!blas_ok) return (PARU_TOO_LARGE);
-                // printf (" " LD "  " LD "  " LD " ",M ,N, K);
-                // printf (" " LD "  " LD "  " LD "\n ",lda ,ldb, ldc);
 #ifdef COUNT_FLOPS
-                // printf("dgemm adding to flop count " LD "\n", M*N*2);
                 //#pragma omp atomic
                 // Num->flp_cnt_real_dgemm += (double)2 * M * N * K;
 #ifndef NDEBUG

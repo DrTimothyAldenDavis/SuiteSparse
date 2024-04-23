@@ -49,39 +49,39 @@ ParU_Info ParU_FreeSymbolic
                 "Sym->anz=" LD " \n",
                 m, n, nf, Sym->anz));
 
-    paru_free(nf + 1, sizeof(int64_t), Sym->Parent);
-    paru_free(nf + 1, sizeof(int64_t), Sym->Child);
-    paru_free(nf + 2, sizeof(int64_t), Sym->Childp);
-    paru_free(nf + 1, sizeof(int64_t), Sym->Super);
-    paru_free(nf, sizeof(int64_t), Sym->Depth);
-    paru_free(n, sizeof(int64_t), Sym->Qfill);
-    paru_free(n, sizeof(int64_t), Sym->Diag_map);
-    paru_free((m + 1), sizeof(int64_t), Sym->Pinit);
-    paru_free(nf + 1, sizeof(int64_t), Sym->Fm);
-    paru_free(nf + 1, sizeof(int64_t), Sym->Cm);
+    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Parent);
+    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Child);
+    PARU_FREE(nf + 2, sizeof(int64_t), Sym->Childp);
+    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Super);
+    PARU_FREE(nf, sizeof(int64_t), Sym->Depth);
+    PARU_FREE(n, sizeof(int64_t), Sym->Qfill);
+    PARU_FREE(n, sizeof(int64_t), Sym->Diag_map);
+    PARU_FREE((m + 1), sizeof(int64_t), Sym->Pinit);
+    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Fm);
+    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Cm);
 
-    // paru_free(Sym->num_roots, sizeof(int64_t), Sym->roots);
+    // PARU_FREE(Sym->num_roots, sizeof(int64_t), Sym->roots);
 
-    paru_free(m + 1 - n1, sizeof(int64_t), Sym->Sp);
-    paru_free(snz, sizeof(int64_t), Sym->Sj);
-    paru_free(n + 2 - n1, sizeof(int64_t), Sym->Sleft);
+    PARU_FREE(m + 1 - n1, sizeof(int64_t), Sym->Sp);
+    PARU_FREE(snz, sizeof(int64_t), Sym->Sj);
+    PARU_FREE(n + 2 - n1, sizeof(int64_t), Sym->Sleft);
 
-    // paru_free((n + 1), sizeof(int64_t), Sym->Chain_start);
-    // paru_free((n + 1), sizeof(int64_t), Sym->Chain_maxrows);
-    // paru_free((n + 1), sizeof(int64_t), Sym->Chain_maxcols);
+    // PARU_FREE((n + 1), sizeof(int64_t), Sym->Chain_start);
+    // PARU_FREE((n + 1), sizeof(int64_t), Sym->Chain_maxrows);
+    // PARU_FREE((n + 1), sizeof(int64_t), Sym->Chain_maxcols);
 
-    paru_free(nf + 1, sizeof(double), Sym->front_flop_bound);
-    paru_free(nf + 1, sizeof(double), Sym->stree_flop_bound);
+    PARU_FREE(nf + 1, sizeof(double), Sym->front_flop_bound);
+    PARU_FREE(nf + 1, sizeof(double), Sym->stree_flop_bound);
 
     int64_t ms = m - n1;  // submatrix is msxns
 
-    paru_free(ms + nf, sizeof(int64_t), Sym->aParent);
-    paru_free(ms + nf + 1, sizeof(int64_t), Sym->aChild);
-    paru_free(ms + nf + 2, sizeof(int64_t), Sym->aChildp);
-    paru_free(ms, sizeof(int64_t), Sym->row2atree);
-    paru_free(nf, sizeof(int64_t), Sym->super2atree);
-    paru_free(nf + 1, sizeof(int64_t), Sym->first);
-    paru_free(m, sizeof(int64_t), Sym->Pinv);
+    PARU_FREE(ms + nf, sizeof(int64_t), Sym->aParent);
+    PARU_FREE(ms + nf + 1, sizeof(int64_t), Sym->aChild);
+    PARU_FREE(ms + nf + 2, sizeof(int64_t), Sym->aChildp);
+    PARU_FREE(ms, sizeof(int64_t), Sym->row2atree);
+    PARU_FREE(nf, sizeof(int64_t), Sym->super2atree);
+    PARU_FREE(nf + 1, sizeof(int64_t), Sym->first);
+    PARU_FREE(m, sizeof(int64_t), Sym->Pinv);
 
     if (n1 > 0)
     {
@@ -90,29 +90,29 @@ ParU_Info ParU_FreeSymbolic
         if (cs1 > 0)
         {
             ParU_U_singleton ustons = Sym->ustons;
-            paru_free(cs1 + 1, sizeof(int64_t), ustons.Sup);
+            PARU_FREE(cs1 + 1, sizeof(int64_t), ustons.Sup);
             int64_t nnz = ustons.nnz;
-            paru_free(nnz, sizeof(int64_t), ustons.Suj);
+            PARU_FREE(nnz, sizeof(int64_t), ustons.Suj);
         }
 
         int64_t rs1 = Sym->rs1;
         if (rs1 > 0)
         {
             ParU_L_singleton lstons = Sym->lstons;
-            paru_free(rs1 + 1, sizeof(int64_t), lstons.Slp);
+            PARU_FREE(rs1 + 1, sizeof(int64_t), lstons.Slp);
             int64_t nnz = lstons.nnz;
-            paru_free(nnz, sizeof(int64_t), lstons.Sli);
+            PARU_FREE(nnz, sizeof(int64_t), lstons.Sli);
         }
     }
     int64_t ntasks = Sym->ntasks;
-    paru_free(ntasks + 1, sizeof(int64_t), Sym->task_map);
-    paru_free(ntasks, sizeof(int64_t), Sym->task_parent);
-    paru_free(ntasks, sizeof(int64_t), Sym->task_num_child);
-    paru_free(ntasks, sizeof(int64_t), Sym->task_depth);
+    PARU_FREE(ntasks + 1, sizeof(int64_t), Sym->task_map);
+    PARU_FREE(ntasks, sizeof(int64_t), Sym->task_parent);
+    PARU_FREE(ntasks, sizeof(int64_t), Sym->task_num_child);
+    PARU_FREE(ntasks, sizeof(int64_t), Sym->task_depth);
 
-    paru_free(1, sizeof(ParU_Symbolic), Sym);
+    PARU_FREE(1, sizeof(ParU_Symbolic), Sym);
 
-    *Sym_handle = NULL;
-    return PARU_SUCCESS;
+    (*Sym_handle) = NULL;
+    return (PARU_SUCCESS) ;
 }
 

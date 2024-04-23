@@ -43,19 +43,19 @@ ParU_Info ParU_FreeNumeric
     int64_t nf = Num->nf;
 
     // freeing the numerical input
-    paru_free(Num->snz, sizeof(double), Num->Sx);
+    PARU_FREE(Num->snz, sizeof(double), Num->Sx);
     if (Num->sunz > 0)
     {
-        paru_free(Num->sunz, sizeof(double), Num->Sux);
+        PARU_FREE(Num->sunz, sizeof(double), Num->Sux);
     }
     if (Num->slnz > 0)
     {
-        paru_free(Num->slnz, sizeof(double), Num->Slx);
+        PARU_FREE(Num->slnz, sizeof(double), Num->Slx);
     }
 
-    paru_free(Num->sym_m, sizeof(int64_t), Num->Rs);
-    paru_free(Num->sym_m, sizeof(int64_t), Num->Pfin);
-    paru_free(Num->sym_m, sizeof(int64_t), Num->Ps);
+    PARU_FREE(Num->sym_m, sizeof(int64_t), Num->Rs);
+    PARU_FREE(Num->sym_m, sizeof(int64_t), Num->Pfin);
+    PARU_FREE(Num->sym_m, sizeof(int64_t), Num->Ps);
 
     // free the factors
     ParU_Factors *LUs = Num->partial_LUs;
@@ -64,9 +64,9 @@ ParU_Info ParU_FreeNumeric
     for (int64_t i = 0; i < nf; i++)
     {
         if (Num->frowList)
-            paru_free(Num->frowCount[i], sizeof(int64_t), Num->frowList[i]);
+            PARU_FREE(Num->frowCount[i], sizeof(int64_t), Num->frowList[i]);
         if (Num->fcolList)
-            paru_free(Num->fcolCount[i], sizeof(int64_t), Num->fcolList[i]);
+            PARU_FREE(Num->fcolCount[i], sizeof(int64_t), Num->fcolList[i]);
 
         if (Us)
         {
@@ -75,7 +75,7 @@ ParU_Info ParU_FreeNumeric
                 PRLEVEL(1, ("%% Freeing Us=%p\n", Us[i].p));
                 int64_t mm = Us[i].m;
                 int64_t nn = Us[i].n;
-                paru_free(mm * nn, sizeof(double), Us[i].p);
+                PARU_FREE(mm * nn, sizeof(double), Us[i].p);
             }
         }
 
@@ -86,22 +86,19 @@ ParU_Info ParU_FreeNumeric
                 PRLEVEL(1, ("%% Freeing LUs=%p\n", LUs[i].p));
                 int64_t mm = LUs[i].m;
                 int64_t nn = LUs[i].n;
-                paru_free(mm * nn, sizeof(double), LUs[i].p);
+                PARU_FREE(mm * nn, sizeof(double), LUs[i].p);
             }
         }
     }
 
     PRLEVEL(1, ("%% Done LUs\n"));
-    paru_free(1, nf * sizeof(int64_t), Num->frowCount);
-    paru_free(1, nf * sizeof(int64_t), Num->fcolCount);
-
-    paru_free(1, nf * sizeof(int64_t *), Num->frowList);
-    paru_free(1, nf * sizeof(int64_t *), Num->fcolList);
-
-    paru_free(1, nf * sizeof(ParU_Factors), LUs);
-    paru_free(1, nf * sizeof(ParU_Factors), Us);
-
-    paru_free(1, sizeof(ParU_Numeric), Num);
-    *Num_handle = NULL;
-    return PARU_SUCCESS;
+    PARU_FREE(1, nf * sizeof(int64_t), Num->frowCount);
+    PARU_FREE(1, nf * sizeof(int64_t), Num->fcolCount);
+    PARU_FREE(1, nf * sizeof(int64_t *), Num->frowList);
+    PARU_FREE(1, nf * sizeof(int64_t *), Num->fcolList);
+    PARU_FREE(1, nf * sizeof(ParU_Factors), Num->partial_LUs) ;
+    PARU_FREE(1, nf * sizeof(ParU_Factors), Num->partial_Us) ;
+    PARU_FREE(1, sizeof(ParU_Numeric), Num);
+    (*Num_handle) = NULL ;
+    return (PARU_SUCCESS) ;
 }

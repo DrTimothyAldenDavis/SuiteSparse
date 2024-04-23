@@ -90,10 +90,10 @@ int main(int argc, char **argv)
     // covering alloc lines
     int64_t *t = NULL;
 
-    t = (int64_t *)paru_alloc(1, sizeof(int64_t) * 0);
+    t = (int64_t *)paru_malloc (1, sizeof(int64_t) * 0);
     TEST_ASSERT (t == NULL) ;
 
-    t = (int64_t *)paru_alloc(Size_max, sizeof(int64_t));
+    t = (int64_t *)paru_malloc (Size_max, sizeof(int64_t));
     TEST_ASSERT (t == NULL) ;
 
     size_t size = 0;

@@ -213,8 +213,8 @@ int main(int argc, char **argv)
 #endif
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int64_t max_threads = omp_get_max_threads();
-    omp_set_num_threads(max_threads);
+    // int64_t max_threads = omp_get_max_threads();
+    // omp_set_num_threads(max_threads);
 
     //~~~~~~~~~~~~~~~~~~~Calling umfpack~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     double umf_time = 0;

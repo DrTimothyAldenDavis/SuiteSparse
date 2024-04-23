@@ -80,26 +80,25 @@ ParU_Info ParU_C_Analyze
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_C_Symbolic *Sym_C =
-        static_cast<ParU_C_Symbolic*>(paru_alloc(1, sizeof(ParU_C_Symbolic)));
+        static_cast<ParU_C_Symbolic*>(PARU_CALLOC (1, sizeof(ParU_C_Symbolic)));
     if (!Sym_C)
     {
         return (PARU_OUT_OF_MEMORY) ;
     }
     ParU_Symbolic *Sym;
-    ParU_Info info;
-    info = ParU_Analyze(A, &Sym, &Control);
+    ParU_Info info = ParU_Analyze(A, &Sym, &Control);
     if (info != PARU_SUCCESS)
     {
-        paru_free (1, sizeof(ParU_C_Symbolic), Sym_C);
+        PARU_FREE (1, sizeof(ParU_C_Symbolic), Sym_C);
         return (info) ;
     }
     Sym_C->sym_handle = static_cast<void*>(Sym);
-    *Sym_handle_C = Sym_C;
     Sym_C->m = Sym->m;
     Sym_C->n = Sym->n;
     Sym_C->anz = Sym->anz;
     Sym_C->Qfill = Sym->Qfill ;
-    return info;
+    (*Sym_handle_C) = Sym_C;
+    return (info) ;
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +127,7 @@ ParU_Info ParU_C_Factorize
     paru_cp_control (&Control, Control_C);
     ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
     ParU_C_Numeric *Num_C =
-        static_cast<ParU_C_Numeric*>(paru_alloc(1, sizeof(ParU_C_Numeric)));
+        static_cast<ParU_C_Numeric*>(PARU_CALLOC (1, sizeof(ParU_C_Numeric)));
     if (!Num_C)
     {
         return (PARU_OUT_OF_MEMORY) ;
@@ -139,15 +138,15 @@ ParU_Info ParU_C_Factorize
     info = ParU_Factorize(A, Sym, &Num, &Control);
     if (info != PARU_SUCCESS)
     {
-        paru_free (1, sizeof(ParU_C_Numeric), Num_C);
+        PARU_FREE (1, sizeof(ParU_C_Numeric), Num_C);
         return info;
     }
     Num_C->num_handle = static_cast<void*>(Num);
-    *Num_handle_C = Num_C;
     Num_C->rcond = Num->rcond;
     Num_C->Pfin = Num->Pfin ;
     Num_C->Rs = Num->Rs ;
-    return info;
+    (*Num_handle_C) = Num_C;
+    return (info) ;
 }
 
 //------------------------------------------------------------------------------
@@ -545,9 +544,8 @@ ParU_Info ParU_C_FreeNumeric
     paru_cp_control (&Control, Control_C);
     ParU_C_Numeric *Num_C = *Num_handle_C;
     ParU_Numeric *Num = static_cast<ParU_Numeric*>(Num_C->num_handle);
-    ParU_Info info;
-    info = ParU_FreeNumeric(&Num, &Control);
-    paru_free(1, sizeof(ParU_C_Numeric), *Num_handle_C);
+    ParU_Info info = ParU_FreeNumeric(&Num, &Control);
+    PARU_FREE(1, sizeof(ParU_C_Numeric), *Num_handle_C);
     return info;
 }
 
@@ -571,9 +569,8 @@ ParU_Info ParU_C_FreeSymbolic
     paru_cp_control (&Control, Control_C);
     ParU_C_Symbolic *Sym_C = *Sym_handle_C;
     ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_Info info;
-    info = ParU_FreeSymbolic(&Sym, &Control);
-    paru_free(1, sizeof(ParU_C_Symbolic), *Sym_handle_C);
+    ParU_Info info = ParU_FreeSymbolic(&Sym, &Control);
+    PARU_FREE(1, sizeof(ParU_C_Symbolic), *Sym_handle_C);
     return info;
 }
 

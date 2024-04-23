@@ -25,8 +25,8 @@ ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     int64_t *Ps = NULL;
     int64_t *Pinit = Sym->Pinit;
 
-    Num->Pfin = Pfin = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));
-    Num->Ps = Ps = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));
+    Num->Pfin = Pfin = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));
+    Num->Ps = Ps = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));
 
     PRLEVEL(1, ("%% Inside Perm\n"));
     if (Pfin == NULL || Ps == NULL)
@@ -85,7 +85,11 @@ ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     PRLEVEL(PR, (" \n"));
     PR = 1;
     PRLEVEL(PR, ("%% n1=" LD " Final row permutaion is:\n%%", n1));
-    for (int64_t k = 0; k < std::min(77, m); k++) PRLEVEL(PR, ("" LD " ", Pfin[k]));
+    int64_t mm = std::min (m, (int64_t) 77) ;
+    for (int64_t k = 0; k < mm ; k++)
+    {
+        PRLEVEL(PR, ("" LD " ", Pfin[k]));
+    }
     PRLEVEL(PR, (" \n"));
 #endif
     return PARU_SUCCESS;

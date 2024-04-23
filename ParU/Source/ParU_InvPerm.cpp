@@ -24,7 +24,7 @@
  *                ***$$$$$$$    $$$$$$$
  *                    <----q----
  *
- *                     Pfin (COMPUTED HERE)
+ *                     Pfin (computed here)
  *               ------------------>
  *                 Pinit     Ps = (compute here) newRofS (paru_write)
  *               --------> -------->

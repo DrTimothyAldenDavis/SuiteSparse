@@ -13,10 +13,21 @@
 //      [x,stats] = paru (A, b, options)
 
 #define BLAS_Intel10_64ilp
-extern "C" {
-#include "cholmod_matlab.h"
-}
+#include "sputil2.h"
 #include "ParU.h"
+
+#define OK(ok,error_message)                                        \
+{                                                                   \
+    if (!(ok))                                                      \
+    {                                                               \
+        mexErrMsgIdAndTxt ("ParU:error", "ParU: " error_message) ;  \
+    }                                                               \
+}
+
+#define PARU_OK(method,error_message)                               \
+{                                                                   \
+    OK ((method) == PARU_SUCCESS, error_message) ;                  \
+}
 
 void mexFunction
 (
@@ -26,7 +37,6 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    double dummy = 0, rcond ;
     cholmod_sparse Amatrix, *A ;
     cholmod_dense Bmatrix, *X, *B ;
     cholmod_common Common, *cm ;
@@ -36,23 +46,9 @@ void mexFunction
     // start CHOLMOD
     //--------------------------------------------------------------------------
 
+    SuiteSparse_start ( ) ;
     cm = &Common ;
-    cholmod_l_start (cm) ;
-
-    /* memory management functions */
-    SuiteSparse_config.malloc_func  = mxMalloc ;
-    SuiteSparse_config.calloc_func  = mxCalloc ;
-    SuiteSparse_config.realloc_func = mxRealloc ;
-    SuiteSparse_config.free_func    = mxFree ;
-    /* printf function */
-    SuiteSparse_config.printf_func = mexPrintf ;
-    /* math functions */
-    SuiteSparse_config.hypot_func = hypot ; // was SuiteSparse_hypot in v5
-    SuiteSparse_config.divcomplex_func = SuiteSparse_divcomplex ;
-
-//  printf ("%p\n", MKL_Set_Num_Threads) ;
-//  MKL_Set_Num_Threads (40) ;
-    printf ("got here\n") ;
+    OK (cholmod_l_start (cm), "error initializing CHOLMOD") ;
 
     //--------------------------------------------------------------------------
     // get inputs
@@ -77,42 +73,53 @@ void mexFunction
     }
 
     // get sparse matrix A
-    A = sputil_get_sparse (pargin [0], &Amatrix, &dummy, 0) ;
+    size_t A_xsize = 0 ;
+    A = sputil2_get_sparse (pargin [0], 0, CHOLMOD_DOUBLE, &Amatrix,
+        &A_xsize, cm) ;
+    OK (A != NULL, "error getting A matrix") ;
 
     // get dense matrix B */
-    B = sputil_get_dense (pargin [1], &Bmatrix, &dummy) ;
+    size_t B_xsize = 0 ;
+    B = sputil2_get_dense (pargin [1], CHOLMOD_DOUBLE, &Bmatrix,
+        &B_xsize, cm) ;
+    OK (B != NULL, "error getting B matrix") ;
     int64_t nrhs = B->ncol ;
 
     // create the solution X
-    X = cholmod_l_allocate_dense (n, nrhs, n, CHOLMOD_REAL, cm) ;
+    X = cholmod_l_allocate_dense (n, nrhs, n, CHOLMOD_DOUBLE + CHOLMOD_REAL,
+        cm) ;
+    OK (X != NULL, "error creating X matrix") ;
 
-    // get the options (TODO)
+    // get the options (TODO)   FIXME NOW
 
     //--------------------------------------------------------------------------
     // x = A\b using ParU
     //--------------------------------------------------------------------------
 
-    ParU_Control Control ;
-    ParU_Info info ;
-    ParU_Symbolic *Sym = NULL ;
-    info = ParU_Analyze (A, &Sym, &Control) ;
-    ParU_Numeric *Num = NULL ;
-    info = ParU_Factorize (A, Sym, &Num, &Control) ;
-    info = ParU_Solve (Sym, Num, nrhs, (double *) B->x,
-        (double *) X->x, &Control) ;
-    ParU_FreeNumeric (&Num, &Control) ;
-    ParU_FreeSymbolic (&Sym, &Control) ;
+    ParU_C_Control Control ;
+    ParU_C_Symbolic *Sym = NULL ;
+    ParU_C_Numeric *Num = NULL ;
+
+    PARU_OK (ParU_C_Init_Control (&Control), "initialization failed") ;
+    PARU_OK (ParU_C_Analyze (A, &Sym, &Control), "symbolic analysis failed") ;
+    PARU_OK (ParU_C_Factorize (A, Sym, &Num, &Control), "factorization failed");
+    PARU_OK (ParU_C_Solve_AXB (Sym, Num, nrhs, (double *) B->x, (double *) X->x,
+        &Control), "solve failed") ;
+    PARU_OK (ParU_C_FreeNumeric (&Num, &Control), "free numeric failed") ;
+    PARU_OK (ParU_C_FreeSymbolic (&Sym, &Control), "free symbolic failed") ;
 
     //--------------------------------------------------------------------------
-    // return solution to MATLAB
+    // free workspace and return solution to MATLAB
     //--------------------------------------------------------------------------
 
-    pargout [0] = sputil_put_dense (&X, cm) ;
+    pargout [0] = sputil2_put_dense (&X, mxDOUBLE_CLASS, cm) ;
     // return statistics, if requested */
     if (nargout > 1)
     {
-	// pargout [1] = ... TODO
+	// pargout [1] = ... TODO   FIXME NOW
     }
-
+    sputil2_free_sparse (&A, &Amatrix, A_xsize, cm) ;
+    sputil2_free_dense  (&B, &Bmatrix, B_xsize, cm) ;
     cholmod_l_finish (cm) ;
 }
+

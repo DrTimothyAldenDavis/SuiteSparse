@@ -69,7 +69,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 
         int64_t fm = Sym->Fm[f]; /* Upper bound number of rows of F */
         PRLEVEL(1, ("%% the size of fm is " LD "\n", fm));
-        int64_t *frowList = static_cast<int64_t*>(paru_alloc(fm, sizeof(int64_t)));
+        int64_t *frowList = static_cast<int64_t*>(PARU_MALLOC (fm, sizeof(int64_t)));
         if (frowList == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to allocate"
@@ -171,7 +171,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 
 #endif
 
-        // provide paru_alloc as the allocator
+        // provide PARU_MALLOC as the allocator
         int64_t fn = Sym->Cm[f];      /* Upper bound number of cols of F */
         std::set<int64_t> stl_colSet; /* used in this scope */
 
@@ -263,7 +263,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         if (fn != 0)
         {
             PRLEVEL(1, ("%% fp=" LD " fn=" LD " \n", fp, fn));
-            fcolList = static_cast<int64_t*>(paru_calloc(stl_colSet.size(), sizeof(int64_t)));
+            fcolList = static_cast<int64_t*>(PARU_CALLOC (stl_colSet.size(), sizeof(int64_t)));
 
             if (fcolList == NULL)
             {
@@ -276,10 +276,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 
         Num->fcolList[f] = fcolList;
 
-        std::vector<int64_t> **heapList = Work->heapList;
-        std::vector<int64_t> *curHeap = heapList[eli];
-
-        // EXIT point HERE
+        // exit point here
         if (colCount == 0)
         {
             // there is no CB, Nothing to be done
@@ -294,10 +291,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
             }
             else
             {
-                PRLEVEL(
-                    1, ("%%Heap freed inside front %p id=" LD "\n", curHeap, eli));
-                delete curHeap;
-                Work->heapList[eli] = NULL;
+                PRLEVEL(1, ("%%Heap freed inside front id=" LD "\n", eli));
+                delete Work->heapList[eli] ;
                 PRLEVEL(1, ("%% pivotalFront =%p\n", pivotalFront));
                 PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~2\n", f));
                 return PARU_SUCCESS;
@@ -328,7 +323,6 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         {
             // hash_bits is a bit mask to compute the result modulo
             // the hash table size, which is always a power of 2.
-
             PRLEVEL(PR, ("%% colHash HASH hash_size=" LD "\n", hash_size));
             PRLEVEL(PR, ("%% colCount=" LD "\n", colCount));
             for (it = stl_colSet.begin(); it != stl_colSet.end(); ++it)
@@ -347,7 +341,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         /**** 5 ** assemble U part         Row by Row                      ****/
 
         // consider a parallel calloc
-        double *uPart = static_cast<double*>(paru_calloc(fp * colCount, sizeof(double)));
+        double *uPart = static_cast<double*>(PARU_CALLOC (fp * colCount, sizeof(double)));
         if (uPart == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to"
@@ -506,7 +500,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
             if (zero_piv_rows > 0)
             {
                 // keep the heap and do it for the parent.
-                PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~3\n", f));
+                PRLEVEL(-2, ("%%~~~~Assemble Front " LD " finished~~~3\n", f));
                 return paru_make_heap_empty_el(f, pivotal_elements, hi, Work,
                                                Num);
                 // There are stuff left from in zero
@@ -516,13 +510,6 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
             {
                 return paru_make_heap_empty_el(f, pivotal_elements, hi, Work,
                                                Num);
-                // delete curHeap;
-                // Work->heapList[eli] = NULL;
-                // PRLEVEL(1, ("%%(2)Heap freed inside front %p id=" LD "\n"
-                //            , curHeap, eli));
-                // PRLEVEL(1, ("%% pivotalFront =%p\n", pivotalFront));
-                // PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~4\n",
-                // f)); return PARU_SUCCESS;
             }
         }
 

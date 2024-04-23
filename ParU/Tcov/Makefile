@@ -24,8 +24,8 @@ LIBS = -L../../lib -lumfpack -lcholmod -lamd -lcolamd -lm \
 
 # for statement coverage (with gcov; see go) and picky compiler warnings
 CF = -pg -O0 -g -fprofile-arcs -ftest-coverage \
-	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
-	 -Wdisabled-optimization -fexceptions -fopenmp
+    -Wall -W -Wshadow -Winline -Wno-unused-parameter \
+    -Wdisabled-optimization -fexceptions -fopenmp
 
 I = -I../../SuiteSparse_config -I../../UMFPACK/Source -I../../UMFPACK/Include \
 	-I../../CHOLMOD/Include -I../../AMD/Include   -I../Include -I../Source \
@@ -36,21 +36,21 @@ C = $(CXX) $(CF) $(I) -Wno-write-strings -std=c++11 \
 #C2 = $(CC) $(CF) $(I) -Wno-write-strings -std=c11
 
 all: paru_quick_test paru_brutal_test paru_c_test
-	
+
 
 #-------------------------------------------------------------------------------
 INC = ../Include/ParU.h
 
 OBJ = \
-        paru_mem.o \
-        ParU_FreeSymbolic.o \
-        ParU_FreeNumeric.o \
-        paru_memset.o \
-        paru_memcpy.o \
-        paru_heap.o \
-        paru_hash.o \
-        paru_pivotal.o \
-        ParU_Analyze.o \
+	paru_mem.o \
+	ParU_FreeSymbolic.o \
+	ParU_FreeNumeric.o \
+	paru_memset.o \
+	paru_memcpy.o \
+	paru_heap.o \
+	paru_hash.o \
+	paru_pivotal.o \
+	ParU_Analyze.o \
 	paru_init_rowFronts.o\
 	paru_tuples.o\
 	paru_front.o\
@@ -83,13 +83,14 @@ OBJ = \
 	paru_full_summed.o \
 	paru_tasked_dgemm.o \
 	paru_tasked_trsm.o \
-        ParU_C.o \
-        paru_cp_control.o \
+	ParU_C.o \
+	paru_cp_control.o \
 	ParU_Version.o  \
 	paru_umfpack_info.o  \
 	SuiteSparse_config.o
 
-#	paru_print.o \   # These methods are used only in debug mode
+# paru_print and paru_write are used only in debug mode:
+#	paru_print.o \
 #	paru_write.o
 
 
@@ -97,6 +98,9 @@ $(OBJ): $(INC)
 
 VFLAGS = --leak-check=yes  --log-file="valgrindlogfile.log"\
 		   --show-leak-kinds=all --track-origins=yes
+
+# V = valgrind $(VFLAGS)
+V =
 
 #-------------------------------------------------------------------------------
 
@@ -110,68 +114,67 @@ paru_quick_test: paru_quick_test.cpp $(INC) $(OBJ)
 paru_c_test: paru_c_test.cpp $(INC) $(OBJ)
 	$(C)  paru_c_test.cpp -o paru_c_test $(OBJ) $(LIBS)
 
-
 go: paru_brutal_test paru_quick_test paru_c_test
-	./paru_c_test < ../Matrix/west0067.mtx
+	$(V) ./paru_c_test < ../Matrix/west0067.mtx
 	- ./cov
-	./paru_quick_test < ../Matrix/tumorAntiAngiogenesis_2.mtx
-	./paru_quick_test < ../Matrix/olm500.mtx
+	$(V) ./paru_quick_test < ../Matrix/tumorAntiAngiogenesis_2.mtx
+	$(V) ./paru_quick_test < ../Matrix/olm500.mtx
 	- ./cov
-	./paru_quick_test < ../Matrix/adder_dcop_05.mtx
-	./paru_quick_test < ../Matrix/bayer10.mtx
-	./paru_quick_test 104 < ../Matrix/rajat01.mtx
-	./paru_quick_test < ../Matrix/rajat19.mtx
-	./paru_brutal_test < ../Matrix/west0497.mtx
-	./paru_quick_test 104 < ../Matrix/gent113.mtx
+	$(V) ./paru_quick_test < ../Matrix/adder_dcop_05.mtx
+	$(V) ./paru_quick_test < ../Matrix/bayer10.mtx
+	$(V) ./paru_quick_test 104 < ../Matrix/rajat01.mtx
+	$(V) ./paru_quick_test < ../Matrix/rajat19.mtx
+	$(V) ./paru_brutal_test < ../Matrix/west0497.mtx
+	$(V) ./paru_quick_test 104 < ../Matrix/gent113.mtx
 	- ./cov
-	./paru_quick_test < ../Matrix/hangGlider_2.mtx
-	./paru_brutal_test 104 < ../Matrix/Tina_AskCal.mtx
-	./paru_brutal_test 104 < ../Matrix/GD98_a.mtx
-	./paru_brutal_test 104 < ../Matrix/a0.mtx
-	./paru_brutal_test 104 < ../Matrix/a1.mtx
-	./paru_brutal_test 104 < ../Matrix/Tina_AskCal_perm.mtx
+	$(V) ./paru_quick_test < ../Matrix/hangGlider_2.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/Tina_AskCal.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/GD98_a.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/a0.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/a1.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/Tina_AskCal_perm.mtx
 	- ./cov
-	./paru_brutal_test 104 < ../Matrix/ash219.mtx
-	./paru_brutal_test 104 < ../Matrix/lp_e226.mtx
-	./paru_brutal_test 104 < ../Matrix/r2.mtx
-	./paru_brutal_test < ../Matrix/LFAT5.mtx
-	./paru_quick_test < ../Matrix/arrow.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/ash219.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/lp_e226.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/r2.mtx
+	$(V) ./paru_brutal_test < ../Matrix/LFAT5.mtx
+	$(V) ./paru_quick_test < ../Matrix/arrow.mtx
 	- ./cov
-	./paru_brutal_test < ../Matrix/a2.mtx
-	./paru_brutal_test < ../Matrix/az88.mtx
-	./paru_quick_test 102 < ../Matrix/young1c.mtx
-	./paru_brutal_test 104 < ../Matrix/s32.mtx
-	./paru_brutal_test 104 < ../Matrix/lp_share1b.mtx
+	$(V) ./paru_brutal_test < ../Matrix/a2.mtx
+	$(V) ./paru_brutal_test < ../Matrix/az88.mtx
+	$(V) ./paru_quick_test 102 < ../Matrix/young1c.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/s32.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/lp_share1b.mtx
 	- ./cov
-	./paru_brutal_test -14 < ../Matrix/cage3.mtx
-	./paru_brutal_test -15 < ../Matrix/b1_ss.mtx
-	./paru_brutal_test -15 < ../Matrix/lfat5b.mtx
-	./paru_brutal_test 104 < ../Matrix/c32.mtx
-	./paru_brutal_test -15 < ../Matrix/bfwa62.mtx
-	./paru_brutal_test 104 < ../Matrix/Ragusa16.mtx
-	./paru_brutal_test 104 < ../Matrix/lp_e226_transposed.mtx
+	$(V) ./paru_brutal_test -14 < ../Matrix/cage3.mtx
+	$(V) ./paru_brutal_test -15 < ../Matrix/b1_ss.mtx
+	$(V) ./paru_brutal_test -15 < ../Matrix/lfat5b.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/c32.mtx
+	$(V) ./paru_brutal_test -15 < ../Matrix/bfwa62.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/Ragusa16.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/lp_e226_transposed.mtx
 	- ./cov
-	./paru_brutal_test 105 < ../Matrix/row0.mtx
-	./paru_brutal_test 104 < ../Matrix/Groebner_id2003_aug.mtx
-	./paru_brutal_test 104 < ../Matrix/c2.mtx
-	./paru_brutal_test 104 < ../Matrix/a4.mtx
-	./paru_brutal_test 104 < ../Matrix/problem.mtx
-	./paru_brutal_test -14 < ../Matrix/permuted_b1_ss.mtx
-	./paru_brutal_test < ../Matrix/pwr01b.mtx
+	$(V) ./paru_brutal_test 105 < ../Matrix/row0.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/Groebner_id2003_aug.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/c2.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/a4.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/problem.mtx
+	$(V) ./paru_brutal_test -14 < ../Matrix/permuted_b1_ss.mtx
+	$(V) ./paru_brutal_test < ../Matrix/pwr01b.mtx
 	- ./cov
-	./paru_brutal_test 104 < ../Matrix/Franz6_id1959_aug.mtx
-	./paru_brutal_test 104 < ../Matrix/Ragusa16_pattern.mtx
-	./paru_brutal_test < ../Matrix/temp.mtx
-	./paru_brutal_test -15 < ../Matrix/cage5.mtx
-	./paru_c_test 104 < ../Matrix/a04.mtx
-	./paru_c_test 104 < ../Matrix/lpi_galenet.mtx
-	./paru_quick_test < ../Matrix/nnc1374.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/Franz6_id1959_aug.mtx
+	$(V) ./paru_brutal_test 104 < ../Matrix/Ragusa16_pattern.mtx
+	$(V) ./paru_brutal_test < ../Matrix/temp.mtx
+	$(V) ./paru_brutal_test -15 < ../Matrix/cage5.mtx
+	$(V) ./paru_c_test 104 < ../Matrix/a04.mtx
+	$(V) ./paru_c_test 104 < ../Matrix/lpi_galenet.mtx
+	$(V) ./paru_quick_test < ../Matrix/nnc1374.mtx
 	- ./cov
-	./paru_brutal_test < ../Matrix/494_bus.mtx
+	$(V) ./paru_brutal_test < ../Matrix/494_bus.mtx
 	- ./cov
-	./paru_quick_test < ../Matrix/xenon1.mtx
+	$(V) ./paru_quick_test < ../Matrix/xenon1.mtx
 	- ./cov
-	./paru_quick_test < ../Matrix/c-62.mtx
+	$(V) ./paru_quick_test < ../Matrix/c-62.mtx
 	- ./cov
 
 vgo: paru_brutal_test

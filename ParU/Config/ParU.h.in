@@ -294,7 +294,7 @@ struct ParU_Control
     int32_t filter_singletons = 1 ; // filter singletons if nonzero
 
     // For all phases of ParU:
-    int32_t paru_max_threads = 0 ;  // initialized with omp_max_threads
+    int32_t paru_max_threads = 0;   // initialized with omp_max_threads
 } ;
 
 // =============================================================================

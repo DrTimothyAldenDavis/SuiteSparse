@@ -33,7 +33,7 @@ ParU_Info paru_add_rowTuple(paru_tupleList *RowList, int64_t row, paru_tuple T)
         PRLEVEL(1, ("%%Row paru_tuple reallocating space\n"));
         int64_t newLen = cur->len * 2 + 1;
         paru_tuple *newList =
-            static_cast<paru_tuple*>(paru_alloc(newLen, sizeof(paru_tuple)));
+            static_cast<paru_tuple*>(PARU_MALLOC (newLen, sizeof(paru_tuple)));
         if (newList == NULL)  // Error in allocating memory
         {
             return PARU_OUT_OF_MEMORY;
@@ -42,7 +42,7 @@ ParU_Info paru_add_rowTuple(paru_tupleList *RowList, int64_t row, paru_tuple T)
         {
             newList[i] = cur->list[i];
         }
-        paru_free(cur->len, sizeof(paru_tuple), cur->list);
+        PARU_FREE(cur->len, sizeof(paru_tuple), cur->list);
         cur->len = newLen;
         cur->list = newList;
         cur->list[cur->numTuple++] = T;

@@ -169,7 +169,8 @@ ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
         std::vector<int64_t> *curHeap;
         try
         {
-            curHeap = heapList[eli] = new std::vector<int64_t>;
+            curHeap = new std::vector<int64_t>;
+            heapList[eli] = curHeap ;
         }
         catch (std::bad_alloc const &)
         {
@@ -326,7 +327,8 @@ ParU_Info paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_eleme
         std::vector<int64_t> *curHeap;
         try
         {
-            curHeap = heapList[eli] = new std::vector<int64_t>;
+            curHeap = new std::vector<int64_t>;
+            heapList[eli] = curHeap ;
         }
         catch (std::bad_alloc const &)
         {

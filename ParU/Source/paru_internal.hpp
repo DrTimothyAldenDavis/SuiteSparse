@@ -435,13 +435,66 @@ inline int64_t control_mem_chunk (ParU_Control *Control)
 
 //------------------------------------------------------------------------------
 // internal routines
-//
+//------------------------------------------------------------------------------
+
+// #ifndef PARU_ALLOC_TESTING
+// #define PARU_ALLOC_TESTING
+// #endif
+
+// #ifndef PARU_MEMDUMP
+// #define PARU_MEMDUMP
+// #endif
+
 /* Wrappers for managing memory */
-void *paru_alloc(size_t n, size_t size);
+extern "C" {
+void *paru_malloc(size_t n, size_t size);
 void *paru_calloc(size_t n, size_t size);
 void *paru_realloc(size_t newsize, size_t size_Entry, void *oldP, size_t *size);
-
 void paru_free(size_t n, size_t size, void *p);
+
+void *paru_malloc_debug(size_t n, size_t size, const char *filename, int line);
+void *paru_calloc_debug(size_t n, size_t size, const char *filename, int line);
+void *paru_realloc_debug(size_t newsize, size_t size_Entry, void *oldP, size_t *size, const char *filename, int line);
+void paru_free_debug(size_t n, size_t size, void *p, const char *filename, int line);
+}
+
+#if defined ( PARU_MALLOC_DEBUG )
+
+    #define PARU_MALLOC(n,size)                                 \
+        paru_malloc_debug (n, size, __FILE__, __LINE__)
+
+    #define PARU_CALLOC(n,size)                                 \
+        paru_calloc_debug (n, size, __FILE__, __LINE__)
+
+    #define PARU_REALLOC(newsize,size_Entry,oldP,size)          \
+        paru_realloc_debug (newsize,size_Entry,oldP,size,       \
+            __FILE__, __LINE__)
+
+    #define PARU_FREE(n,size,p)                                 \
+    {                                                           \
+        paru_free_debug (n, size, p, __FILE__, __LINE__) ;      \
+        (p) = NULL ;                                            \
+    }
+
+#else
+
+    #define PARU_MALLOC(n,size)                                 \
+        paru_malloc (n, size)
+
+    #define PARU_CALLOC(n,size)                                 \
+        paru_calloc (n, size)
+
+    #define PARU_REALLOC(newsize,size_Entry,oldP,size)          \
+        paru_realloc (newsize,size_Entry,oldP,size)
+
+    #define PARU_FREE(n,size,p)                                 \
+    {                                                           \
+        paru_free (n, size, p) ;                                \
+        (p) = NULL ;                                            \
+    }
+
+#endif
+
 void paru_free_el(int64_t e, paru_element **elementList);
 
 void *operator new(std::size_t sz);
@@ -594,4 +647,17 @@ void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C) ;
 ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
                        cholmod_sparse *A, ParU_Symbolic *Sym, ParU_Numeric *Num,
                        ParU_Control *Control);
+
+#if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
+extern "C" {
+    void paru_memtable_dump (void) ;
+    int paru_memtable_n (void) ;
+    void paru_memtable_add (void *p, size_t size) ;
+    size_t paru_memtable_size (void *p) ;
+    bool paru_memtable_find (void *p) ;
+    void paru_memtable_remove (void *p) ;
+}
 #endif
+
+#endif
+

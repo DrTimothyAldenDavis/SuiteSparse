@@ -20,6 +20,13 @@
 
 #include "paru_internal.hpp"
 
+#define FREE_WORK                                           \
+{                                                           \
+    PARU_FREE (m + 1, sizeof(int64_t), cSp);                \
+    PARU_FREE ((cs1 + 1), sizeof(int64_t), cSup);           \
+    PARU_FREE ((rs1 + 1), sizeof(int64_t), cSlp);           \
+}
+
 ParU_Info paru_init_rowFronts(paru_work *Work,
                              ParU_Numeric **Num_handle,  // in/out
                                                          // inputs, not modified
@@ -27,9 +34,13 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
                              // symbolic analysis
                              ParU_Symbolic *Sym, ParU_Control *Control)
 {
-    // mallopt(M_TRIM_THRESHOLD, -1);         // disable sbrk trimming
-    // mallopt(M_TOP_PAD, 16 * 1024 * 1024);  // increase padding to speedup
-    // malloc
+
+    // workspace:
+    int64_t *cSp = NULL;    // copy of Sp, temporary for making Sx
+    int64_t *cSup = NULL;   // copy of Sup temporary for making Sux
+    int64_t *cSlp = NULL;   // copyf of Slp temporary, for making Slx
+    int64_t cs1 = 0 ;
+    int64_t rs1 = 0 ;
 
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
@@ -52,16 +63,16 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
 
     // initializing Numeric
     ParU_Numeric *Num = NULL;
-    Num = static_cast<ParU_Numeric*>(paru_alloc(1, sizeof(ParU_Numeric)));
+    Num = static_cast<ParU_Numeric*>(PARU_CALLOC (1, sizeof(ParU_Numeric)));
     if (Num == NULL)
     {
         // out of memory
         PRLEVEL(1, ("ParU: out of memory, Num\n"));
         // Nothing to be freed
-        *Num_handle = NULL;
+        (*Num_handle) = NULL;
         return PARU_OUT_OF_MEMORY;
     }
-    *Num_handle = Num;
+    (*Num_handle) = Num;
 
     int64_t m, nf;
     Num->sym_m = Sym->m;
@@ -86,36 +97,58 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     if (nf != 0)
     {
         // Memory allocations for Num
-        rowMark = Work->rowMark = static_cast<int64_t*>(paru_alloc(m + nf + 1, sizeof(int64_t)));
-        elRow = Work->elRow = static_cast<int64_t*>(paru_alloc(m + nf, sizeof(int64_t)));
-        elCol = Work->elCol = static_cast<int64_t*>(paru_alloc(m + nf, sizeof(int64_t)));
-        rowSize = Work->rowSize = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));
+        rowMark = Work->rowMark = static_cast<int64_t*>(PARU_MALLOC (m + nf + 1, sizeof(int64_t)));
+        elRow = Work->elRow = static_cast<int64_t*>(PARU_MALLOC (m + nf, sizeof(int64_t)));
+        elCol = Work->elCol = static_cast<int64_t*>(PARU_MALLOC (m + nf, sizeof(int64_t)));
+        rowSize = Work->rowSize = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));
         row_degree_bound = Work->row_degree_bound =
-            static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));
+            static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));
         RowList = Work->RowList =
-            static_cast<paru_tupleList*>(paru_calloc(1, m * sizeof(paru_tupleList)));
-        Work->lacList = static_cast<int64_t*>(paru_alloc(m + nf, sizeof(int64_t)));
-        Num->frowCount = static_cast<int64_t*>(paru_alloc(1, nf * sizeof(int64_t)));
-        Num->fcolCount = static_cast<int64_t*>(paru_alloc(1, nf * sizeof(int64_t)));
-        Num->frowList = static_cast<int64_t**>(paru_calloc(1, nf * sizeof(int64_t *)));
-        Num->fcolList = static_cast<int64_t**>(paru_calloc(1, nf * sizeof(int64_t *)));
+            static_cast<paru_tupleList*>(PARU_CALLOC (1, m * sizeof(paru_tupleList)));
+        Work->lacList = static_cast<int64_t*>(PARU_MALLOC (m + nf, sizeof(int64_t)));
+        Num->frowCount = static_cast<int64_t*>(PARU_MALLOC (1, nf * sizeof(int64_t)));
+        Num->fcolCount = static_cast<int64_t*>(PARU_MALLOC (1, nf * sizeof(int64_t)));
+        Num->frowList = static_cast<int64_t**>(PARU_CALLOC (1, nf * sizeof(int64_t *)));
+        Num->fcolList = static_cast<int64_t**>(PARU_CALLOC (1, nf * sizeof(int64_t *)));
         Num->partial_Us =  // Initialize with NULL
-            static_cast<ParU_Factors*>(paru_calloc(1, nf * sizeof(ParU_Factors)));
+            static_cast<ParU_Factors*>(PARU_CALLOC (1, nf * sizeof(ParU_Factors)));
         Num->partial_LUs =  // Initialize with NULL
-            static_cast<ParU_Factors*>(paru_calloc(1, nf * sizeof(ParU_Factors)));
+            static_cast<ParU_Factors*>(PARU_CALLOC (1, nf * sizeof(ParU_Factors)));
 
-        Work->time_stamp = static_cast<int64_t*>(paru_alloc(1, nf * sizeof(int64_t)));
-        Work->task_num_child = static_cast<int64_t*>(paru_alloc(Sym->ntasks, sizeof(int64_t)));
-        heapList = Work->heapList = static_cast<std::vector<int64_t>**>(paru_calloc(
+        Work->time_stamp = static_cast<int64_t*>(PARU_MALLOC (1, nf * sizeof(int64_t)));
+        Work->task_num_child = static_cast<int64_t*>(PARU_MALLOC (Sym->ntasks, sizeof(int64_t)));
+        heapList = Work->heapList = static_cast<std::vector<int64_t>**>(PARU_CALLOC (
             1, (m + nf + 1) * sizeof(std::vector<int64_t> *)));
         elementList = Work->elementList =  // Initialize with NULL
-            static_cast<paru_element**>(paru_calloc(1,
+            static_cast<paru_element**>(PARU_CALLOC (1,
                                          (m + nf + 1) * sizeof(paru_element)));
+
+        if (rowMark == NULL || elRow == NULL || elCol == NULL ||
+            rowSize == NULL || row_degree_bound == NULL || RowList == NULL ||
+            Work->lacList == NULL ||
+            Num->frowCount == NULL  || Num->fcolCount == NULL   ||
+            Num->frowList == NULL   || Num->fcolList == NULL    ||
+            Num->partial_Us == NULL || Num->partial_LUs == NULL ||
+            Work->time_stamp == NULL || Work->task_num_child == NULL ||
+            heapList == NULL ||
+            elementList == NULL)
+        {
+            // out of memory
+            FREE_WORK ;
+            return (PARU_OUT_OF_MEMORY) ;
+        }
+
         if (Sym->strategy == PARU_STRATEGY_SYMMETRIC)
         {
-            Diag_map = Work->Diag_map = static_cast<int64_t*>(paru_alloc(Sym->n, sizeof(int64_t)));
+            Diag_map = Work->Diag_map = static_cast<int64_t*>(PARU_MALLOC (Sym->n, sizeof(int64_t)));
             inv_Diag_map = Work->inv_Diag_map =
-                static_cast<int64_t*>(paru_alloc(Sym->n, sizeof(int64_t)));
+                static_cast<int64_t*>(PARU_MALLOC (Sym->n, sizeof(int64_t)));
+            if (Diag_map == NULL || inv_Diag_map == NULL)
+            {
+                // out of memory
+                FREE_WORK ;
+                return (PARU_OUT_OF_MEMORY) ;
+            }
 #ifndef NDEBUG
             paru_memset(Diag_map, 0, Sym->n * sizeof(int64_t), Control);
             paru_memset(inv_Diag_map, 0, Sym->n * sizeof(int64_t), Control);
@@ -126,62 +159,54 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
 
     int64_t snz = Num->snz = Sym->snz;
     double *Sx = NULL;
-    Sx = Num->Sx = static_cast<double*>(paru_alloc(snz, sizeof(double)));
-    int64_t *cSp = NULL;  // copy of Sp, temporary for making Sx
-    cSp = static_cast<int64_t*>(paru_alloc(m + 1, sizeof(int64_t)));
-    double *Sux = NULL;
-    int64_t *cSup = NULL;  // copy of Sup temporary for making Sux
-    int64_t cs1 = Sym->cs1;
-    int64_t rs1 = Sym->rs1;
-    int64_t sunz = 0;
+    Sx = Num->Sx = static_cast<double*>(PARU_MALLOC (snz, sizeof(double)));
+    cSp = static_cast<int64_t*>(PARU_MALLOC (m + 1, sizeof(int64_t)));
+    if (Num->Sx == NULL)
+    {
+        FREE_WORK ;
+        return (PARU_OUT_OF_MEMORY) ;
+    }
+
+    cs1 = Sym->cs1;
+    rs1 = Sym->rs1;
     if (cs1 > 0)
     {
-        sunz = Sym->ustons.nnz;
-        Sux = static_cast<double*>(paru_alloc(sunz, sizeof(double)));
-        cSup = static_cast<int64_t*>(paru_alloc(cs1 + 1, sizeof(int64_t)));
+        Num->sunz = Sym->ustons.nnz;
+        Num->Sux = static_cast<double*>(PARU_MALLOC (Num->sunz, sizeof(double)));
+        cSup = static_cast<int64_t*>(PARU_MALLOC (cs1 + 1, sizeof(int64_t)));
+        if (cSup == NULL || Num->Sux == NULL)
+        {
+            FREE_WORK ;
+            return (PARU_OUT_OF_MEMORY) ;
+        }
     }
-    Num->Sux = Sux;
-    double *Slx = NULL;
-    int64_t *cSlp = NULL;  // copyf of Slp temporary, for making Slx
-    int64_t slnz = 0;
+    double *Sux = Num->Sux ;
+
     if (rs1 > 0)
     {
-        slnz = Sym->lstons.nnz;
-        Slx = static_cast<double*>(paru_alloc(slnz, sizeof(double)));
-        cSlp = static_cast<int64_t*>(paru_alloc(rs1 + 1, sizeof(int64_t)));
+        Num->slnz = Sym->lstons.nnz;
+        Num->Slx = static_cast<double*>(PARU_MALLOC (Num->slnz, sizeof(double)));
+        cSlp = static_cast<int64_t*>(PARU_MALLOC (rs1 + 1, sizeof(int64_t)));
+        if (cSlp == NULL || Num->Slx == NULL)
+        {
+            FREE_WORK ;
+            return (PARU_OUT_OF_MEMORY) ;
+        }
     }
-    Num->sunz = sunz;
-    Num->slnz = slnz;
-    Num->Slx = Slx;
-    double *Rs = NULL;
+    double *Slx = Num->Slx ;
+
     int64_t prescale = Control->prescale;
     if (prescale == 1)
     {
         // S will be scaled by the maximum absolute value in each row
-        Rs = static_cast<double*>(paru_calloc(Sym->m, sizeof(double)));
+        Num->Rs = static_cast<double*>(PARU_CALLOC (Sym->m, sizeof(double)));
+        if (Num->Rs == NULL)
+        {
+            FREE_WORK ;
+            return (PARU_OUT_OF_MEMORY) ;
+        }
     }
-    Num->Rs = Rs;
-
-    if ((nf != 0 &&
-         (rowMark == NULL || elRow == NULL || elCol == NULL ||
-          rowSize == NULL || Work->lacList == NULL || RowList == NULL ||
-          row_degree_bound == NULL || elementList == NULL ||
-          Num->frowCount == NULL || Num->fcolCount == NULL ||
-          Num->frowList == NULL || Num->fcolList == NULL || heapList == NULL ||
-          Num->partial_Us == NULL || Num->partial_LUs == NULL ||
-          Work->time_stamp == NULL || Work->task_num_child == NULL ||
-          (Sym->strategy == PARU_STRATEGY_SYMMETRIC &&
-           (Diag_map == NULL || inv_Diag_map == NULL)))) ||
-        // stuff that can be allocated even when nf==0
-        Sx == NULL || (prescale == 1 && Rs == NULL) ||
-        (cs1 > 0 && (Sux == NULL || cSup == NULL)) ||
-        (rs1 > 0 && (Slx == NULL || cSlp == NULL)) || cSp == NULL)
-    {
-        paru_free(m + 1, sizeof(int64_t), cSp);
-        if (cs1 > 0) paru_free((cs1 + 1), sizeof(int64_t), cSup);
-        if (rs1 > 0) paru_free((rs1 + 1), sizeof(int64_t), cSlp);
-        return PARU_OUT_OF_MEMORY;
-    }
+    double *Rs = Num->Rs ;
 
     // Initializations
     if (nf != 0)
@@ -226,7 +251,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     PRLEVEL(PR, ("Init Sup and Slp in the middle\n"));
     if (cs1 > 0)
     {
-        PRLEVEL(PR, ("(" LD ") Sup =", sunz));
+        PRLEVEL(PR, ("(" LD ") Sup =", Num->sunz));
         for (int64_t k = 0; k <= cs1; k++)
         {
             PRLEVEL(PR, ("" LD " ", Sup[k]));
@@ -239,7 +264,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     }
     if (rs1 > 0)
     {
-        PRLEVEL(PR, ("(" LD ") Slp =", slnz));
+        PRLEVEL(PR, ("(" LD ") Slp =", Num->slnz));
         for (int64_t k = 0; k <= rs1; k++)
         {
             PRLEVEL(PR, ("" LD " ", Slp[k]));
@@ -353,13 +378,13 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
             }
         }
     }
-    paru_free(m + 1, sizeof(int64_t), cSp);
-    if (Sym->cs1 > 0) paru_free((cs1 + 1), sizeof(int64_t), cSup);
-    if (Sym->rs1 > 0) paru_free((rs1 + 1), sizeof(int64_t), cSlp);
+
+    FREE_WORK;
+
         //////////////////Initializing numerics Sx, Sux and Slx
         /////////////////////}
 #ifdef COUNT_FLOPS
-    // flop count info init
+    // flop count init
     Work->flp_cnt_dgemm = 0.0;
     Work->flp_cnt_trsm = 0.0;
     Work->flp_cnt_dger = 0.0;
@@ -403,12 +428,17 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
 #ifndef NDEBUG
         PR = 1;
         PRLEVEL(PR, ("init_row Diag_map (" LD ") =\n", Sym->n));
-        for (int64_t i = 0; i < std::min(64, Sym->n); i++)
+        int64_t nn = std::min (Sym->n, (int64_t) 64) ;
+        for (int64_t i = 0; i < nn ; i++)
+        {
             PRLEVEL(PR, ("" LD " ", Diag_map[i]));
+        }
         PRLEVEL(PR, ("\n"));
         PRLEVEL(PR, ("inv_Diag_map =\n"));
-        for (int64_t i = 0; i < std::min(64, Sym->n); i++)
+        for (int64_t i = 0; i < nn ; i++)
+        {
             PRLEVEL(PR, ("" LD " ", inv_Diag_map[i]));
+        }
         PRLEVEL(PR, ("\n"));
         for (int64_t i = 0; i < Sym->n; i++)
         {
@@ -430,10 +460,15 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     // Activating comments after this parts will break the matlab input matrix
     // allocating row tuples, elements and updating column tuples
 
-    ParU_Info info;
     int64_t out_of_memory = 0;
 
-    #pragma omp parallel for num_threads(Control->paru_max_threads)
+    #ifdef MATLAB_MEX_FILE
+    int nthreads = 1 ;
+    #else
+    int nthreads = Control->paru_max_threads ;
+    #endif
+
+    #pragma omp parallel for num_threads(nthreads)
     for (int64_t row = 0; row < m; row++)
     {
         int64_t e = Sym->row2atree[row];
@@ -452,11 +487,12 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
             out_of_memory += 1;
         }
         else
+        {
             try
             {
                 rowMark[e] = 0;
 
-                // My new is calling paru_alloc
+                // My new is calling PARU_MALLOC 
                 std::vector<int64_t> *curHeap = Work->heapList[e] =
                     new std::vector<int64_t>;
 
@@ -466,7 +502,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
                 int64_t slackRow = 2;
 
                 // Allocating Rowlist and updating its tuples
-                RowList[row].list = static_cast<paru_tuple*>(paru_alloc(
+                RowList[row].list = static_cast<paru_tuple*>(PARU_MALLOC (
                     slackRow * nrows, sizeof(paru_tuple)));
                 if (RowList[row].list == NULL)
                 {
@@ -515,7 +551,14 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
                 #pragma omp atomic update
                 out_of_memory += 1;
             }
+        }
     }
+
+    //--------------------------------------------------------------------------
+    // return result
+    //--------------------------------------------------------------------------
+
+    ParU_Info info ;
     if (out_of_memory > 0)
     {
         info = PARU_OUT_OF_MEMORY;
@@ -531,5 +574,5 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     PRLEVEL(1, ("X = InMatrix(:,3);\n"));
     PRLEVEL(1, ("S = sparse(I,J,X);\n"));
 
-    return info;
+    return (info) ;
 }

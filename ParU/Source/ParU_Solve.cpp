@@ -67,7 +67,7 @@ ParU_Info ParU_Solve
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
 
-    double *t = static_cast<double*>(paru_alloc(m, sizeof(double)));
+    double *t = static_cast<double*>(PARU_MALLOC (m, sizeof(double)));
     if (t == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside solve\n"));
@@ -83,7 +83,7 @@ ParU_Info ParU_Solve
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in lsolve\n"));
-        paru_free(m, sizeof(int64_t), t);
+        PARU_FREE(m, sizeof(int64_t), t);
         return info;
     }
     PRLEVEL(1, ("%% usolve\n"));
@@ -91,13 +91,13 @@ ParU_Info ParU_Solve
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in usolve\n"));
-        paru_free(m, sizeof(int64_t), t);
+        PARU_FREE(m, sizeof(int64_t), t);
         return info;
     }
 
     ParU_InvPerm (Sym->Qfill, NULL, t, m, x, Control);  // x(q) = t
 
-    paru_free(m, sizeof(int64_t), t);
+    PARU_FREE(m, sizeof(int64_t), t);
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= start_time;
@@ -173,7 +173,7 @@ ParU_Info ParU_Solve
 #ifndef NTIME
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
-    double *T = static_cast<double*>(paru_alloc(m * nrhs, sizeof(double)));
+    double *T = static_cast<double*>(PARU_MALLOC (m * nrhs, sizeof(double)));
     if (T == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside Solve\n"));
@@ -190,7 +190,7 @@ ParU_Info ParU_Solve
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in mRHS lsolve\n"));
-        paru_free(m * nrhs, sizeof(int64_t), T);
+        PARU_FREE(m * nrhs, sizeof(int64_t), T);
         return info;
     }
 
@@ -200,7 +200,7 @@ ParU_Info ParU_Solve
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in mRHS usolve\n"));
-        paru_free(m * nrhs, sizeof(int64_t), T);
+        PARU_FREE(m * nrhs, sizeof(int64_t), T);
         return info;
     }
 
@@ -214,7 +214,7 @@ ParU_Info ParU_Solve
     // x (q) = t and then x = x/s
     // ParU_InvPerm (Num->Pfin, Num->Rs, T, m, nrhs, X, Control);
 
-    paru_free(m * nrhs, sizeof(int64_t), T);
+    PARU_FREE(m * nrhs, sizeof(int64_t), T);
 
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;

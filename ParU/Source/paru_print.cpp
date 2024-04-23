@@ -6,7 +6,7 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/*! @brief printing datas are implemented in this file
+/*! @brief printing datas are implemented in this file (for development only)
  *
  * @author Aznaveh
  */

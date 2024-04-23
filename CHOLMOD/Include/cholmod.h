@@ -362,6 +362,11 @@ int cholmod_l_version (int version [3]) ;
 #define CHOLMOD_HAS_CUDA
 #define CHOLMOD_HAS_OPENMP
 
+#if defined(MATLAB_MEX_FILE) || defined(MATHWORKS)
+// CHOLMOD MATLAB interface does not use CUDA
+#undef CHOLMOD_HAS_CUDA
+#endif
+
 // The cmake flags defined above also ensure CHOLMOD knows which modules
 // are available when it was compiled:
 

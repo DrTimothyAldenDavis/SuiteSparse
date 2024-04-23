@@ -1,0 +1,9 @@
+
+FIXME Symbolic->Work:
+    kept and modified by numeric factorization, which makes the symbolic
+    object an input/output object (cannot be used in parallel).
+
+FIXME MATLAB interface
+
+FIXME test performance results again, for ACM TOMS paper
+

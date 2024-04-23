@@ -119,7 +119,7 @@ ParU_Info ParU_LSolve
     BLAS_set_num_threads(control_nthreads (Control)) ;
 
     // gather scatter space for dgemm
-    double *work = static_cast<double*>(paru_alloc((Num->max_row_count), sizeof(double)));
+    double *work = static_cast<double*>(PARU_MALLOC ((Num->max_row_count), sizeof(double)));
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory lsolve\n"));
@@ -208,7 +208,7 @@ ParU_Info ParU_LSolve
     }
     PRLEVEL(1, (" \n"));
 #endif
-    paru_free(Num->max_row_count, sizeof(double), work);
+    PARU_FREE(Num->max_row_count, sizeof(double), work);
     return (blas_ok ? PARU_SUCCESS : PARU_TOO_LARGE);
 }
 
@@ -314,7 +314,7 @@ ParU_Info ParU_LSolve
 
     // gather scatter space for dgemm
     double *work =
-        static_cast<double*>(paru_alloc((Num->max_row_count * nrhs), sizeof(double)));
+        static_cast<double*>(PARU_MALLOC ((Num->max_row_count * nrhs), sizeof(double)));
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory lsolve\n"));
@@ -414,6 +414,6 @@ ParU_Info ParU_LSolve
     }
     PRLEVEL(1, (" \n"));
 #endif
-    paru_free(Num->max_row_count * nrhs, sizeof(double), work);
+    PARU_FREE(Num->max_row_count * nrhs, sizeof(double), work);
     return (blas_ok ? PARU_SUCCESS : PARU_TOO_LARGE);
 }

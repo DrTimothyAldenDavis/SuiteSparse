@@ -78,7 +78,9 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
             if (lacFel >= col2) break;
 
             if (elementList[frontEl] != NULL)
+            {
                 pivotal_elements.push_back(frontEl);
+            }
             std::pop_heap(
                 curHeap->begin(), curHeap->end(),
                 [&lacList](int64_t a, int64_t b) { return lacList[a] > lacList[b]; });
@@ -357,7 +359,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     if (rowCount != fm)
     {
         frowList =
-            static_cast<int64_t*>(paru_realloc(rowCount, sizeof(int64_t), frowList, &sz));
+            static_cast<int64_t*>(PARU_REALLOC (rowCount, sizeof(int64_t), frowList, &sz));
     }
     if (sz != (size_t) rowCount)
     {
@@ -367,7 +369,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     }
 
     Num->frowList[f] = frowList ;
-    double *pivotalFront = static_cast<double*>(paru_calloc(rowCount * fp, sizeof(double)));
+    double *pivotalFront = static_cast<double*>(PARU_CALLOC (rowCount * fp, sizeof(double)));
 
     if (pivotalFront == NULL)
     {
