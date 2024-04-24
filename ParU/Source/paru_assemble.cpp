@@ -23,8 +23,9 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
 
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *snM = Sym->super2atree;
+    // FIXME: why is Sym placed in the Work structure?
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     PRLEVEL(PR, ("%% Eliminate all of " LD " in " LD "(f=" LD ") (tid=%d)\n", e, eli, f,
                  PARU_OPENMP_GET_THREAD_ID));
@@ -311,8 +312,8 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
 #ifndef NDEBUG
     int64_t c = 0;  // number of columns assembled
 #endif
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *snM = Sym->super2atree;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
 
     PRLEVEL(PR, ("%% Eliminat some cols of " LD " in " LD "\n", e, eli));
@@ -501,8 +502,8 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *snM = Sym->super2atree;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
 
     PRLEVEL(PR, ("%% Eliminat some rows of " LD " in " LD "\n", e, eli));
@@ -712,8 +713,8 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *snM = Sym->super2atree;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     PRLEVEL(PR, ("%% \n+++++++++++++++++++++++++++++++++++++++\n"));
     PRLEVEL(PR, ("%% Eliminat elment " LD "  with0rows in " LD "\n", e, eli));
@@ -933,7 +934,7 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     int64_t *lacList = Work->lacList;
     lacList[e] = el_colIndex[el->lac];
 #ifndef NDEBUG
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
     PR = 1;

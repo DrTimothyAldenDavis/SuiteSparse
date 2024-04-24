@@ -63,7 +63,7 @@
     PARU_FREE ((n + 1), sizeof(int64_t), Front_parent);         \
     PARU_FREE ((n + 1), sizeof(int64_t), Front_npivcol);        \
     PARU_FREE ((m - n1), sizeof(int64_t), Ps);                  \
-    PARU_FREE ((std::max(m, n) + 2), sizeof(int64_t), Work);    \
+    PARU_FREE ((std::max(m, n) + 2), sizeof(int64_t), SymWork); \
     PARU_FREE ((cs1 + 1), sizeof(int64_t), cSup);               \
     PARU_FREE ((rs1 + 1), sizeof(int64_t), cSlp);               \
     umfpack_dl_free_symbolic(&Symbolic);                        \
@@ -123,7 +123,8 @@ ParU_Info ParU_Analyze
     Sym->lstons.Slp = NULL;
     Sym->ustons.Suj = NULL ;
     Sym->lstons.Sli = NULL;
-    Sym->Super = Sym->Depth = NULL;
+    Sym->Super = NULL;
+    Sym->Depth = NULL;
     Sym->Pinit = NULL;
     Sym->n1 = -1;
     int64_t cs1 = -1;
@@ -158,7 +159,7 @@ ParU_Info ParU_Analyze
     int64_t *newParent = NULL;
     int64_t *Super = NULL;
     int64_t *Depth = NULL;
-    int64_t *Work = NULL;
+    int64_t *SymWork = NULL;    // workspace for Symbolic analysis
     int64_t *Ps = NULL;    // new row permutation for just the Submatrix part
     int64_t *Sup = NULL;   // Singlton u p
     int64_t *cSup = NULL;  // copy of Singlton u p
@@ -350,6 +351,7 @@ ParU_Info ParU_Analyze
             //my_Control.umfpack_ordering = UMFPACK_ORDERING_METIS;
             my_Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
         }
+
         int32_t umfpack_strategy = my_Control.umfpack_strategy;
         if (umfpack_strategy != UMFPACK_STRATEGY_AUTO &&
             umfpack_strategy != UMFPACK_STRATEGY_SYMMETRIC &&
@@ -440,7 +442,9 @@ ParU_Info ParU_Analyze
         Sym->strategy = strategy;
     }
     else
+    {
         Sym->strategy = Control->paru_strategy;
+    }
 
 #ifndef NDEBUG
     PR = 0;
@@ -1081,9 +1085,10 @@ ParU_Info ParU_Analyze
             return (PARU_OUT_OF_MEMORY) ;
         }
     }
-    // copy of Childp using Work for other places also
-    Work = static_cast<int64_t*>(PARU_MALLOC (std::max(m, n) + 2, sizeof(int64_t)));
-    int64_t *cChildp = Work;
+
+    // copy of Childp using SymWork for other places also
+    SymWork = static_cast<int64_t*>(PARU_MALLOC (std::max(m, n) + 2, sizeof(int64_t)));
+    int64_t *cChildp = SymWork;
     if (cChildp == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory\n"));
@@ -1393,7 +1398,7 @@ ParU_Info ParU_Analyze
     }
 
     ///////////////////////////////////////////////////////////////
-    int64_t *cSp = Work;
+    int64_t *cSp = SymWork;
     if (n1 == m)
     {
         // no fronts
@@ -1805,8 +1810,7 @@ ParU_Info ParU_Analyze
     }
 
     ////////////////    computing task tree and such ///////////////////////////
-    // std::vector<int64_t> task_helper(nf); //use Work instead of a new vector
-    int64_t *task_helper = Work;  // just use first nf of the Work
+    int64_t *task_helper = SymWork;  // just use first nf of the SymWork
     const double flop_thresh = 1024;
     int64_t ntasks = 0;
 

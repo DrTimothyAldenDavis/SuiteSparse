@@ -24,8 +24,8 @@ ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
     int64_t *elCol = Work->elCol;
 
     paru_element **elementList = Work->elementList;
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *snM = Sym->super2atree;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *snM = Sym->super2atree;
 
     int64_t pMark = start_fac;
 

@@ -45,10 +45,10 @@ ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *aChild = Sym->aChild;
-    int64_t *aChildp = Sym->aChildp;
-    int64_t *snM = Sym->super2atree;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *aChild = Sym->aChild;
+    const int64_t *aChildp = Sym->aChildp;
+    const int64_t *snM = Sym->super2atree;
     paru_element **elementList = Work->elementList;
     // int64_t m = Num-> m;
 
@@ -215,10 +215,10 @@ ParU_Info paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_eleme
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *aChild = Sym->aChild;
-    int64_t *aChildp = Sym->aChildp;
-    int64_t *snM = Sym->super2atree;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *aChild = Sym->aChild;
+    const int64_t *aChildp = Sym->aChildp;
+    const int64_t *snM = Sym->super2atree;
     paru_element **elementList = Work->elementList;
     // int64_t m = Num-> m;
 

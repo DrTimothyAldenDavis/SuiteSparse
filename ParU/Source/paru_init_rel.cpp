@@ -19,11 +19,10 @@
 void paru_init_rel(int64_t f, paru_work *Work)
 {
     DEBUGLEVEL(0);
-    ParU_Symbolic *Sym = Work->Sym;
     int64_t *time_stamp = Work->time_stamp;
-
-    int64_t *Child = Sym->Child;
-    int64_t *Childp = Sym->Childp;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *Child = Sym->Child;
+    const int64_t *Childp = Sym->Childp;
     int64_t max_time = 0;
 
     PRLEVEL(1, ("%% begining=" LD " end=" LD " \n", Childp[f], Childp[f + 1]));

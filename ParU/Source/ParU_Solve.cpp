@@ -75,7 +75,9 @@ ParU_Info ParU_Solve
     }
 
     // t = scaled and permuted version of b
-    ParU_Perm (Num->Pfin, Num->Rs, b, m, t, Control);
+    const int64_t *P = Num->Pfin ;
+    const double *R = Num->Rs ;
+    ParU_Perm (P, R, b, m, t, Control);
 
     ParU_Info info;
     PRLEVEL(1, ("%% lsolve\n"));
@@ -95,7 +97,8 @@ ParU_Info ParU_Solve
         return info;
     }
 
-    ParU_InvPerm (Sym->Qfill, NULL, t, m, x, Control);  // x(q) = t
+    const int64_t *Q = Sym->Qfill ;
+    ParU_InvPerm (Q, NULL, t, m, x, Control);  // x(q) = t
 
     PARU_FREE(m, sizeof(int64_t), t);
 #ifndef NTIME
@@ -181,7 +184,9 @@ ParU_Info ParU_Solve
     }
 
     // T = permuted and scaled version of B
-    ParU_Perm (Num->Pfin, Num->Rs, B, m, nrhs, T, Control);
+    const int64_t *P = Num->Pfin ;
+    const double *R = Num->Rs ;
+    ParU_Perm (P, R, B, m, nrhs, T, Control);
 
     // T = L\T
     ParU_Info info;
@@ -204,14 +209,15 @@ ParU_Info ParU_Solve
         return info;
     }
 
-    ParU_InvPerm (Sym->Qfill, NULL, T, m, nrhs, X, Control);  // X(q) = T
+    const int64_t *Q = Sym->Qfill ;
+    ParU_InvPerm (Q, NULL, T, m, nrhs, X, Control);  // X(q) = T
 
-    // to solve A'x=b instead
-    // permute t = b (p)
+    // to solve A'x=b instead (future work):
+    // permute t = b (p):
     // ParU_Perm (Sym->Qfill, NULL, B, m, nrhs, T, Control);
-    // T = U'\T
-    // T = L'\T
-    // x (q) = t and then x = x/s
+    // solve T = U'\T
+    // solve T = L'\T
+    // x (q) = t and then x = x/s:
     // ParU_InvPerm (Num->Pfin, Num->Rs, T, m, nrhs, X, Control);
 
     PARU_FREE(m * nrhs, sizeof(int64_t), T);

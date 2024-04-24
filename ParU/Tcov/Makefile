@@ -43,6 +43,7 @@ INC = ../Include/ParU.h
 
 OBJ = \
 	paru_mem.o \
+	paru_free_work.o \
 	ParU_FreeSymbolic.o \
 	ParU_FreeNumeric.o \
 	paru_memset.o \
@@ -188,6 +189,9 @@ qgo:
 
 #-------------------------------------------------------------------------------
 paru_mem.o: ../Source/paru_mem.cpp
+	$(C) -c $<
+
+paru_free_work.o: ../Source/paru_free_work.cpp
 	$(C) -c $<
 
 ParU_FreeSymbolic.o: ../Source/ParU_FreeSymbolic.cpp

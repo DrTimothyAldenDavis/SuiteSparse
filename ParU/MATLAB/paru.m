@@ -1,4 +1,4 @@
-function x = paru (A,b)
+function [x,stats] = paru (A,b,opts)
 %PARU solve Ax=b using ParU
 %
 % Usage: x = paru(A,b), computes x=A\b using ParU.
@@ -21,6 +21,14 @@ function x = paru (A,b)
 %   norm (A*x1-b)
 %   x2 = paru (A,b) ;
 %   norm (A*x2-b)
+%
+% [x,stats] = paru (A,b,opts)
+%
+% opts: an optional struct that sets the ParU parameters:
+%   FIXME
+% stats: an optional output that provides information on the ParU
+% analysis and factorization of the matrix:
+%   FIXME
 %
 % See also paru_make, paru_demo, paru_many, paru_tiny, mldivide.
 %

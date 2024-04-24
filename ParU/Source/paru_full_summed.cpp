@@ -39,14 +39,14 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
-    ParU_Symbolic *Sym = Work->Sym;
+    const ParU_Symbolic *Sym = Work->Sym;
 #ifndef NDEBUG
-    int64_t *snM = Sym->super2atree;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     PRLEVEL(PR, ("%% Fully summing " LD " in " LD "(" LD ")\n", e, f, eli));
 #endif
 
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
     PRLEVEL(PR, ("%% col1=" LD ", col2=" LD "\n", col1, col2));

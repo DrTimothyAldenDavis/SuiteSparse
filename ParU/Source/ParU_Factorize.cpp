@@ -134,7 +134,7 @@ ParU_Info ParU_Factorize
     int64_t nf = Sym->nf;
     //////////////// Using task tree //////////////////////////////////////////
     int64_t ntasks = Sym->ntasks;
-    int64_t *task_depth = Sym->task_depth;
+    const int64_t *task_depth = Sym->task_depth;
     std::vector<int64_t> task_Q;
 
     int64_t *task_num_child ;
@@ -142,6 +142,8 @@ ParU_Info ParU_Factorize
     task_num_child = Work->task_num_child;
     paru_memcpy(task_num_child, Sym->task_num_child, ntasks * sizeof(int64_t),
                 Control);
+
+    // FIXME: can this sort be done in the symbolic analysis?
     try
     {
         for (int64_t t = 0; t < ntasks; t++)
@@ -183,7 +185,7 @@ ParU_Info ParU_Factorize
     #pragma omp atomic write
     Work->actual_alloc_col_int = 0;
     PR = 1;
-    int64_t *task_map = Sym->task_map;
+    const int64_t *task_map = Sym->task_map;
     PRLEVEL(PR, ("\n%% task_Q:\n"));
     for (int64_t i = 0; i < (int64_t)task_Q.size(); i++)
     {
@@ -358,7 +360,7 @@ ParU_Info ParU_Factorize
             {
                 int64_t rowCount = Num->frowCount[f];
                 int64_t colCount = Num->fcolCount[f];
-                int64_t *Super = Sym->Super;
+                const int64_t *Super = Sym->Super;
                 int64_t col1 = Super[f];
                 int64_t col2 = Super[f + 1];
                 int64_t fp = col2 - col1;
@@ -376,7 +378,7 @@ ParU_Info ParU_Factorize
         else
         {
             //Parallel
-            int64_t *Super = Sym->Super;
+            const int64_t *Super = Sym->Super;
             #pragma omp parallel for reduction(max:max_rc)    \
             reduction(max: max_cc) if (nf > 65536)            \
             num_threads(Control->paru_max_threads)

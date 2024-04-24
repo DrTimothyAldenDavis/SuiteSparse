@@ -23,16 +23,16 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *snM = Sym->super2atree;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *snM = Sym->super2atree;
     std::vector<int64_t> **heapList = Work->heapList;
     int64_t eli = snM[f];
 
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
-    int64_t *aChild = Sym->aChild;
-    int64_t *aChildp = Sym->aChildp;
+    const int64_t *aChild = Sym->aChild;
+    const int64_t *aChildp = Sym->aChildp;
 
 #ifndef NDEBUG
     int64_t m = Num->m;
@@ -126,7 +126,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     {
         // just look at the children
         // in rare case of overflow
-        int64_t *Sleft = Sym->Sleft;
+        const int64_t *Sleft = Sym->Sleft;
         // first column of current front until first column of next front
         for (int64_t i = Sleft[col1]; i < Sleft[Super[f + 1]]; i++)
             isRowInFront[i] = -1;

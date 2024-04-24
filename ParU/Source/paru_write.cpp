@@ -16,18 +16,18 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 {
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% Start Writing\n"));
-    ParU_Symbolic *Sym = Work->Sym;
+    const ParU_Symbolic *Sym = Work->Sym;
     int64_t nf = Sym->nf;
 
     int64_t m = Sym->m;
     int64_t n = Sym->n;
     int64_t n1 = Sym->n1;  // row+col singletons
 
-    int64_t *Qfill = Sym->Qfill;
+    const int64_t *Qfill = Sym->Qfill;
 
     ParU_Factors *LUs = Num->partial_LUs;
     ParU_Factors *Us = Num->partial_Us;
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
 
     char default_name[] = "0";
     char *name;
@@ -72,7 +72,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
     // some working memory that is freed in this function
     int64_t *oldRofS = NULL;
     int64_t *newRofS = NULL;
-    int64_t *Pinit = Sym->Pinit;
+    const int64_t *Pinit = Sym->Pinit;
 
     oldRofS = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));  // S -> LU P
     newRofS = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));  // Pinv of S

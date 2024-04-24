@@ -274,32 +274,45 @@ int main(int argc, char **argv)
     \hline
     \verb'ParU_Control' & default value and explanation  \\
     \hline\hline
-    \verb'mem_chunk' & default: $2^{20}$. Chunk size for parallel memset and memcpy. \\
-    \verb'paru_max_threads' & default: $0$.  Maximum number of OpenMP threads to use.
-        If zero (the default value), this is initialized with \verb'omp_max_threads'. \\
+    \verb'mem_chunk' & default: $2^{20}$. Chunk size for parallel memset and
+        memcpy. \\
+    \verb'paru_max_threads' & default: $0$.  Maximum number of OpenMP threads
+        to use.  If zero (the default value), this is initialized with
+        \verb'omp_max_threads'. \\
     \hline
-    \verb'umfpack_ordering' & default: \verb'UMFPACK_ORDERING_AMD'. Default UMFPACK ordering. \\
-    \verb'umfpack_strategy' & default: \verb'UMFPACK_STRATEGY_AUTO'. Default UMFPACK strategy. \\
+    \verb'umfpack_ordering' & default: \verb'UMFPACK_ORDERING_AMD'.
+        Default UMFPACK ordering.
+        FIXME: list valid options here.
+        \\
+    \verb'umfpack_strategy' & default: \verb'UMFPACK_STRATEGY_AUTO'.
+        Default UMFPACK strategy.
+        FIXME: list valid options here.
+        \\
     \verb'filter_singletons' & default: 1. If nonzero, singletons are
         permuted to the front of the matrix before factorization.  Singletons
         are rows or columns with a single entry (or have a single entry after
         other singletons are removed). \\
-    \verb'relaxed_amalgamation' & default: 32. Threshold for relaxed amalgamation. When
-        constructing its frontal matrices, ParU attempts to ensure that all
-        frontal matrices contain at least this many pivot columns.  Values less
-        than zero are treated as 32, and values greater than 512 are treated
-        as 512. \\
+    \verb'relaxed_amalgamation' & default: 32. Threshold for relaxed
+        amalgamation. When constructing its frontal matrices, ParU attempts to
+        ensure that all frontal matrices contain at least this many pivot
+        columns.  Values less than zero are treated as 32, and values greater
+        than 512 are treated as 512. \\
     \hline
     \verb'prescale' & default: 1. 0: no scaling,
         1: each row is scaled by the maximum
         absolute value in the row. \\
-    \verb'panel_width' & default: 32. Width of panel for dense factorization of each frontal matrix. \\
-    \verb'paru_strategy' & default: \verb'PARU_STRATEGY_AUTO'. Default strategy for ParU. \\
+    \verb'panel_width' & default: 32. Width of panel for dense factorization of
+        each frontal matrix. \\
+    \verb'paru_strategy' & default: \verb'PARU_STRATEGY_AUTO'. Default strategy
+        for ParU. \\
     \verb'piv_toler' & default: $0.1$. Tolerance for accepting sparse pivots. \\
-    \verb'diag_toler' & default: $0.001$. Tolerance for accepting symmetric pivots. \\
+    \verb'diag_toler' & default: $0.001$. Tolerance for accepting symmetric
+        pivots. \\
     \verb'trivial' & default: $4$. Do not call BLAS for smaller dgemms. \\
-    \verb'worthwhile_dgemm' & default: $512$. dgemms bigger than this are tasked. \\
-    \verb'worthwhile_trsm' & default: $4096$. trsm bigger than this are tasked. \\
+    \verb'worthwhile_dgemm' & default: $512$. dgemms bigger than this are
+        tasked. \\
+    \verb'worthwhile_trsm' & default: $4096$. trsm bigger than this are
+        tasked.  \\
     \hline
     \end{tabular}
     }
@@ -364,12 +377,15 @@ int main(int argc, char **argv)
     \verb'ParU_Analyze' takes as input a sparse matrix in the CHOLMOD data
     structure, \verb'A'.  The matrix must be square and not held in the CHOLMOD
     symmetric storage format.  Refer to the CHOLMOD documentation for details.
-    On output, the symbolic analysis structure \verb'Sym' is created, passed in as
-    \verb'&Sym'.  The symbolic analysis can be used for different calls to
+    On output, the symbolic analysis structure \verb'Sym' is created, passed in
+    as \verb'&Sym'.  The symbolic analysis can be used for different calls to
     \verb'ParU_Factorize' for matrices that have the same sparsity pattern but
     different numerical values.  Details of the \verb'ParU_Symbolic' structure
-    are available in the \verb'ParU.h' file.
-    The symbolic analysis structure must be freed by \verb'ParU_FreeSymbolic'.
+    are available in the \verb'ParU.h' file.  The symbolic analysis structure
+    must be freed by \verb'ParU_FreeSymbolic'.
+
+    FIXME: Should the Symbolic object be opaque?  How does the user get
+    statistics on the analysis phase (estimated fillin and such)? 
 
 \subsection{{\sf ParU\_Factorize}: numerical factorization}
 
@@ -391,8 +407,12 @@ int main(int argc, char **argv)
     created by a prior call to \verb'ParU_Analyze' with the same matrix
     \verb'A', or one with the same sparsity pattern as the one passed to
     \verb'ParU_Factorize'.  On output, the \verb'&Num' structure is created.
-    Details of the \verb'ParU_Numeric' structure are available in the \verb'ParU.h' file.
-    The numeric factorization structure must be freed by \verb'ParU_FreeNumeric'.
+    Details of the \verb'ParU_Numeric' structure are available in the
+    \verb'ParU.h' file.  The numeric factorization structure must be freed by
+    \verb'ParU_FreeNumeric'.
+
+    FIXME: Should the Numeric object be opaque?  How does the user get
+    statistics on the factorization phase (nnz in L and U, rcond, and such)? 
 
 \subsection{{\sf ParU\_Solve}: solve a linear system, $Ax=b$}
 

@@ -177,6 +177,8 @@ struct ParU_Symbolic
     int64_t strategy;  // the strategy that is actually used by umfpack
     // symmetric or unsymmetric
 
+    // FIXME: add the ordering used
+
     // -------------------------------------------------------------------------
     // frontal matrices: pattern and tree
     // -------------------------------------------------------------------------

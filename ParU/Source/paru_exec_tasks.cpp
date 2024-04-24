@@ -27,13 +27,16 @@ ParU_Info paru_exec_tasks_seq
 )
 {
     DEBUGLEVEL(0);
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *task_parent = Sym->task_parent;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *task_parent = Sym->task_parent;
     int64_t daddy = task_parent[t];
-    int64_t *task_map = Sym->task_map;
+    const int64_t *task_map = Sym->task_map;
 
     int64_t num_original_children = 0;
-    if (daddy != -1) num_original_children = Sym->task_num_child[daddy];
+    if (daddy != -1)
+    {
+        num_original_children = Sym->task_num_child[daddy];
+    }
     PRLEVEL(1, ("Seq: executing task " LD " fronts " LD "-" LD " (" LD " children)\n", t,
                 task_map[t] + 1, task_map[t + 1], num_original_children));
     ParU_Info myInfo;
@@ -102,13 +105,16 @@ ParU_Info paru_exec_tasks
     ParU_Numeric *Num
 )
 {
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *task_parent = Sym->task_parent;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *task_parent = Sym->task_parent;
     int64_t daddy = task_parent[t];
-    int64_t *task_map = Sym->task_map;
+    const int64_t *task_map = Sym->task_map;
 
     int64_t num_original_children = 0;
-    if (daddy != -1) num_original_children = Sym->task_num_child[daddy];
+    if (daddy != -1)
+    {
+        num_original_children = Sym->task_num_child[daddy];
+    }
     PRLEVEL(1, ("executing task " LD " fronts " LD "-" LD " (" LD " children)\n", t,
                 task_map[t] + 1, task_map[t + 1], num_original_children));
     ParU_Info myInfo;

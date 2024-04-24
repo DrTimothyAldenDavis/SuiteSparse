@@ -46,7 +46,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     PARU_DEFINE_PRLEVEL;
 
     // initializing Work
-    Work->Sym = Sym;
+    Work->Sym = Sym;            // FIXME: why copy the Sym pointer into Work->Sum?
     int64_t *rowMark = Work->rowMark = NULL;
     int64_t *elRow = Work->elRow = NULL;
     int64_t *elCol = Work->elCol = NULL;
@@ -232,18 +232,16 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     int64_t *Ap = static_cast<int64_t*>(A->p);
     int64_t *Ai = static_cast<int64_t*>(A->i);
     double *Ax = static_cast<double*>(A->x);
-    int64_t *Sp = Sym->Sp;
-    int64_t *Slp = NULL;
-    int64_t *Sup = NULL;
+    const int64_t *Sp = Sym->Sp;
+    const int64_t *Slp = (rs1 > 0) ? Sym->lstons.Slp : NULL ;
+    const int64_t *Sup = (cs1 > 0) ? Sym->ustons.Sup : NULL ;
     paru_memcpy(cSp, Sp, (m + 1) * sizeof(int64_t), Control);
     if (cs1 > 0)
     {
-        Sup = Sym->ustons.Sup;
         paru_memcpy(cSup, Sup, (cs1 + 1) * sizeof(int64_t), Control);
     }
     if (rs1 > 0)
     {
-        Slp = Sym->lstons.Slp;
         paru_memcpy(cSlp, Slp, (rs1 + 1) * sizeof(int64_t), Control);
     }
 #ifndef NDEBUG

@@ -65,8 +65,8 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
         PRLEVEL(PR, ("\n"));
     }
 #endif
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *Super = Sym->Super;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t *Diag_map = Work->Diag_map;
     int64_t n1 = Sym->n1;
@@ -332,7 +332,7 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    int64_t *Super = Work->Sym->Super;
+    const int64_t *Super = Work->Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
     int64_t fp = col2 - col1; /* first fp columns are pivotal */

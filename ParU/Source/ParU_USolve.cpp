@@ -69,11 +69,11 @@ ParU_Info ParU_USolve
     int64_t nf = Sym->nf;
 
     int64_t n1 = Sym->n1;   // row+col singletons
-    int64_t *Ps = Num->Ps;  // row permutation
+    const int64_t *Ps = Num->Ps;  // row permutation
 
-    ParU_Factors *LUs = Num->partial_LUs;
-    ParU_Factors *Us = Num->partial_Us;
-    int64_t *Super = Sym->Super;
+    const ParU_Factors *LUs = Num->partial_LUs;
+    const ParU_Factors *Us = Num->partial_Us;
+    const int64_t *Super = Sym->Super;
 
     BLAS_set_num_threads(control_nthreads (Control)) ;
     double *work = static_cast<double*>(PARU_MALLOC ((Num->max_col_count), sizeof(double)));
@@ -85,8 +85,8 @@ ParU_Info ParU_USolve
 
     for (int64_t f = nf - 1; f >= 0; --f)
     {
-        int64_t *frowList = Num->frowList[f];
-        int64_t *fcolList = Num->fcolList[f];
+        const int64_t *frowList = Num->frowList[f];
+        const int64_t *fcolList = Num->fcolList[f];
         int64_t col1 = Super[f];
         int64_t col2 = Super[f + 1];
         int64_t fp = col2 - col1;
@@ -158,9 +158,9 @@ ParU_Info ParU_USolve
         for (int64_t i = cs1 - 1; i >= 0; i--)
         {
             PRLEVEL(PR, ("i = " LD "\n", i));
-            int64_t *Sup = Sym->ustons.Sup;
-            int64_t *Suj = Sym->ustons.Suj;
-            double *Sux = Num->Sux;
+            const int64_t *Sup = Sym->ustons.Sup;
+            const int64_t *Suj = Sym->ustons.Suj;
+            const double *Sux = Num->Sux;
             ASSERT(Suj != NULL && Sux != NULL && Sup != NULL);
             PRLEVEL(PR, (" Before computation x[" LD "]=%.2lf \n", i, x[i]))
             for (int64_t p = Sup[i] + 1; p < Sup[i + 1]; p++)
@@ -238,11 +238,11 @@ ParU_Info ParU_USolve
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
     int64_t n1 = Sym->n1;   // row+col singletons
-    int64_t *Ps = Num->Ps;  // row permutation
+    const int64_t *Ps = Num->Ps;  // row permutation
 
-    ParU_Factors *LUs = Num->partial_LUs;
-    ParU_Factors *Us = Num->partial_Us;
-    int64_t *Super = Sym->Super;
+    const ParU_Factors *LUs = Num->partial_LUs;
+    const ParU_Factors *Us = Num->partial_Us;
+    const int64_t *Super = Sym->Super;
 
     BLAS_set_num_threads(control_nthreads (Control)) ;
     double *work =
@@ -255,8 +255,8 @@ ParU_Info ParU_USolve
 
     for (int64_t f = nf - 1; f >= 0; --f)
     {
-        int64_t *frowList = Num->frowList[f];
-        int64_t *fcolList = Num->fcolList[f];
+        const int64_t *frowList = Num->frowList[f];
+        const int64_t *fcolList = Num->fcolList[f];
         int64_t col1 = Super[f];
         int64_t col2 = Super[f + 1];
         int64_t fp = col2 - col1;
@@ -330,9 +330,9 @@ ParU_Info ParU_USolve
         for (int64_t i = cs1 - 1; i >= 0; i--)
         {
             PRLEVEL(PR, ("i = " LD "\n", i));
-            int64_t *Sup = Sym->ustons.Sup;
-            int64_t *Suj = Sym->ustons.Suj;
-            double *Sux = Num->Sux;
+            const int64_t *Sup = Sym->ustons.Sup;
+            const int64_t *Suj = Sym->ustons.Suj;
+            const double *Sux = Num->Sux;
             ASSERT(Suj != NULL && Sux != NULL && Sup != NULL);
             for (int64_t p = Sup[i] + 1; p < Sup[i + 1]; p++)
             {

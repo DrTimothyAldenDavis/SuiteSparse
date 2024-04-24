@@ -28,8 +28,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
      *  0 Detailed
      *  > 0 Everything
      */
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *Super = Sym->Super;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *Super = Sym->Super;
     /* ---------------------------------------------------------------------- */
     /* get the front F  */
     /* ---------------------------------------------------------------------- */
@@ -62,7 +62,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         // Needs to be initialized in my new algorithm
 
         std::vector<int64_t> panel_row(num_panels, 0);
-        int64_t *snM = Sym->super2atree;
+        const int64_t *snM = Sym->super2atree;
         int64_t eli = snM[f];
 
         int64_t *isRowInFront = Work->rowSize;

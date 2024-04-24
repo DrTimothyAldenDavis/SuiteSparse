@@ -1,9 +1,14 @@
 
-FIXME Symbolic->Work:
-    kept and modified by numeric factorization, which makes the symbolic
-    object an input/output object (cannot be used in parallel).
+FIXME is the Symbolic object read-only in numeric factorization?
+    All uses of arrays should be:
+    const intt64_t *stuff = Sym->stuff ;
 
-FIXME MATLAB interface
+FIXME make Numeric and Symbolic objects opaque?
+    (add routines to give access to P, Q, scale factor Rs, n, rcond)
+    Keep Control structures non-opaque.
+
+FIXME MATLAB interface, add options and stats
 
 FIXME test performance results again, for ACM TOMS paper
 
+FIXME Tcov: missing parts of paru_tasked_dgemm

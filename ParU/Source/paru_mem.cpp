@@ -15,7 +15,12 @@
 
 #include "paru_internal.hpp"
 
-#define GBd LD
+////////////////////////////////////////////////////////////////////////////////
+// methods for testing memory allocation
+////////////////////////////////////////////////////////////////////////////////
+
+#ifdef PARU_ALLOC_TESTING
+
 #ifdef MATLAB_MEX_FILE
     #undef printf
     #define ABORT { mexErrMsgIdAndTxt ("ParU:abort", \
@@ -25,8 +30,6 @@
         fflush (stdout) ; fflush (stderr) ; abort ( ) ; }
 #endif
 #define MEMASSERT(ok) { if (!(ok)) ABORT ; }
-
-#ifdef PARU_ALLOC_TESTING
 
 // global variables
 bool paru_malloc_tracking = false;
@@ -64,7 +67,7 @@ void paru_memtable_dump (void)
 {
     #pragma omp critical(paru_memdump)
     {
-        printf ("\nmemtable dump: %d nmalloc " GBd "\n",    // MEMDUMP
+        printf ("\nmemtable dump: %d nmalloc " LD "\n",    // MEMDUMP
             paru_Global.nmemtable, paru_Global.nmalloc) ;
         for (int k = 0 ; k < paru_Global.nmemtable ; k++)
         {
@@ -283,6 +286,10 @@ int64_t paru_get_nmalloc(void)
 }
 
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+// wrappers for malloc, calloc, realloc, and free
+////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
 // paru_malloc: wrapper around malloc routine
@@ -690,92 +697,5 @@ void paru_free_el(int64_t e, paru_element **elementList)
 // #else
 //  PARU_FREE(1, 0, elementList [e]);
 // #endif
-}
-
-//------------------------------------------------------------------------------
-// paru_free_work: free all workspace in Work object
-//------------------------------------------------------------------------------
-
-ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
-{
-    int64_t m = Sym->m - Sym->n1;
-    int64_t nf = Sym->nf;
-    int64_t n = Sym->n - Sym->n1;
-    PARU_FREE(m, sizeof(int64_t), Work->rowSize);
-    PARU_FREE(m + nf + 1, sizeof(int64_t), Work->rowMark);
-    PARU_FREE(m + nf, sizeof(int64_t), Work->elRow);
-    PARU_FREE(m + nf, sizeof(int64_t), Work->elCol);
-    PARU_FREE(Sym->ntasks, sizeof(int64_t), Work->task_num_child);
-
-    PARU_FREE(1, nf * sizeof(int64_t), Work->time_stamp);
-
-    paru_tupleList *RowList = Work->RowList;
-    PRLEVEL(1, ("%% RowList =%p\n", RowList));
-
-    if (RowList)
-    {
-        for (int64_t row = 0; row < m; row++)
-        {
-            int64_t len = RowList[row].len;
-            PARU_FREE(len, sizeof(paru_tuple), RowList[row].list);
-        }
-    }
-    PARU_FREE(1, m * sizeof(paru_tupleList), Work->RowList);
-
-    if (Work->Diag_map)
-    {
-        PARU_FREE(n, sizeof(int64_t), Work->Diag_map);
-        PARU_FREE(n, sizeof(int64_t), Work->inv_Diag_map);
-    }
-
-    paru_element **elementList;
-    elementList = Work->elementList;
-
-    PRLEVEL(1, ("%% Sym = %p\n", Sym));
-    PRLEVEL(1, ("%% freeing initialized elements:\n"));
-    if (elementList)
-    {
-        for (int64_t i = 0; i < m; i++)
-        {
-            // freeing all row elements
-            int64_t e = Sym->row2atree[i];  // element number in augmented tree
-            PRLEVEL(1, ("%% e =" LD "\t", e));
-            paru_free_el(e, elementList);
-        }
-
-        PRLEVEL(1, ("\n%% freeing CB elements:\n"));
-        for (int64_t i = 0; i < nf; i++)
-        {
-            // freeing all other elements
-            int64_t e = Sym->super2atree[i];  //element number in augmented tree
-            paru_free_el(e, elementList);
-        }
-    }
-
-    PARU_FREE(1, (m + nf + 1) * sizeof(paru_element), Work->elementList);
-
-    PARU_FREE(m + nf, sizeof(int64_t), Work->lacList);
-
-    // in practice each parent should deal with the memory for the children
-    std::vector<int64_t> **heapList = Work->heapList;
-    // freeing memory of heaps.
-    if (heapList != NULL)
-    {
-        for (int64_t eli = 0; eli < m + nf + 1; eli++)
-        {
-            if (heapList[eli] != NULL)
-            {
-                PRLEVEL(1,
-                        ("%% " LD " has not been freed %p\n", eli, heapList[eli]));
-                delete heapList[eli];
-                heapList[eli] = NULL;
-            }
-            MEMASSERT(heapList[eli] == NULL);
-        }
-    }
-    PARU_FREE(1, (m + nf + 1)*sizeof(std::vector<int64_t> **), Work->heapList);
-    PARU_FREE(m, sizeof(int64_t), Work->row_degree_bound);
-
-    return PARU_SUCCESS;
 }
 

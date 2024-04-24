@@ -32,8 +32,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
     int64_t *elRow = Work->elRow;
     int64_t *elCol = Work->elCol;
 
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *Super = Sym->Super;
+    const ParU_Symbolic *Sym = Work->Sym;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f];  // fornt F has columns col1:col2-1
     int64_t col2 = Super[f + 1];
     int64_t fp = col2 - col1;  // first fp columns are pivotal
@@ -197,7 +197,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
         curRowTupleList->numTuple = pdst;
     }
 
-    int64_t *snM = Sym->super2atree;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     if (colCount == 0)
     {

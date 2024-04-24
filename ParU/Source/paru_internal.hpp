@@ -639,7 +639,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t m, int64_t n, int64_t k, double *A,
 int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha,
                          double *a, int64_t lda, double *b, int64_t ldb,
                          paru_work *Work, ParU_Numeric *Num);
-ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work);
+ParU_Info paru_free_work(const ParU_Symbolic *Sym, paru_work *Work);
 
 void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C) ;
 

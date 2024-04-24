@@ -18,12 +18,11 @@ ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     int64_t nf = Sym->nf;
     int64_t m = Sym->m;
 
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
 
-    // some working memory that is freed in this function
     int64_t *Pfin = NULL;
     int64_t *Ps = NULL;
-    int64_t *Pinit = Sym->Pinit;
+    const int64_t *Pinit = Sym->Pinit;
 
     Num->Pfin = Pfin = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));
     Num->Ps = Ps = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));

@@ -76,7 +76,7 @@ ParU_Info ParU_LSolve
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
     int64_t n1 = Sym->n1;   // row+col singletons
-    int64_t *Ps = Num->Ps;  // row permutation S->LU
+    const int64_t *Ps = Num->Ps;  // row permutation S->LU
 
     PRLEVEL(1, ("%%Working on singletons if any\n%%"));
     // singletons
@@ -88,9 +88,9 @@ ParU_Info ParU_LSolve
         for (int64_t j = cs1; j < n1; j++)
         {
             PRLEVEL(PR, ("j = " LD "\n", j));
-            int64_t *Slp = Sym->lstons.Slp;
-            int64_t *Sli = Sym->lstons.Sli;
-            double *Slx = Num->Slx;
+            const int64_t *Slp = Sym->lstons.Slp;
+            const int64_t *Sli = Sym->lstons.Sli;
+            const double *Slx = Num->Slx;
             ASSERT(Sli != NULL && Slx != NULL && Slp != NULL);
             int64_t diag = Slp[j - cs1];
             PRLEVEL(PR, (" x[" LD "]=%.2lf Slx[" LD "]=%.2lf\n", j, x[j], diag,
@@ -126,13 +126,13 @@ ParU_Info ParU_LSolve
         return (PARU_OUT_OF_MEMORY) ;
     }
 
-    ParU_Factors *LUs = Num->partial_LUs;
-    int64_t *Super = Sym->Super;
+    const ParU_Factors *LUs = Num->partial_LUs;
+    const int64_t *Super = Sym->Super;
 
     for (int64_t f = 0; f < nf; f++)
     {
         int64_t rowCount = Num->frowCount[f];
-        int64_t *frowList = Num->frowList[f];
+        const int64_t *frowList = Num->frowList[f];
         int64_t col1 = Super[f];
         int64_t col2 = Super[f + 1];
         int64_t fp = col2 - col1;
@@ -258,7 +258,7 @@ ParU_Info ParU_LSolve
 #endif
 
     int64_t n1 = Sym->n1;   // row+col singletons
-    int64_t *Ps = Num->Ps;  // row permutation S->LU
+    const int64_t *Ps = Num->Ps;  // row permutation S->LU
 
     // singletons
     int64_t rs1 = Sym->rs1;
@@ -269,9 +269,9 @@ ParU_Info ParU_LSolve
         for (int64_t j = cs1; j < n1; j++)
         {
             PRLEVEL(PR, ("j = " LD "\n", j));
-            int64_t *Slp = Sym->lstons.Slp;
-            int64_t *Sli = Sym->lstons.Sli;
-            double *Slx = Num->Slx;
+            const int64_t *Slp = Sym->lstons.Slp;
+            const int64_t *Sli = Sym->lstons.Sli;
+            const double *Slx = Num->Slx;
             ASSERT(Sli != NULL && Slx != NULL && Slp != NULL);
             int64_t diag = Slp[j - cs1];
             PRLEVEL(PR, (" X[" LD "]=%.2lf Slx[" LD "]=%.2lf\n", j, X[j * nrhs], diag,
@@ -321,13 +321,13 @@ ParU_Info ParU_LSolve
         return (PARU_OUT_OF_MEMORY) ;
     }
 
-    ParU_Factors *LUs = Num->partial_LUs;
-    int64_t *Super = Sym->Super;
+    const ParU_Factors *LUs = Num->partial_LUs;
+    const int64_t *Super = Sym->Super;
 
     for (int64_t f = 0; f < nf; f++)
     {
         int64_t rowCount = Num->frowCount[f];
-        int64_t *frowList = Num->frowList[f];
+        const int64_t *frowList = Num->frowList[f];
         int64_t col1 = Super[f];
         int64_t col2 = Super[f + 1];
         int64_t fp = col2 - col1;
