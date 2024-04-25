@@ -358,30 +358,34 @@ for k = 1:nmat
         resid = norm (A*x-b,1) / anorm ;
         fprintf ('A\\b  resid %8.2e time: %10.2f sec\n', resid, t_backslash) ;
 
+        % default options:
+        % ordering: AMD for symmetric strategy, COLAMD for unsymmetric
         t2 = tic ;
         [x2, stats] = paru (A,b) ;
         t_paru = toc (t2) ;
         resid2 = norm (A*x2-b,1) / anorm ;
-        fprintf ('ParU resid %8.2e time: %10.2f sec (default) ', resid2, t_paru) ;
+        fprintf ('ParU resid %8.2e time: %10.2f sec (default) ', ...
+            resid2, t_paru) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec\n', ...
             stats.analysis_time, stats.factorize_time, stats.solve_time) ;
 
-        % use AMD for the symmetric strategy, COLAMD for unsymmetric:
-        clear opts
-        opts.ordering = 'amd' ;
-
-        t2 = tic ;
-        [x2, stats] = paru (A,b,opts) ;
-        t_paru_2 = toc (t2) ;
-        resid2 = norm (A*x2-b,1) / anorm ;
-        fprintf ('ParU resid %8.2e time: %10.2f sec (AMD)     ', resid2, t_paru) ;
-        fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec\n', ...
-            stats.analysis_time, stats.factorize_time, stats.solve_time) ;
+        if (1)
+            clear opts
+            opts.ordering = 'metis' ;
+            t2 = tic ;
+            [x2, stats] = paru (A,b,opts) ;
+            t_paru_2 = toc (t2) ;
+            resid2 = norm (A*x2-b,1) / anorm ;
+            fprintf ('ParU resid %8.2e time: %10.2f sec (METIS)   ', ...
+                resid2, t_paru_2) ;
+            fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec\n', ...
+                stats.analysis_time, stats.factorize_time, stats.solve_time) ;
+        end
 
     else
-        skip = [skip id] ;
+        skip = [skip ; id] ;
         save skip_set skip
     end
-    pause
+
 end
 
