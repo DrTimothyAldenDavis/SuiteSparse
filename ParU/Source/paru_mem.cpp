@@ -19,8 +19,6 @@
 // methods for testing memory allocation
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef PARU_ALLOC_TESTING
-
 #ifdef MATLAB_MEX_FILE
     #undef printf
     #define ABORT { mexErrMsgIdAndTxt ("ParU:abort", \
@@ -31,7 +29,9 @@
 #endif
 #define MEMASSERT(ok) { if (!(ok)) ABORT ; }
 
-// global variables
+#ifdef PARU_ALLOC_TESTING
+
+// global variables for testing only
 bool paru_malloc_tracking = false;
 int64_t paru_nmalloc = 0;
 
@@ -354,19 +354,20 @@ void *paru_malloc(size_t n, size_t size)
         #else
         {
             // in production
-            #ifdef MATLAB_MEX_FILE
-            {
-                // mxMalloc and friends are not thread-safe
-                #pragma omp critical (ParU_MATLAB_malloc_protection)
-                {
-                    p = SuiteSparse_malloc(n, size);
-                }
-            }
-            #else
+// FIXME: make malloc thread-safe check a run-time option via Control:
+//          #ifdef MATLAB_MEX_FILE
+//          {
+//              // mxMalloc and friends are not thread-safe
+//              #pragma omp critical (ParU_MATLAB_malloc_protection)
+//              {
+//                  p = SuiteSparse_malloc(n, size);
+//              }
+//          }
+//          #else
             {
                 p = SuiteSparse_malloc(n, size);
             }
-            #endif
+//          #endif
         }
         #endif
 
@@ -446,19 +447,19 @@ void *paru_calloc(size_t n, size_t size)
         #else
         {
             // in production
-            #ifdef MATLAB_MEX_FILE
-            {
-                // mxMalloc and friends are not thread-safe
-                #pragma omp critical (ParU_MATLAB_malloc_protection)
-                {
-                    p = SuiteSparse_calloc(n, size);
-                }
-            }
-            #else
+//          #ifdef MATLAB_MEX_FILE
+//          {
+//              // mxMalloc and friends are not thread-safe
+//              #pragma omp critical (ParU_MATLAB_malloc_protection)
+//              {
+//                  p = SuiteSparse_calloc(n, size);
+//              }
+//          }
+//          #else
             {
                 p = SuiteSparse_calloc(n, size);
             }
-            #endif
+//          #endif
         }
         #endif
 
@@ -566,19 +567,19 @@ void *paru_realloc
         #else
         {
             // in production
-            #ifdef MATLAB_MEX_FILE
-            {
-                // mxMalloc and friends are not thread-safe
-                #pragma omp critical (ParU_MATLAB_malloc_protection)
-                {
-                    pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
-                }
-            }
-            #else
+//          #ifdef MATLAB_MEX_FILE
+//          {
+//              // mxMalloc and friends are not thread-safe
+//              #pragma omp critical (ParU_MATLAB_malloc_protection)
+//              {
+//                  pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
+//              }
+//          }
+//          #else
             {
                 pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
             }
-            #endif
+//          #endif
         }
         #endif
 
@@ -623,19 +624,19 @@ void paru_free(size_t n, size_t size, void *p)
     DEBUGLEVEL(0);
     if (p != NULL)
     {
-        #ifdef MATLAB_MEX_FILE
-        {
-            // mxMalloc and friends are not thread-safe
-            #pragma omp critical (ParU_MATLAB_malloc_protection)
-            {
-                SuiteSparse_free (p) ;
-            }
-        }
-        #else
+//      #ifdef MATLAB_MEX_FILE
+//      {
+//          // mxMalloc and friends are not thread-safe
+//          #pragma omp critical (ParU_MATLAB_malloc_protection)
+//          {
+//              SuiteSparse_free (p) ;
+//          }
+//      }
+//      #else
         {
             SuiteSparse_free (p) ;
         }
-        #endif
+//      #endif
         #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
         paru_memtable_remove (p) ;
         #endif

@@ -56,6 +56,11 @@ else
     obj = 'o' ;
 end
 
+v = version ('-blas') ;
+if (contains (v, 'Intel'))
+    flags = [flags ' -DBLAS_Intel10_64ilp'] ;
+end
+
 %-------------------------------------------------------------------------------
 
 include = '-I../../include -I../Include' ;
@@ -361,8 +366,8 @@ obj_files = ' ' ;
 for k = 1:length (suitesparse_src)
     src = suitesparse_src {k} ;
     s = sprintf ('mex -c %s %s %s.c', flags, include, src) ;
-    % fprintf ('%s\n', src) ;
-    fprintf ('.') ;
+    fprintf ('%s\n', src) ;
+    % fprintf ('.') ;
     eval (s) ;
     slash = strfind (src, '/') ;
     slash = slash (end) + 1 ;
@@ -374,8 +379,8 @@ end
 for k = 1:length (paru_src)
     src = paru_src {k} ;
     s = sprintf ('mex -c %s %s %s.cpp', flags, include, src) ;
-    % fprintf ('%s\n', src) ;
-    fprintf ('.') ;
+    fprintf ('%s\n', src) ;
+    % fprintf ('.') ;
     eval (s) ;
     slash = strfind (src, '/') ;
     slash = slash (end) + 1 ;
@@ -386,7 +391,7 @@ end
 % compile the paru mexFunction
 fprintf (':') ;
 s = sprintf ('mex %s -O %s paru.c %s %s', flags, include, obj_files, libs) ;
-% fprintf ('%s\n', s) ;
+fprintf ('%s\n', s) ;
 eval (s) ;
 fprintf ('\n') ;
 

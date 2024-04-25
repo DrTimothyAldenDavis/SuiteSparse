@@ -25,10 +25,10 @@ function [x,stats] = paru (A,b,opts)
 % [x,stats] = paru (A,b,opts)
 %
 % opts: an optional struct that sets the ParU parameters:
-%   FIXME
+%   FIXME: describe opts input
 % stats: an optional output that provides information on the ParU
 % analysis and factorization of the matrix:
-%   FIXME
+%   FIXME: describe stats output
 %
 % See also paru_make, paru_demo, paru_many, paru_tiny, mldivide.
 %

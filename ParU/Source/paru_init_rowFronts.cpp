@@ -46,7 +46,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     PARU_DEFINE_PRLEVEL;
 
     // initializing Work
-    Work->Sym = Sym;            // FIXME: why copy the Sym pointer into Work->Sum?
+    Work->Sym = Sym;            // FIXME: why copy the Sym pointer into Work->Sym?
     int64_t *rowMark = Work->rowMark = NULL;
     int64_t *elRow = Work->elRow = NULL;
     int64_t *elCol = Work->elCol = NULL;
@@ -334,8 +334,8 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
             else if (srow < 0 && scol >= 0)
             {
                 // inside the U singletons
-                PRLEVEL(PR, ("Usingleton newcol = " LD " newrow=" LD "\n", newcol,
-                             newrow));
+                PRLEVEL(PR, ("Usingleton newcol = " LD " newrow=" LD "\n",
+                    newcol, newrow));
                 // let the diagonal entries be first
                 Sux[++cSup[newrow]] = (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
             }
@@ -441,13 +441,15 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
         for (int64_t i = 0; i < Sym->n; i++)
         {
             if (Diag_map[i] == -1)
-                PRLEVEL(PR,
-                        ("Diag_map[" LD "] is not correctly initialized\n", i));
-
+            {
+                PRLEVEL(PR, ("Diag_map[" LD 
+                    "] is not correctly initialized\n", i));
+            }
             if (inv_Diag_map[i] == -1)
-                PRLEVEL(PR, ("inv_Diag_map[" LD "] is not correctly initialized\n",
-                             i));
-
+            {
+                PRLEVEL(PR, ("inv_Diag_map[" LD
+                    "] is not correctly initialized\n", i));
+            }
             ASSERT(Diag_map[i] != -1);
             // ASSERT(inv_Diag_map[i] != -1);
         }
@@ -455,24 +457,18 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
 #endif
     }
 
-    // Activating comments after this parts will break the matlab input matrix
     // allocating row tuples, elements and updating column tuples
 
     int64_t out_of_memory = 0;
-
-    #ifdef MATLAB_MEX_FILE
-    int nthreads = 1 ;
-    #else
     int nthreads = Control->paru_max_threads ;
-    #endif
 
     #pragma omp parallel for num_threads(nthreads)
     for (int64_t row = 0; row < m; row++)
     {
         int64_t e = Sym->row2atree[row];
-        int64_t nrows = 1,
-            ncols =
-                Sp[row + 1] - Sp[row];  // nrows and ncols of current front/row
+        int64_t nrows = 1 ;                     // # rows in front e
+        int64_t ncols = Sp[row + 1] - Sp[row];  // # cols in front e
+
         row_degree_bound[row] = ncols;  // Initialzing row degree
 
         paru_element *curEl = elementList[e] =
@@ -482,7 +478,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
             // out of memory
             PRLEVEL(1, ("ParU: Out of memory: curEl\n"));
             #pragma omp atomic update
-            out_of_memory += 1;
+            out_of_memory++ ;
         }
         else
         {
@@ -507,7 +503,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
                     // out of memory
                     PRLEVEL(1, ("ParU: out of memory, RowList[row].list \n"));
                     #pragma omp atomic update
-                    out_of_memory += 1;
+                    out_of_memory++ ;
                 }
                 else
                 {
@@ -522,7 +518,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
                     {
                         PRLEVEL(1, ("ParU: out of memory, add_rowTuple \n"));
                         #pragma omp atomic update
-                        out_of_memory += 1;
+                        out_of_memory++ ;
                     }
                     else
                     {
@@ -547,7 +543,7 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
                 // out of memory
                 PRLEVEL(1, ("ParU: Out of memory: curHeap\n"));
                 #pragma omp atomic update
-                out_of_memory += 1;
+                out_of_memory++ ;
             }
         }
     }

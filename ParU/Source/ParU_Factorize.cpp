@@ -143,7 +143,6 @@ ParU_Info ParU_Factorize
     paru_memcpy(task_num_child, Sym->task_num_child, ntasks * sizeof(int64_t),
                 Control);
 
-    // FIXME: can this sort be done in the symbolic analysis?
     try
     {
         for (int64_t t = 0; t < ntasks; t++)
@@ -199,13 +198,6 @@ ParU_Info ParU_Factorize
     //--------------------------------------------------------------------------
     // execute the task tree
     //--------------------------------------------------------------------------
-
-    #ifdef MATLAB_MEX_FILE
-    // Force MATLAB to factorize one front at a time.
-    #ifndef PARU_1TASK
-    #define PARU_1TASK
-    #endif
-    #endif
 
 #if ! defined ( PARU_1TASK )
     // The parallel factorization gets stuck intermittently on Windows or Mac
@@ -334,6 +326,11 @@ ParU_Info ParU_Factorize
         ParU_FreeNumeric(Num_handle, Control);
         return info;
     }
+
+    // FIXME: add flop count to Num?  nnz in L and U?
+
+    // FUTURE: add a routine that returns L and U as plain CSC or CSR
+    // matrices.
 
 #ifdef COUNT_FLOPS
     double flop_count =

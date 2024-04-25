@@ -12,7 +12,6 @@
 //      x = paru (A, b)
 //      [x,stats] = paru (A, b, opts)
 
-#define BLAS_Intel10_64ilp
 #include "sputil2.h"
 #include "ParU.h"
 
@@ -26,7 +25,12 @@
 
 #define PARU_OK(method,error_message)                               \
 {                                                                   \
-    OK ((method) == PARU_SUCCESS, error_message) ;                  \
+    if ((method) != PARU_SUCCESS)                                   \
+    {                                                               \
+        ParU_C_FreeNumeric (&Num, &Control) ;                       \
+        ParU_C_FreeSymbolic (&Sym, &Control) ;                      \
+        mexErrMsgIdAndTxt ("ParU:error", "ParU: " error_message) ;  \
+    }                                                               \
 }
 
 static const char *stat_names [ ] =
@@ -44,10 +48,12 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    cholmod_sparse Amatrix, *A ;
-    cholmod_dense Bmatrix, *X, *B ;
-    cholmod_common Common, *cm ;
+    cholmod_sparse Amatrix, *A = NULL ;
+    cholmod_dense Bmatrix, *X = NULL, *B = NULL ;
+    cholmod_common Common, *cm = NULL ;
     int64_t n ;
+    ParU_C_Symbolic *Sym = NULL ;
+    ParU_C_Numeric *Num = NULL ;
 
     //--------------------------------------------------------------------------
     // start CHOLMOD
@@ -158,7 +164,7 @@ void mexFunction
             Control.prescale = (int) (mxGetScalar (field) != 0) ;
         }
 
-        // strategy: ParU factorization strategy
+        // strategy: both ParU and UMFPACK factorization strategy
         if ((field = mxGetField (pargin [2], 0, "strategy")) != NULL)
         {
             if (mxGetString (field, option, STRLEN) == 0)
@@ -170,6 +176,7 @@ void mexFunction
                 }
                 else if (strncmp (option, "unsymmetric", STRLEN) == 0)
                 {
+                    // FIXME: also set UMFPACK strategy
                     Control.paru_strategy = PARU_STRATEGY_UNSYMMETRIC ;
                 }
                 else if (strncmp (option, "symmetric", STRLEN) == 0)
@@ -187,6 +194,8 @@ void mexFunction
                 mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.strategy") ;
             }
         }
+
+        // FUTURE: opts.paru_strategy and opts.umfpack_strategy
     }
 
     // get sparse matrix A
@@ -208,11 +217,24 @@ void mexFunction
     OK (X != NULL, "error creating X matrix") ;
 
     //--------------------------------------------------------------------------
-    // x = A\b using ParU
+    // change the memory manager to the ANSI C malloc/calloc/realloc/free
     //--------------------------------------------------------------------------
 
-    ParU_C_Symbolic *Sym = NULL ;
-    ParU_C_Numeric *Num = NULL ;
+    // ParU needs a thread-safe memory manager; mxMalloc/mxFree is not
+    // thread-safe.
+
+    #undef malloc
+    #undef calloc
+    #undef realloc
+    #undef free
+    SuiteSparse_config_malloc_func_set (malloc) ;
+    SuiteSparse_config_calloc_func_set (calloc) ;
+    SuiteSparse_config_realloc_func_set (realloc) ;
+    SuiteSparse_config_free_func_set (free) ;
+
+    //--------------------------------------------------------------------------
+    // x = A\b using ParU
+    //--------------------------------------------------------------------------
 
     double t [3], t0, t1 ;
     if (nargout > 1)
@@ -249,8 +271,17 @@ void mexFunction
         t0 = t1 ;
     }
 
-    PARU_OK (ParU_C_FreeNumeric (&Num, &Control), "free numeric failed") ;
-    PARU_OK (ParU_C_FreeSymbolic (&Sym, &Control), "free symbolic failed") ;
+    ParU_C_FreeNumeric (&Num, &Control) ;
+    ParU_C_FreeSymbolic (&Sym, &Control) ;
+
+    //--------------------------------------------------------------------------
+    // set the memory manager back to mxMalloc/mxCalloc/mxRealloc/mxFree
+    //--------------------------------------------------------------------------
+
+    SuiteSparse_config_malloc_func_set (mxMalloc) ;
+    SuiteSparse_config_calloc_func_set (mxCalloc) ;
+    SuiteSparse_config_realloc_func_set (mxRealloc) ;
+    SuiteSparse_config_free_func_set (mxFree) ;
 
     //--------------------------------------------------------------------------
     // free workspace and return solution to MATLAB
@@ -273,5 +304,6 @@ void mexFunction
         mxSetFieldByNumber (pargout [1], 0, 2, mxCreateDoubleScalar (t [2])) ;
         // FIXME: add nnz(L), nnz(U), rcond, flop count if available, ...
     }
+
 }
 

@@ -384,8 +384,8 @@ int main(int argc, char **argv)
     are available in the \verb'ParU.h' file.  The symbolic analysis structure
     must be freed by \verb'ParU_FreeSymbolic'.
 
-    FIXME: Should the Symbolic object be opaque?  How does the user get
-    statistics on the analysis phase (estimated fillin and such)? 
+    FIXME: change the Symbolic object to opaque.  Add user functions to
+    get statistics on the analysis phase (estimated fillin and such).
 
 \subsection{{\sf ParU\_Factorize}: numerical factorization}
 
@@ -411,8 +411,7 @@ int main(int argc, char **argv)
     \verb'ParU.h' file.  The numeric factorization structure must be freed by
     \verb'ParU_FreeNumeric'.
 
-    FIXME: Should the Numeric object be opaque?  How does the user get
-    statistics on the factorization phase (nnz in L and U, rcond, and such)? 
+    FIXME: make Numeric object opaque.
 
 \subsection{{\sf ParU\_Solve}: solve a linear system, $Ax=b$}
 

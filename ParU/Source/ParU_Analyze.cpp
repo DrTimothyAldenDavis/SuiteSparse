@@ -371,9 +371,9 @@ ParU_Info ParU_Analyze
         }
 
         int32_t paru_strategy = my_Control.paru_strategy;
-        if (paru_strategy != UMFPACK_STRATEGY_AUTO &&
-            paru_strategy != UMFPACK_STRATEGY_SYMMETRIC &&
-            paru_strategy != UMFPACK_STRATEGY_UNSYMMETRIC)
+        if (paru_strategy != PARU_STRATEGY_AUTO &&
+            paru_strategy != PARU_STRATEGY_SYMMETRIC &&
+            paru_strategy != PARU_STRATEGY_UNSYMMETRIC)
         {
             my_Control.paru_strategy = PARU_STRATEGY_AUTO;
         }
@@ -445,6 +445,9 @@ ParU_Info ParU_Analyze
     {
         Sym->strategy = Control->paru_strategy;
     }
+
+    // FIXME: get ordering used, and UMFPACK strategy used
+    // and save in Sym object
 
 #ifndef NDEBUG
     PR = 0;
