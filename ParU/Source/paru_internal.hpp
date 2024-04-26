@@ -478,37 +478,31 @@ void paru_free_debug(size_t n, size_t size, void *p, const char *filename, int l
 
 #if defined ( PARU_MALLOC_DEBUG )
 
-    #define PARU_MALLOC(n,size)                                 \
-        paru_malloc_debug (n, size, __FILE__, __LINE__)
+    #define PARU_MALLOC(n,T) static_cast<T *>(paru_malloc_debug (n, sizeof (T), __FILE__, __LINE__))
+    #define PARU_CALLOC(n,T) static_cast<T *>(paru_calloc_debug (n, sizeof (T), __FILE__, __LINE__))
 
-    #define PARU_CALLOC(n,size)                                 \
-        paru_calloc_debug (n, size, __FILE__, __LINE__)
+    #define PARU_REALLOC(newsize,T,oldP,size)                       \
+        static_cast<T *>(paru_realloc_debug (newsize, sizeof(T),    \
+            oldP, size, __FILE__, __LINE__))
 
-    #define PARU_REALLOC(newsize,size_Entry,oldP,size)          \
-        paru_realloc_debug (newsize,size_Entry,oldP,size,       \
-            __FILE__, __LINE__)
-
-    #define PARU_FREE(n,size,p)                                 \
-    {                                                           \
-        paru_free_debug (n, size, p, __FILE__, __LINE__) ;      \
-        (p) = NULL ;                                            \
+    #define PARU_FREE(n,T,p)                                        \
+    {                                                               \
+        paru_free_debug (n, sizeof (T), p, __FILE__, __LINE__) ;    \
+        (p) = NULL ;                                                \
     }
 
 #else
 
-    #define PARU_MALLOC(n,size)                                 \
-        paru_malloc (n, size)
+    #define PARU_MALLOC(n,T) static_cast<T*>(paru_malloc (n, sizeof (T)))
+    #define PARU_CALLOC(n,T) static_cast<T*>(paru_calloc (n, sizeof (T)))
 
-    #define PARU_CALLOC(n,size)                                 \
-        paru_calloc (n, size)
+    #define PARU_REALLOC(newsize,T,oldP,size)                       \
+        static_cast<T *>(paru_realloc (newsize, sizeof(T), oldP, size))
 
-    #define PARU_REALLOC(newsize,size_Entry,oldP,size)          \
-        paru_realloc (newsize,size_Entry,oldP,size)
-
-    #define PARU_FREE(n,size,p)                                 \
-    {                                                           \
-        paru_free (n, size, p) ;                                \
-        (p) = NULL ;                                            \
+    #define PARU_FREE(n,T,p)                                        \
+    {                                                               \
+        paru_free (n, sizeof (T), p) ;                              \
+        (p) = NULL ;                                                \
     }
 
 #endif

@@ -69,7 +69,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 
         int64_t fm = Sym->Fm[f]; /* Upper bound number of rows of F */
         PRLEVEL(1, ("%% the size of fm is " LD "\n", fm));
-        int64_t *frowList = static_cast<int64_t*>(PARU_MALLOC (fm, sizeof(int64_t)));
+        int64_t *frowList = PARU_MALLOC (fm, int64_t);
         if (frowList == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to allocate"
@@ -171,7 +171,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 
 #endif
 
-        // provide PARU_MALLOC as the allocator
+        // using paru_malloc as the allocator for std::set and std::vector
         int64_t fn = Sym->Cm[f];      /* Upper bound number of cols of F */
         std::set<int64_t> stl_colSet; /* used in this scope */
 
@@ -263,7 +263,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         if (fn != 0)
         {
             PRLEVEL(1, ("%% fp=" LD " fn=" LD " \n", fp, fn));
-            fcolList = static_cast<int64_t*>(PARU_CALLOC (stl_colSet.size(), sizeof(int64_t)));
+            fcolList = PARU_CALLOC (stl_colSet.size(), int64_t);
 
             if (fcolList == NULL)
             {
@@ -341,7 +341,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         /**** 5 ** assemble U part         Row by Row                      ****/
 
         // consider a parallel calloc
-        double *uPart = static_cast<double*>(PARU_CALLOC (fp * colCount, sizeof(double)));
+        double *uPart = PARU_CALLOC (fp * colCount, double) ;
         if (uPart == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to"

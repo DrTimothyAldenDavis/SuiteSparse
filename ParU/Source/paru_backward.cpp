@@ -40,7 +40,7 @@ ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
     }
     PRLEVEL(PR, (" \n"));
 #endif
-    double *b = static_cast<double*>(PARU_CALLOC (m, sizeof(double)));
+    double *b = PARU_CALLOC (m, double);
     if (b == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside backward\n"));
@@ -61,7 +61,7 @@ ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% A problem happend during factorization\n"));
-        PARU_FREE(m, sizeof(int64_t), b);
+        PARU_FREE(m, double, b);
         return info;
     }
 
@@ -84,6 +84,6 @@ ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
     xnorm = paru_vec_1norm (x1, m) ;
     PRLEVEL(1, ("backward error is |%.2lf| and weigheted backward error is"
        "|%.2f|.\n",resid == 0 ? 0 : log10(resid), resid == 0 ? 0 :log10(xnorm)));
-    PARU_FREE(m, sizeof(int64_t), b);
+    PARU_FREE(m, double, b);
     return (PARU_SUCCESS) ;
 }

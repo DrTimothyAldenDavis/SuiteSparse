@@ -358,8 +358,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     size_t sz = (size_t) fm;
     if (rowCount != fm)
     {
-        frowList =
-            static_cast<int64_t*>(PARU_REALLOC (rowCount, sizeof(int64_t), frowList, &sz));
+        frowList = PARU_REALLOC (rowCount, int64_t, frowList, &sz);
     }
     if (sz != (size_t) rowCount)
     {
@@ -369,7 +368,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     }
 
     Num->frowList[f] = frowList ;
-    double *pivotalFront = static_cast<double*>(PARU_CALLOC (rowCount * fp, sizeof(double)));
+    double *pivotalFront = PARU_CALLOC (rowCount * fp, double);
 
     if (pivotalFront == NULL)
     {

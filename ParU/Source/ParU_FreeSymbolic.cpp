@@ -49,39 +49,31 @@ ParU_Info ParU_FreeSymbolic
                 "Sym->anz=" LD " \n",
                 m, n, nf, Sym->anz));
 
-    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Parent);
-    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Child);
-    PARU_FREE(nf + 2, sizeof(int64_t), Sym->Childp);
-    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Super);
-    PARU_FREE(nf, sizeof(int64_t), Sym->Depth);
-    PARU_FREE(n, sizeof(int64_t), Sym->Qfill);
-    PARU_FREE(n, sizeof(int64_t), Sym->Diag_map);
-    PARU_FREE((m + 1), sizeof(int64_t), Sym->Pinit);
-    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Fm);
-    PARU_FREE(nf + 1, sizeof(int64_t), Sym->Cm);
-
-    // PARU_FREE(Sym->num_roots, sizeof(int64_t), Sym->roots);
-
-    PARU_FREE(m + 1 - n1, sizeof(int64_t), Sym->Sp);
-    PARU_FREE(snz, sizeof(int64_t), Sym->Sj);
-    PARU_FREE(n + 2 - n1, sizeof(int64_t), Sym->Sleft);
-
-    // PARU_FREE((n + 1), sizeof(int64_t), Sym->Chain_start);
-    // PARU_FREE((n + 1), sizeof(int64_t), Sym->Chain_maxrows);
-    // PARU_FREE((n + 1), sizeof(int64_t), Sym->Chain_maxcols);
-
-    PARU_FREE(nf + 1, sizeof(double), Sym->front_flop_bound);
-    PARU_FREE(nf + 1, sizeof(double), Sym->stree_flop_bound);
+    PARU_FREE(nf + 1, int64_t, Sym->Parent);
+    PARU_FREE(nf + 1, int64_t, Sym->Child);
+    PARU_FREE(nf + 2, int64_t, Sym->Childp);
+    PARU_FREE(nf + 1, int64_t, Sym->Super);
+    PARU_FREE(nf, int64_t, Sym->Depth);
+    PARU_FREE(n, int64_t, Sym->Qfill);
+    PARU_FREE(n, int64_t, Sym->Diag_map);
+    PARU_FREE(m + 1, int64_t, Sym->Pinit);
+    PARU_FREE(nf + 1, int64_t, Sym->Fm);
+    PARU_FREE(nf + 1, int64_t, Sym->Cm);
+    PARU_FREE(m + 1 - n1, int64_t, Sym->Sp);
+    PARU_FREE(snz, int64_t, Sym->Sj);
+    PARU_FREE(n + 2 - n1, int64_t, Sym->Sleft);
+    PARU_FREE(nf + 1, double, Sym->front_flop_bound);
+    PARU_FREE(nf + 1, double, Sym->stree_flop_bound);
 
     int64_t ms = m - n1;  // submatrix is msxns
 
-    PARU_FREE(ms + nf, sizeof(int64_t), Sym->aParent);
-    PARU_FREE(ms + nf + 1, sizeof(int64_t), Sym->aChild);
-    PARU_FREE(ms + nf + 2, sizeof(int64_t), Sym->aChildp);
-    PARU_FREE(ms, sizeof(int64_t), Sym->row2atree);
-    PARU_FREE(nf, sizeof(int64_t), Sym->super2atree);
-    PARU_FREE(nf + 1, sizeof(int64_t), Sym->first);
-    PARU_FREE(m, sizeof(int64_t), Sym->Pinv);
+    PARU_FREE(ms + nf, int64_t, Sym->aParent);
+    PARU_FREE(ms + nf + 1, int64_t, Sym->aChild);
+    PARU_FREE(ms + nf + 2, int64_t, Sym->aChildp);
+    PARU_FREE(ms, int64_t, Sym->row2atree);
+    PARU_FREE(nf, int64_t, Sym->super2atree);
+    PARU_FREE(nf + 1, int64_t, Sym->first);
+    PARU_FREE(m, int64_t, Sym->Pinv);
 
     if (n1 > 0)
     {
@@ -90,28 +82,26 @@ ParU_Info ParU_FreeSymbolic
         if (cs1 > 0)
         {
             ParU_U_singleton ustons = Sym->ustons;
-            PARU_FREE(cs1 + 1, sizeof(int64_t), ustons.Sup);
+            PARU_FREE(cs1 + 1, int64_t, ustons.Sup);
             int64_t nnz = ustons.nnz;
-            PARU_FREE(nnz, sizeof(int64_t), ustons.Suj);
+            PARU_FREE(nnz, int64_t, ustons.Suj);
         }
 
         int64_t rs1 = Sym->rs1;
         if (rs1 > 0)
         {
             ParU_L_singleton lstons = Sym->lstons;
-            PARU_FREE(rs1 + 1, sizeof(int64_t), lstons.Slp);
+            PARU_FREE(rs1 + 1, int64_t, lstons.Slp);
             int64_t nnz = lstons.nnz;
-            PARU_FREE(nnz, sizeof(int64_t), lstons.Sli);
+            PARU_FREE(nnz, int64_t, lstons.Sli);
         }
     }
     int64_t ntasks = Sym->ntasks;
-    PARU_FREE(ntasks + 1, sizeof(int64_t), Sym->task_map);
-    PARU_FREE(ntasks, sizeof(int64_t), Sym->task_parent);
-    PARU_FREE(ntasks, sizeof(int64_t), Sym->task_num_child);
-    PARU_FREE(ntasks, sizeof(int64_t), Sym->task_depth);
-
-    PARU_FREE(1, sizeof(ParU_Symbolic), Sym);
-
+    PARU_FREE(ntasks + 1, int64_t, Sym->task_map);
+    PARU_FREE(ntasks, int64_t, Sym->task_parent);
+    PARU_FREE(ntasks, int64_t, Sym->task_num_child);
+    PARU_FREE(ntasks, int64_t, Sym->task_depth);
+    PARU_FREE(1, ParU_Symbolic, Sym);
     (*Sym_handle) = NULL;
     return (PARU_SUCCESS) ;
 }

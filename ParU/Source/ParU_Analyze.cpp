@@ -55,21 +55,21 @@
  * */
 // =============================================================================
 
-#define FREE_WORK                                               \
-{                                                               \
-    PARU_FREE ((n + 1), sizeof(int64_t), fmap);                 \
-    PARU_FREE ((n + 1), sizeof(int64_t), newParent);            \
-    PARU_FREE (n, sizeof(int64_t), inv_Diag_map);               \
-    PARU_FREE ((n + 1), sizeof(int64_t), Front_parent);         \
-    PARU_FREE ((n + 1), sizeof(int64_t), Front_npivcol);        \
-    PARU_FREE ((m - n1), sizeof(int64_t), Ps);                  \
-    PARU_FREE ((std::max(m, n) + 2), sizeof(int64_t), SymWork); \
-    PARU_FREE ((cs1 + 1), sizeof(int64_t), cSup);               \
-    PARU_FREE ((rs1 + 1), sizeof(int64_t), cSlp);               \
-    umfpack_dl_free_symbolic(&Symbolic);                        \
-    Symbolic = NULL ;                                           \
-    umfpack_dl_paru_free_sw(&SW);                               \
-    SW = NULL ;                                                 \
+#define FREE_WORK                                       \
+{                                                       \
+    PARU_FREE (n + 1, int64_t, fmap);                   \
+    PARU_FREE (n + 1, int64_t, newParent);              \
+    PARU_FREE (n, int64_t, inv_Diag_map);               \
+    PARU_FREE (n + 1, int64_t, Front_parent);           \
+    PARU_FREE (n + 1, int64_t, Front_npivcol);          \
+    PARU_FREE (m - n1, int64_t, Ps);                    \
+    PARU_FREE (std::max(m, n) + 2, int64_t, SymWork);   \
+    PARU_FREE (cs1 + 1, int64_t, cSup);                 \
+    PARU_FREE (rs1 + 1, int64_t, cSlp);                 \
+    umfpack_dl_free_symbolic(&Symbolic);                \
+    Symbolic = NULL ;                                   \
+    umfpack_dl_paru_free_sw(&SW);                       \
+    SW = NULL ;                                         \
 }
 
 // =============================================================================
@@ -101,7 +101,7 @@ ParU_Info ParU_Analyze
 #endif
 
     ParU_Symbolic *Sym;
-    Sym = static_cast<ParU_Symbolic*>(PARU_CALLOC (1, sizeof(ParU_Symbolic)));
+    Sym = PARU_CALLOC (1, ParU_Symbolic);
     if (!Sym)
     {
         return (PARU_OUT_OF_MEMORY) ;
@@ -425,7 +425,7 @@ ParU_Info ParU_Analyze
         PRLEVEL(1, ("ParU: umfpack_dl_symbolic failed\n"));
         umfpack_dl_free_symbolic(&Symbolic);
         FREE_WORK;
-        PARU_FREE (1, sizeof(ParU_Symbolic), Sym);
+        PARU_FREE (1, ParU_Symbolic, Sym);
         *Sym_handle = NULL;
         return (info) ;
     }
@@ -522,8 +522,8 @@ ParU_Info ParU_Analyze
 
     SymbolicType *Sym_umf = static_cast<SymbolicType*>(Symbolic);  // just an alias
     // temp amalgamation data structure
-    fmap = static_cast<int64_t*>(PARU_MALLOC ((n + 1), sizeof(int64_t)));
-    newParent = static_cast<int64_t*>(PARU_MALLOC ((n + 1), sizeof(int64_t)));
+    fmap = PARU_MALLOC (n + 1, int64_t);
+    newParent = PARU_MALLOC (n + 1, int64_t);
     bool ok = true ;
 
     if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC)
@@ -537,7 +537,7 @@ ParU_Info ParU_Analyze
 
     if (Diag_map)
     {
-        inv_Diag_map = static_cast<int64_t*>(PARU_MALLOC (n, sizeof(int64_t)));
+        inv_Diag_map = PARU_MALLOC (n, int64_t);
         ok = (inv_Diag_map != NULL) ;
     }
     else
@@ -717,8 +717,7 @@ ParU_Info ParU_Analyze
     // Parent size is nf+1 potentially smaller than what UMFPACK allocate
     size_t size = n + 1;
 
-    Parent = static_cast<int64_t*>(PARU_REALLOC (nf + 1, sizeof(int64_t),
-        Front_parent, &size));
+    Parent = PARU_REALLOC (nf + 1, int64_t, Front_parent, &size);
     Sym->Parent = Parent;
     ASSERT(size <= static_cast<size_t>(n) + 1);
     if (size != static_cast<size_t>(nf) + 1)
@@ -737,8 +736,8 @@ ParU_Info ParU_Analyze
     // like SPQR: Super[f]<= pivotal columns of (f) < Super[f+1]
     if (nf > 0)
     {
-        Super = Sym->Super = static_cast<int64_t*>(PARU_MALLOC ((nf + 1), sizeof(int64_t)));
-        Depth = Sym->Depth = static_cast<int64_t*>(PARU_CALLOC (nf, sizeof(int64_t)));
+        Super = Sym->Super = PARU_MALLOC (nf + 1, int64_t);
+        Depth = Sym->Depth = PARU_CALLOC (nf, int64_t);
         if (Super == NULL || Depth == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory\n"));
@@ -840,9 +839,7 @@ ParU_Info ParU_Analyze
     // newParent size is newF+1 potentially smaller than nf
     if (newF > 0)
     {
-        newParent =
-            static_cast<int64_t*>(PARU_REALLOC (newF + 1, sizeof(int64_t),   
-            newParent, &size));
+        newParent = PARU_REALLOC (newF + 1, int64_t, newParent, &size);
     }
     if (size != (size_t)newF + 1)
     {
@@ -873,8 +870,8 @@ ParU_Info ParU_Analyze
 
     if (newNf > 0)
     {
-        Fm = static_cast<int64_t*>(PARU_CALLOC ((newNf + 1), sizeof(int64_t)));
-        Cm = static_cast<int64_t*>(PARU_MALLOC ((newNf + 1), sizeof(int64_t)));
+        Fm = PARU_CALLOC (newNf + 1, int64_t);
+        Cm = PARU_MALLOC (newNf + 1, int64_t);
         Sym->Fm = Fm;
         Sym->Cm = Cm;
 
@@ -962,7 +959,7 @@ ParU_Info ParU_Analyze
     PRLEVEL(PR, ("\n"));
 #endif
 
-    PARU_FREE (nf + 1, sizeof(int64_t), Sym->Parent);
+    PARU_FREE (nf + 1, int64_t, Sym->Parent);
     Sym->Parent = Parent = newParent;
     newParent = NULL;
     nf = Sym->nf = newNf;
@@ -1024,7 +1021,7 @@ ParU_Info ParU_Analyze
     // Making Children list and computing the bound sizes
     if (nf > 0)
     {
-        Childp = static_cast<int64_t*>(PARU_CALLOC (nf + 2, sizeof(int64_t)));
+        Childp = PARU_CALLOC (nf + 2, int64_t);
         Sym->Childp = Childp;
         if (Childp == NULL)
         {
@@ -1077,7 +1074,7 @@ ParU_Info ParU_Analyze
 #endif
     if (nf > 0)
     {
-        Child = static_cast<int64_t*>(PARU_CALLOC (nf + 1, sizeof(int64_t)));
+        Child = PARU_CALLOC (nf + 1, int64_t);
         Sym->Child = Child;
         if (Child == NULL)
         {
@@ -1089,7 +1086,7 @@ ParU_Info ParU_Analyze
     }
 
     // copy of Childp using SymWork for other places also
-    SymWork = static_cast<int64_t*>(PARU_MALLOC (std::max(m, n) + 2, sizeof(int64_t)));
+    SymWork = PARU_MALLOC (std::max(m, n) + 2, int64_t);
     int64_t *cChildp = SymWork;
     if (cChildp == NULL)
     {
@@ -1122,9 +1119,9 @@ ParU_Info ParU_Analyze
     /*                   computing the Staircase structures                   */
     /* ---------------------------------------------------------------------- */
 
-    Sp = Sym->Sp = static_cast<int64_t*>(PARU_CALLOC (m + 1 - n1, sizeof(int64_t)));
-    Sleft = Sym->Sleft = static_cast<int64_t*>(PARU_MALLOC (n + 2 - n1, sizeof(int64_t)));
-    Pinv = static_cast<int64_t*>(PARU_MALLOC (m + 1, sizeof(int64_t)));
+    Sp = Sym->Sp = PARU_CALLOC (m + 1 - n1, int64_t);
+    Sleft = Sym->Sleft = PARU_MALLOC (n + 2 - n1, int64_t);
+    Pinv = PARU_MALLOC (m + 1, int64_t);
 
     if (Sp == NULL || Sleft == NULL || Pinv == NULL)
     {
@@ -1189,16 +1186,16 @@ ParU_Info ParU_Analyze
 
 #endif
 
-    Ps = static_cast<int64_t*>(PARU_CALLOC (m - n1, sizeof(int64_t)));
+    Ps = PARU_CALLOC (m - n1, int64_t);
     if (cs1 > 0)
     {
-        Sup = Sym->ustons.Sup = static_cast<int64_t*>(PARU_CALLOC (cs1 + 1, sizeof(int64_t)));
-        cSup = static_cast<int64_t*>(PARU_MALLOC (cs1 + 1, sizeof(int64_t)));
+        Sup = Sym->ustons.Sup = PARU_CALLOC (cs1 + 1, int64_t);
+        cSup = PARU_MALLOC (cs1 + 1, int64_t);
     }
     if (rs1 > 0)
     {
-        Slp = Sym->lstons.Slp = static_cast<int64_t*>(PARU_CALLOC (rs1 + 1, sizeof(int64_t)));
-        cSlp = static_cast<int64_t*>(PARU_MALLOC (rs1 + 1, sizeof(int64_t)));
+        Slp = Sym->lstons.Slp = PARU_CALLOC (rs1 + 1, int64_t);
+        cSlp = PARU_MALLOC (rs1 + 1, int64_t);
     }
 
     if (((Slp == NULL || cSlp == NULL) && rs1 != 0) ||
@@ -1500,18 +1497,18 @@ ParU_Info ParU_Analyze
     Sym->lstons.nnz = slnz;
     if (cs1 > 0)
     {
-        Suj = static_cast<int64_t*>(PARU_MALLOC (sunz, sizeof(int64_t)));
+        Suj = PARU_MALLOC (sunz, int64_t);
     }
     Sym->ustons.Suj = Suj;
 
     if (rs1 > 0)
     {
-        Sli = static_cast<int64_t*>(PARU_MALLOC (slnz, sizeof(int64_t)));
+        Sli = PARU_MALLOC (slnz, int64_t);
     }
     Sym->lstons.Sli = Sli;
 
     // Updating Sj using copy of Sp
-    Sj = static_cast<int64_t*>(PARU_MALLOC (snz, sizeof(int64_t)));
+    Sj = PARU_MALLOC (snz, int64_t);
     Sym->Sj = Sj;
 
     if (Sj == NULL || (cs1 > 0 && Suj == NULL) || (rs1 > 0 && Sli == NULL))
@@ -1673,17 +1670,14 @@ ParU_Info ParU_Analyze
 
     if (nf > 0)
     {
-        Sym->aParent = aParent = static_cast<int64_t*>(PARU_MALLOC (ms + nf, sizeof(int64_t)));
-        Sym->aChild = aChild = static_cast<int64_t*>(PARU_MALLOC (ms + nf + 1, sizeof(int64_t)));
-        Sym->aChildp = aChildp = static_cast<int64_t*>(PARU_MALLOC (ms + nf + 2, sizeof(int64_t)));
-        Sym->first = first = static_cast<int64_t*>(PARU_MALLOC (nf + 1, sizeof(int64_t)));
-        Sym->row2atree = rM = static_cast<int64_t*>(PARU_MALLOC (ms, sizeof(int64_t)));
-        Sym->super2atree = snM = static_cast<int64_t*>(PARU_MALLOC (nf, sizeof(int64_t)));
-
-        Sym->front_flop_bound = front_flop_bound =
-            static_cast<double*>(PARU_MALLOC (nf + 1, sizeof(double)));
-        Sym->stree_flop_bound = stree_flop_bound =
-            static_cast<double*>(PARU_CALLOC (nf + 1, sizeof(double)));
+        Sym->aParent = aParent = PARU_MALLOC (ms + nf, int64_t);
+        Sym->aChild = aChild = PARU_MALLOC (ms + nf + 1, int64_t);
+        Sym->aChildp = aChildp = PARU_MALLOC (ms + nf + 2, int64_t);
+        Sym->first = first = PARU_MALLOC (nf + 1, int64_t);
+        Sym->row2atree = rM = PARU_MALLOC (ms, int64_t);
+        Sym->super2atree = snM = PARU_MALLOC (nf, int64_t);
+        Sym->front_flop_bound = front_flop_bound = PARU_MALLOC (nf + 1, double);
+        Sym->stree_flop_bound = stree_flop_bound = PARU_CALLOC (nf + 1, double);
 
         if (aParent == NULL || aChild == NULL || aChildp == NULL ||
             rM == NULL || snM == NULL || first == NULL ||
@@ -1845,11 +1839,10 @@ ParU_Info ParU_Analyze
     Sym->ntasks = ntasks;
     if (nf > 0)
     {
-        Sym->task_map = task_map = static_cast<int64_t*>(PARU_MALLOC (ntasks + 1, sizeof(int64_t)));
-        Sym->task_parent = task_parent = static_cast<int64_t*>(PARU_MALLOC (ntasks, sizeof(int64_t)));
-        Sym->task_num_child = task_num_child =
-            static_cast<int64_t*>(PARU_CALLOC (ntasks, sizeof(int64_t)));
-        Sym->task_depth = task_depth = static_cast<int64_t*>(PARU_CALLOC (ntasks, sizeof(int64_t)));
+        Sym->task_map = task_map = PARU_MALLOC (ntasks + 1, int64_t);
+        Sym->task_parent = task_parent = PARU_MALLOC (ntasks, int64_t);
+        Sym->task_num_child = task_num_child = PARU_CALLOC (ntasks, int64_t);
+        Sym->task_depth = task_depth = PARU_CALLOC (ntasks, int64_t);
 
         if (task_map == NULL || task_parent == NULL || task_num_child == NULL ||
             task_depth == NULL)

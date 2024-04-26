@@ -79,8 +79,7 @@ ParU_Info ParU_C_Analyze
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    ParU_C_Symbolic *Sym_C =
-        static_cast<ParU_C_Symbolic*>(PARU_CALLOC (1, sizeof(ParU_C_Symbolic)));
+    ParU_C_Symbolic *Sym_C = PARU_CALLOC (1, ParU_C_Symbolic);
     if (!Sym_C)
     {
         return (PARU_OUT_OF_MEMORY) ;
@@ -89,7 +88,7 @@ ParU_Info ParU_C_Analyze
     ParU_Info info = ParU_Analyze(A, &Sym, &Control);
     if (info != PARU_SUCCESS)
     {
-        PARU_FREE (1, sizeof(ParU_C_Symbolic), Sym_C);
+        PARU_FREE (1, ParU_C_Symbolic, Sym_C);
         return (info) ;
     }
     Sym_C->sym_handle = static_cast<void*>(Sym);
@@ -128,8 +127,7 @@ ParU_Info ParU_C_Factorize
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_C_Numeric *Num_C =
-        static_cast<ParU_C_Numeric*>(PARU_CALLOC (1, sizeof(ParU_C_Numeric)));
+    ParU_C_Numeric *Num_C = PARU_CALLOC (1, ParU_C_Numeric);
     if (!Num_C)
     {
         return (PARU_OUT_OF_MEMORY) ;
@@ -140,7 +138,7 @@ ParU_Info ParU_C_Factorize
     info = ParU_Factorize(A, Sym, &Num, &Control);
     if (info != PARU_SUCCESS)
     {
-        PARU_FREE (1, sizeof(ParU_C_Numeric), Num_C);
+        PARU_FREE (1, ParU_C_Numeric, Num_C);
         return info;
     }
     Num_C->num_handle = static_cast<void*>(Num);
@@ -547,7 +545,7 @@ ParU_Info ParU_C_FreeNumeric
     ParU_C_Numeric *Num_C = *Num_handle_C;
     ParU_Numeric *Num = static_cast<ParU_Numeric*>(Num_C->num_handle);
     ParU_Info info = ParU_FreeNumeric(&Num, &Control);
-    PARU_FREE(1, sizeof(ParU_C_Numeric), *Num_handle_C);
+    PARU_FREE(1, ParU_C_Numeric, *Num_handle_C);
     return info;
 }
 
@@ -572,7 +570,7 @@ ParU_Info ParU_C_FreeSymbolic
     ParU_C_Symbolic *Sym_C = *Sym_handle_C;
     ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
     ParU_Info info = ParU_FreeSymbolic(&Sym, &Control);
-    PARU_FREE(1, sizeof(ParU_C_Symbolic), *Sym_handle_C);
+    PARU_FREE(1, ParU_C_Symbolic, *Sym_handle_C);
     return info;
 }
 

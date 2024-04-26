@@ -24,8 +24,8 @@ ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     int64_t *Ps = NULL;
     const int64_t *Pinit = Sym->Pinit;
 
-    Num->Pfin = Pfin = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));
-    Num->Ps = Ps = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));
+    Num->Pfin = Pfin = PARU_MALLOC (m, int64_t);
+    Num->Ps = Ps = PARU_MALLOC (m, int64_t);
 
     PRLEVEL(1, ("%% Inside Perm\n"));
     if (Pfin == NULL || Ps == NULL)

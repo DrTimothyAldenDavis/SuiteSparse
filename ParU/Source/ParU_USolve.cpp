@@ -76,7 +76,7 @@ ParU_Info ParU_USolve
     const int64_t *Super = Sym->Super;
 
     BLAS_set_num_threads(control_nthreads (Control)) ;
-    double *work = static_cast<double*>(PARU_MALLOC ((Num->max_col_count), sizeof(double)));
+    double *work = PARU_MALLOC (Num->max_col_count, double);
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory usolve\n"));
@@ -191,7 +191,7 @@ ParU_Info ParU_USolve
     }
     PRLEVEL(1, (" \n"));
 #endif
-    PARU_FREE(Num->max_col_count, sizeof(double), work);
+    PARU_FREE(Num->max_col_count, double, work);
     return (blas_ok ? PARU_SUCCESS : PARU_TOO_LARGE);
 }
 
@@ -245,8 +245,7 @@ ParU_Info ParU_USolve
     const int64_t *Super = Sym->Super;
 
     BLAS_set_num_threads(control_nthreads (Control)) ;
-    double *work =
-        static_cast<double*>(PARU_MALLOC ((Num->max_col_count * nrhs), sizeof(double)));
+    double *work = PARU_MALLOC (Num->max_col_count * nrhs, double);
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory USolve\n"));
@@ -370,6 +369,6 @@ ParU_Info ParU_USolve
     }
     PRLEVEL(1, (" \n"));
 #endif
-    PARU_FREE(Num->max_col_count * nrhs, sizeof(double), work);
+    PARU_FREE(Num->max_col_count * nrhs, double, work);
     return (blas_ok ? PARU_SUCCESS : PARU_TOO_LARGE);
 }

@@ -58,7 +58,7 @@ ParU_Info ParU_Residual
     }
     PRLEVEL(PR, (" \n"));
 #endif
-    double *ax_b = static_cast<double*>(PARU_MALLOC (m, sizeof(double)));
+    double *ax_b = PARU_MALLOC (m, double);
     if (ax_b == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside residual\n"));
@@ -83,7 +83,7 @@ ParU_Info ParU_Residual
     //resid =  paru_vec_1norm(ax_b, m)/ (anorm* paru_vec_1norm(b, m));
     resid = paru_vec_1norm(ax_b, m) ;
     xnorm = paru_vec_1norm (x, m) ;
-    PARU_FREE(m, sizeof(double), ax_b);
+    PARU_FREE(m, double, ax_b);
     return PARU_SUCCESS;
 }
 
@@ -137,7 +137,7 @@ ParU_Info ParU_Residual
     }
 
 #endif
-    double *AX_B = static_cast<double*>(PARU_MALLOC (m * nrhs, sizeof(double)));
+    double *AX_B = PARU_MALLOC (m * nrhs, double);
     if (AX_B == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside mRHS residual\n"));
@@ -170,7 +170,7 @@ ParU_Info ParU_Residual
         PRLEVEL(1, ("%% res=%lf\n", res));
         resid = std::max(resid, res);
     }
-    PARU_FREE(m*nrhs, sizeof(double), AX_B);
+    PARU_FREE(m*nrhs, double, AX_B);
     return PARU_SUCCESS;
 }
 

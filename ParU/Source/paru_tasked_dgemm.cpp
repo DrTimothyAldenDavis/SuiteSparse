@@ -94,8 +94,8 @@ bool paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
         // tasked dgemm
         //----------------------------------------------------------------------
 
-        // This case is tested in ParU/Tcov by the c-62 matrix, but it can
-        // sometimes miss it, depending on how the threads are scheduled.
+        // This case is tested in ParU/Tcov, sometimes miss it, depending on
+        // how the threads are scheduled.
 
         #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
         {

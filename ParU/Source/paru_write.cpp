@@ -74,14 +74,14 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
     int64_t *newRofS = NULL;
     const int64_t *Pinit = Sym->Pinit;
 
-    oldRofS = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));  // S -> LU P
-    newRofS = static_cast<int64_t*>(PARU_MALLOC (m, sizeof(int64_t)));  // Pinv of S
+    oldRofS = PARU_MALLOC (m, int64_t);  // S -> LU P
+    newRofS = PARU_MALLOC (m, int64_t);  // Pinv of S
 
     if (oldRofS == NULL || newRofS == NULL)
     {
         printf("memory problem for writing into files\n");
-        PARU_FREE(m, sizeof(int64_t), oldRofS);
-        PARU_FREE(m, sizeof(int64_t), newRofS);
+        PARU_FREE(m, int64_t, oldRofS);
+        PARU_FREE(m, int64_t, newRofS);
         return;
     }
 
@@ -326,6 +326,6 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
     }
 
     fclose(LUfptr);
-    PARU_FREE(m, sizeof(int64_t), oldRofS);
-    PARU_FREE(m, sizeof(int64_t), newRofS);
+    PARU_FREE(m, int64_t, oldRofS);
+    PARU_FREE(m, int64_t, newRofS);
 }

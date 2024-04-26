@@ -524,7 +524,7 @@ void *paru_realloc
     else if (p == NULL)
     {
         // A new alloc
-        p = paru_malloc (nnew, size_Entry);
+        p = paru_malloc (nnew, size_Entry) ;
         *n = (p == NULL) ? 0 : nnew;
     }
     else if (nnew == *n )
@@ -663,7 +663,12 @@ void *operator new(size_t size)
         ++size;  // make sure at least one byte is allocated
     }
 
-    void *ptr = PARU_MALLOC (1, size) ;
+    #if defined ( PARU_MALLOC_DEBUG )
+    void *ptr = paru_malloc_debug (n, size, __FILE__, __LINE__) ;
+    #else
+    void *ptr = paru_malloc (1, size) ;
+    #endif
+
     if (ptr != nullptr)
     {
         return ptr;
@@ -675,7 +680,13 @@ void *operator new(size_t size)
 void operator delete(void *ptr) noexcept
 {
     DEBUGLEVEL(0);
-    PARU_FREE (0, 0, ptr) ;
+
+    #if defined ( PARU_MALLOC_DEBUG )
+    paru_free_debug (0, 0, ptr, __FILE__, __LINE__) ;
+    #else
+    paru_free (0, 0, ptr) ;
+    #endif
+
 }
 
 //------------------------------------------------------------------------------
@@ -689,14 +700,18 @@ void paru_free_el(int64_t e, paru_element **elementList)
     DEBUGLEVEL(0);
     paru_element *el = elementList[e];
     if (el == NULL) return;
-// #ifndef NDEBUG
+
     int64_t nrows = el->nrows, ncols = el->ncols;
     size_t tot_size = sizeof(paru_element) +
                       sizeof(int64_t) * (2 * (nrows + ncols)) +
                       sizeof(double) * nrows * ncols;
-    PARU_FREE(1, tot_size, elementList [e]);
-// #else
-//  PARU_FREE(1, 0, elementList [e]);
-// #endif
+
+    #if defined ( PARU_MALLOC_DEBUG )
+    paru_free_debug (1, tot_size, elementList [e], __FILE__, __LINE__) ;
+    #else
+    paru_free (1, tot_size, elementList [e]) ;
+    #endif
+    elementList [e] = NULL ;
+
 }
 
