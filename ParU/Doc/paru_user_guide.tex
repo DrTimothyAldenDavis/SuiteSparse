@@ -1061,7 +1061,7 @@ describe the user-callable C functions, their prototypes, and what they can do.
 \section{Using ParU in MATLAB}
 %-------------------------------------------------------------------------------
 
-% FIXME: describe paru mexFunction
+FIXME: describe paru mexFunction
 
 %-------------------------------------------------------------------------------
 \section{Requirements and Availability}
@@ -1080,6 +1080,13 @@ ACML, or the Sun Performance Library) or other high-performance BLAS such as
 those of \cite{GotoVanDeGeijn08}. Note that while ParU uses nested parallelism
 heavily the right options for the BLAS library must be chosen to get a good
 performance.
+
+FIXME: describe the impact of MKL BLAS on ParU's performance,
+
+FIXME: ParU methods that return the BLAS library used
+
+FIXME: ParU methods that tell if tasking is available for ParU to factorize
+using \verb'PARU_1TASK'. 
 
 SuiteSparse uses a slightly modified version of METIS 5.1.0, distributed along
 with SuiteSparse itself.  Its use is optional, however. ParU uses AMD as its

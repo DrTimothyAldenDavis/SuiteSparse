@@ -57,13 +57,13 @@ ParU_Info ParU_Factorize
         {
             // user didn't specify
             // so I use the same strategy as umfpack
-            my_Control.paru_strategy = Sym->strategy;
+            my_Control.paru_strategy = Sym->paru_strategy;
         }
         else if (paru_strategy != PARU_STRATEGY_SYMMETRIC &&
                  paru_strategy != PARU_STRATEGY_UNSYMMETRIC)
         {
             // user input is not correct so I go to default
-            my_Control.paru_strategy = Sym->strategy;
+            my_Control.paru_strategy = Sym->paru_strategy;
         }
         // else user already picked symmetric or unsymmetric
         // and it has been copied over
@@ -199,10 +199,20 @@ ParU_Info ParU_Factorize
     // execute the task tree
     //--------------------------------------------------------------------------
 
+//  #if defined ( BLAS_Intel10_64ilp )
+//      printf ("BLAS Intel10 64ilp\n") ;
+//  #elif defined ( BLAS_Intel10_64lp )
+//      printf ("BLAS Intel10 64lp\n") ;
+//  #endif
+//      fflush (stdout) ;
+
 #if ! defined ( PARU_1TASK )
     // The parallel factorization gets stuck intermittently on Windows or Mac
     // with gcc, so always use the sequential factorization in that case.
     // This case is handled by cmake.
+//  printf ("parallel tasks! %g %g\n",
+//      (double) (task_Q.size() * 2),
+//      (double) (Control->paru_max_threads)) ;
     if (task_Q.size() * 2 > ((long unsigned int) (Control->paru_max_threads)))
     {
         PRLEVEL(1, ("Parallel\n"));
@@ -216,7 +226,7 @@ ParU_Info ParU_Factorize
 
 #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
         PARU_OPENMP_SET_DYNAMIC(0);
-        mkl_set_dynamic(0);
+        mkl_set_dynamic((int)0);
         // mkl_set_threading_layer(MKL_THREADING_INTEL);
         // mkl_set_interface_layer(MKL_INTERFACE_ILP64);
 #endif
@@ -293,6 +303,7 @@ ParU_Info ParU_Factorize
     else
 #endif
     {
+//      printf ("sequential tasks!\n") ;
         PRLEVEL(1, ("Sequential\n"));
         Work->naft = 1;
         for (int64_t i = 0; i < nf; i++)

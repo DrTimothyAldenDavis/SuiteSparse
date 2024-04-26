@@ -62,7 +62,7 @@ ParU_Info ParU_LSolve
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
     int64_t nf = Sym->nf;
-    int64_t blas_ok = TRUE;
+    bool blas_ok = true ;
 #ifndef NDEBUG
     int64_t m = Sym->m;
     PRLEVEL(1, ("%%inside lsolve x is:\n%%"));
@@ -237,7 +237,7 @@ ParU_Info ParU_LSolve
     PARU_DEFINE_PRLEVEL;
     int64_t m = Sym->m;
     int64_t nf = Sym->nf;
-    int64_t blas_ok = TRUE;
+    bool blas_ok = true ;
 
 #ifndef NDEBUG
     PR = 2;

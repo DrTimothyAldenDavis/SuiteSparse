@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+// FIXME test the paru mexFunction on the Mac (intel and m1)
+
 // Usage:
 //      x = paru (A, b)
 //      [x,stats] = paru (A, b, opts)
@@ -38,6 +40,9 @@ static const char *stat_names [ ] =
     "analysis_time",        // analysis time in seconds
     "factorize_time",       // factorization time in seconds
     "solve_time",           // solve time in seconds
+    "strategy",             // strategy used, symmetric or unsymmetric
+    "ordering",             // ordering used
+    "rcode",                // rough estimate of reciprocal condition number
 } ;
 
 void mexFunction
@@ -172,15 +177,23 @@ void mexFunction
                 option [STRLEN] = '\0' ;
                 if (strncmp (option, "auto", STRLEN) == 0)
                 {
+                    // Auto: UMFPACK will select symmetric or unsymmetric
+                    // strategy, as determined by the properties of the matrix.
+                    // ParU will then select the strategy that UMFPACK
+                    // selected.
+                    Control.umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
                     Control.paru_strategy = PARU_STRATEGY_AUTO ;
                 }
                 else if (strncmp (option, "unsymmetric", STRLEN) == 0)
                 {
-                    // FIXME: also set UMFPACK strategy
+                    // both UMFPACK and ParU will use the unsymmetric strategy
+                    Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
                     Control.paru_strategy = PARU_STRATEGY_UNSYMMETRIC ;
                 }
                 else if (strncmp (option, "symmetric", STRLEN) == 0)
                 {
+                    // both UMFPACK and ParU will use the symmetric strategy
+                    Control.umfpack_strategy = UMFPACK_STRATEGY_SYMMETRIC ;
                     Control.paru_strategy = PARU_STRATEGY_SYMMETRIC ;
                 }
                 else
@@ -194,8 +207,6 @@ void mexFunction
                 mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.strategy") ;
             }
         }
-
-        // FUTURE: opts.paru_strategy and opts.umfpack_strategy
     }
 
     // get sparse matrix A
@@ -252,7 +263,7 @@ void mexFunction
     }
 
     PARU_OK (ParU_C_Factorize (A, Sym, &Num, &Control),
-        "factorization failed") ;
+        "numeric factorization failed") ;
 
     if (nargout > 1)
     {
@@ -270,6 +281,11 @@ void mexFunction
         t [2] = t1 - t0 ;
         t0 = t1 ;
     }
+
+    // FIXME use ParU_get for these 2 results:
+    int32_t paru_strategy = Sym->paru_strategy ;
+    int32_t umfpack_ordering = Sym->umfpack_ordering ;
+    double rcond = Num->rcond ;
 
     ParU_C_FreeNumeric (&Num, &Control) ;
     ParU_C_FreeSymbolic (&Sym, &Control) ;
@@ -298,12 +314,52 @@ void mexFunction
 
     if (nargout > 1)
     {
-        pargout [1] = mxCreateStructMatrix (1, 1, 3, stat_names) ;
+        pargout [1] = mxCreateStructMatrix (1, 1, 5, stat_names) ;
+
+        // analysis, factorization, and solve times:
         mxSetFieldByNumber (pargout [1], 0, 0, mxCreateDoubleScalar (t [0])) ;
         mxSetFieldByNumber (pargout [1], 0, 1, mxCreateDoubleScalar (t [1])) ;
         mxSetFieldByNumber (pargout [1], 0, 2, mxCreateDoubleScalar (t [2])) ;
-        // FIXME: add nnz(L), nnz(U), rcond, flop count if available, ...
-    }
 
+        // UMFPACK and ParU strategy:
+        bool symmetric = (paru_strategy == PARU_STRATEGY_SYMMETRIC) ;
+        mxSetFieldByNumber (pargout [1], 0, 3,
+            mxCreateString (symmetric ? "symmetric" : "unsymmetric")) ;
+
+        // UMFPACK ordering used
+        char *ordering ;
+        switch (umfpack_ordering)
+        {
+            case UMFPACK_ORDERING_AMD:
+                ordering = symmetric ? "amd(A+A')" : "colamd(A)" ;
+                break ;
+
+            case UMFPACK_ORDERING_METIS:
+                ordering = symmetric ? "metis(A+A')" : "metis(A'*A)" ;
+                break ;
+
+            case UMFPACK_ORDERING_NONE:
+                ordering = "none" ;
+                break ;
+
+            // These cases cannot occur.  Some of them can be specified on
+            // input, with opts.ordering, but they are ordering strategies
+            // that select amd, colamd, or metis.
+            case UMFPACK_ORDERING_GIVEN:
+            case UMFPACK_ORDERING_BEST:
+            case UMFPACK_ORDERING_USER:
+            case UMFPACK_ORDERING_METIS_GUARD:
+            case UMFPACK_ORDERING_CHOLMOD:
+            default:
+                ordering = "undefined" ;
+                break ;
+        }
+        mxSetFieldByNumber (pargout [1], 0, 4, mxCreateString (ordering)) ;
+
+        // numeric factorization statistics:
+        mxSetFieldByNumber (pargout [1], 0, 5, mxCreateDoubleScalar (rcond)) ;
+
+        // FIXME: add nnz(L), nnz(U), flop count if available, ...
+    }
 }
 

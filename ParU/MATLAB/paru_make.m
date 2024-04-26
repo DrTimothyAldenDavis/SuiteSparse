@@ -56,6 +56,7 @@ else
     obj = 'o' ;
 end
 
+% enable the MKL Intel BLAS
 v = version ('-blas') ;
 if (contains (v, 'Intel'))
     flags = [flags ' -DBLAS_Intel10_64ilp'] ;
@@ -310,6 +311,7 @@ suitesparse_src = { ...
     '../../UMFPACK/Source2/umfpack_dl_wsolve' } ;
 
 paru_src = {
+    '../Source/ParU_Factorize', ...
     '../Source/ParU_Analyze', ...
     '../Source/paru_assemble', ...
     '../Source/paru_assemble_row2U', ...
@@ -322,7 +324,6 @@ paru_src = {
     '../Source/paru_dgemm', ...
     '../Source/paru_diag_update', ...
     '../Source/paru_exec_tasks', ...
-    '../Source/ParU_Factorize', ...
     '../Source/paru_finalize_perm', ...
     '../Source/ParU_FreeNumeric', ...
     '../Source/ParU_FreeSymbolic', ...
@@ -361,13 +362,12 @@ paru_src = {
 
 obj_files = ' ' ;
 
-% compile each SuiteSparse C file (SuiteSparse_config, AMD, COLAMD,
-% CAMD, CCOLAMD, UMFPACK, CHOLMOD):
-for k = 1:length (suitesparse_src)
-    src = suitesparse_src {k} ;
-    s = sprintf ('mex -c %s %s %s.c', flags, include, src) ;
-    fprintf ('%s\n', src) ;
-    % fprintf ('.') ;
+% compile each ParU C++ file
+for k = 1:length (paru_src)
+    src = paru_src {k} ;
+    s = sprintf ('mex -c %s %s %s.cpp', flags, include, src) ;
+    % fprintf ('%s\n', src) ;
+    fprintf ('.') ;
     eval (s) ;
     slash = strfind (src, '/') ;
     slash = slash (end) + 1 ;
@@ -375,12 +375,13 @@ for k = 1:length (suitesparse_src)
     obj_files = [ obj_files ' ' o '.' obj ] ;
 end
 
-% compile each ParU C++ file
-for k = 1:length (paru_src)
-    src = paru_src {k} ;
-    s = sprintf ('mex -c %s %s %s.cpp', flags, include, src) ;
-    fprintf ('%s\n', src) ;
-    % fprintf ('.') ;
+% compile each SuiteSparse C file (SuiteSparse_config, AMD, COLAMD,
+% CAMD, CCOLAMD, UMFPACK, CHOLMOD):
+for k = 1:length (suitesparse_src)
+    src = suitesparse_src {k} ;
+    s = sprintf ('mex -c %s %s %s.c', flags, include, src) ;
+    % fprintf ('%s\n', src) ;
+    fprintf ('.') ;
     eval (s) ;
     slash = strfind (src, '/') ;
     slash = slash (end) + 1 ;
@@ -391,7 +392,11 @@ end
 % compile the paru mexFunction
 fprintf (':') ;
 s = sprintf ('mex %s -O %s paru.c %s %s', flags, include, obj_files, libs) ;
-fprintf ('%s\n', s) ;
+% fprintf ('%s\n', s) ;
 eval (s) ;
 fprintf ('\n') ;
+
+% try a quick demo
+paru_tiny
+paru_demo
 

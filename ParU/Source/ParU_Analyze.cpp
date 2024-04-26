@@ -348,7 +348,6 @@ ParU_Info ParU_Analyze
             umfpack_ordering != UMFPACK_ORDERING_BEST &&
             umfpack_ordering != UMFPACK_ORDERING_NONE)
         {
-            //my_Control.umfpack_ordering = UMFPACK_ORDERING_METIS;
             my_Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
         }
 
@@ -431,29 +430,32 @@ ParU_Info ParU_Analyze
         return (info) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* strategy UMFPACK used */
-    /* ---------------------------------------------------------------------- */
-    int64_t strategy = umf_Info[UMFPACK_STRATEGY_USED];
+    //--------------------------------------------------------------------------
+    // ordering and strategy used by UMFPACK
+    //--------------------------------------------------------------------------
+
+    Sym->umfpack_strategy = umf_Info [UMFPACK_STRATEGY_USED] ;
+    Sym->umfpack_ordering = umf_Info [UMFPACK_ORDERING_USED] ;
+
+    //--------------------------------------------------------------------------
+    // decide on the ParU strategy
+    //--------------------------------------------------------------------------
+
     if (Control->paru_strategy == PARU_STRATEGY_AUTO)
     {
-        // if user didn't choose the strategy I will pick the same strategy
-        // as umfpack.        However I cannot save it in current control
-        Sym->strategy = strategy;
+        // ParU auto strategy: select the same strategy used by UMFPACK
+        Sym->paru_strategy = Sym->umfpack_strategy;
     }
     else
     {
-        Sym->strategy = Control->paru_strategy;
+        Sym->paru_strategy = Control->paru_strategy;
     }
-
-    // FIXME: get ordering used, and UMFPACK strategy used
-    // and save in Sym object
 
 #ifndef NDEBUG
     PR = 0;
-    if (strategy == UMFPACK_STRATEGY_SYMMETRIC)
+    if (Sym->umfpack_strategy == UMFPACK_STRATEGY_SYMMETRIC)
     {
-        PRLEVEL(PR, ("\n%% strategy used:  symmetric\n"));
+        PRLEVEL(PR, ("\n%% umfpack_strategy used:  symmetric\n"));
         if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
         {
             PRLEVEL(PR, ("%% ordering used:  amd on A+A'\n"));
@@ -481,7 +483,7 @@ ParU_Info ParU_Analyze
     }
     else
     {
-        PRLEVEL(PR, ("\n%% strategy used:unsymmetric\n"));
+        PRLEVEL(PR, ("\n%% umfpack_strategy used:unsymmetric\n"));
         if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
         {
             PRLEVEL(PR, ("%% ordering used: colamd on A\n"));
@@ -524,7 +526,7 @@ ParU_Info ParU_Analyze
     newParent = static_cast<int64_t*>(PARU_MALLOC ((n + 1), sizeof(int64_t)));
     bool ok = true ;
 
-    if (Sym->strategy == PARU_STRATEGY_SYMMETRIC)
+    if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC)
     {
         Diag_map = Sym_umf->Diagonal_map;
     }
@@ -873,12 +875,9 @@ ParU_Info ParU_Analyze
     {
         Fm = static_cast<int64_t*>(PARU_CALLOC ((newNf + 1), sizeof(int64_t)));
         Cm = static_cast<int64_t*>(PARU_MALLOC ((newNf + 1), sizeof(int64_t)));
-        // int64_t *roots = (int64_t *)PARU_MALLOC ((num_roots), sizeof(int64_t));
         Sym->Fm = Fm;
         Sym->Cm = Cm;
-        // Sym->roots = roots;
 
-        // if (Fm == NULL || Cm == NULL || roots == NULL)
         if (Fm == NULL || Cm == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory\n"));
@@ -1724,7 +1723,6 @@ ParU_Info ParU_Analyze
         int64_t fp = Super[f + 1] - Super[f];  // k
         int64_t fm = Sym->Fm[f];               // m
         int64_t fn = Sym->Cm[f];               // n Upper bound number of cols of f
-                              // if (Parent[f] == -1) roots[root_count++] = f;
         front_flop_bound[f] = (double)(fp * fm * fn + fp * fm + fp * fn);
         stree_flop_bound[f] += front_flop_bound[f];
         for (int64_t i = Childp[f]; i <= Childp[f + 1] - 1; i++)
@@ -2019,9 +2017,6 @@ ParU_Info ParU_Analyze
     }
 
     PR = 1;
-    //    PRLEVEL(PR, ("%%%% roots:\n"));
-    //    for (int64_t k = 0; k < num_roots; k++) PRLEVEL(PR, ("  " LD "", roots[k]));
-    //    PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("%%%% Depth:\n"));
     for (int64_t k = 0; k < nf; k++) PRLEVEL(PR, ("  " LD "", Depth[k]));

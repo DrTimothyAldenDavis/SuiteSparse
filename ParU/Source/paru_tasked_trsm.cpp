@@ -12,14 +12,14 @@
  * @author Aznaveh
  */
 #include "paru_internal.hpp"
-int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *a, int64_t lda,
-                     double *b, int64_t ldb, paru_work *Work, ParU_Numeric *Num)
+bool paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *a,
+    int64_t lda, double *b, int64_t ldb, paru_work *Work, ParU_Numeric *Num)
 {
     DEBUGLEVEL(0);
     int64_t naft;
     ParU_Control *Control = Num->Control;
     int64_t L = Control->worthwhile_trsm;
-    int64_t blas_ok = TRUE;
+    bool blas_ok = true ;
 #ifdef PARU_COVERAGE
     L = 32;
 #endif
@@ -70,14 +70,14 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
                 PRLEVEL(1, ("%%  n_b= " LD "\n", n_b));
                 #pragma omp task
                 {
-                    int64_t my_blas_ok = TRUE;
+                    bool my_blas_ok = true ;
                     SUITESPARSE_BLAS_dtrsm("L", "L", "N", "U", m, n_b, &alpha,
                                            a, lda, (b + J * len_bloc * ldb),
                                            ldb, my_blas_ok);
                     if (!my_blas_ok)
                     {
                         #pragma omp atomic write
-                        blas_ok = my_blas_ok;
+                        blas_ok = false ;
                     }
                 }
             }

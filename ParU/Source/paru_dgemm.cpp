@@ -18,7 +18,7 @@
  */
 #include "paru_internal.hpp"
 
-int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
+bool paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
                int64_t rowCount, int64_t colCount, paru_work *Work, ParU_Numeric *Num)
 {
     DEBUGLEVEL(0);
@@ -79,7 +79,7 @@ int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
 
     // double beta = 0;  // U part is not initialized
 
-    int64_t blas_ok = paru_tasked_dgemm(f, mA, nB, nA, pF + fp,
+    bool blas_ok = paru_tasked_dgemm(f, mA, nB, nA, pF + fp,
             lda, uPart, ldb, 0, el, ldc, Work, Num);
 
 #ifndef NDEBUG

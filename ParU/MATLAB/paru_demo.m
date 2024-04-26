@@ -16,6 +16,7 @@ n = size (A,1) ;
 b = rand (n,1) ;
 x = A\b ;
 norm (A*x-b)
-x2 = paru (A,b) ;
+[x2,paru_stats] = paru (A,b) ;
+paru_stats
 norm (A*x2-b)
 

@@ -13,11 +13,12 @@ function paru_many
 % its analyze/factorize/solve times
 
 index = ssget ;
-square = find (index.nrows == index.ncols & index.isReal & ~index.cholcand) ;
+test_matrices = find (index.nrows == index.ncols & index.isReal & ~index.cholcand) ;
 
-% these matrices are too large, causing MATLAB itself to terminate:
+% these matrices are too large, causing MATLAB and/or paru to fail:
 too_large = [
     2575
+    2576
     ] ;
 
 % these matrices are singular or nearly so:
@@ -315,37 +316,102 @@ singular_matrices = [
         2290
          746
         2645
+        2641
+        2295
+        2622
+        2614
+        2289
+        2292
+        2631
+        2787
+        2637
+         955
+         560
+        2284
+        2326
+         957
+         958
+        2327
+        2328
+        1246
+        1238
+        1513
+         562
+        2625
+        2792
+        2635
+        1369
+        1377
+        2609
+        2607
+         564
+        2630
+        2500
+        2601
+         566
+        2594
+        1244
+         748
+        2600
+        2640
+        2598
+        2056
+        2135
+        2816
+        2612
+        2613
+        2606
+        2325
+        2034
+        2646
+        2621
+         960
+        2584
+        2286
+        2610
+        2795
+        1510
+        2628
+        2287
+        2587
+        2618
+        2599
+        2638
+        2530
     ] ;
 
 % skip these matrices (too large, or singluar):
 skip = [too_large ; singular_matrices] ;
 
-square = setdiff (square, skip, 'stable') ;
-nz = index.nnz (square) ;
+test_matrices = setdiff (test_matrices, skip, 'stable') ;
+nz = index.nnz (test_matrices) ;
 [~,p] = sort (nz) ;
-square = square (p) ;
+test_matrices = test_matrices (p) ;
 
-nmat = length (square) ;
+nmat = length (test_matrices) ;
 
 % warmup to make sure the paru mexFunction is loaded:
 paru_demo
 
+first = 1 ;
+% start with matrix id 1301 (GHS_indef/cont-300)
+% first = find (test_matrices == 1301)
+
 fprintf ('testing %d matrices:\n', nmat) ;
-for k = 1:nmat
-    id = square (k) ;
+for k = first:nmat
+    id = test_matrices (k) ;
     fprintf ('%4d %4d: %s/%s nz %d\n', k, id, ...
         index.Group {id}, index.Name {id}, index.nnz (id)) ;
 end
-
-rng ('default') ;
+fprintf ('Hit enter to continue:\n') ;
+pause
+fprintf ('\n') ;
 
 clear opts_metis
 opts_metis.ordering = 'metis' ;
 
-ok_list = [ ] ;
-
-for k = 1:nmat
-    id = square (k) ;
+for k = first:nmat
+    id = test_matrices (k) ;
     fprintf ('%4d %4d: %s/%s nz %d\n', k, id, ...
         index.Group {id}, index.Name {id}, index.nnz (id)) ;
 

@@ -14,6 +14,10 @@
 
 #include "paru_internal.hpp"
 
+//------------------------------------------------------------------------------
+// paru_swap_rows: swap pivot rows
+//------------------------------------------------------------------------------
+
 void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t r1, int64_t r2,
                ParU_Numeric *Num)
 {
@@ -27,7 +31,11 @@ void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t 
     }
 }
 
-int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t panel_width,
+//------------------------------------------------------------------------------
+// paru_panel_factorize: factorize a single panel
+//------------------------------------------------------------------------------
+
+bool paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t panel_width,
                               int64_t panel_num, int64_t row_end, paru_work *Work,
                               ParU_Numeric *Num)
 {
@@ -290,14 +298,10 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
             PRLEVEL(PR, ("\n"));
 
 #endif
-            int64_t blas_ok = TRUE;
-            // BLAS_DGER(&M, &N, &alpha, X, &Incx, Y, &Incy, A, &lda, blas_ok);
+            bool blas_ok = true ;
             SUITESPARSE_BLAS_dger(row_end - 1 - j, j2 - 1 - j, &alpha, X, 1, Y,
                                   m, A, m, blas_ok);
-            if (!blas_ok) return (blas_ok);
-                // SUITESPARSE_BLAS_DGER(M, N, &alpha, X, Incx, Y, Incy, A,
-                // lda); cblas_dger(CblasColMajor, M, N, alpha, X, Incx, Y,
-                // Incy, A, lda);
+            if (!blas_ok) return (false);
 #ifdef COUNT_FLOPS
 #pragma omp atomic update
             Num->flp_cnt_dger += (double)2 * M * N;
@@ -320,8 +324,12 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
         }
 #endif
     }
-    return 1;
+    return (true) ;
 }
+
+//------------------------------------------------------------------------------
+// paru_factorize_full_summed: factorize a frontal matrix
+//------------------------------------------------------------------------------
 
 ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
                                     std::vector<int64_t> &panel_row,
@@ -367,9 +375,8 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
         int64_t j1 = panel_num * panel_width;
         int64_t j2 = (panel_num + 1) * panel_width;
         // factorize current panel
-        int64_t blas_ok =
-        paru_panel_factorize(f, rowCount, fp, panel_width, panel_num, row_end,
-                             Work, Num);
+        bool blas_ok = paru_panel_factorize(f, rowCount, fp, panel_width,
+            panel_num, row_end, Work, Num);
         if (!blas_ok) return (PARU_TOO_LARGE);
         // int64_t naft; //number of active frontal tasks
         // pragma omp atomic read
@@ -440,8 +447,7 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
                 }
 
 #endif
-                blas_ok =
-                    paru_tasked_trsm(f, M, N, alpha, A, lda, B, ldb, Work, Num);
+                blas_ok = paru_tasked_trsm(f, M, N, alpha, A, lda, B, ldb, Work, Num);
                 if (!blas_ok) return (PARU_TOO_LARGE);
 #ifndef NDEBUG
                 PRLEVEL(PR, ("%% Pivotal Front After Trsm: " LD " x " LD "\n %%", fp,

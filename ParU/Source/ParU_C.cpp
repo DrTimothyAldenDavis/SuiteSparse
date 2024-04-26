@@ -97,6 +97,8 @@ ParU_Info ParU_C_Analyze
     Sym_C->n = Sym->n;
     Sym_C->anz = Sym->anz;
     Sym_C->Qfill = Sym->Qfill ;
+    Sym_C->paru_strategy = Sym->paru_strategy ;
+    Sym_C->umfpack_ordering = Sym->umfpack_ordering ;
     (*Sym_handle_C) = Sym_C;
     return (info) ;
 }

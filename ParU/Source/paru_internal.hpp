@@ -14,7 +14,6 @@
 //
 
 #include <cinttypes>
-
 #define SUITESPARSE_BLAS_DEFINITIONS
 #include "ParU.h"
 #include "paru_omp.hpp"
@@ -191,17 +190,36 @@ static int print_level = -1;
     #define PARU_DEFINE_PRLEVEL
 #endif
 
+// #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
+
 #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
 
-    extern "C"
-    {
-        void MKL_Set_Num_Threads (int n) ;
-        void MKL_Set_Num_Threads_Local (int n) ;
-        void MKL_Set_Dynamic (int flag);
-    }
-    #define mkl_set_num_threads         MKL_Set_Num_Threads
-    #define mkl_set_num_threads_local   MKL_Set_Num_Threads_Local
-    #define mkl_set_dynamic             MKL_Set_Dynamic
+    #ifdef MATLAB_MEX_FILE
+
+        extern "C"
+        {
+            void mkl_serv_set_num_threads (int n) ;
+            void mkl_serv_set_num_threads_local (int n) ;
+            void mkl_serv_set_dynamic (int flag);
+        }
+        #define mkl_set_num_threads         mkl_serv_set_num_threads
+        #define mkl_set_num_threads_local   mkl_serv_set_num_threads
+        #define mkl_set_dynamic             mkl_serv_set_dynamic
+
+    #else
+
+        extern "C"
+        {
+            void MKL_Set_Num_Threads (int n) ;
+            void MKL_Set_Num_Threads_Local (int n) ;
+            void MKL_Set_Dynamic (int flag);
+        }
+        #define mkl_set_num_threads         MKL_Set_Num_Threads
+        #define mkl_set_num_threads_local   MKL_Set_Num_Threads_Local
+        #define mkl_set_dynamic             MKL_Set_Dynamic
+
+    #endif
+
     #define BLAS_set_num_threads(n) mkl_set_num_threads(n)
 
 #elif ( defined ( BLAS_OpenBLAS ) )
@@ -552,10 +570,10 @@ void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
                           std::vector<int64_t> &colHash, paru_work *Work,
                           ParU_Numeric *Num);
 
-int64_t paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp,
+bool paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp,
                   int64_t rowCount, int64_t colCount, paru_work *Work,
                   ParU_Numeric *Num);
-int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
+bool paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
                    int64_t rowCount, int64_t colCount, paru_work *Work,
                    ParU_Numeric *Num);
 
@@ -632,11 +650,11 @@ double paru_vec_1norm(const double *x, int64_t n);
 double paru_matrix_1norm(const double *x, int64_t m, int64_t n);
 
 void paru_diag_update(int64_t pivcol, int64_t pivrow, paru_work *Work);
-int64_t paru_tasked_dgemm(int64_t f, int64_t m, int64_t n, int64_t k, double *A,
+bool paru_tasked_dgemm(int64_t f, int64_t m, int64_t n, int64_t k, double *A,
                           int64_t lda, double *B, int64_t ldb, double beta,
                           double *C, int64_t ldc, paru_work *Work,
                           ParU_Numeric *Num);
-int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha,
+bool paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha,
                          double *a, int64_t lda, double *b, int64_t ldb,
                          paru_work *Work, ParU_Numeric *Num);
 ParU_Info paru_free_work(const ParU_Symbolic *Sym, paru_work *Work);

@@ -61,7 +61,7 @@ ParU_Info ParU_USolve
     }
 
     DEBUGLEVEL(0);
-    int64_t blas_ok = TRUE;
+    bool blas_ok = true ;
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME
     double start_time = PARU_OPENMP_GET_WTIME;
@@ -217,7 +217,7 @@ ParU_Info ParU_USolve
         return PARU_INVALID ;
     }
     DEBUGLEVEL(0);
-    int64_t blas_ok = TRUE;
+    bool blas_ok = true ;
     PARU_DEFINE_PRLEVEL;
     int64_t m = Sym->m;
     int64_t nf = Sym->nf;

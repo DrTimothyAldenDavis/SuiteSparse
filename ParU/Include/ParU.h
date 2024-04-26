@@ -80,6 +80,15 @@ typedef enum ParU_Info
 #define PARU_STRATEGY_UNSYMMETRIC 1  // COLAMD(A), metis, ...
 #define PARU_STRATEGY_SYMMETRIC 3    // prefer diagonal
 
+#if 0
+#define UMFPACK_STRATEGY_AUTO 0         /* use sym. or unsym. strategy */
+#define UMFPACK_STRATEGY_UNSYMMETRIC 1  /* COLAMD(A), coletree postorder,
+                                           not prefer diag*/
+#define UMFPACK_STRATEGY_OBSOLETE 2     /* 2-by-2 is no longer available */
+#define UMFPACK_STRATEGY_SYMMETRIC 3    /* AMD(A+A'), no coletree postorder,
+                                           prefer diagonal */
+#endif
+
 // =============================================================================
 // ParU C++ definitions ========================================================
 // =============================================================================
@@ -101,7 +110,7 @@ typedef enum ParU_Info
 // =============================================================================
 //
 // The contents of this object do not change during numeric factorization.  The
-// ParU_U_singleton and ParU_L_singleton are datastructures for singletons that
+// ParU_U_singleton and ParU_L_singleton are datas tructures for singletons that
 // has been borrowed from UMFPACK, but it is saved differently
 //
 //              ParU_L_singleton is CSC
@@ -133,6 +142,7 @@ struct ParU_L_singleton
     int64_t *Sli;  // size is computed
 };
 
+// FIXME: make these opaque?  OK
 struct ParU_Symbolic
 {
     // -------------------------------------------------------------------------
@@ -147,9 +157,10 @@ struct ParU_Symbolic
     // indices in each row of S are in strictly ascending order, even though
     // the input matrix A need not be sorted. User can look inside S matrix.
 
-    int64_t m, n, anz;  // S is m-by-n with anz entries
+    int64_t m, n, anz;  // A is m-by-n with anz entries
+    // FIXME RETURN n and anz
 
-    int64_t snz;  // nnz in submatrix
+    int64_t snz;  // nnz in submatrix S
     int64_t *Sp;  // size m+1-n1, row pointers of S
     int64_t *Sj;  // size snz = Sp [n], column indices of S
 
@@ -158,6 +169,7 @@ struct ParU_Symbolic
     ParU_L_singleton lstons;
 
     int64_t *Qfill;  // size n, fill-reducing column permutation.
+    // FIXME RETURN Qfill
     // Qfill [k] = j if column k of A is column j of S.
 
     int64_t *Pinit;  // size m, row permutation.
@@ -174,8 +186,16 @@ struct ParU_Symbolic
     // non-empty rows of S, and Sleft [n+1] == m.  That is, Sleft [n]
     // ... Sleft [n+1]-1 gives the empty rows of S, if any.
 
-    int64_t strategy;  // the strategy that is actually used by umfpack
-    // symmetric or unsymmetric
+    int32_t paru_strategy;      // ParU strategy used (symmetric or unsymmetric)
+    int32_t umfpack_strategy ;  // UMFPACK strategy used (sym. or unsym.)
+    int32_t umfpack_ordering ;  // UMFPACK ordering used
+    int32_t unused ;            // future expansion
+
+    #if 0
+    ParU_Info ParU_Symbolic_n (&n, Sym, Control) ;
+    ParU_Info ParU_Symbolic_Q (&Q, Sym, Control) ;
+    ParU_Info ParU_Symbolic_stats (..., Sym, Control) ;
+    #endif
 
     // -------------------------------------------------------------------------
     // frontal matrices: pattern and tree
@@ -188,6 +208,7 @@ struct ParU_Symbolic
     int64_t n1;  // number of singletons in the matrix
     // the matrix S is the one without any singletons
     int64_t rs1, cs1;  // number of row and column singletons, n1 = rs1+cs1;
+    // FIXME RETURN rs1, cs1
 
     // parent, child, and childp define the row merge tree or etree (A'A)
     int64_t *Parent;  // size nf+1  Add another node just to make the forest a
@@ -321,6 +342,9 @@ struct ParU_Numeric
     double *Rs;  // the array for row scaling based on original matrix
                  // size = m
 
+    // FIXME RETURN: Rs, Pfin, rcond, min_udiag, max_udiag
+    // FIXME RETURN # of entries in L and U. flop count
+
     // Permutations are computed after all the factorization
     int64_t *Ps;  // size m, row permutation.
     // Permutation from S to LU. needed for lsolve and usolve
@@ -350,9 +374,9 @@ struct ParU_Numeric
     int64_t max_row_count;  // maximum number of rows/cols for all the fronts
     int64_t max_col_count;  // it is initalized after factorization
 
-    double rcond;
-    double min_udiag;
-    double max_udiag;
+    double rcond;       // rough estimate of the reciprocal condition number
+    double min_udiag;   // min (abs (diag (U)))
+    double max_udiag;   // max (abs (diag (U)))
     ParU_Info res;  // returning value of numeric phase
 };
 
@@ -406,7 +430,7 @@ ParU_Info ParU_Factorize
 // that comes from ParU_Factorize
 
 // The vectors x and b have length n, where the matrix factorized is n-by-n.
-// The matrices X and B have size n-by-nrhs, and are held in column-major
+// The matrices X and B have size n-by-?  nrhs, and are held in column-major
 // storage.
 
 //-------- x = A\x -------------------------------------------------------------
@@ -698,9 +722,11 @@ typedef struct ParU_C_Control_struct
 
 typedef struct ParU_C_Symbolic_struct
 {
-    int64_t m, n, anz;
-    int64_t *Qfill ;        // a shallow pointer to the C++ Sym->Qfill
-    void *sym_handle;
+    void *sym_handle ;          // the C++ Symbolic struct
+    int64_t m, n, anz ;         // input matrix properties
+    int64_t *Qfill ;            // a shallow pointer to the C++ Sym->Qfill
+    int32_t paru_strategy ;     // ParU strategy used (symmetric or unsymmetric)
+    int32_t umfpack_ordering ;  // UMFPACK ordering used
 } ParU_C_Symbolic;
 
 // =========================================================================
@@ -711,10 +737,10 @@ typedef struct ParU_C_Symbolic_struct
 
 typedef struct ParU_C_Numeric_struct
 {
-    double rcond;
-    int64_t *Pfin ;         // a shallow pointer to the C++ Num->Pfin
-    double *Rs ;            // a shallow pointer to the C++ Num->Rs
-    void *num_handle;
+    void *num_handle ;  // the C++ Numeric struct
+    double rcond ;      // rough estimate of the reciprocal condition number
+    int64_t *Pfin ;     // a shallow pointer to the C++ Num->Pfin
+    double *Rs ;        // a shallow pointer to the C++ Num->Rs
 } ParU_C_Numeric;
 
 //------------------------------------------------------------------------------
