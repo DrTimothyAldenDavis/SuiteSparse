@@ -389,7 +389,7 @@ jobs:
         if: matrix.cuda == 'with'
         id: cuda-toolkit
         with:
-          cuda: '12.2.0'
+          cuda: '12.4.1'
           #See https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html#install-the-cuda-software
           method: 'local'
           # Do not cache the installer (~3 GiB). It doesn't speed up the
