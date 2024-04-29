@@ -19,6 +19,7 @@ test_matrices = find (index.nrows == index.ncols & index.isReal & ~index.cholcan
 too_large = [
     2575
     2576
+    982
     ] ;
 
 % these matrices are singular or nearly so:
@@ -378,6 +379,16 @@ singular_matrices = [
         2599
         2638
         2530
+        2574
+        2837
+        2593
+        2639
+        2597
+        2623
+        2585
+         959
+        2654
+        2629
     ] ;
 
 % skip these matrices (too large, or singluar):
@@ -394,8 +405,8 @@ nmat = length (test_matrices) ;
 paru_demo
 
 first = 1 ;
-% start with matrix id 1301 (GHS_indef/cont-300)
-% first = find (test_matrices == 1301)
+% start with matrix id 732 (Li/li)
+first = find (test_matrices == 732)
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat

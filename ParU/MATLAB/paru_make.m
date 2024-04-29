@@ -56,10 +56,12 @@ else
     obj = 'o' ;
 end
 
-% enable the MKL Intel BLAS
-v = version ('-blas') ;
-if (contains (v, 'Intel'))
-    flags = [flags ' -DBLAS_Intel10_64ilp'] ;
+% check if MATLAB has the MKL Intel BLAS on Linux or Mac
+if (ismac || isunix)
+    v = version ('-blas') ;
+    if (contains (v, 'Intel'))
+        flags = [flags ' -DBLAS_Intel10_64ilp'] ;
+    end
 end
 
 %-------------------------------------------------------------------------------
