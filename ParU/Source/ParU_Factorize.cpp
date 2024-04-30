@@ -261,7 +261,7 @@ ParU_Info ParU_Factorize
 
                     ParU_Info myInfo =
                         paru_exec_tasks(t, task_num_child, chain_task, Work,
-                            Num);
+                            Sym, Num);
                     if (myInfo != PARU_SUCCESS)
                     {
                         #pragma omp atomic write
@@ -282,7 +282,7 @@ ParU_Info ParU_Factorize
             #pragma omp atomic write
             Work->naft = 1;
             PRLEVEL(1, ("Chain_taskd " LD " has remained\n", chain_task));
-            info = paru_exec_tasks_seq(chain_task, task_num_child, Work, Num);
+            info = paru_exec_tasks_seq(chain_task, task_num_child, Work, Sym, Num);
         }
         if (info != PARU_SUCCESS)
         {
@@ -310,7 +310,7 @@ ParU_Info ParU_Factorize
         {
             // if (i %1000 == 0) PRLEVEL(1, ("%% Wroking on front " LD "\n", i));
 
-            info = paru_front(i, Work, Num);
+            info = paru_front(i, Work, Sym, Num);
             if (info != PARU_SUCCESS)
             {
                 PRLEVEL(1, ("%% A problem happend in " LD "\n", i));

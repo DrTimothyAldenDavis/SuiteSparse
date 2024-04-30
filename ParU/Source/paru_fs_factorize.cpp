@@ -18,8 +18,15 @@
 // paru_swap_rows: swap pivot rows
 //------------------------------------------------------------------------------
 
-void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t r1, int64_t r2,
-               ParU_Numeric *Num)
+void paru_swap_rows
+(
+    double *F,              // swap rows r1 and r2 of front f
+    int64_t *frowList,      // global id's of the rows of this fron
+    int64_t m,              // F is m-by-n
+    int64_t n,
+    int64_t r1,             // r1, r2: rows to swap
+    int64_t r2
+)
 {
     // This function also swap rows r1 and r2 wholly and indices
     if (r1 == r2) return;
@@ -35,10 +42,20 @@ void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t 
 // paru_panel_factorize: factorize a single panel
 //------------------------------------------------------------------------------
 
-bool paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t panel_width,
-                              int64_t panel_num, int64_t row_end, paru_work *Work,
-                              ParU_Numeric *Num)
+bool paru_panel_factorize
+(
+    int64_t f,
+    int64_t m,
+    int64_t n,
+    const int64_t panel_width,
+    int64_t panel_num,
+    int64_t row_end,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
+
     // works like dgetf2f.f in netlib v3.0  here is a link:
     // https://github.com/xianyi/OpenBLAS/blob/develop/reference/dgetf2f.f
     DEBUGLEVEL(0);
@@ -73,7 +90,7 @@ bool paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t panel_w
         PRLEVEL(PR, ("\n"));
     }
 #endif
-    const ParU_Symbolic *Sym = Work->Sym;
+
     const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t *Diag_map = Work->Diag_map;
@@ -213,7 +230,7 @@ bool paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t panel_w
         PRLEVEL(1, ("%% piv value= %e \n", piv));
         // swap rows
         PRLEVEL(1, ("%% Swaping rows j=" LD ", row_piv=" LD "\n", j, row_piv));
-        paru_swap_rows(F, frowList, m, n, j, row_piv, Num);
+        paru_swap_rows(F, frowList, m, n, j, row_piv);
 
 #ifndef NDEBUG  // Printing the pivotal front
         PR = 1;
@@ -331,16 +348,22 @@ bool paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t panel_w
 // paru_factorize_full_summed: factorize a frontal matrix
 //------------------------------------------------------------------------------
 
-ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
-                                    std::vector<int64_t> &panel_row,
-                                    std::set<int64_t> &stl_colSet,
-                                    std::vector<int64_t> &pivotal_elements,
-                                    paru_work *Work, ParU_Numeric *Num)
+ParU_Info paru_factorize_full_summed
+(
+    int64_t f,
+    int64_t start_fac,
+    std::vector<int64_t> &panel_row,
+    std::set<int64_t> &stl_colSet,
+    std::vector<int64_t> &pivotal_elements,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    const int64_t *Super = Work->Sym->Super;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
     int64_t fp = col2 - col1; /* first fp columns are pivotal */
@@ -376,7 +399,7 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
         int64_t j2 = (panel_num + 1) * panel_width;
         // factorize current panel
         bool blas_ok = paru_panel_factorize(f, rowCount, fp, panel_width,
-            panel_num, row_end, Work, Num);
+            panel_num, row_end, Work, Sym, Num);
         if (!blas_ok) return (PARU_TOO_LARGE);
         // int64_t naft; //number of active frontal tasks
         // pragma omp atomic read
@@ -389,11 +412,11 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
             // shared(Num, pivotal_elements, stl_colSet)
             // shared(panel_num, row_end, f, start_fac)
 
-            if (Work->Sym->Cm[f] != 0)
+            if (Sym->Cm[f] != 0)
             {
                 // if there is potential column left
                 paru_update_rowDeg(panel_num, row_end, f, start_fac, stl_colSet,
-                                   pivotal_elements, Work, Num);
+                                   pivotal_elements, Work, Sym, Num);
             }
 
             /*               trsm

@@ -13,12 +13,22 @@
  */
 #include "paru_internal.hpp"
 
-void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
-    int64_t start_fac, std::set<int64_t> &stl_colSet,
-    std::vector<int64_t> &pivotal_elements, paru_work *Work, ParU_Numeric *Num)
+void paru_update_rowDeg
+(
+    int64_t panel_num,
+    int64_t row_end,
+    int64_t f,
+    int64_t start_fac,
+    std::set<int64_t> &stl_colSet,
+    std::vector<int64_t> &pivotal_elements,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
+
 #ifndef NDEBUG
     int64_t n = Num->n;
     static int64_t r1 = 0, r2 = 0, r3 = 0;
@@ -32,7 +42,6 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
     int64_t *elRow = Work->elRow;
     int64_t *elCol = Work->elCol;
 
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f];  // fornt F has columns col1:col2-1
     int64_t col2 = Super[f + 1];
@@ -280,7 +289,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 #ifndef NDEBUG
         PRLEVEL(PR, ("%% pivotal element= " LD " lac=" LD " colsleft=" LD " \n", e,
                      el->lac, el->ncolsleft));
-        if (PR <= 0) paru_print_element(e, Work, Num);
+        if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
         int64_t intsct = paru_intersection(e, elementList, stl_newColSet);
         if (el->cValid < pMark)
@@ -358,7 +367,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 int64_t e = curTpl.e;
 
 #ifndef NDEBUG
-                if (PR <= 0) paru_print_element(e, Work, Num);
+                if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
                 int64_t curRowIndex = curTpl.f;
 
@@ -462,7 +471,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             int64_t e = curTpl.e;
 
 #ifndef NDEBUG
-            if (PR <= 0) paru_print_element(e, Work, Num);
+            if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
             int64_t curRowIndex = curTpl.f;
 

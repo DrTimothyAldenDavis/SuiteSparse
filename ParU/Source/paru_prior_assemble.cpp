@@ -13,10 +13,17 @@
 
 #include "paru_internal.hpp"
 
-ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
-                                    std::vector<int64_t> &pivotal_elements,
-                                    std::vector<int64_t> &colHash, heaps_info &hi,
-                                    paru_work *Work, ParU_Numeric *Num)
+ParU_Info paru_prior_assemble
+(
+    int64_t f,
+    int64_t start_fac,
+    std::vector<int64_t> &pivotal_elements,
+    std::vector<int64_t> &colHash,
+    heaps_info &hi,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
@@ -24,7 +31,6 @@ ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
     int64_t *elCol = Work->elCol;
 
     paru_element **elementList = Work->elementList;
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *snM = Sym->super2atree;
 
     int64_t pMark = start_fac;
@@ -64,7 +70,7 @@ ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
                 PRLEVEL(PR, ("%%assembling " LD " in " LD "\n", e, el_ind));
                 PRLEVEL(PR, ("%% size " LD " x " LD "\n", el->nrows, el->ncols));
                 #endif
-                paru_assemble_all(e, f, colHash, Work, Num);
+                paru_assemble_all(e, f, colHash, Work, Sym, Num);
                 #ifndef NDEBUG
                 PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n", e, el_ind));
                 #endif
@@ -74,7 +80,7 @@ ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
             #ifndef NDEBUG
             PRLEVEL(PR, ("%%assembling " LD " in " LD "\n", e, el_ind));
             #endif
-            paru_assemble_cols(e, f, colHash, Work, Num);
+            paru_assemble_cols(e, f, colHash, Work, Sym, Num);
             #ifndef NDEBUG
             PRLEVEL(PR, ("%%partial col assembly" LD " in " LD " done\n", e, el_ind));
             #endif
@@ -100,7 +106,7 @@ ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
             //          ooooooxxxxx
             //
             {
-                paru_assemble_el_with0rows(e, f, colHash, Work, Num);
+                paru_assemble_el_with0rows(e, f, colHash, Work, Sym, Num);
                 if (elementList[e] == NULL) continue;
                 #ifndef NDEBUG
                 PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n", e, el_ind));
@@ -124,7 +130,7 @@ ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
     PRLEVEL(1, ("%% Next: work on the heap \n"));
     ParU_Info res_make_heap;
     res_make_heap = paru_make_heap(f, start_fac, pivotal_elements, hi, colHash,
-                                   Work, Num);
+                                   Work, Sym, Num);
     if (res_make_heap != PARU_SUCCESS) return res_make_heap;
     PRLEVEL(1, ("%% Done: work on the heap \n"));
 

@@ -35,11 +35,18 @@
  */
 #include "paru_internal.hpp"
 
-void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
+void paru_full_summed
+(
+    int64_t e,
+    int64_t f,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
-    const ParU_Symbolic *Sym = Work->Sym;
+
 #ifndef NDEBUG
     const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
@@ -77,7 +84,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 #ifndef NDEBUG  // print the element which is going to be assembled from
     PR = 2;
     PRLEVEL(PR, ("%% ASSEMBL element= " LD "  mEl =" LD " ", e, mEl));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
 
     int64_t j = el->lac;  // keep record of latest lac
@@ -145,7 +152,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         PRLEVEL(PR, ("%% \n"));
 #endif
         // note: parallelism slows this down
-        // int64_t *Depth = Sym->Depth;
+        // const int64_t *Depth = Sym->Depth;
         //#pragma omp parallel
         //#pragma omp single
         //#pragma omp taskgroup
@@ -205,7 +212,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 #ifndef NDEBUG  // print the element which has been assembled from
     PR = 1;
     PRLEVEL(PR, ("%% ASSEMBLED element= " LD "  mEl =" LD " ", e, mEl));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 
     // Printing the pivotal front
     PR = 2;

@@ -49,6 +49,31 @@ int main(int argc, char **argv)
     }
 //  printf ("expected log10 of resid: %g\n", expected_log10_resid) ;
 
+    // ordering to use
+    int umfpack_ordering = 23 ;
+    if (argc > 2)
+    {
+
+#if 0
+/* Control [UMFPACK_ORDERING] and Info [UMFPACK_ORDERING_USED] are one of: */
+#define UMFPACK_ORDERING_CHOLMOD 0      /* use CHOLMOD (AMD/COLAMD then METIS)*/
+#define UMFPACK_ORDERING_AMD 1          /* use AMD/COLAMD */
+#define UMFPACK_ORDERING_GIVEN 2        /* user-provided Qinit */
+#define UMFPACK_ORDERING_METIS 3        /* use METIS */
+#define UMFPACK_ORDERING_BEST 4         /* try many orderings, pick best */
+#define UMFPACK_ORDERING_NONE 5         /* natural ordering */
+#define UMFPACK_ORDERING_USER 6         /* user-provided function */
+#define UMFPACK_ORDERING_METIS_GUARD 7  // Use METIS, AMD, or COLAMD.
+    // Symmetric strategy: always use METIS on A+A'.  Unsymmetric strategy: use
+    // METIS on A'A, unless A has one or more very dense rows.  In that case,
+    // A'A is very costly to form.  In this case, COLAMD is used instead of
+    // METIS.
+#endif
+
+        umfpack_ordering = (int) atoi (argv [2]) ;
+        printf ("umfpack ordering to use: %d\n", umfpack_ordering) ;
+    }
+
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
     cc = &Common;
@@ -58,7 +83,7 @@ int main(int argc, char **argv)
     ParU_Control Control;
     // puting Control lines to work
     Control.mem_chunk = 1024;
-    Control.umfpack_ordering = 23;
+    Control.umfpack_ordering = umfpack_ordering ;
     Control.umfpack_strategy = 23;
     Control.paru_max_threads = 4;
     Control.relaxed_amalgamation = -1;
@@ -83,6 +108,7 @@ int main(int argc, char **argv)
         TEST_PASSES ;
     }
 
+    // to test upper bound on this option (Matrix/xenon1.mtx)
     Control.relaxed_amalgamation = (A->nrow == 48600) ? 1024 : (-1) ;
 
     /////This part is for covering the codes that cannot be covered through

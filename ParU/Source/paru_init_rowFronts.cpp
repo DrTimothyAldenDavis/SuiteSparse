@@ -27,12 +27,16 @@
     PARU_FREE (rs1 + 1, int64_t, cSlp);     \
 }
 
-ParU_Info paru_init_rowFronts(paru_work *Work,
-                             ParU_Numeric **Num_handle,  // in/out
-                                                         // inputs, not modified
-                             cholmod_sparse *A,
-                             // symbolic analysis
-                             ParU_Symbolic *Sym, ParU_Control *Control)
+ParU_Info paru_init_rowFronts
+(
+    // input/output:
+    paru_work *Work,
+    ParU_Numeric **Num_handle,
+    // inputs, not modified:
+    cholmod_sparse *A,
+    ParU_Symbolic *Sym,         // symbolic analysis
+    ParU_Control *Control
+)
 {
 
     // workspace:
@@ -46,7 +50,6 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
     PARU_DEFINE_PRLEVEL;
 
     // initializing Work
-    Work->Sym = Sym;            // FIXME: why copy the Sym pointer into Work->Sym?
     int64_t *rowMark = Work->rowMark = NULL;
     int64_t *elRow = Work->elRow = NULL;
     int64_t *elCol = Work->elCol = NULL;
@@ -270,8 +273,8 @@ ParU_Info paru_init_rowFronts(paru_work *Work,
 
     int64_t n1 = Sym->n1;
 
-    int64_t *Qinit = Sym->Qfill;
-    int64_t *Pinv = Sym->Pinv;
+    const int64_t *Qinit = Sym->Qfill;
+    const int64_t *Pinv = Sym->Pinv;
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("Iniit Pinv =\n"));

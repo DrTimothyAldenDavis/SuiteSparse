@@ -16,9 +16,16 @@
  *
  *  @author Aznaveh
  */
+
 #include "paru_internal.hpp"
-ParU_Info paru_front(int64_t f,  // front need to be assembled
-                    paru_work *Work, ParU_Numeric *Num)
+
+ParU_Info paru_front
+(
+    int64_t f,  // front need to be assembled
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(-3);
     PARU_DEFINE_PRLEVEL;
@@ -28,15 +35,14 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
      *  0 Detailed
      *  > 0 Everything
      */
-    const ParU_Symbolic *Sym = Work->Sym;
+
     const int64_t *Super = Sym->Super;
     /* ---------------------------------------------------------------------- */
     /* get the front F  */
     /* ---------------------------------------------------------------------- */
 
-    PRLEVEL(-2, ("%%~~~~~~~  Assemble Front " LD " start ~~%.0lf~~~~~~~(%d)\n", f,
-                 Sym->stree_flop_bound[f], PARU_OPENMP_GET_THREAD_ID));
-
+    PRLEVEL(-2, ("%%~~~~~~~  Assemble Front " LD " start ~~%.0lf~~~~~~~(%d)\n",
+        f, Sym->stree_flop_bound[f], PARU_OPENMP_GET_THREAD_ID));
 
     /* pivotal columns Super [f] ... Super [f+1]-1 */
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
@@ -85,7 +91,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 #endif
 
         // Initializing relative index validation flag of current front
-        paru_init_rel(f, Work);
+        paru_init_rel(f, Work, Sym);
 
 #ifndef NDEBUG
         int64_t time_f = Work->time_stamp[f];
@@ -128,7 +134,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         PRLEVEL(1, ("%% Next: work on pivotal column assembly\n"));
         ParU_Info res_pivotal;
         res_pivotal = paru_pivotal(pivotal_elements, panel_row, zero_piv_rows,
-                                   f, hi, Work, Num);
+                                   f, hi, Work, Sym, Num);
         if (res_pivotal == PARU_OUT_OF_MEMORY)
         {
             PRLEVEL(1,
@@ -188,7 +194,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         PRLEVEL(1, ("%% start_fac= " LD "\n", start_fac));
 
         ParU_Info ffs_blas_ok = paru_factorize_full_summed(
-            f, start_fac, panel_row, stl_colSet, pivotal_elements, Work, Num);
+            f, start_fac, panel_row, stl_colSet, pivotal_elements, Work, Sym,Num);
         if (ffs_blas_ok != PARU_SUCCESS) return ffs_blas_ok; //failed blas
         ++Work->time_stamp[f];
 
@@ -285,16 +291,16 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
             if (zero_piv_rows > 0 || rowCount > fp)
             {
                 // make the heap and return
-                PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~1\n", f));
+                PRLEVEL(-2, ("%%~~~~~Assemble Front " LD " finished~~~1\n", f));
                 return paru_make_heap_empty_el(f, pivotal_elements, hi, Work,
-                                               Num);
+                                               Sym, Num);
             }
             else
             {
                 PRLEVEL(1, ("%%Heap freed inside front id=" LD "\n", eli));
                 delete Work->heapList[eli] ;
                 PRLEVEL(1, ("%% pivotalFront =%p\n", pivotalFront));
-                PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~2\n", f));
+                PRLEVEL(-2, ("%%~~~~~Assemble Front " LD " finished~~~2\n", f));
                 return PARU_SUCCESS;
             }
         }
@@ -303,7 +309,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         // hasing from fcolList indices to column index
         // the last elment of the hash shows if it is a lookup table
         // int64_t hash_size = (colCount*2 > Sym->n )? Sym->n : colCount;
-        int64_t hash_size = ((int64_t)2) << ((int64_t)floor(log2((double)colCount)) + 1);
+        int64_t hash_size = ((int64_t)2) <<
+            ((int64_t)floor(log2((double)colCount)) + 1);
         PRLEVEL(1, ("%% 1Front hash_size=" LD "\n", hash_size));
         hash_size = (hash_size > Sym->n) ? Sym->n : hash_size;
         PRLEVEL(1, ("%% 2Front hash_size=" LD "\n", hash_size));
@@ -311,8 +318,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         int64_t ii = 0;
         if (hash_size == Sym->n)
         {
-            PRLEVEL(PR, ("%% colHash LOOKUP size = " LD " LU " LD "\n", hash_size,
-                         Sym->n));
+            PRLEVEL(PR, ("%% colHash LOOKUP size = " LD " LU " LD "\n",
+                hash_size, Sym->n));
             for (it = stl_colSet.begin(); it != stl_colSet.end(); ++it)
             {
                 colHash[*it] = ii;
@@ -369,7 +376,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 
         paru_tupleList *RowList = Work->RowList;
 
-        // int64_t *Depth = Sym->Depth;
+        // const int64_t *Depth = Sym->Depth;
         //**//pragma omp parallel
         //**//pragma omp single nowait
         //**//pragma omp taskgroup
@@ -459,7 +466,10 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         PRLEVEL(PR, ("];\n"));
 
         PRLEVEL(PR, ("Urows{" LD "} = [", f + 1));
-        for (int64_t i = 0; i < fp; i++) PRLEVEL(PR, ("" LD " ", frowList[i] + 1));
+        for (int64_t i = 0; i < fp; i++)
+        {
+            PRLEVEL(PR, ("" LD " ", frowList[i] + 1));
+        }
         PRLEVEL(PR, ("];\n"));
 
         PRLEVEL(PR, ("Us{" LD "} = [", f + 1));
@@ -467,7 +477,9 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         for (int64_t i = 0; i < fp; i++)
         {
             for (int64_t j = 0; j < colCount; j++)
+            {
                 PRLEVEL(PR, (" %.16g ", uPart[j * fp + i]));
+            }
             PRLEVEL(PR, (";\n    "));
         }
         PRLEVEL(PR, ("];\n"));
@@ -475,8 +487,8 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
 #endif
 
         paru_element *curEl;
-        PRLEVEL(1, ("%% rowCount=" LD ", colCount=" LD ", fp=" LD "\n", rowCount,
-                    colCount, fp));
+        PRLEVEL(1, ("%% rowCount=" LD ", colCount=" LD ", fp=" LD "\n",
+            rowCount, colCount, fp));
         PRLEVEL(1, ("%% curEl is " LD " by " LD "\n", rowCount - fp, colCount));
         if (fp < rowCount)
         {
@@ -502,14 +514,14 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
                 // keep the heap and do it for the parent.
                 PRLEVEL(-2, ("%%~~~~Assemble Front " LD " finished~~~3\n", f));
                 return paru_make_heap_empty_el(f, pivotal_elements, hi, Work,
-                                               Num);
+                                               Sym, Num);
                 // There are stuff left from in zero
                 // then return
             }
             else
             {
                 return paru_make_heap_empty_el(f, pivotal_elements, hi, Work,
-                                               Num);
+                                               Sym, Num);
             }
         }
 
@@ -563,7 +575,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         // Printing the contribution block after dgemm
         PR = 1;
         PRLEVEL(PR, ("\n%%After DGEMM:"));
-        if (PR <= 0) paru_print_element(eli, Work, Num);
+        if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
 #endif
 
         /*** 7 * Count number of rows and columsn of prior CBs to asslemble ***/
@@ -571,7 +583,7 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
         PRLEVEL(-1, ("\n%%||||  Start Finalize " LD " ||||\n", f));
         ParU_Info res_prior;
         res_prior = paru_prior_assemble(f, start_fac, pivotal_elements, colHash,
-                                        hi, Work, Num);
+                                        hi, Work, Sym, Num);
         if (res_prior != PARU_SUCCESS) return res_prior;
         PRLEVEL(-1, ("\n%%||||  Finish Finalize " LD " ||||\n", f));
 
@@ -591,9 +603,9 @@ ParU_Info paru_front(int64_t f,  // front need to be assembled
             }
         }
 
-#ifndef NDEBUG /* chekcing if isRowInFront is correct */
+#ifndef NDEBUG /* checking if isRowInFront is correct */
         rowMark = rowMarkp[eli];
-        // int64_t *Sleft = Sym->Sleft;
+        // const int64_t *Sleft = Sym->Sleft;
         //    for (int64_t i = Sleft[col1]; i < Sleft[Super[f+1]]; i++)
         //        ASSERT ( isRowInFront [i] < rowMark);
 #endif

@@ -20,6 +20,7 @@ too_large = [
     2575
     2576
     982
+    2456
     ] ;
 
 % these matrices are singular or nearly so:
@@ -406,7 +407,7 @@ paru_demo
 
 first = 1 ;
 % start with matrix id 732 (Li/li)
-first = find (test_matrices == 732)
+% first = find (test_matrices == 732)
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat

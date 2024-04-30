@@ -1,16 +1,9 @@
 
-FIXME is the Symbolic object read-only in numeric factorization? Yes.
-    All uses of arrays should be:
-    const intt64_t *stuff = Sym->stuff ;
-
 FIXME make Numeric and Symbolic objects opaque? Yes.
     (add routines to give access to P, Q, scale factor Rs, n, rcond)
     Keep Control structures non-opaque.
 
 FIXME MATLAB interface, add options and stats
 
-FIXME for MATLAB, check if MKL BLAS is being used
-
 FIXME test performance results again, for ACM TOMS paper
 
-FIXME Tcov: missing parts of paru_tasked_dgemm

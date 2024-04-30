@@ -190,7 +190,22 @@ static int print_level = -1;
     #define PARU_DEFINE_PRLEVEL
 #endif
 
-// #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
+// To look for untested lines of code (development only):
+#ifdef MATLAB_MEX_FILE
+    #define GOTCHA                                                  \
+    {                                                               \
+        /* this will cause a segfault if done inside a parallel region: */  \
+        mexErrMsgIdAndTxt ("ParU:gotcha",                           \
+            "gotcha: %s %d\n", __FILE__, __LINE__) ;                \
+    }
+#else
+    #define GOTCHA                                                  \
+    {                                                               \
+        fprintf (stderr, "gotcha: %s %d\n", __FILE__, __LINE__) ;   \
+        fflush (stderr) ;                                           \
+        abort ( ) ;                                                 \
+    }
+#endif
 
 #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
 
@@ -237,14 +252,6 @@ static int print_level = -1;
     #define BLAS_set_num_threads(n)
 
 #endif
-
-// These libraries are included in Suitesparse_config
-//#include <stdlib.h>
-//#include <math.h>
-//#include <float.h>
-//#include <stdio.h>
-//#include <cstring>
-//#include <malloc.h> // mallopt used in paru_init_rowFronts.cpp
 
 // To be able to use set
 #include <algorithm>
@@ -355,8 +362,6 @@ struct paru_work
     // It helps editing the Diag_map
 
     int64_t *row_degree_bound;  // row degree size number of rows
-
-    ParU_Symbolic *Sym;  // point to the symbolic that user sends
 
     paru_element **elementList;  // pointers to all elements, size = m+nf+1
 
@@ -526,7 +531,15 @@ int64_t paru_get_nmalloc(void);
 
 #ifndef NDEBUG
 void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num);
-void paru_print_element(int64_t e, paru_work *Work, ParU_Numeric *Num);
+
+void paru_print_element
+(
+    int64_t e,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
+
 void paru_print_paru_tupleList(paru_tupleList *listSet, int64_t index);
 #endif
 
@@ -535,11 +548,17 @@ ParU_Info paru_umfpack_info (int status) ;
 /* add tuple functions defintions */
 ParU_Info paru_add_rowTuple(paru_tupleList *RowList, int64_t row, paru_tuple T);
 
-ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
-                                    std::vector<int64_t> &panel_row,
-                                    std::set<int64_t> &stl_colSet,
-                                    std::vector<int64_t> &pivotal_elements,
-                                    paru_work *Work, ParU_Numeric *Num);
+ParU_Info paru_factorize_full_summed
+(
+    int64_t f,
+    int64_t start_fac,
+    std::vector<int64_t> &panel_row,
+    std::set<int64_t> &stl_colSet,
+    std::vector<int64_t> &pivotal_elements,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
 ParU_Info paru_exec_tasks
 (
@@ -547,6 +566,7 @@ ParU_Info paru_exec_tasks
     int64_t *task_num_child,
     int64_t &chain_task,
     paru_work *Work,
+    const ParU_Symbolic *Sym,
     ParU_Numeric *Num
 ) ;
 
@@ -555,6 +575,7 @@ ParU_Info paru_exec_tasks_seq
     int64_t t,
     int64_t *task_num_child,
     paru_work *Work,
+    const ParU_Symbolic *Sym,
     ParU_Numeric *Num
 ) ;
 
@@ -571,65 +592,154 @@ bool paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
                    int64_t rowCount, int64_t colCount, paru_work *Work,
                    ParU_Numeric *Num);
 
-void paru_init_rel(int64_t f, paru_work *Work);
+void paru_init_rel
+(
+    int64_t f,
+    paru_work *Work,
+    const ParU_Symbolic *Sym
+) ;
 
 void paru_update_rel_ind_col(int64_t e, int64_t f,
                              std::vector<int64_t> &colHash, paru_work *Work,
                              ParU_Numeric *Num);
 
-void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
-                        int64_t start_fac, std::set<int64_t> &stl_colSet,
-                        std::vector<int64_t> &pivotal_elements, paru_work *Work,
-                        ParU_Numeric *Num);
+void paru_update_rowDeg
+(
+    int64_t panel_num,
+    int64_t row_end,
+    int64_t f,
+    int64_t start_fac,
+    std::set<int64_t> &stl_colSet,
+    std::vector<int64_t> &pivotal_elements,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
 int64_t paru_cumsum(int64_t n, int64_t *X, ParU_Control *Control);
 
 int64_t paru_bin_srch_col(int64_t *srt_lst, int64_t l, int64_t r, int64_t num);
 int64_t paru_bin_srch(int64_t *srt_lst, int64_t l, int64_t r, int64_t num);
 
-ParU_Info paru_init_rowFronts(paru_work *Work, ParU_Numeric **Num_handle,
-                             cholmod_sparse *A, ParU_Symbolic *Sym,
-                             ParU_Control *Control);
-ParU_Info paru_front(int64_t f, paru_work *Work, ParU_Numeric *Num);
 
-ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
-                      std::vector<int64_t> &panel_row, int64_t &zero_piv_rows,
-                      int64_t f, heaps_info &hi, paru_work *Work,
-                      ParU_Numeric *Num);
+ParU_Info paru_init_rowFronts
+(
+    // input/output:
+    paru_work *Work,
+    ParU_Numeric **Num_handle,
+    // inputs, not modified:
+    cholmod_sparse *A,
+    ParU_Symbolic *Sym,         // symbolic analysis
+    ParU_Control *Control
+) ;
+
+ParU_Info paru_front
+(
+    int64_t f,  // front need to be assembled
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
+
+ParU_Info paru_pivotal
+(
+    std::vector<int64_t> &pivotal_elements,
+    std::vector<int64_t> &panel_row,
+    int64_t &zero_piv_rows,
+    int64_t f,
+    heaps_info &hi,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
 int paru_intersection(int64_t e, paru_element **elementList,
                       std::set<int64_t> &stl_colSet);
 
-ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
-                             std::vector<int64_t> &pivotal_elements,
-                             std::vector<int64_t> &colHash, heaps_info &hi,
-                             paru_work *Work, ParU_Numeric *Num);
+ParU_Info paru_prior_assemble
+(
+    int64_t f,
+    int64_t start_fac,
+    std::vector<int64_t> &pivotal_elements,
+    std::vector<int64_t> &colHash,
+    heaps_info &hi,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
-void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
-                       paru_work *Work, ParU_Numeric *Num);
+void paru_assemble_all
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work, 
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
-void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
-                        paru_work *Work, ParU_Numeric *Num);
+void paru_assemble_cols
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
-void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
-                        paru_work *Work, ParU_Numeric *Num);
+void paru_assemble_rows
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
-void paru_assemble_el_with0rows(int64_t e, int64_t f,
-                                std::vector<int64_t> &colHash, paru_work *Work,
-                                ParU_Numeric *Num);
+void paru_assemble_el_with0rows
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
-void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num);
+void paru_full_summed
+(
+    int64_t e,
+    int64_t f,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
 // heap related
-ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
-                        std::vector<int64_t> &pivotal_elements, heaps_info &hi,
-                        std::vector<int64_t> &colHash, paru_work *Work,
-                        ParU_Numeric *Num);
+ParU_Info paru_make_heap
+(
+    int64_t f,
+    int64_t start_fac,
+    std::vector<int64_t> &pivotal_elements,
+    heaps_info &hi,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
 
-ParU_Info paru_make_heap_empty_el(int64_t f,
-                                 std::vector<int64_t> &pivotal_elements,
-                                 heaps_info &hi, paru_work *Work,
-                                 ParU_Numeric *Num);
+ParU_Info paru_make_heap_empty_el
+(
+    int64_t f,
+    std::vector<int64_t> &pivotal_elements,
+    heaps_info &hi,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+) ;
+
 // hash related
 void paru_insert_hash(int64_t key, int64_t value,
                       std::vector<int64_t> &colHash);

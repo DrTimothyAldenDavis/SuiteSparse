@@ -12,13 +12,20 @@
  */
 
 #include "paru_internal.hpp"
-void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
+
+void paru_write
+(
+    int scale,
+    char *id,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% Start Writing\n"));
-    const ParU_Symbolic *Sym = Work->Sym;
-    int64_t nf = Sym->nf;
 
+    int64_t nf = Sym->nf;
     int64_t m = Sym->m;
     int64_t n = Sym->n;
     int64_t n1 = Sym->n1;  // row+col singletons

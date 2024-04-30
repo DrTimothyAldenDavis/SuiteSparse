@@ -13,8 +13,19 @@
  */
 #include "paru_internal.hpp"
 
-void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
-        paru_work *Work, ParU_Numeric *Num)
+//------------------------------------------------------------------------------
+// paru_assemble_all: assemble an entire element e into the current front f
+//------------------------------------------------------------------------------
+
+void paru_assemble_all
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work, 
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
@@ -23,8 +34,6 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
 
-    // FIXME: why is Sym placed in the Work structure?
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     PRLEVEL(PR, ("%% Eliminate all of " LD " in " LD "(f=" LD ") (tid=%d)\n", e, eli, f,
@@ -33,10 +42,10 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("%% " LD " :\n", e));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 
     PRLEVEL(PR, ("%% " LD " :\n", eli));
-    if (PR <= 0) paru_print_element(eli, Work, Num);
+    if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
     PR = 1;
 #endif
 
@@ -226,6 +235,7 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             /////////////// making tasks and such /////////////////////////////
             ///////////////////////////////////////////////////////////////////
 
+            // This code is tested in ParU/Tcov by the c-62.mtx
             int64_t ntasks = (max_threads - naft + 1) * 2;
             ntasks = (ntasks <= 0) ? 1 : ntasks;
             int64_t task_size = (nEl - el->lac) / ntasks;
@@ -282,7 +292,7 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("%% after assembly " LD " :\n", eli));
-    if (PR <= 0) paru_print_element(eli, Work, Num);
+    if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
     PR = 1;
 #endif
 
@@ -299,20 +309,29 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
 #endif
 }
 
+//------------------------------------------------------------------------------
+// paru_assemble_cols:  assemble columns from element e into current front f
+//------------------------------------------------------------------------------
+
 // try to find columns and assemble them to current front. After the first
 // column that is not in current front it gets a toll for each column doesn't
 // fit
 
-void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
-        paru_work *Work, ParU_Numeric *Num)
-
+void paru_assemble_cols
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 #ifndef NDEBUG
     int64_t c = 0;  // number of columns assembled
 #endif
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
 
@@ -321,10 +340,10 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     PR = 1;
 
     PRLEVEL(PR, ("%% " LD " :\n", eli));
-    if (PR <= 0) paru_print_element(eli, Work, Num);
+    if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
 
     PRLEVEL(PR, ("%% " LD " :\n", e));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
 
     paru_element **elementList = Work->elementList;
@@ -364,7 +383,7 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     // pragma omp atomic read
     // naft = Num->naft;
     // const int32_t max_threads = Num->paru_max_threads;
-    ////int64_t *Depth = Sym->Depth;
+    //// const int64_t *Depth = Sym->Depth;
     // pragma omp parallel proc_bind(close) num_threads(max_threads/naft)
     // if (naft < max_threads/2 &&
     //        el->nrowsleft*el->ncolsleft < 4096 && el->nrowsleft < 1024 )
@@ -495,14 +514,23 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     }
 }
 
-void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
-        paru_work *Work, ParU_Numeric *Num)
+//------------------------------------------------------------------------------
+// paru_assemble_rows:  assemble rows from element e into current front f
+//------------------------------------------------------------------------------
 
+void paru_assemble_rows
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
 
@@ -586,10 +614,11 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     int64_t toll = 8;  // number of times it continue when do not find anything
     // Toll zone
     while (i < mEl && nrowsSeen > 0 && toll > 0)
-    // while (i < mEl  && nrowsSeen >0 )
     {
         for (; el_rowIndex[i] < 0; i++)
+        {
             ;
+        }
         nrowsSeen--;
 
         int64_t rowInd = isRowInFront[i];
@@ -603,7 +632,6 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                             curEl_rowIndex[rowInd]));
                 PRLEVEL(1, ("%% i =" LD " \n", i));
                 PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
-
                 tempRow.push_back(i);
                 toll++;
             }
@@ -625,15 +653,16 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     PRLEVEL(PR, ("\n "));
     PR = 1;
     PRLEVEL(PR, ("%% Before eliminiating some rows " LD " :\n", eli));
-    if (PR <= 0) paru_print_element(eli, Work, Num);
+    if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
     PRLEVEL(PR, ("%% " LD " :\n", e));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
 
     // This never happens; I found it in test coverage
     //It is obvious when I look at the caller
     //if (el->cValid != Work->time_stamp[f])
     //    paru_update_rel_ind_col(e, f, colHash, Work, Num);
+
     ASSERT(el->cValid == Work->time_stamp[f]);
 
     int64_t ncolsSeen = nEl;
@@ -655,7 +684,6 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         {
             int64_t rowInd = el_rowIndex[i1];
             int64_t ri = isRowInFront[rowInd];
-
             PRLEVEL(1, ("%% ri = " LD " \n", ri));
             PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
             PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
@@ -682,16 +710,26 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("%% After Eliminate some rows " LD " :\n", eli));
-    if (PR <= 0) paru_print_element(eli, Work, Num);
+    if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
 
     PRLEVEL(PR, ("%% " LD " :\n", e));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
 }
 
-void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
-        paru_work *Work, ParU_Numeric *Num)
+//------------------------------------------------------------------------------
+// paru_assemble_el_with0rows:  assemble rows from e into front f
+//------------------------------------------------------------------------------
 
+void paru_assemble_el_with0rows
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     // This element contributes to both pivotal rows and pivotal columns
     //  However it has zero rows in current pivotal columns therefore
@@ -713,7 +751,6 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     PRLEVEL(PR, ("%% \n+++++++++++++++++++++++++++++++++++++++\n"));
@@ -722,10 +759,10 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("%% " LD " :\n", eli));
-    if (PR <= 0) paru_print_element(eli, Work, Num);
+    if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
 
     PRLEVEL(PR, ("%% " LD " :\n", e));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 
 #endif
 
@@ -841,7 +878,7 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         PRLEVEL(PR, ("%% \n"));
 #endif
         int64_t ncols2bSeen = el->ncolsleft;
-        // int64_t *Depth = Sym->Depth;
+        // const int64_t *Depth = Sym->Depth;
         //**//pragma omp parallel
         //**//pragma omp single nowait
         //**//pragma omp taskgroup
@@ -947,10 +984,10 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     if (nEl != new_lac && el_colIndex[new_lac] < col2) PR = -2;
 
     PRLEVEL(PR, ("%% " LD " :\n", eli));
-    if (PR <= 0) paru_print_element(eli, Work, Num);
+    if (PR <= 0) paru_print_element(eli, Work, Sym, Num);
 
     PRLEVEL(PR, ("%% " LD " :\n", e));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
     PR = 1;
     ASSERT(nEl == new_lac || col2 <= el_colIndex[new_lac]);
 

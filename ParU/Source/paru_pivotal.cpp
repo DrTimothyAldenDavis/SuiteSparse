@@ -17,13 +17,21 @@
  */
 #include "paru_internal.hpp"
 
-ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
-                      std::vector<int64_t> &panel_row, int64_t &zero_piv_rows, int64_t f,
-                      heaps_info &hi, paru_work *Work, ParU_Numeric *Num)
+ParU_Info paru_pivotal
+(
+    std::vector<int64_t> &pivotal_elements,
+    std::vector<int64_t> &panel_row,
+    int64_t &zero_piv_rows,
+    int64_t f,
+    heaps_info &hi,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
-    const ParU_Symbolic *Sym = Work->Sym;
+
     const int64_t *snM = Sym->super2atree;
     std::vector<int64_t> **heapList = Work->heapList;
     int64_t eli = snM[f];
@@ -166,7 +174,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
         PRLEVEL(PR, ("lac = " LD " ", el->lac));
         PRLEVEL(PR, ("lac_col = " LD "\n ", lacList[e]));
         ASSERT(el_colIndex[el->lac] >= col1);
-        if (PR <= 0) paru_print_element(e, Work, Num);
+        if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
 
         int64_t mEl = el->nrows;
@@ -233,7 +241,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
                     zero_piv_rows++;
                     rowRelIndex[rEl] = -1;
 #ifndef NDEBUG
-                    if (PR <= 0) paru_print_element(e, Work, Num);
+                    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
                     continue;  // Not adding the row
                 }
@@ -384,8 +392,8 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     PRLEVEL(PR, ("%% pivotalFront = %p size=" LD "", pivotalFront, rowCount * fp));
     int64_t act = Work->actual_alloc_LUs + Work->actual_alloc_Us +
         Work->actual_alloc_row_int;
-    int64_t upp = Sym->Us_bound_size + Sym->LUs_bound_size + Sym->row_Int_bound +
-        Sym->col_Int_bound;
+    int64_t upp = Sym->Us_bound_size + Sym->LUs_bound_size +
+        Sym->row_Int_bound + Sym->col_Int_bound;
     PRLEVEL(PR, ("%% MEM=" LD " percent=%lf%%", act, 100.0 * act / upp));
     PRLEVEL(PR, ("%% MEM=" LD " percent=%lf%%\n", act, 100.0 * act / upp));
 #endif
@@ -422,7 +430,7 @@ ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
     int64_t ii = 0;  // using for resizing pivotal_elements
     for (int64_t e : pivotal_elements)
     {
-        paru_full_summed(e, f, Work, Num);
+        paru_full_summed(e, f, Work, Sym, Num);
         if (elementList[e] != NULL)
         {
             // keeping the element

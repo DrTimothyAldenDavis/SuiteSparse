@@ -22,11 +22,12 @@ ParU_Info paru_free_work(const ParU_Symbolic *Sym, paru_work *Work)
     int64_t m = Sym->m - Sym->n1;
     int64_t nf = Sym->nf;
     int64_t n = Sym->n - Sym->n1;
+    int64_t ntasks = Sym->ntasks ;
     PARU_FREE(m, int64_t, Work->rowSize);
     PARU_FREE(m + nf + 1, int64_t, Work->rowMark);
     PARU_FREE(m + nf, int64_t, Work->elRow);
     PARU_FREE(m + nf, int64_t, Work->elCol);
-    PARU_FREE(Sym->ntasks, int64_t, Work->task_num_child);
+    PARU_FREE(ntasks, int64_t, Work->task_num_child);
 
     PARU_FREE(nf, int64_t, Work->time_stamp);
 

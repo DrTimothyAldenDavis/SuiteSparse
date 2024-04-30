@@ -23,11 +23,11 @@ ParU_Info paru_exec_tasks_seq
     int64_t t,
     int64_t *task_num_child,
     paru_work *Work,
+    const ParU_Symbolic *Sym,
     ParU_Numeric *Num
 )
 {
     DEBUGLEVEL(0);
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *task_parent = Sym->task_parent;
     int64_t daddy = task_parent[t];
     const int64_t *task_map = Sym->task_map;
@@ -46,7 +46,7 @@ ParU_Info paru_exec_tasks_seq
     for (int64_t f = task_map[t] + 1; f <= task_map[t + 1]; f++)
     {
         PRLEVEL(2, ("Seq: calling " LD "\n", f));
-        myInfo = paru_front(f, Work, Num);
+        myInfo = paru_front(f, Work, Sym, Num);
         if (myInfo != PARU_SUCCESS)
         {
             return myInfo;
@@ -78,15 +78,15 @@ ParU_Info paru_exec_tasks_seq
                 PRLEVEL(
                     1, ("%%Seq task " LD " executing its parent " LD "\n", t, daddy));
                 return myInfo = paru_exec_tasks_seq(daddy, task_num_child, Work,
-                                                    Num);
+                                                    Sym, Num);
             }
         }
         else  // I was the only spoiled kid in the family;
         {
             PRLEVEL(1, ("%% Seq task " LD " only child executing its parent " LD "\n",
                         t, daddy));
-            return myInfo =
-                       paru_exec_tasks_seq(daddy, task_num_child, Work, Num);
+            return myInfo = paru_exec_tasks_seq(daddy, task_num_child, Work,
+                        Sym, Num);
         }
     }
     return myInfo;
@@ -102,10 +102,11 @@ ParU_Info paru_exec_tasks
     int64_t *task_num_child,
     int64_t &chain_task,
     paru_work *Work,
+    const ParU_Symbolic *Sym,
     ParU_Numeric *Num
 )
 {
-    const ParU_Symbolic *Sym = Work->Sym;
+
     const int64_t *task_parent = Sym->task_parent;
     int64_t daddy = task_parent[t];
     const int64_t *task_map = Sym->task_map;
@@ -123,7 +124,7 @@ ParU_Info paru_exec_tasks
 #endif
     for (int64_t f = task_map[t] + 1; f <= task_map[t + 1]; f++)
     {
-        myInfo = paru_front(f, Work, Num);
+        myInfo = paru_front(f, Work, Sym, Num);
         if (myInfo != PARU_SUCCESS) return myInfo;
     }
     int64_t num_rem_children;
@@ -167,7 +168,7 @@ ParU_Info paru_exec_tasks
                 else
                 {
                     return myInfo = paru_exec_tasks(daddy, task_num_child,
-                                                    chain_task, Work, Num);
+                                                    chain_task, Work, Sym, Num);
                 }
             }
         }
@@ -189,7 +190,7 @@ ParU_Info paru_exec_tasks
             else
             {
                 return myInfo = paru_exec_tasks(daddy, task_num_child,
-                                                chain_task, Work, Num);
+                                                chain_task, Work, Sym, Num);
             }
         }
     }

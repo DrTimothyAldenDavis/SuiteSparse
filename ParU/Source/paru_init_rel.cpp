@@ -15,12 +15,19 @@
  *
  * @author Aznaveh
  */
+
 #include "paru_internal.hpp"
-void paru_init_rel(int64_t f, paru_work *Work)
+
+void paru_init_rel
+(
+    int64_t f,
+    paru_work *Work,
+    const ParU_Symbolic *Sym
+)
 {
     DEBUGLEVEL(0);
     int64_t *time_stamp = Work->time_stamp;
-    const ParU_Symbolic *Sym = Work->Sym;
+
     const int64_t *Child = Sym->Child;
     const int64_t *Childp = Sym->Childp;
     int64_t max_time = 0;

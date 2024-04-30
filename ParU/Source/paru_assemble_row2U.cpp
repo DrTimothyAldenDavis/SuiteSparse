@@ -26,8 +26,10 @@ void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
     paru_element *el = elementList[e];
 
     if (el->cValid != Work->time_stamp[f])
+    {
         // if not updatated
         paru_update_rel_ind_col(e, f, colHash, Work, Num);
+    }
 
     ParU_Factors *Us = Num->partial_Us;
     double *uPart = Us[f].p;  // uPart

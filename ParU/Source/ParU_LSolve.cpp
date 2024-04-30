@@ -274,8 +274,8 @@ ParU_Info ParU_LSolve
             const double *Slx = Num->Slx;
             ASSERT(Sli != NULL && Slx != NULL && Slp != NULL);
             int64_t diag = Slp[j - cs1];
-            PRLEVEL(PR, (" X[" LD "]=%.2lf Slx[" LD "]=%.2lf\n", j, X[j * nrhs], diag,
-                         Slx[diag]));
+            PRLEVEL(PR, (" X[" LD "]=%.2lf Slx[" LD "]=%.2lf\n",
+                j, X[j * nrhs], diag, Slx[diag]));
             // pragma omp simd
             for (int64_t l = 0; l < nrhs; l++)
             {
@@ -333,8 +333,8 @@ ParU_Info ParU_LSolve
         double *A = LUs[f].p;
         PRLEVEL(2, ("%% mRHS Working on DTRSM f=" LD "\n", f));
         double alpha = 1;
-        SUITESPARSE_BLAS_dtrsm("L", "L", "N", "U", fp, nrhs, &alpha, A, rowCount,
-                               X + n1 + col1, m, blas_ok);
+        SUITESPARSE_BLAS_dtrsm("L", "L", "N", "U", fp, nrhs, &alpha, A,
+            rowCount, X + n1 + col1, m, blas_ok);
         PRLEVEL(2, ("%% mRHS DTRSM is just finished f=" LD "\n", f));
 #ifndef NDEBUG
         PR = 2;
@@ -349,8 +349,8 @@ ParU_Info ParU_LSolve
 
         PRLEVEL(PR, ("%% lda = " LD "\n%%", rowCount));
         PR = 1;
-        PRLEVEL(PR,
-                ("%% during lsolve X f=" LD "[" LD "-" LD ")is:\n%%", f, col1, col2));
+        PRLEVEL(PR, ("%% during lsolve X f=" LD "[" LD "-" LD
+            ")is:\n%%", f, col1, col2));
         for (int64_t k = 0; k < m; k++)
         {
             PRLEVEL(1, ("%%"));

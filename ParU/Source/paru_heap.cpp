@@ -13,10 +13,22 @@
  */
 #include "paru_internal.hpp"
 
-void paru_check_prior_element(int64_t e, int64_t f, int64_t start_fac,
-                              std::vector<int64_t> &colHash, paru_work *Work,
-                              ParU_Numeric *Num)
+//------------------------------------------------------------------------------
+// paru_check_prior_element
+//------------------------------------------------------------------------------
+
 // check if e can be assembeld into f
+
+void paru_check_prior_element
+(
+    int64_t e,
+    int64_t f,
+    int64_t start_fac,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     int64_t *elRow = Work->elRow;
 
@@ -26,26 +38,36 @@ void paru_check_prior_element(int64_t e, int64_t f, int64_t start_fac,
     if (elRow[e] == 0 && el->rValid > start_fac)
     {
         // all the rows are inside he current front; maybe assemble some cols
-        paru_assemble_cols(e, f, colHash, Work, Num);
+        paru_assemble_cols(e, f, colHash, Work, Sym, Num);
         return;
     }
 
     if (el->rValid == start_fac || el->cValid == Work->time_stamp[f])
     {
         // all the cols are inside he current front; maybe assemble some rows
-        paru_assemble_rows(e, f, colHash, Work, Num);
+        paru_assemble_rows(e, f, colHash, Work, Sym, Num);
     }
 }
 
-ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
-                        std::vector<int64_t> &pivotal_elements, heaps_info &hi,
-                        std::vector<int64_t> &colHash, paru_work *Work,
-                        ParU_Numeric *Num)
+//------------------------------------------------------------------------------
+// paru_make_heap
+//------------------------------------------------------------------------------
+
+ParU_Info paru_make_heap
+(
+    int64_t f,
+    int64_t start_fac,
+    std::vector<int64_t> &pivotal_elements,
+    heaps_info &hi,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *aChild = Sym->aChild;
     const int64_t *aChildp = Sym->aChildp;
     const int64_t *snM = Sym->super2atree;
@@ -98,7 +120,7 @@ ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
                     if (elementList[e] != NULL)
                     {
                         paru_check_prior_element(e, f, start_fac, colHash, Work,
-                                                 Num);
+                                                 Sym, Num);
                         if (elementList[e] != NULL)
                         {
                             curHeap->push_back(e);
@@ -145,7 +167,7 @@ ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
                     if (elementList[e] != NULL)
                     {
                         paru_check_prior_element(e, f, start_fac, colHash, Work,
-                                                 Num);
+                                                 Sym, Num);
                         if (elementList[e] != NULL) curHeap->push_back(e);
                     }
                 }
@@ -208,14 +230,23 @@ ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
     return PARU_SUCCESS;
 }
 
-ParU_Info paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elements,
-                                 heaps_info &hi, paru_work *Work,
-                                 ParU_Numeric *Num)
+//------------------------------------------------------------------------------
+// paru_make_heap_empty_el
+//------------------------------------------------------------------------------
+
+ParU_Info paru_make_heap_empty_el
+(
+    int64_t f,
+    std::vector<int64_t> &pivotal_elements,
+    heaps_info &hi,
+    paru_work *Work,
+    const ParU_Symbolic *Sym,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
-    const ParU_Symbolic *Sym = Work->Sym;
     const int64_t *aChild = Sym->aChild;
     const int64_t *aChildp = Sym->aChildp;
     const int64_t *snM = Sym->super2atree;
