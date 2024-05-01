@@ -269,8 +269,9 @@ int main(int argc, char **argv)
     values.  The user can then change the values.
 
     \vspace{0.1in}
+    \hspace{-0.2in}
     {\footnotesize
-    \begin{tabular}{|lp{4in}|}
+    \begin{tabular}{|lp{4.7in}|}
     \hline
     \verb'ParU_Control' & default value and explanation  \\
     \hline\hline
@@ -280,14 +281,14 @@ int main(int argc, char **argv)
         to use.  If zero (the default value), this is initialized with
         \verb'omp_max_threads'. \\
     \hline
-    \verb'paru_strategy' & default: \verb'PARU_STRATEGY_AUTO'. Default strategy
-        for ParU.  Valid options are:
+    \verb'paru_strategy' & default: \verb'PARU_STRATEGY_AUTO'. Default ordering
+        strategy for ParU.  Options are:
         \verb'PARU_STRATEGY_AUTO' (select the strategy that UMFPACK selects),
         \verb'PARU_STRATEGY_UNSYMMETRIC' (order and analyze $A'A$),
         \verb'PARU_STRATEGY_SYMMETRIC' (order and analyze $A+A'$).
         \\
     \verb'umfpack_strategy' & default: \verb'UMFPACK_STRATEGY_AUTO'.
-        Default UMFPACK strategy.
+        Default UMFPACK strategy. Options are:
         \verb'UMFPACK_STRATEGY_AUTO' (select the strategy based on how
             symmetric the pattern of the input matrix is),
         \verb'UMFPACK_STRATEGY_UNSYMMETRIC' (order and analyze $A'A$),
@@ -302,14 +303,15 @@ int main(int argc, char **argv)
         \verb'*' is one of:
         \verb'METIS' (use metis on $A+A'$ or $A'A$),
         \verb'METIS_GUARD' (use metis, unless $A'A$ has too many entries),
-        \verb'AMD' (use amd on $A+A'$ or colamdn on $A$),
-        \verb'CHOLMOD' (use CHOLMOD's ordering strategy; try AMD/COLAMD and
-            then try METIS if the fillin from AMD/COLAMD is high),
-        \verb'BEST' (use CHOLMOD to try AMD/COLAMD, METIS, and NESDIS, and
-            take the best ordering found),
+        \verb'AMD' (use amd on $A+A'$ or colamd on $A$),
+        \verb'CHOLMOD' (use CHOLMOD's ordering strategy; try amd/colamd and
+            then try METIS if the fillin from amd/colamd is high),
+        \verb'BEST' (use CHOLMOD to try amd/colamd, metis, and CHOLMOD's own
+            nested dissection method, and take the best ordering found),
         \verb'NONE' (no fill-reducing ordering).
-        When using an ordering to factorize a single matrix, AMD is often
-        the best since METIS can result in low fillin but high ordering times.
+        When using an ordering to factorize a single matrix, \verb'AMD' is
+        often the best since \verb'METIS' and \verb'METIS_GUARD' can result in
+        low fillin but high ordering times.
         \\
     \verb'filter_singletons' & default: 1. If nonzero, singletons are
         permuted to the front of the matrix before factorization.  Singletons
