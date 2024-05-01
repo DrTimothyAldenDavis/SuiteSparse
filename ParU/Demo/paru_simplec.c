@@ -13,6 +13,8 @@
 
 #include "ParU.h"
 
+// FIXME: use FREE_ALL_AND_RETURN
+
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc = NULL ;

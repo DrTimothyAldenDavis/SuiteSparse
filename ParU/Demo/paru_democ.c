@@ -11,17 +11,37 @@
  *
  * @author Aznaveh
  * */
+
 #include <stdint.h>
 #include <math.h>
-#include <omp.h>
 
 #include "ParU.h"
 
+#define FREE_ALL_AND_RETURN(info)               \
+{                                               \
+    if (b != NULL) free(b);                     \
+    if (xx != NULL) free(xx);                   \
+    if (x != NULL) free(x);                     \
+    if (B != NULL) free(B);                     \
+    if (X != NULL) free(X);                     \
+    umfpack_dl_free_symbolic(&Symbolic);        \
+    umfpack_dl_free_numeric(&Numeric);          \
+    ParU_C_FreeNumeric(&Num, &Control);         \
+    ParU_C_FreeSymbolic(&Sym, &Control);        \
+    cholmod_l_free_sparse(&A, cc);              \
+    cholmod_l_finish(cc);                       \
+    return (info) ;                             \
+}
+
 int main(int argc, char **argv)
 {
-    cholmod_common Common, *cc;
-    cholmod_sparse *A;
-    ParU_C_Symbolic *Sym = NULL;
+    cholmod_common Common, *cc ;
+    cholmod_sparse *A = NULL ;
+    ParU_C_Symbolic *Sym = NULL ;
+    ParU_C_Numeric *Num = NULL ;
+    double *b = NULL, *xx = NULL, *B = NULL, *X = NULL, *x = NULL ;
+    void *Symbolic = NULL, *Numeric = NULL ;  // UMFPACK factorization
+    ParU_C_Control Control ;
 
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
@@ -34,19 +54,19 @@ int main(int argc, char **argv)
     if (A == NULL)
     {
         printf("ParU: input matrix is invalid\n");
-        exit(1);
+        FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
 
     if (mtype != CHOLMOD_SPARSE)
     {
         printf("ParU: input matrix must be sparse\n");
-        exit(1);
+        FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
 
     if (A->xtype != CHOLMOD_REAL)
     {
         printf("ParU: input matrix must be real\n");
-        exit(1);
+        FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
 
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,9 +77,8 @@ int main(int argc, char **argv)
            ver[0], ver[1], ver[2]);
     printf(" %s\n", date);
 
-    double my_start_time = omp_get_wtime();
+    double my_start_time = SuiteSparse_time ();
 
-    ParU_C_Control Control;
     ParU_C_Init_Control(&Control);  // initialize the Control in C
     ParU_Info info;
 
@@ -71,22 +90,21 @@ int main(int argc, char **argv)
     Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
     printf ("\n--------- ParU_C_Analyze:\n") ;
     info = ParU_C_Analyze(A, &Sym, &Control);
-    double my_time_analyze = omp_get_wtime() - my_start_time;
+    double my_time_analyze = SuiteSparse_time () - my_start_time;
     if (info != PARU_SUCCESS)
     {
-        cholmod_l_free_sparse(&A, cc);
-        cholmod_l_finish(cc);
-        return info;
+        FREE_ALL_AND_RETURN (info) ;
     }
+
     int64_t n, anz ;
-    printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
-        Sym->m, Sym->n, Sym->anz);
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, &Control) ;
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_ANZ, &anz, &Control) ;
+    printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", n, n, anz);
     printf("ParU: Symbolic factorization: %lf seconds\n", my_time_analyze);
-    ParU_C_Numeric *Num;
     printf ("\n--------- ParU_C_Factorize:\n") ;
-    double my_start_time_fac = omp_get_wtime();
+    double my_start_time_fac = SuiteSparse_time ();
     info = ParU_C_Factorize(A, Sym, &Num, &Control);
-    double my_time_fac = omp_get_wtime() - my_start_time_fac;
+    double my_time_fac = SuiteSparse_time () - my_start_time_fac;
     if (info != PARU_SUCCESS)
     {
         printf("ParU: factorization was NOT successful in %lf seconds!",
@@ -94,127 +112,93 @@ int main(int argc, char **argv)
         if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
         if (info == PARU_INVALID) printf("\nInvalid!\n");
         if (info == PARU_SINGULAR) printf("\nSingular!\n");
-        cholmod_l_free_sparse(&A, cc);
-        cholmod_l_finish(cc);
-        ParU_C_FreeSymbolic(&Sym, &Control);
-        return info;
+        FREE_ALL_AND_RETURN (info) ;
     }
-    else
-    {
-        printf("ParU: factorization was successful in %lf seconds.\n",
-               my_time_fac);
-    }
+
+    printf("ParU: factorization was successful in %lf seconds.\n",
+           my_time_fac);
 
     //~~~~~~~~~~~~~~~~~~~~~Test the results ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int64_t m = Sym->m;
     double my_time, my_solve_time;
-#if 1
-    if (info == PARU_SUCCESS)
+
+    b = (double *)malloc(n * sizeof(double));
+    xx = (double *)malloc(n * sizeof(double));
+    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
+    printf ("\n--------- ParU_C_Solve_Axb:\n") ;
+    double my_solve_time_start = SuiteSparse_time ();
+    info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
+    if (info != PARU_SUCCESS)
     {
-        double *b = (double *)malloc(m * sizeof(double));
-        double *xx = (double *)malloc(m * sizeof(double));
-        for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-        printf ("\n--------- ParU_C_Solve_Axb:\n") ;
-        double my_solve_time_start = omp_get_wtime();
-        info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
-        if (info != PARU_SUCCESS)
-        {
-            printf("ParU: Solve has a problem.\n");
-            free(b);
-            free(xx);
-            cholmod_l_free_sparse(&A, cc);
-            cholmod_l_finish(cc);
-            ParU_C_FreeSymbolic(&Sym, &Control);
-            return info;
-        }
-        my_solve_time = omp_get_wtime() - my_solve_time_start;
-        my_time = omp_get_wtime() - my_start_time;
-        printf("Solve time is %lf seconds.\n", my_solve_time);
-
-        // printing out x
-    #if 0
-        printf("x = [");
-        for (int64_t i = 0; i < m; ++i)
-            printf (" %.2lf, ", xx[i]);
-        printf("]\n");
-    #endif
-
-        double resid, anorm, xnorm;
-        printf ("\n--------- ParU_C_Residual_bAx:\n") ;
-        info =
-            ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
-        if (info != PARU_SUCCESS)
-        {
-            printf("ParU: Residual has a problem.\n");
-            free(b);
-            free(xx);
-            cholmod_l_free_sparse(&A, cc);
-            cholmod_l_finish(cc);
-            ParU_C_FreeSymbolic(&Sym, &Control);
-            return info;
-        }
-        double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
-
-        printf(
-            "Residual is |%.2e|, anorm is %.2e, xnorm is %.2e, and rcond is"
-            " %.2e.\n", rresid, anorm, xnorm, Num->rcond);
-
-        free(b);
-        free(xx);
-        const int64_t nrhs = 16;  // number of right handsides
-        double *B = (double *)malloc(m * nrhs * sizeof(double));
-        double *X = (double *)malloc(m * nrhs * sizeof(double));
-        for (int64_t i = 0; i < m; ++i)
-            for (int64_t j = 0; j < nrhs; ++j)
-                B[j * m + i] = (double)(i + j + 1);
-
-        printf ("\n--------- ParU_C_Solve_AXV:\n") ;
-        info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, &Control);
-        if (info != PARU_SUCCESS)
-        {
-            printf("ParU: mRhs Solve has a problem.\n");
-            free(B);
-            free(X);
-            cholmod_l_free_sparse(&A, cc);
-            cholmod_l_finish(cc);
-            ParU_C_FreeSymbolic(&Sym, &Control);
-            return info;
-        }
-        printf ("\n--------- ParU_C_Residual_BAX:\n") ;
-        info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, &xnorm,
-                                   &Control);
-        if (info != PARU_SUCCESS)
-        {
-            printf("ParU: mRhs Residual has a problem.\n");
-            free(B);
-            free(X);
-            cholmod_l_free_sparse(&A, cc);
-            cholmod_l_finish(cc);
-            ParU_C_FreeSymbolic(&Sym, &Control);
-            return info;
-        }
-
-        rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
-        printf("Multiple right hand side: relative residual is |%.2e|.\n",
-                rresid);
-
-        free(B);
-        free(X);
+        printf ("ParU: solve failed.\n");
+        FREE_ALL_AND_RETURN (info) ;
     }
+    my_solve_time = SuiteSparse_time () - my_solve_time_start;
+    my_time = SuiteSparse_time () - my_start_time;
+    printf("Solve time is %lf seconds.\n", my_solve_time);
+
+    // printing out x
+#if 0
+    printf("x = [");
+    for (int64_t i = 0; i < n; ++i)
+        printf (" %.2lf, ", xx[i]);
+    printf("]\n");
 #endif
 
+    double resid, anorm, xnorm;
+    printf ("\n--------- ParU_C_Residual_bAx:\n") ;
+    info =
+        ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
+    if (info != PARU_SUCCESS)
+    {
+        printf("ParU: resid failed.\n");
+        FREE_ALL_AND_RETURN (info) ;
+    }
+    double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
+
+    double rcond ;
+    ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control) ;
+    printf(
+        "Residual is |%.2e|, anorm is %.2e, xnorm is %.2e, and rcond is"
+        " %.2e.\n", rresid, anorm, xnorm, rcond);
+
+    const int64_t nrhs = 16;  // number of right handsides
+    B = (double *)malloc(n * nrhs * sizeof(double));
+    X = (double *)malloc(n * nrhs * sizeof(double));
+    for (int64_t i = 0; i < n; ++i)
+    {
+        for (int64_t j = 0; j < nrhs; ++j)
+        {
+            B[j * n + i] = (double)(i + j + 1);
+        }
+    }
+
+    printf ("\n--------- ParU_C_Solve_AXV:\n") ;
+    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, &Control);
+    if (info != PARU_SUCCESS)
+    {
+        printf("ParU: mRhs Solve has a problem.\n");
+        FREE_ALL_AND_RETURN (info) ;
+    }
+    printf ("\n--------- ParU_C_Residual_BAX:\n") ;
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, &xnorm,
+                               &Control);
+    if (info != PARU_SUCCESS)
+    {
+        printf("ParU: mRhs Residual has a problem.\n");
+        FREE_ALL_AND_RETURN (info) ;
+    }
+
+    rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
+    printf("Multiple right hand side: relative residual is |%.2e|.\n",
+            rresid);
+
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // int64_t max_threads = omp_get_max_threads();
-    // omp_set_num_threads(max_threads);
 
     //~~~~~~~~~~~~~~~~~~~Calling umfpack~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     double umf_time = 0;
-
-#if 1
-    double umf_start_time = omp_get_wtime();
+    double umf_start_time = SuiteSparse_time ();
     double status,           // Info [UMFPACK_STATUS]
         Info[UMFPACK_INFO],  // Contains statistics about the symbolic analysis
-
         umf_Control[UMFPACK_CONTROL];  // it is set in umfpack_dl_defaults and
     // is used in umfpack_dl_symbolic; if
     // passed NULL it will use the defaults
@@ -229,9 +213,6 @@ int main(int argc, char **argv)
     int64_t *Ap = (int64_t *)A->p;
     int64_t *Ai = (int64_t *)A->i;
     double *Ax = (double *)A->x;
-    // int64_t m = A->nrow;
-    n = A->ncol;
-    void *Symbolic, *Numeric;  // Output argument in umf_dl_symbolc;
 
     status =
         umfpack_dl_symbolic(n, n, Ap, Ai, Ax, &Symbolic, umf_Control, Info);
@@ -242,10 +223,10 @@ int main(int argc, char **argv)
         umfpack_dl_report_info(umf_Control, Info);
         umfpack_dl_report_status(umf_Control, status);
         printf("umfpack_dl_symbolic failed\n");
-        exit(0);
+        FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
-    double umf_symbolic = omp_get_wtime() - umf_start_time;
-    double umf_fac_start = omp_get_wtime();
+    double umf_symbolic = SuiteSparse_time () - umf_start_time;
+    double umf_fac_start = SuiteSparse_time ();
     status =
         umfpack_dl_numeric(Ap, Ai, Ax, Symbolic, &Numeric, umf_Control, Info);
     // umf_Control[UMFPACK_PRL] = 2;
@@ -256,19 +237,19 @@ int main(int argc, char **argv)
         umfpack_dl_report_info(umf_Control, Info);
         umfpack_dl_report_status(umf_Control, status);
         printf("umfpack_dl_numeric failed\n");
+        FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
 
-    double umf_time_fac = omp_get_wtime() - umf_fac_start;
+    double umf_time_fac = SuiteSparse_time () - umf_fac_start;
 
-    double *b = (double *)malloc(m * sizeof(double));
-    double *x = (double *)malloc(m * sizeof(double));
-    for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
+    x = (double *)malloc(n * sizeof(double));
+    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
-    double solve_start = omp_get_wtime();
+    double solve_start = SuiteSparse_time ();
     status = umfpack_dl_solve(UMFPACK_A, Ap, Ai, Ax, x, b, Numeric, umf_Control,
                               Info);
-    double umf_solve_time = omp_get_wtime() - solve_start;
-    umf_time = omp_get_wtime() - umf_start_time;
+    double umf_solve_time = SuiteSparse_time () - solve_start;
+    umf_time = SuiteSparse_time () - umf_start_time;
     double umf_resid, umf_anorm, umf_xnorm;
     info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm,
                                &Control);
@@ -277,14 +258,7 @@ int main(int argc, char **argv)
     printf(
         "UMFPACK Residual is |%.2e|, anorm is %.2e, xnorm is %.2e, and rcond"
         " is %.2e.\n",
-        umf_rresid, umf_anorm, umf_xnorm, Num->rcond);
-
-    free(x);
-    free(b);
-
-    umfpack_dl_free_symbolic(&Symbolic);
-    umfpack_dl_free_numeric(&Numeric);
-#endif  // calling umfpack
+        umf_rresid, umf_anorm, umf_xnorm, rcond);
 
     // Writing results to a file
 #if 0
@@ -297,8 +271,8 @@ int main(int argc, char **argv)
         {
             printf("Par: error in making %s to write the results!\n", res_name);
         }
-        fprintf(res_file, "%ld %ld %lf %lf %lf %lf %lf %lf %lf %lf\n", Sym->m,
-                Sym->anz, my_time_analyze, my_time_fac, my_solve_time, my_time,
+        fprintf(res_file, "%ld %ld %lf %lf %lf %lf %lf %lf %lf %lf\n", n,
+                anz, my_time_analyze, my_time_fac, my_solve_time, my_time,
                 umf_symbolic, umf_time_fac, umf_solve_time, umf_time);
         fclose(res_file);
     }
@@ -307,9 +281,6 @@ int main(int argc, char **argv)
 #endif  // writing to a file
 
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_C_FreeNumeric(&Num, &Control);
-    ParU_C_FreeSymbolic(&Sym, &Control);
 
-    cholmod_l_free_sparse(&A, cc);
-    cholmod_l_finish(cc);
+    FREE_ALL_AND_RETURN (PARU_SUCCESS) ;
 }

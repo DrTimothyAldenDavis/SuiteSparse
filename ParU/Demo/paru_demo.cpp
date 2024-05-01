@@ -11,11 +11,11 @@
  *
  * @author Aznaveh
  * */
+
 #include <iostream>
 #include <iomanip>
 #include <ios>
 #include <cmath>
-#include <omp.h>
 
 #include "ParU.h"
 
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     }
     std::cout << "frontal tree tasking: " << tasking << std::endl ;
 
-    double my_start_time = omp_get_wtime();
+    double my_start_time = SuiteSparse_time ();
 
     // Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
     std::cout << "\n--------- ParU_Analyze:\n";
     info = ParU_Analyze(A, &Sym, &Control);
-    double my_time_analyze = omp_get_wtime() - my_start_time;
+    double my_time_analyze = SuiteSparse_time () - my_start_time;
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: analyze failed" << std::endl;
@@ -136,9 +136,9 @@ int main(int argc, char **argv)
         << "ParU: Symbolic factorization: " << my_time_analyze
         << " seconds\n";
     std::cout << "\n--------- ParU_Factorize:" << std::endl;
-    double my_start_time_fac = omp_get_wtime();
+    double my_start_time_fac = SuiteSparse_time ();
     info = ParU_Factorize(A, Sym, &Num, &Control);
-    double my_time_fac = omp_get_wtime() - my_start_time_fac;
+    double my_time_fac = SuiteSparse_time () - my_start_time_fac;
     if (info != PARU_SUCCESS)
     {
         std::cout << std::scientific << std::setprecision(1)
@@ -176,15 +176,15 @@ int main(int argc, char **argv)
 
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
     std::cout << "\n--------- ParU_Solve:\n";
-    double my_solve_time_start = omp_get_wtime();
+    double my_solve_time_start = SuiteSparse_time ();
     info = ParU_Solve(Sym, Num, b, xx, &Control);
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: solve failed" << std::endl;
         FREE_ALL_AND_RETURN (info) ;
     }
-    my_solve_time = omp_get_wtime() - my_solve_time_start;
-    my_time = omp_get_wtime() - my_start_time;
+    my_solve_time = SuiteSparse_time () - my_solve_time_start;
+    my_time = SuiteSparse_time () - my_start_time;
     std::cout << std::defaultfloat << std::setprecision(1)
         << "Solve time is " << my_solve_time << " seconds.\n";
 
@@ -244,12 +244,10 @@ int main(int argc, char **argv)
         << rresid << "|." << std::endl;
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // int64_t max_threads = omp_get_max_threads();
-    // omp_set_num_threads(max_threads);
 
     //~~~~~~~~~~~~~~~~~~~Calling umfpack~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     double umf_time = 0;
-    double umf_start_time = omp_get_wtime();
+    double umf_start_time = SuiteSparse_time ();
     double status,           // Info [UMFPACK_STATUS]
         Info[UMFPACK_INFO],  // Contains statistics about the symbolic analysis
         umf_Control[UMFPACK_CONTROL];  // it is set in umfpack_dl_defaults and
@@ -266,7 +264,6 @@ int main(int argc, char **argv)
     int64_t *Ap = (int64_t *)A->p;
     int64_t *Ai = (int64_t *)A->i;
     double *Ax = (double *)A->x;
-    n = A->ncol;
 
     status =
         umfpack_dl_symbolic(n, n, Ap, Ai, Ax, &Symbolic, umf_Control, Info);
@@ -279,8 +276,8 @@ int main(int argc, char **argv)
         std::cout << "umfpack_dl_symbolic failed\n";
         FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
-    double umf_symbolic = omp_get_wtime() - umf_start_time;
-    double umf_fac_start = omp_get_wtime();
+    double umf_symbolic = SuiteSparse_time () - umf_start_time;
+    double umf_fac_start = SuiteSparse_time ();
     status =
         umfpack_dl_numeric(Ap, Ai, Ax, Symbolic, &Numeric, umf_Control, Info);
     // umf_Control[UMFPACK_PRL] = 2;
@@ -294,16 +291,16 @@ int main(int argc, char **argv)
         FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
 
-    double umf_time_fac = omp_get_wtime() - umf_fac_start;
+    double umf_time_fac = SuiteSparse_time () - umf_fac_start;
 
     x = (double *)malloc(n * sizeof(double));
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
-    double solve_start = omp_get_wtime();
+    double solve_start = SuiteSparse_time ();
     status = umfpack_dl_solve(UMFPACK_A, Ap, Ai, Ax, x, b, Numeric, umf_Control,
                               Info);
-    double umf_solve_time = omp_get_wtime() - solve_start;
-    umf_time = omp_get_wtime() - umf_start_time;
+    double umf_solve_time = SuiteSparse_time () - solve_start;
+    umf_time = SuiteSparse_time () - umf_start_time;
     double umf_resid, umf_anorm, umf_xnorm;
     info = ParU_Residual(A, x, b, umf_resid, umf_anorm, umf_xnorm, &Control);
     double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 )

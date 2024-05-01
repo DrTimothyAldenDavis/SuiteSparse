@@ -427,7 +427,8 @@ if ( SUITESPARSE_DEMOS )
             target_link_libraries ( paru_demo PUBLIC ParU_static )
         endif ( )
         target_link_libraries ( paru_demo
-            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_CXX )
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK
+            SuiteSparse::SuiteSparseConfig OpenMP::OpenMP_CXX )
 
         add_executable ( paru_democ "Demo/paru_democ.c" )
         if ( BUILD_SHARED_LIBS )
@@ -436,7 +437,8 @@ if ( SUITESPARSE_DEMOS )
             target_link_libraries ( paru_democ PUBLIC ParU_static )
         endif ( )
         target_link_libraries ( paru_democ
-            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_C )
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK
+            SuiteSparse::SuiteSparseConfig OpenMP::OpenMP_C )
     endif ( )
 
     add_executable ( paru_simple  "Demo/paru_simple.cpp" )
