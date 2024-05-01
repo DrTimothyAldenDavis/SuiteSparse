@@ -521,6 +521,85 @@ ParU_Info ParU_C_Residual_BAX
 }
 
 //------------------------------------------------------------------------------
+//------------ ParU_C_Get_*-----------------------------------------------------
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_C_Get_INT64
+(
+    // input:
+    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,          // field to get
+    // output:
+    int64_t *result,              // int64_t result: a scalar or an array
+    // control:
+    ParU_C_Control *Control_C
+)
+{
+    if (!Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
+    ParU_Symbolic *Sym = (Sym_C == NULL) ? NULL :
+        static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
+    ParU_Numeric *Num = (Num_C == NULL) ? NULL :
+        static_cast<ParU_Numeric*>(Num_C->num_handle);
+    ParU_Control Control;
+    paru_cp_control (&Control, Control_C);
+    return (ParU_Get (Sym, Num, field, result, &Control)) ;
+}
+
+ParU_Info ParU_C_Get_FP64
+(
+    // input:
+    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,          // field to get
+    // output:
+    double *result,               // double result: a scalar or an array
+    // control:
+    ParU_C_Control *Control_C
+)
+{
+    if (!Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
+    ParU_Symbolic *Sym = (Sym_C == NULL) ? NULL : 
+        static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
+    ParU_Numeric *Num = (Num_C == NULL) ? NULL :
+        static_cast<ParU_Numeric*>(Num_C->num_handle);
+    ParU_Control Control;
+    paru_cp_control (&Control, Control_C);
+    return (ParU_Get (Sym, Num, field, result, &Control)) ;
+}
+
+ParU_Info ParU_C_Get_CONSTCHAR
+(
+    // input:
+    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,          // field to get
+    // output:
+    const char **result,          // string result
+    // control:
+    ParU_C_Control *Control_C
+)
+{
+    if (!Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
+    ParU_Symbolic *Sym = (Sym_C == NULL) ? NULL : 
+        static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
+    ParU_Numeric *Num = (Num_C == NULL) ? NULL :
+        static_cast<ParU_Numeric*>(Num_C->num_handle);
+    ParU_Control Control;
+    paru_cp_control (&Control, Control_C);
+    return (ParU_Get (Sym, Num, field, result, &Control)) ;
+}
+
+//------------------------------------------------------------------------------
 //------------ Free routines----------------------------------------------------
 //------------------------------------------------------------------------------
 

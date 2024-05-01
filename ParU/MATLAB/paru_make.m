@@ -1,4 +1,4 @@
-function paru_make
+function paru_make (try_intel)
 %PARU_MAKE compiles the ParU mexFunction
 %
 % Usage: x = paru(A,b), computes x=A\b using ParU.
@@ -28,7 +28,33 @@ function paru_make
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
+if (nargin < 1)
+    try_intel = true ;
+end
+if (try_intel & (ismac || isunix))
+    v = version ('-blas') ;
+    try_intel = contains (v, 'Intel') ;
+end
+if (try_intel)
+    try
+        paru_make_helper (true) ;
+    catch
+        fprintf ('\nCompilation with Intel MKL specific methods failed.\n') ;
+        fprintf ('Retrying with standard BLAS API.\n') ;
+        paru_make_helper (false) ;
+    end
+else
+    paru_make_helper (false) ;
+end
+end
+
+%-------------------------------------------------------------------------------
+
+function paru_make_helper (try_intel)
 fprintf ('Compiling ParU for MATLAB.\n') ;
+if (try_intel)
+    fprintf ('Using the Intel MKL BLAS\n') ;
+end
 
 % -R2018a: interleaved complex is required
 flags = '-O -R2018a -silent ' ;
@@ -38,7 +64,7 @@ if (ispc)
     flags = [flags ' -DNO_SSIZE_T'] ;
 end
 
-libs = '-L../../lib -lmwlapack -lmwblas' ;
+libs = '-lmwlapack -lmwblas' ;
 if (~(ispc || ismac))
     % for POSIX timing routine
     libs = [libs ' -lrt'] ;
@@ -57,11 +83,18 @@ else
 end
 
 % check if MATLAB has the MKL Intel BLAS on Linux or Mac
-if (ismac || isunix)
+if (try_intel & (ismac || isunix))
     v = version ('-blas') ;
     if (contains (v, 'Intel'))
         flags = [flags ' -DBLAS_Intel10_64ilp'] ;
     end
+end
+
+% use all of CHOLMOD except for the Modify module
+flags = [flags ' -DNMODIFY -DBLAS64' ] ;
+if (ispc)
+    % MSVC does not define ssize_t
+    flags = [flags ' -DNO_SSIZE_T'] ;
 end
 
 %-------------------------------------------------------------------------------
@@ -85,14 +118,6 @@ include = [include ' -I../../CHOLMOD/SuiteSparse_metis/GKlib '] ;
 include = [include ' -I../../CHOLMOD/SuiteSparse_metis/libmetis '] ;
 include = [include ' -I../../CHOLMOD/SuiteSparse_metis/include '] ;
 include = [include ' -I../../CHOLMOD/Supernodal '] ;
-
-% use all of CHOLMOD except for the Modify module
-flags = [flags ' -DNMODIFY -DBLAS64' ] ;
-
-if (ispc)
-    % MSVC does not define ssize_t
-    flags = [flags ' -DNO_SSIZE_T'] ;
-end
 
 suitesparse_src = { ...
     '../../SuiteSparse_config/SuiteSparse_config', ...
@@ -333,6 +358,7 @@ paru_src = {
     '../Source/paru_fs_factorize', ...
     '../Source/paru_full_summed', ...
     '../Source/paru_gaxpy', ...
+    '../Source/ParU_Get', ...
     '../Source/paru_hash', ...
     '../Source/paru_heap', ...
     '../Source/paru_init_rel', ...
@@ -402,3 +428,4 @@ fprintf ('\n') ;
 paru_tiny
 paru_demo
 
+end

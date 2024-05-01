@@ -15,9 +15,12 @@
 
 int main(int argc, char **argv)
 {
-    cholmod_common Common, *cc;
-    cholmod_sparse *A;
-    ParU_C_Symbolic *Sym;
+    cholmod_common Common, *cc = NULL ;
+    cholmod_sparse *A = NULL ;
+    ParU_C_Symbolic *Sym = NULL ;
+    ParU_C_Numeric *Num = NULL ;
+    ParU_C_Control Control ;
+
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
     cc = &Common;
@@ -27,13 +30,14 @@ int main(int argc, char **argv)
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     printf("================= ParU, a simple demo, using C interface : ====\n");
-    ParU_C_Control Control;
     ParU_C_Init_Control(&Control);
     ParU_Info info;
     info = ParU_C_Analyze(A, &Sym, &Control);
+    int64_t n, anz ;
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, &Control) ;
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_ANZ, &anz, &Control) ;
     printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
-        Sym->m, Sym->n, Sym->anz);
-    ParU_C_Numeric *Num;
+        n, n, anz);
     info = ParU_C_Factorize(A, Sym, &Num, &Control);
 
     if (info != PARU_SUCCESS)
@@ -51,18 +55,19 @@ int main(int argc, char **argv)
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
     if (info == PARU_SUCCESS)
     {
-        int64_t m = Sym->m;
-        double *b = (double *)malloc(m * sizeof(double));
-        double *xx = (double *)malloc(m * sizeof(double));
-        for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
+        double *b = (double *)malloc(n * sizeof(double));
+        double *xx = (double *)malloc(n * sizeof(double));
+        for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
         info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
         double resid, anorm, xnorm;
         info =
             ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
+        double rcond ;
+        ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control) ;
         printf( "Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e, "
             " and rcond is %.2e.\n",
-            rresid, anorm, xnorm, Num->rcond);
+            rresid, anorm, xnorm, rcond);
         free(b);
         free(xx);
     }

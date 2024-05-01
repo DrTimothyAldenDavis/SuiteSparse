@@ -17,61 +17,75 @@
 
 #include "ParU.h"
 
+#define FREE_ALL_AND_RETURN(info)               \
+{                                               \
+    if (b != NULL) free(b);                     \
+    if (x != NULL) free(x);                     \
+    ParU_FreeNumeric(&Num, &Control);           \
+    ParU_FreeSymbolic(&Sym, &Control);          \
+    cholmod_l_free_sparse(&A, cc);              \
+    cholmod_l_finish(cc);                       \
+    return (info) ;                             \
+}
+
+#define OK(method,what)                         \
+{                                               \
+    info = (method) ;                           \
+    if (info != PARU_SUCCESS)                   \
+    {                                           \
+        std::cout << what << " failed\n" ;      \
+        FREE_ALL_AND_RETURN (info) ;            \
+    }                                           \
+}
+
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
-    cholmod_sparse *A;
-    ParU_Symbolic *Sym;
+    cholmod_sparse *A = NULL ;
+    ParU_Symbolic *Sym = NULL ;
+    ParU_Numeric *Num = NULL ;
+    double *b = NULL, *x = NULL ;
+    ParU_Control Control;
+
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
     cc = &Common;
     int mtype;
     cholmod_l_start(cc);
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
+    if (A == NULL)
+    {
+        std::cout << "ParU: invalid input matrix\n" ;
+        FREE_ALL_AND_RETURN (PARU_INVALID) ;
+    }
+
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::cout << "================= ParU, a simple demo: ===================\n";
-    ParU_Control Control;
     ParU_Info info;
-    info = ParU_Analyze(A, &Sym, &Control);
-    std::cout << "Input matrix is " << Sym->m << "x" << Sym->n
-        << " nnz = " << Sym->anz << std::endl;
-    ParU_Numeric *Num;
-    info = ParU_Factorize(A, Sym, &Num, &Control);
-
-    if (info != PARU_SUCCESS)
-    {
-        std::cout << "ParU: factorization was NOT successful.\n";
-        if (info == PARU_OUT_OF_MEMORY) std::cout << "Out of memory\n";
-        if (info == PARU_INVALID) std::cout << "Invalid!\n";
-        if (info == PARU_SINGULAR) std::cout << "Singular!\n";
-    }
-    else
-    {
-        std::cout << "ParU: factorization was successful." << std::endl;
-    }
+    OK (ParU_Analyze(A, &Sym, &Control), "symbolic analysis");
+    int64_t n, anz ;
+    OK (ParU_Get (Sym, Num, PARU_GET_N, &n, &Control), "n") ;
+    OK (ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, &Control), "anz") ;
+    std::cout << "Input matrix is " << n << "x" << n <<
+        " nnz = " << anz << std::endl;
+    OK (ParU_Factorize(A, Sym, &Num, &Control), "numeric factorization") ;
+    std::cout << "ParU: factorization was successful." << std::endl;
 
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
-    if (info == PARU_SUCCESS)
-    {
-        int64_t m = Sym->m;
-        double *b = (double *)malloc(m * sizeof(double));
-        double *xx = (double *)malloc(m * sizeof(double));
-        for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-        info = ParU_Solve(Sym, Num, b, xx, &Control);
-        double resid, anorm, xnorm;
-        info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
-        double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
-        std::cout << std::scientific << std::setprecision(2)
-            << "Relative residual is |" << rresid << "| anorm is " << anorm
-            << ", xnorm is " << xnorm << " and rcond is " << Num->rcond << "."
-            << std::endl;
-        free(b);
-        free(xx);
-    }
+    b = (double *)malloc(n * sizeof(double));
+    x = (double *)malloc(n * sizeof(double));
+    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
+    OK (ParU_Solve(Sym, Num, b, x, &Control), "solve") ;
+    double resid, anorm, xnorm, rcond ;
+    OK (ParU_Residual(A, x, b, resid, anorm, xnorm, &Control), "residual");
+    OK (ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control), "rcond") ;
+
+    double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
+    std::cout << std::scientific << std::setprecision(2)
+        << "Relative residual is |" << rresid << "| anorm is " << anorm
+        << ", xnorm is " << xnorm << " and rcond is " << rcond << "."
+        << std::endl;
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_FreeNumeric(&Num, &Control);
-    ParU_FreeSymbolic(&Sym, &Control);
-    cholmod_l_free_sparse(&A, cc);
-    cholmod_l_finish(cc);
+    FREE_ALL_AND_RETURN (PARU_SUCCESS) ;
 }

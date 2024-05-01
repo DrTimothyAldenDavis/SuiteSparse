@@ -78,6 +78,7 @@ int main(int argc, char **argv)
         cholmod_l_finish(cc);
         return info;
     }
+    int64_t n, anz ;
     printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
         Sym->m, Sym->n, Sym->anz);
     printf("ParU: Symbolic factorization: %lf seconds\n", my_time_analyze);
@@ -229,7 +230,7 @@ int main(int argc, char **argv)
     int64_t *Ai = (int64_t *)A->i;
     double *Ax = (double *)A->x;
     // int64_t m = A->nrow;
-    int64_t n = A->ncol;
+    n = A->ncol;
     void *Symbolic, *Numeric;  // Output argument in umf_dl_symbolc;
 
     status =

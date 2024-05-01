@@ -3,24 +3,32 @@ function paru_many
 %
 % Usage: paru_many
 %
-% See also paru, paru_make, paru_demo, paru_tiny, mldivide.
+% Requires ssget in the SuiteSparse meta-package.
+%
+% See also paru, paru_make, paru_demo, paru_tiny, mldivide, ssget.
 
 % ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
-% FIXME: add the umfpack mexFunction, so we can consider
-% its analyze/factorize/solve times
+% FIXME: add the umfpack mexFunction, to get its analyze/factorize/solve times
 
 index = ssget ;
 test_matrices = find (index.nrows == index.ncols & index.isReal & ~index.cholcand) ;
 
-% these matrices are too large, causing MATLAB and/or paru to fail:
+% these matrices are too large, causing MATLAB and/or paru to fail or
+% to take far too much time:
 too_large = [
     2575
     2576
     982
     2456
+    1297
+    2778
+    2788
+    2462
+    1370
+    913
     ] ;
 
 % these matrices are singular or nearly so:
@@ -390,7 +398,34 @@ singular_matrices = [
          959
         2654
         2629
+        2604
+        2583
+        2304
+        2617
+        2596
+        1418
+        2626
+        2608
+        2591
+        2836
+        2501
+         750
+        2302
+        2603
+        2448
+        2461
+        2834
+        1231
+        2605
+        1251
+        2615
+        2616
+        2838
+        1417
+        2619
     ] ;
+
+skip_metis = [1373] ;
 
 % skip these matrices (too large, or singluar):
 skip = [too_large ; singular_matrices] ;
@@ -406,8 +441,7 @@ nmat = length (test_matrices) ;
 paru_demo
 
 first = 1 ;
-% start with matrix id 732 (Li/li)
-% first = find (test_matrices == 732)
+first = find (test_matrices == 1880)
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
@@ -421,6 +455,9 @@ fprintf ('\n') ;
 
 clear opts_metis
 opts_metis.ordering = 'metis' ;
+
+clear opts_metis_guard
+opts_metis_guard.ordering = 'metis_guard' ;
 
 for k = first:nmat
     id = test_matrices (k) ;
@@ -460,34 +497,57 @@ for k = first:nmat
         [x2, stats] = paru (A,b) ;
         t_paru = toc (t2) ;
         resid2 = norm (A*x2-b,1) / anorm ;
-        fprintf ('ParU resid %8.2e time: %10.2f sec (default) ', ...
+        fprintf ('ParU resid %8.2e time: %10.2f sec (AMD/COLAMD)  ', ...
             resid2, t_paru) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
             stats.analysis_time, stats.factorize_time, stats.solve_time) ;
         speedup = t_backslash / t_paru ;
         if (speedup > 1)
-            fprintf ('speedup: %8.2f\n', speedup) ;
+            fprintf ('speedup: %8.2f', speedup) ;
         else
-            fprintf ('       : %8.2f\n', speedup) ;
+            fprintf ('       : %8.2f', speedup) ;
         end
+        fprintf (' ordering: %s\n', stats.ordering) ;
 
-        % ordering: METIS; usually slower overall when considering x=A\b, but
-        % can result in faster numeric factorization time, particularly for
-        % large problems.
+        % ordering: METIS_guard
         t2 = tic ;
-        [x2, stats] = paru (A,b,opts_metis) ;
+        [x2, stats] = paru (A,b,opts_metis_guard) ;
         t_paru = toc (t2) ;
         resid2 = norm (A*x2-b,1) / anorm ;
-        fprintf ('ParU resid %8.2e time: %10.2f sec (METIS)   ', ...
+        fprintf ('ParU resid %8.2e time: %10.2f sec (METIS_guard) ', ...
             resid2, t_paru) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
             stats.analysis_time, stats.factorize_time, stats.solve_time) ;
-
         speedup = t_backslash / t_paru ;
         if (speedup > 1)
-            fprintf ('speedup: %8.2f\n', speedup) ;
+            fprintf ('speedup: %8.2f', speedup) ;
         else
-            fprintf ('       : %8.2f\n', speedup) ;
+            fprintf ('       : %8.2f', speedup) ;
+        end
+        fprintf (' ordering: %s\n', stats.ordering) ;
+
+        do_metis = (~any (skip_metis == id)) ;
+        if (do_metis)
+            % ordering: METIS; usually slower overall when considering
+            % x=A\b, but can result in faster numeric factorization time,
+            % particularly for large problems.
+            t2 = tic ;
+            [x2, stats] = paru (A,b,opts_metis) ;
+            t_paru = toc (t2) ;
+            resid2 = norm (A*x2-b,1) / anorm ;
+            fprintf ('ParU resid %8.2e time: %10.2f sec (METIS)       ', ...
+                resid2, t_paru) ;
+            fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
+                stats.analysis_time, stats.factorize_time, stats.solve_time) ;
+            speedup = t_backslash / t_paru ;
+            if (speedup > 1)
+                fprintf ('speedup: %8.2f', speedup) ;
+            else
+                fprintf ('       : %8.2f', speedup) ;
+            end
+            fprintf (' ordering: %s\n', stats.ordering) ;
+        else
+            fprintf ('ParU (METIS) skipped\n') ;
         end
 
     else

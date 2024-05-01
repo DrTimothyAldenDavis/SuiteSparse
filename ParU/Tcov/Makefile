@@ -84,6 +84,7 @@ OBJ = \
 	paru_tasked_dgemm.o \
 	paru_tasked_trsm.o \
 	ParU_C.o \
+	ParU_Get.o \
 	paru_cp_control.o \
 	ParU_Version.o  \
 	paru_umfpack_info.o  \

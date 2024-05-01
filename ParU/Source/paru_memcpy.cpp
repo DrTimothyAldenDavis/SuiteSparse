@@ -15,22 +15,29 @@
 
 #include "paru_internal.hpp"
 
-void paru_memcpy(void *destination, const void *source,
-        size_t num, ParU_Control *Control)
+void paru_memcpy
+(
+    void *destination,      // output array of size nbytes
+    const void *source,     // input array of size nbytes
+    size_t nbytes,          // # of bytes to copy
+    ParU_Control *Control
+)
 {
+
+    if (destination == NULL || source == NULL) return ;
 
     int nthreads = control_nthreads (Control) ;
     size_t mem_chunk = (size_t) control_mem_chunk (Control) ;
 
-    if (num < mem_chunk || nthreads == 1)
+    if (nbytes < mem_chunk || nthreads == 1)
     {
         // single task memcpy
-        memcpy(destination, source, num);
+        memcpy(destination, source, nbytes);
     }
     else
     {
         // multiple task memcpy
-        size_t nchunks = 1 + (num / mem_chunk);
+        size_t nchunks = 1 + (nbytes / mem_chunk);
         if (((size_t) nthreads) > nchunks)
         {
             nthreads = (int) nchunks ;
@@ -41,9 +48,9 @@ void paru_memcpy(void *destination, const void *source,
         for (k = 0; k < (int64_t)nchunks; k++)
         {
             size_t start = k * mem_chunk;
-            if (start < num)
+            if (start < nbytes)
             {
-                size_t chunk = std::min(num - start, mem_chunk);
+                size_t chunk = std::min(nbytes - start, mem_chunk);
                 // void* arithmetic is illegal it is why I am using this
                 unsigned char *pdest = static_cast<unsigned char*>(destination) + start;
                 const unsigned char *psrc = static_cast<const unsigned char*>(source) + start;

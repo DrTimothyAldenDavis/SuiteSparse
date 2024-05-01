@@ -89,6 +89,39 @@ typedef enum ParU_Info
                                            prefer diagonal */
 #endif
 
+// enum for ParU_Get:
+typedef enum
+{
+    // int64_t scalars:
+    PARU_GET_N = 0,                 // # of rows and columns of A and its factors
+    PARU_GET_ANZ = 1,               // # of entries in input matrix
+    PARU_GET_LNZ = 2,               // # of entries in L
+    PARU_GET_UNZ = 3,               // # of entries in U
+    PARU_GET_NROW_SINGLETONS = 4,   // # of row singletons
+    PARU_GET_NCOL_SINGLETONS = 5,   // # of column singletons
+    PARU_GET_PARU_STRATEGY = 6,     // strategy used by ParU
+    PARU_GET_UMFPACK_STRATEGY = 7,  // strategy used by UMFPACK
+    PARU_GET_UMFPACK_ORDERING = 8,  // ordering used by UMFPACK
+
+    // int64_t arrays of size n:
+    PARU_GET_P = 101,               // partial pivoting row ordering
+    PARU_GET_Q = 102,               // fill-reducing column ordering
+
+    // double scalars:
+    PARU_GET_FLOP_COUNT = 201,      // flop count for factorization
+    PARU_GET_RCOND_ESTIMATE = 202,  // rcond estimate
+    PARU_GET_MIN_UDIAG = 203,       // min (abs (diag (U)))
+    PARU_GET_MAX_UDIAG = 204,       // max (abs (diag (U)))
+
+    // double array of size n:
+    PARU_GET_ROW_SCALE_FACTORS = 301,   // row scaling factors
+
+    // pointer to const string (const char **):
+    PARU_GET_BLAS_LIBRARY_NAME = 401,   // BLAS library used
+    PARU_GET_FRONT_TREE_TASKING = 402,  // frontal tree: parallel or sequential
+}
+ParU_Get_enum ;
+
 // =============================================================================
 // ParU C++ definitions ========================================================
 // =============================================================================
@@ -152,13 +185,13 @@ struct ParU_Symbolic
     // During symbolic analysis, the nonzero pattern of S = A(P,Q) is
     // constructed, where A is the user's input matrix.  Its numerical values
     // are not constructed.
+
     // The matrix S is stored in row-oriented form.  The rows of S are
     // sorted according to their leftmost column index (via Pinv).  Column
     // indices in each row of S are in strictly ascending order, even though
-    // the input matrix A need not be sorted. User can look inside S matrix.
+    // the input matrix A need not be sorted.
 
     int64_t m, n, anz;  // A is m-by-n with anz entries
-    // FIXME RETURN n and anz
 
     int64_t snz;  // nnz in submatrix S
     int64_t *Sp;  // size m+1-n1, row pointers of S
@@ -169,7 +202,6 @@ struct ParU_Symbolic
     ParU_L_singleton lstons;
 
     int64_t *Qfill;  // size n, fill-reducing column permutation.
-    // FIXME RETURN Qfill
     // Qfill [k] = j if column k of A is column j of S.
 
     int64_t *Pinit;  // size m, row permutation.
@@ -191,12 +223,6 @@ struct ParU_Symbolic
     int32_t umfpack_ordering ;  // UMFPACK ordering used
     int32_t unused ;            // future expansion
 
-    #if 0
-    ParU_Info ParU_Symbolic_n (&n, Sym, Control) ;
-    ParU_Info ParU_Symbolic_Q (&Q, Sym, Control) ;
-    ParU_Info ParU_Symbolic_stats (..., Sym, Control) ;
-    #endif
-
     // -------------------------------------------------------------------------
     // frontal matrices: pattern and tree
     // -------------------------------------------------------------------------
@@ -208,7 +234,6 @@ struct ParU_Symbolic
     int64_t n1;  // number of singletons in the matrix
     // the matrix S is the one without any singletons
     int64_t rs1, cs1;  // number of row and column singletons, n1 = rs1+cs1;
-    // FIXME RETURN rs1, cs1
 
     // parent, child, and childp define the row merge tree or etree (A'A)
     int64_t *Parent;  // size nf+1  Add another node just to make the forest a
@@ -307,7 +332,7 @@ struct ParU_Control
         // absolute value in its row.
 
     // Symbolic analysis parameters:
-    int32_t umfpack_ordering = UMFPACK_ORDERING_METIS ;
+    int32_t umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD ;
     int32_t umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
     int32_t relaxed_amalgamation = 32 ;  // symbolic analysis tries to ensure
         // that each front have more pivot columns than this threshold
@@ -341,9 +366,6 @@ struct ParU_Numeric
     int64_t nf;      // number of fronts copy of Sym->nf
     double *Rs;  // the array for row scaling based on original matrix
                  // size = m
-
-    // FIXME RETURN: Rs, Pfin, rcond, min_udiag, max_udiag
-    // FIXME RETURN # of entries in L and U. flop count
 
     // Permutations are computed after all the factorization
     int64_t *Ps;  // size m, row permutation.
@@ -641,6 +663,46 @@ ParU_Info ParU_Residual
 ) ;
 
 //------------------------------------------------------------------------------
+//------------ Get statistics and contents of factorization --------------------
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_Get
+(
+    // input:
+    const ParU_Symbolic *Sym,   // symbolic analysis from ParU_Analyze
+    const ParU_Numeric *Num,    // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,        // field to get
+    // output:
+    int64_t *result,            // int64_t result: a scalar or an array
+    // control:
+    ParU_Control *Control
+) ;
+
+ParU_Info ParU_Get
+(
+    // input:
+    const ParU_Symbolic *Sym,   // symbolic analysis from ParU_Analyze
+    const ParU_Numeric *Num,    // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,        // field to get
+    // output:
+    double *result,             // double result: a scalar or an array
+    // control:
+    ParU_Control *Control
+) ;
+
+ParU_Info ParU_Get
+(
+    // input:
+    const ParU_Symbolic *Sym,   // symbolic analysis from ParU_Analyze
+    const ParU_Numeric *Num,    // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,        // field to get
+    // output:
+    const char **result,        // string result
+    // control:
+    ParU_Control *Control
+) ;
+
+//------------------------------------------------------------------------------
 //------------ Free routines----------------------------------------------------
 //------------------------------------------------------------------------------
 
@@ -683,6 +745,8 @@ extern "C" {
 // =============================================================================
 // ========================= ParU_C_Control ====================================
 // =============================================================================
+
+// FIXME: just use one control struct, not two.  Make it opaque.
 
 // Just like ParU_Control in the C++ interface.  The only difference is the
 // initialization which is handled in the C interface, ParU_C_Init_Control.
@@ -998,6 +1062,46 @@ ParU_Info ParU_C_Residual_BAX
     double *residc,     // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
     double *anormc,     // 1-norm of A
     double *xnormc,     // 1-norm of X
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+//------------------------------------------------------------------------------
+//------------ ParU_C_Get_*-----------------------------------------------------
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_C_Get_INT64
+(
+    // input:
+    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,        // field to get
+    // output:
+    int64_t *result,            // int64_t result: a scalar or an array
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+ParU_Info ParU_C_Get_FP64
+(
+    // input:
+    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,        // field to get
+    // output:
+    double *result,            // double result: a scalar or an array
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+ParU_Info ParU_C_Get_CONSTCHAR
+(
+    // input:
+    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    ParU_Get_enum field,          // field to get
+    // output:
+    const char **result,          // string result
     // control:
     ParU_C_Control *Control_C
 ) ;

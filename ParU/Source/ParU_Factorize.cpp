@@ -199,20 +199,10 @@ ParU_Info ParU_Factorize
     // execute the task tree
     //--------------------------------------------------------------------------
 
-//  #if defined ( BLAS_Intel10_64ilp )
-//      printf ("BLAS Intel10 64ilp\n") ;
-//  #elif defined ( BLAS_Intel10_64lp )
-//      printf ("BLAS Intel10 64lp\n") ;
-//  #endif
-//      fflush (stdout) ;
-
 #if ! defined ( PARU_1TASK )
     // The parallel factorization gets stuck intermittently on Windows or Mac
     // with gcc, so always use the sequential factorization in that case.
     // This case is handled by cmake.
-//  printf ("parallel tasks! %g %g\n",
-//      (double) (task_Q.size() * 2),
-//      (double) (Control->paru_max_threads)) ;
     if (task_Q.size() * 2 > ((long unsigned int) (Control->paru_max_threads)))
     {
         PRLEVEL(1, ("Parallel\n"));
@@ -237,8 +227,8 @@ ParU_Info ParU_Factorize
         const int64_t stages = size / steps + 1;
         int64_t chain_task = -1;
         int64_t start = 0;
-        PRLEVEL(
-            1, ("%% size=" LD ", steps =" LD ", stages =" LD "\n", size, steps, stages));
+        PRLEVEL( 1, ("%% size=" LD ", steps =" LD ", stages =" LD "\n",
+            size, steps, stages));
 
         for (int64_t ii = 0; ii < stages; ii++)
         {
@@ -282,7 +272,8 @@ ParU_Info ParU_Factorize
             #pragma omp atomic write
             Work->naft = 1;
             PRLEVEL(1, ("Chain_taskd " LD " has remained\n", chain_task));
-            info = paru_exec_tasks_seq(chain_task, task_num_child, Work, Sym, Num);
+            info = paru_exec_tasks_seq(chain_task, task_num_child, Work,
+                Sym, Num);
         }
         if (info != PARU_SUCCESS)
         {
@@ -303,13 +294,10 @@ ParU_Info ParU_Factorize
     else
 #endif
     {
-//      printf ("sequential tasks!\n") ;
         PRLEVEL(1, ("Sequential\n"));
         Work->naft = 1;
         for (int64_t i = 0; i < nf; i++)
         {
-            // if (i %1000 == 0) PRLEVEL(1, ("%% Wroking on front " LD "\n", i));
-
             info = paru_front(i, Work, Sym, Num);
             if (info != PARU_SUCCESS)
             {
@@ -337,8 +325,6 @@ ParU_Info ParU_Factorize
         ParU_FreeNumeric(Num_handle, Control);
         return info;
     }
-
-    // FIXME: add flop count to Num?  nnz in L and U?
 
     // FUTURE: add a routine that returns L and U as plain CSC or CSR
     // matrices.

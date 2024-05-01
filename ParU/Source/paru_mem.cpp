@@ -354,20 +354,7 @@ void *paru_malloc(size_t n, size_t size)
         #else
         {
             // in production
-// FIXME: make malloc thread-safe check a run-time option via Control:
-//          #ifdef MATLAB_MEX_FILE
-//          {
-//              // mxMalloc and friends are not thread-safe
-//              #pragma omp critical (ParU_MATLAB_malloc_protection)
-//              {
-//                  p = SuiteSparse_malloc(n, size);
-//              }
-//          }
-//          #else
-            {
-                p = SuiteSparse_malloc(n, size);
-            }
-//          #endif
+            p = SuiteSparse_malloc(n, size);
         }
         #endif
 
@@ -447,19 +434,7 @@ void *paru_calloc(size_t n, size_t size)
         #else
         {
             // in production
-//          #ifdef MATLAB_MEX_FILE
-//          {
-//              // mxMalloc and friends are not thread-safe
-//              #pragma omp critical (ParU_MATLAB_malloc_protection)
-//              {
-//                  p = SuiteSparse_calloc(n, size);
-//              }
-//          }
-//          #else
-            {
-                p = SuiteSparse_calloc(n, size);
-            }
-//          #endif
+            p = SuiteSparse_calloc(n, size);
         }
         #endif
 
@@ -567,19 +542,7 @@ void *paru_realloc
         #else
         {
             // in production
-//          #ifdef MATLAB_MEX_FILE
-//          {
-//              // mxMalloc and friends are not thread-safe
-//              #pragma omp critical (ParU_MATLAB_malloc_protection)
-//              {
-//                  pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
-//              }
-//          }
-//          #else
-            {
-                pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
-            }
-//          #endif
+            pnew = SuiteSparse_realloc(nnew, *n, size_Entry, p, &ok);
         }
         #endif
 
@@ -624,19 +587,7 @@ void paru_free(size_t n, size_t size, void *p)
     DEBUGLEVEL(0);
     if (p != NULL)
     {
-//      #ifdef MATLAB_MEX_FILE
-//      {
-//          // mxMalloc and friends are not thread-safe
-//          #pragma omp critical (ParU_MATLAB_malloc_protection)
-//          {
-//              SuiteSparse_free (p) ;
-//          }
-//      }
-//      #else
-        {
-            SuiteSparse_free (p) ;
-        }
-//      #endif
+        SuiteSparse_free (p) ;
         #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
         paru_memtable_remove (p) ;
         #endif

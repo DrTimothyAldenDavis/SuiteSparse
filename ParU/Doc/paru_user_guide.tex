@@ -59,7 +59,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 %-------------------------------------------------------------------------------
 
 The algorithms used in ParU are discussed in a companion paper.
-% FIXME NOW: cite our ACM TOMS submission, and include it the Doc folder
+FIXME: cite our ACM TOMS submission, and include it the Doc folder.
 This document gives detailed information on the installation and use of ParU.
 ParU is a parallel sparse direct solver that uses OpenMP tasking for
 parallelism. ParU calls UMFPACK for the symbolic analysis phase, after that,
@@ -252,7 +252,7 @@ int main(int argc, char **argv)
 
     {\footnotesize
     \begin{verbatim}
-    #define PARU_DATE "Apr XX, 2024"    // FIXME NOW
+    #define PARU_DATE "Apr XX, 2024"    // FIXME
     #define PARU_VERSION_MAJOR  1
     #define PARU_VERSION_MINOR  0
     #define PARU_VERSION_UPDATE 0
@@ -280,13 +280,36 @@ int main(int argc, char **argv)
         to use.  If zero (the default value), this is initialized with
         \verb'omp_max_threads'. \\
     \hline
-    \verb'umfpack_ordering' & default: \verb'UMFPACK_ORDERING_AMD'.
-        Default UMFPACK ordering.
-        FIXME: list valid options here.
+    \verb'paru_strategy' & default: \verb'PARU_STRATEGY_AUTO'. Default strategy
+        for ParU.  Valid options are:
+        \verb'PARU_STRATEGY_AUTO' (select the strategy that UMFPACK selects),
+        \verb'PARU_STRATEGY_UNSYMMETRIC' (order and analyze $A'A$),
+        \verb'PARU_STRATEGY_SYMMETRIC' (order and analyze $A+A'$).
         \\
     \verb'umfpack_strategy' & default: \verb'UMFPACK_STRATEGY_AUTO'.
         Default UMFPACK strategy.
-        FIXME: list valid options here.
+        \verb'UMFPACK_STRATEGY_AUTO' (select the strategy based on how
+            symmetric the pattern of the input matrix is),
+        \verb'UMFPACK_STRATEGY_UNSYMMETRIC' (order and analyze $A'A$),
+        \verb'UMFPACK_STRATEGY_SYMMETRIC' (order and analyze $A+A'$).
+        Note that the \verb'paru_strategy' and \verb'umfpack_strategy' can
+        differ.
+        \\
+    \verb'umfpack_ordering' & default: \verb'UMFPACK_ORDERING_METIS_GUARD'.
+        ParU relies on UMFPACK for its fill-reducing ordering;  refer to the
+        UMPFACK documentation for more details.
+        The ordering options are defined as \verb'UMFPACK_ORDERING_*' where
+        \verb'*' is one of:
+        \verb'METIS' (use metis on $A+A'$ or $A'A$),
+        \verb'METIS_GUARD' (use metis, unless $A'A$ has too many entries),
+        \verb'AMD' (use amd on $A+A'$ or colamdn on $A$),
+        \verb'CHOLMOD' (use CHOLMOD's ordering strategy; try AMD/COLAMD and
+            then try METIS if the fillin from AMD/COLAMD is high),
+        \verb'BEST' (use CHOLMOD to try AMD/COLAMD, METIS, and NESDIS, and
+            take the best ordering found),
+        \verb'NONE' (no fill-reducing ordering).
+        When using an ordering to factorize a single matrix, AMD is often
+        the best since METIS can result in low fillin but high ordering times.
         \\
     \verb'filter_singletons' & default: 1. If nonzero, singletons are
         permuted to the front of the matrix before factorization.  Singletons
@@ -303,8 +326,6 @@ int main(int argc, char **argv)
         absolute value in the row. \\
     \verb'panel_width' & default: 32. Width of panel for dense factorization of
         each frontal matrix. \\
-    \verb'paru_strategy' & default: \verb'PARU_STRATEGY_AUTO'. Default strategy
-        for ParU. \\
     \verb'piv_toler' & default: $0.1$. Tolerance for accepting sparse pivots. \\
     \verb'diag_toler' & default: $0.001$. Tolerance for accepting symmetric
         pivots. \\
@@ -320,8 +341,8 @@ int main(int argc, char **argv)
 
     The first section of the options in the table above is used in both the
     symbolic analysis and numerical factorization.  The second section of the
-    options is used in the symbolic analysis.  The third section of control options
-    shows those that have an impact on numerical factorization.
+    options is used in the symbolic analysis.  The third section of control
+    options shows those that have an impact on numerical factorization.
 
     If \verb'paru_strategy' is set to \verb'PARU_STRATEGY_AUTO'.  ParU uses the
     same strategy as UMFPACK. However, the user can ask UMFPACK for an
@@ -349,7 +370,7 @@ int main(int argc, char **argv)
             // absolute value in its row.
 
         // Symbolic analysis parameters:
-        int32_t umfpack_ordering = UMFPACK_ORDERING_METIS ;
+        int32_t umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD ;
         int32_t umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
         int32_t relaxed_amalgamation = 32 ;  // symbolic analysis tries to ensure
             // that each front have more pivot columns than this threshold
@@ -384,8 +405,7 @@ int main(int argc, char **argv)
     are available in the \verb'ParU.h' file.  The symbolic analysis structure
     must be freed by \verb'ParU_FreeSymbolic'.
 
-    FIXME: change the Symbolic object to opaque.  Add user functions to
-    get statistics on the analysis phase (estimated fillin and such).
+    FIXME: make Symbolic object opaque.
 
 \subsection{{\sf ParU\_Factorize}: numerical factorization}
 
@@ -731,26 +751,32 @@ int main(int argc, char **argv)
 The C interface is quite similar to the C++ interface.  The next sections
 describe the user-callable C functions, their prototypes, and what they can do.
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Version}: version of the ParU package}
+%-------------------------------------------------------------------------------
 
     {\footnotesize
     \begin{verbatim}
     ParU_Info ParU_C_Version (int ver [3], char date [128]) ; \end{verbatim} }
 
-\subsection{{\sf ParU\_C\_Init\_Control}: sets the control parameters to defaults}
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Init\_Control}: sets control parameters to defaults}
+%-------------------------------------------------------------------------------
 
     {\footnotesize
     \begin{verbatim}
     ParU_Info ParU_C_Init_Control (ParU_C_Control *Control_C) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Analyze}: symbolic analysis}
+%-------------------------------------------------------------------------------
 
     \verb'ParU_C_Analyze' performs the symbolic analysis of a sparse
         matrix, based solely on its nonzero pattern.  \verb'ParU_C_Analyze' is
         called once and can be used for different \verb'ParU_C_Factorize' calls
         for the matrices that have the same pattern but different numerical
-        values.
-        The symbolic analysis structure must be freed by \verb'ParU_C_FreeSymbolic'.
+        values.  The symbolic analysis structure must be freed by
+        \verb'ParU_C_FreeSymbolic'.
 
     {\footnotesize
     \begin{verbatim}
@@ -764,12 +790,14 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Factorize}: numeric factorization}
+%-------------------------------------------------------------------------------
 
     \verb'ParU_C_Factorize' computes the numeric factorization.  The
     \verb'ParU_C_Symbolic' structure computed in \verb'ParU_C_Analyze' is an
-    input to this routine.
-    The numeric factorization structure must be freed by \verb'ParU_C_FreeNumeric'.
+    input to this routine.  The numeric factorization structure must be freed
+    by \verb'ParU_C_FreeNumeric'.
 
     {\footnotesize
     \begin{verbatim}
@@ -784,15 +812,16 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Solve\_A*}: solve a linear system, $Ax=b$}
+%-------------------------------------------------------------------------------
 
     The \verb'ParU_C_Solve_Axx',  \verb'ParU_C_Solve_Axb',
-        \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB'
-        methods solve a sparse linear system $Ax=b$ for a sparse
-        matrix \verb'A' and vectors \verb'x' and \verb'b', or matrices
-        \verb'X' and \verb'B'.  The matrix \verb'A' must have been factorized
-        by \verb'ParU_Factorize', and the \verb'Sym' and \verb'Num' structures
-        from that call must be passed to this method.
+    \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB' methods solve a sparse
+    linear system $Ax=b$ for a sparse matrix \verb'A' and vectors \verb'x' and
+    \verb'b', or matrices \verb'X' and \verb'B'.  The matrix \verb'A' must have
+    been factorized by \verb'ParU_Factorize', and the \verb'Sym' and \verb'Num'
+    structures from that call must be passed to this method.
 
     {\footnotesize
     \begin{verbatim}
@@ -852,7 +881,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Solve\_L*}: solve a linear system, $Lx=b$}
+%-------------------------------------------------------------------------------
 
     The \verb'ParU_C_Solve_Lxx' and \verb'ParU_C_Solve_LXX' methods solve lower
     triangular systems, $Lx=b$ with vectors $x$ and $b$, or $LX=B$ with
@@ -888,7 +919,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Solve\_U*}: solve a linear system, $Ux=b$}
+%-------------------------------------------------------------------------------
 
     The \verb'ParU_C_Solve_Uxx' and \verb'ParU_C_Solve_UXX' methods solve an
     upper triangular system, $Ux=b$ or $UX=B$.  No scaling or permutation is
@@ -923,7 +956,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Perm}: permute and scale a dense vector or matrix}
+%-------------------------------------------------------------------------------
 
     \verb'ParU_C_Perm' and \verb'ParU_C_Perm_X' permutes and optionally scale a
     dense vector or matrix.  Refer to Section \ref{perm} for details.
@@ -959,11 +994,13 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_InvPerm}: permute and scale a dense vector or matrix}
+%-------------------------------------------------------------------------------
 
     \verb'ParU_C_InvPerm' and \verb'ParU_C_InvPerm_X' and permutes and
-    optionally scale a dense vector or matrix.  Refer to Section \ref{invperm} for
-    details.
+    optionally scale a dense vector or matrix.  Refer to Section \ref{invperm}
+    for details.
 
     {\footnotesize
     \begin{verbatim}
@@ -996,7 +1033,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_Residual\_*}: compute the residual}
+%-------------------------------------------------------------------------------
 
     \verb'ParU_C_Residual_bAx' and \verb'ParU_C_Residual_BAX' compute the
     relative residual of $Ax=b$ or $AX=B$, in the 1-norm, and the 1-norm of $A$
@@ -1035,7 +1074,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_FreeNumeric}: free the numeric factorization}
+%-------------------------------------------------------------------------------
 
     {\footnotesize
     \begin{verbatim}
@@ -1046,7 +1087,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
 
+%-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_C\_FreeSymbolic}: free the symbolic analysis structure}
+%-------------------------------------------------------------------------------
 
     {\footnotesize
     \begin{verbatim}
@@ -1058,35 +1101,61 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ) ; \end{verbatim} }
 
 %-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Get}: get statistics and LU factorization properties}
+%-------------------------------------------------------------------------------
+
+FIXME add \verb'Paru_Get' to the user guide
+
+%-------------------------------------------------------------------------------
+\section{Thread safety of {\sf malloc}, {\sf calloc}, {\sf realloc}, and
+{\sf free}}
+%-------------------------------------------------------------------------------
+
+ParU is a C++ library but uses the C memory manager for all of its memory
+allocations, for compatibility with the other packages in SuiteSparse.  It
+makes limited use of the C++ \verb'new' and \verb'delete', but overrides those
+functions to use \verb'SuiteSparse_malloc' and \verb'SuiteSparse_free'.  ParU
+relies on the memory manager routines defined by the \verb'SuiteSparse_config'
+library (\verb'SuiteSparse_malloc', \verb'SuiteSparse_calloc',
+\verb'SuiteSparse_realloc', and \verb'SuiteSparse_free').  By default, those
+routines relies on the C \verb'malloc', \verb'calloc', \verb'realloc', and
+\verb'free' methods, respectively.  They can be redefined; refer to the
+documentation of \verb'SuiteSparse_config' on how to do this.
+
+The \verb'malloc', \verb'calloc', \verb'realloc', and \verb'free' methods must
+be thread-safe, since ParU calls those methods from within its parallel tasks.
+All of their implementations in the standard C libraries that we are aware of
+are thread-safe.  However, if your memory manager routines are not thread-safe,
+ParU will fail catastrophically.
+
+%-------------------------------------------------------------------------------
 \section{Using ParU in MATLAB}
 %-------------------------------------------------------------------------------
 
-FIXME: describe paru mexFunction
+FIXME: describe paru mexFunction: how to compile and use it.  Discuss
+the impact of the Intel MKL BLAS, and parallel tasking, on its performance.
+State that it uses malloc, not mxMalloc, except for results it returns to
+MATLAB.
 
 %-------------------------------------------------------------------------------
 \section{Requirements and Availability}
 \label{summary}
 %-------------------------------------------------------------------------------
 
-ParU requires several Collected Algorithms of the ACM: CHOLMOD
-\cite{ChenDavisHagerRajamanickam09,DavisHager09}, AMD
-\cite{AmestoyDavisDuff96,AmestoyDavisDuff03}, COLAMD
-\cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00} and UMFPACK
-\cite{10.1145/992200.992206} for its ordering/analysis phase and for its basic
-sparse matrix data structure, and the BLAS \cite{dddh:90} for dense matrix
-computations on its frontal matrices.  An efficient implementation of the BLAS
-is strongly recommended, either vendor-provided (such as the Intel MKL, the AMD
-ACML, or the Sun Performance Library) or other high-performance BLAS such as
-those of \cite{GotoVanDeGeijn08}. Note that while ParU uses nested parallelism
-heavily the right options for the BLAS library must be chosen to get a good
-performance.
+ParU requires several Collected Algorithms of the ACM:
+CHOLMOD \cite{ChenDavisHagerRajamanickam09,DavisHager09},
+AMD \cite{AmestoyDavisDuff96,AmestoyDavisDuff03},
+COLAMD \cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00}
+and UMFPACK \cite{10.1145/992200.992206} for its ordering/analysis phase and
+for its basic sparse matrix data structure, and the BLAS \cite{dddh:90} for
+dense matrix computations on its frontal matrices.  An efficient implementation
+of the BLAS is strongly recommended, such as the Intel MKL, the AMD ACML,
+OpenBLAS, FLAME \cite{GotoVanDeGeijn08}. or vendor-provide BLAS. Note that
+while ParU uses nested parallelism heavily the right options for the BLAS
+library must be chosen to get a good performance.
 
-FIXME: describe the impact of MKL BLAS on ParU's performance,
-
-FIXME: ParU methods that return the BLAS library used
-
-FIXME: ParU methods that tell if tasking is available for ParU to factorize
-using \verb'PARU_1TASK'. 
+FIXME: describe the impact of MKL BLAS on ParU's performance, and
+parallel tasking.
 
 SuiteSparse uses a slightly modified version of METIS 5.1.0, distributed along
 with SuiteSparse itself.  Its use is optional, however. ParU uses AMD as its
@@ -1096,13 +1165,20 @@ analysis using METIS can be slow, but usually, the factorization is faster.
 Therefore, depending on your use case, either use METIS, or you can compile and
 run your code without using METIS.  If you are using METIS on an unsymmetric
 case, UMFPACK must form the Matrix $A^{T}A$. This matrix can have many entries
-it takes a lot of resources to form it. To avoid such conditions, you can use
-the ordering strategy \verb'UMFPACK_ORDERING_METIS_GUARD' that is introduced in
-UMFPACK version 6.0.  This ordering strategy use COLAMD instead of METIS in
-when $A^T A$ is too costly to perform.
+it takes a lot of resources to form it. To avoid such conditions, ParU uses the
+ordering strategy \verb'UMFPACK_ORDERING_METIS_GUARD' by default.  This
+ordering strategy uses COLAMD instead of METIS in when $A^T A$ is too costly to
+construct.
+
+This modified version of METIS is built into CHOLMOD itself, with all
+functions renamed, so it does not conflict with a standard METIS library.
+The unmodified METIS library can be safely linked with an application that
+uses the modified METIS inside CHOLMOD, without any linking conflicts.
 
 The use of OpenMP tasking is optional, but without it, only parallelism within
-the BLAS can be exploited (if available).
+the BLAS can be exploited (if available).  ParU depends on parallel tasking to
+factorize multiple fronts at the same time, and performance will suffer if the
+compiler and BLAS library are not suitable for this method.
 
 See \verb'ParU/LICENSE.txt' for the license.  Alternative licenses are also
 available; contact the authors for details.

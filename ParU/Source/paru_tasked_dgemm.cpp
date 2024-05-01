@@ -14,12 +14,22 @@
 
 #include "paru_internal.hpp"
 
-// FIXME: provide a method to return the BLAS method used
-// FIXME: return definition of PARU_1TASK
-
-bool paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
-    double *A, int64_t lda, double *B, int64_t ldb, double beta, double *C,
-    int64_t ldc, paru_work *Work, ParU_Numeric *Num)
+bool paru_tasked_dgemm
+(
+    int64_t f,
+    int64_t M,
+    int64_t N,
+    int64_t K,
+    double *A,
+    int64_t lda,
+    double *B,
+    int64_t ldb,
+    double beta,
+    double *C,
+    int64_t ldc,
+    paru_work *Work,
+    ParU_Numeric *Num
+)
 {
     DEBUGLEVEL(0);
     // alpha is always -1  in my DGEMMs

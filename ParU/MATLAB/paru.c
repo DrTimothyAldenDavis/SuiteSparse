@@ -37,12 +37,17 @@
 
 static const char *stat_names [ ] =
 {
-    "analysis_time",        // analysis time in seconds
-    "factorize_time",       // factorization time in seconds
-    "solve_time",           // solve time in seconds
-    "strategy",             // strategy used, symmetric or unsymmetric
-    "ordering",             // ordering used
-    "rcode",                // rough estimate of reciprocal condition number
+    "analysis_time",        //  0: analysis time in seconds
+    "factorize_time",       //  1: factorization time in seconds
+    "solve_time",           //  2: solve time in seconds
+    "strategy",             //  3: strategy used, symmetric or unsymmetric
+    "ordering",             //  4: ordering used
+    "flops",                //  5: flop count for LU factorization
+    "lnz",                  //  6: nnz (L)
+    "unz",                  //  7: nnz (U)
+    "rcond",                //  8: rough estimate of reciprocal condition number
+    "blas",                 //  9: BLAS library used
+    "front_tree_tasking",   // 10: frontal tree task: sequential or parallel
 } ;
 
 void mexFunction
@@ -120,55 +125,6 @@ void mexFunction
             Control.diag_toler = mxGetScalar (field) ;
         }
 
-        // ordering: fill-reducing ordering method to use
-        if ((field = mxGetField (pargin [2], 0, "ordering")) != NULL)
-        {
-            if (mxGetString (field, option, STRLEN) == 0)
-            {
-                option [STRLEN] = '\0' ;
-                if (strncmp (option, "amd", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_AMD ;
-                }
-                else if (strncmp (option, "cholmod", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_CHOLMOD ;
-                }
-                else if (strncmp (option, "metis", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_METIS ;
-                }
-                else if (strncmp (option, "metis_guard", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD ;
-                }
-                else if (strncmp (option, "best", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_BEST ;
-                }
-                else if (strncmp (option, "none", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_NONE ;
-                }
-                else
-                {
-                    mexErrMsgIdAndTxt ("ParU:error",
-                        "unrecognized opts.ordering: %s", option) ;
-                }
-            }
-            else
-            {
-                mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.ordering") ;
-            }
-        }
-
-        // prescale: whether or not to prescale the input matrix
-        if ((field = mxGetField (pargin [2], 0, "prescale")) != NULL)
-        {
-            // 0: no scaling, 1: prescale each row by max abs value
-            Control.prescale = (int) (mxGetScalar (field) != 0) ;
-        }
-
         // strategy: both ParU and UMFPACK factorization strategy
         if ((field = mxGetField (pargin [2], 0, "strategy")) != NULL)
         {
@@ -207,6 +163,52 @@ void mexFunction
                 mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.strategy") ;
             }
         }
+
+        // ordering: fill-reducing ordering method to use
+        if ((field = mxGetField (pargin [2], 0, "ordering")) != NULL)
+        {
+            if (mxGetString (field, option, STRLEN) == 0)
+            {
+                option [STRLEN] = '\0' ;
+                if (strncmp (option, "amd", STRLEN) == 0)
+                {
+                    Control.umfpack_ordering = UMFPACK_ORDERING_AMD ;
+                }
+                else if (strncmp (option, "cholmod", STRLEN) == 0)
+                {
+                    Control.umfpack_ordering = UMFPACK_ORDERING_CHOLMOD ;
+                }
+                else if (strncmp (option, "metis", STRLEN) == 0)
+                {
+                    Control.umfpack_ordering = UMFPACK_ORDERING_METIS ;
+                }
+                else if (strncmp (option, "metis_guard", STRLEN) == 0)
+                {
+                    Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD ;
+                }
+                else if (strncmp (option, "none", STRLEN) == 0)
+                {
+                    Control.umfpack_ordering = UMFPACK_ORDERING_NONE ;
+                }
+                else
+                {
+                    mexErrMsgIdAndTxt ("ParU:error",
+                        "unrecognized opts.ordering: %s", option) ;
+                }
+            }
+            else
+            {
+                mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.ordering") ;
+            }
+        }
+
+        // prescale: whether or not to prescale the input matrix
+        if ((field = mxGetField (pargin [2], 0, "prescale")) != NULL)
+        {
+            // 0: no scaling, 1: prescale each row by max abs value
+            Control.prescale = (int) (mxGetScalar (field) != 0) ;
+        }
+
     }
 
     // get sparse matrix A
@@ -282,10 +284,26 @@ void mexFunction
         t0 = t1 ;
     }
 
-    // FIXME use ParU_get for these 2 results:
-    int32_t paru_strategy = Sym->paru_strategy ;
-    int32_t umfpack_ordering = Sym->umfpack_ordering ;
-    double rcond = Num->rcond ;
+    // get statistics from ParU
+    int64_t paru_strategy, umfpack_ordering, lnz, unz ;
+    double rcond, flops ;
+    const char *blas_name, *front_tree_tasking ;
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_PARU_STRATEGY,
+        &paru_strategy, &Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_UMFPACK_ORDERING,
+        &umfpack_ordering, &Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_FLOP_COUNT,
+        &flops, &Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_LNZ,
+        &lnz, &Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_UNZ,
+        &unz, &Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE,
+        &rcond, &Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_CONSTCHAR (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME,
+        &blas_name, &Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_CONSTCHAR (Sym, Num, PARU_GET_FRONT_TREE_TASKING,
+        &front_tree_tasking, &Control), "stats failed") ;
 
     ParU_C_FreeNumeric (&Num, &Control) ;
     ParU_C_FreeSymbolic (&Sym, &Control) ;
@@ -314,7 +332,7 @@ void mexFunction
 
     if (nargout > 1)
     {
-        pargout [1] = mxCreateStructMatrix (1, 1, 5, stat_names) ;
+        pargout [1] = mxCreateStructMatrix (1, 1, 11, stat_names) ;
 
         // analysis, factorization, and solve times:
         mxSetFieldByNumber (pargout [1], 0, 0, mxCreateDoubleScalar (t [0])) ;
@@ -357,9 +375,17 @@ void mexFunction
         mxSetFieldByNumber (pargout [1], 0, 4, mxCreateString (ordering)) ;
 
         // numeric factorization statistics:
-        mxSetFieldByNumber (pargout [1], 0, 5, mxCreateDoubleScalar (rcond)) ;
+        mxSetFieldByNumber (pargout [1], 0, 5, mxCreateDoubleScalar (flops)) ;
+        mxSetFieldByNumber (pargout [1], 0, 6, mxCreateDoubleScalar (lnz)) ;
+        mxSetFieldByNumber (pargout [1], 0, 7, mxCreateDoubleScalar (unz)) ;
+        mxSetFieldByNumber (pargout [1], 0, 8, mxCreateDoubleScalar (rcond)) ;
 
-        // FIXME: add nnz(L), nnz(U), flop count if available, ...
+        // BLAS library used
+        mxSetFieldByNumber (pargout [1], 0, 9, mxCreateString (blas_name)) ;
+
+        // frontal tree tasking
+        mxSetFieldByNumber (pargout [1], 0, 10,
+            mxCreateString (front_tree_tasking)) ;
     }
 }
 
