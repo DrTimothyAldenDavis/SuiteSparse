@@ -16,9 +16,16 @@
 
 #include "paru_internal.hpp"
 
-void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
-                          std::vector<int64_t> &colHash,
-                          paru_work *Work, ParU_Numeric *Num)
+void paru_assemble_row_2U
+(
+    int64_t e,
+    int64_t f,
+    int64_t sR,
+    int64_t dR,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
 

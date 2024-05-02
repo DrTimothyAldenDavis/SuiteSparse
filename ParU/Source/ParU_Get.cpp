@@ -17,8 +17,8 @@
 ParU_Info ParU_Get
 (
     // input:
-    const ParU_Symbolic *Sym,   // symbolic analysis from ParU_Analyze
-    const ParU_Numeric *Num,    // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
     ParU_Get_enum field,        // field to get
     // output:
     int64_t *result,            // int64_t result: a scalar or an array
@@ -105,8 +105,8 @@ ParU_Info ParU_Get
 ParU_Info ParU_Get
 (
     // input:
-    const ParU_Symbolic *Sym,   // symbolic analysis from ParU_Analyze
-    const ParU_Numeric *Num,    // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
     ParU_Get_enum field,        // field to get
     // output:
     double *result,             // double result: a scalar or an array
@@ -166,8 +166,8 @@ ParU_Info ParU_Get
 ParU_Info ParU_Get
 (
     // input:
-    const ParU_Symbolic *Sym,   // symbolic analysis from ParU_Analyze
-    const ParU_Numeric *Num,    // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
     ParU_Get_enum field,        // field to get
     // output:
     const char **result,        // string result

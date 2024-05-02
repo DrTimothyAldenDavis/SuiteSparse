@@ -25,8 +25,8 @@ ParU_Info paru_pivotal
     int64_t f,
     heaps_info &hi,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);

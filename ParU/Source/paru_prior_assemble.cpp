@@ -21,8 +21,8 @@ ParU_Info paru_prior_assemble
     std::vector<int64_t> &colHash,
     heaps_info &hi,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);

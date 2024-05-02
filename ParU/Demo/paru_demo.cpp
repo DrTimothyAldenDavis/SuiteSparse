@@ -39,8 +39,8 @@ int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
     cholmod_sparse *A;
-    ParU_Symbolic *Sym = NULL;
-    ParU_Numeric *Num = NULL ;
+    ParU_Symbolic Sym = NULL;
+    ParU_Numeric Num = NULL ;
     ParU_Control Control;
     ParU_Info info;
     double *b = NULL, *xx = NULL, *B = NULL, *X = NULL, *x = NULL ;

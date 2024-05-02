@@ -21,7 +21,7 @@
 ParU_Info ParU_FreeNumeric
 (
     // input/output:
-    ParU_Numeric **Num_handle,  // numeric object to free
+    ParU_Numeric *Num_handle,   // numeric object to free
     // control:
     ParU_Control *Control
 )
@@ -37,8 +37,7 @@ ParU_Info ParU_FreeNumeric
     }
 
     DEBUGLEVEL(0);
-    ParU_Numeric *Num;
-    Num = *Num_handle;
+    ParU_Numeric Num = *Num_handle ;
 
     int64_t nf = Num->nf;
 
@@ -102,7 +101,7 @@ ParU_Info ParU_FreeNumeric
     PARU_FREE(nf, int64_t *, Num->fcolList);
     PARU_FREE(nf, ParU_Factors, Num->partial_LUs) ;
     PARU_FREE(nf, ParU_Factors, Num->partial_Us) ;
-    PARU_FREE(1, ParU_Numeric, Num);
+    PARU_FREE(1, ParU_Numeric_struct, Num);
     (*Num_handle) = NULL ;
     return (PARU_SUCCESS) ;
 }

@@ -6,12 +6,13 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// FIXME: this is only used in tests; move to Tcov
+
 /*! @brief     compute the backward error
  *
  *          get a factorized matrix A and a vector x1
  *          compute Ax1=b then solve for Ax2=b
  *          return ||x2-x1||
- *
  *
  * @author Aznaveh
  * */
@@ -19,9 +20,17 @@
 
 #include "paru_internal.hpp"
 
-ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
-                       cholmod_sparse *A, ParU_Symbolic *Sym, ParU_Numeric *Num,
-                       ParU_Control *Control)
+ParU_Info paru_backward
+(
+    double *x1,
+    double &resid,
+    double &anorm,
+    double &xnorm,
+    cholmod_sparse *A,
+    ParU_Symbolic Sym,
+    ParU_Numeric Num,
+    ParU_Control *Control
+)
 {
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% inside backward\n"));

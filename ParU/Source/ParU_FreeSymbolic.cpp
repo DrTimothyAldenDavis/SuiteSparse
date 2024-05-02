@@ -21,7 +21,7 @@
 ParU_Info ParU_FreeSymbolic
 (
     // input/output:
-    ParU_Symbolic **Sym_handle, // symbolic object to free
+    ParU_Symbolic *Sym_handle, // symbolic object to free
     // control:
     ParU_Control *Control
 )
@@ -37,7 +37,7 @@ ParU_Info ParU_FreeSymbolic
     }
 
     DEBUGLEVEL(0);
-    ParU_Symbolic *Sym;
+    ParU_Symbolic Sym ;
     Sym = *Sym_handle;
 
     int64_t m = Sym->m;
@@ -101,7 +101,7 @@ ParU_Info ParU_FreeSymbolic
     PARU_FREE(ntasks, int64_t, Sym->task_parent);
     PARU_FREE(ntasks, int64_t, Sym->task_num_child);
     PARU_FREE(ntasks, int64_t, Sym->task_depth);
-    PARU_FREE(1, ParU_Symbolic, Sym);
+    PARU_FREE(1, ParU_Symbolic_struct, Sym);
     (*Sym_handle) = NULL;
     return (PARU_SUCCESS) ;
 }

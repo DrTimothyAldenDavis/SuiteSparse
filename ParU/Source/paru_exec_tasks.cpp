@@ -23,8 +23,8 @@ ParU_Info paru_exec_tasks_seq
     int64_t t,
     int64_t *task_num_child,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);
@@ -102,8 +102,8 @@ ParU_Info paru_exec_tasks
     int64_t *task_num_child,
     int64_t &chain_task,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
 

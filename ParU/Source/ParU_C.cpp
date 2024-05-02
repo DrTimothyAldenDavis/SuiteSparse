@@ -68,7 +68,7 @@ ParU_Info ParU_C_Analyze
     // input:
     cholmod_sparse *A,  // input matrix to analyze of size n-by-n
     // output:
-    ParU_C_Symbolic **Sym_handle_C,  // output, symbolic analysis
+    ParU_C_Symbolic *Sym_handle_C,  // output, symbolic analysis
     // control:
     ParU_C_Control *Control_C
 )
@@ -79,25 +79,19 @@ ParU_Info ParU_C_Analyze
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    ParU_C_Symbolic *Sym_C = PARU_CALLOC (1, ParU_C_Symbolic);
+    ParU_C_Symbolic Sym_C = PARU_CALLOC (1, ParU_C_Symbolic_struct);
     if (!Sym_C)
     {
         return (PARU_OUT_OF_MEMORY) ;
     }
-    ParU_Symbolic *Sym;
+    ParU_Symbolic Sym ;
     ParU_Info info = ParU_Analyze(A, &Sym, &Control);
     if (info != PARU_SUCCESS)
     {
-        PARU_FREE (1, ParU_C_Symbolic, Sym_C);
+        PARU_FREE (1, ParU_C_Symbolic_struct, Sym_C);
         return (info) ;
     }
     Sym_C->sym_handle = static_cast<void*>(Sym);
-    Sym_C->m = Sym->m;
-    Sym_C->n = Sym->n;
-    Sym_C->anz = Sym->anz;
-    Sym_C->Qfill = Sym->Qfill ;
-    Sym_C->paru_strategy = Sym->paru_strategy ;
-    Sym_C->umfpack_ordering = Sym->umfpack_ordering ;
     (*Sym_handle_C) = Sym_C;
     return (info) ;
 }
@@ -113,9 +107,9 @@ ParU_Info ParU_C_Factorize
 (
     // input:
     cholmod_sparse *A,          // input matrix to factorize of size n-by-n
-    ParU_C_Symbolic *Sym_C,     // symbolic analysis from ParU_Analyze
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
     // output:
-    ParU_C_Numeric **Num_handle_C,    // output numerical factorization
+    ParU_C_Numeric *Num_handle_C,    // output numerical factorization
     // control:
     ParU_C_Control *Control_C
 )
@@ -126,25 +120,22 @@ ParU_Info ParU_C_Factorize
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_C_Numeric *Num_C = PARU_CALLOC (1, ParU_C_Numeric);
+    ParU_Symbolic Sym = static_cast<ParU_Symbolic>(Sym_C->sym_handle);
+    ParU_C_Numeric Num_C = PARU_CALLOC (1, ParU_C_Numeric_struct) ;
     if (!Num_C)
     {
         return (PARU_OUT_OF_MEMORY) ;
     }
 
     ParU_Info info;
-    ParU_Numeric *Num;
+    ParU_Numeric Num ;
     info = ParU_Factorize(A, Sym, &Num, &Control);
     if (info != PARU_SUCCESS)
     {
-        PARU_FREE (1, ParU_C_Numeric, Num_C);
+        PARU_FREE (1, ParU_C_Numeric_struct, Num_C);
         return info;
     }
     Num_C->num_handle = static_cast<void*>(Num);
-    Num_C->rcond = Num->rcond;
-    Num_C->Pfin = Num->Pfin ;
-    Num_C->Rs = Num->Rs ;
     (*Num_handle_C) = Num_C;
     return (info) ;
 }
@@ -160,8 +151,8 @@ ParU_Info ParU_C_Factorize
 ParU_Info ParU_C_Solve_Axx
 (
     // input:
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     // input/output:
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
@@ -175,17 +166,17 @@ ParU_Info ParU_C_Solve_Axx
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return (ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       x, &Control)) ;
+    return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                        static_cast<ParU_Numeric>(Num_C->num_handle),
+                        x, &Control)) ;
 }
 
 // x = L\x, where right-hand side is overwritten with the solution x.
 ParU_Info ParU_C_Solve_Lxx
 (
     // input:
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     // input/output:
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
@@ -199,17 +190,17 @@ ParU_Info ParU_C_Solve_Lxx
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return (ParU_LSolve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       x, &Control)) ;
+    return (ParU_LSolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                         static_cast<ParU_Numeric>(Num_C->num_handle),
+                         x, &Control)) ;
 }
 
 // x = U\x, where right-hand side is overwritten with the solution x.
 ParU_Info ParU_C_Solve_Uxx
 (
     // input:
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     // input/output:
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
@@ -223,17 +214,17 @@ ParU_Info ParU_C_Solve_Uxx
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return (ParU_USolve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       x, &Control)) ;
+    return (ParU_USolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                         static_cast<ParU_Numeric>(Num_C->num_handle),
+                         x, &Control)) ;
 }
 
 // x = A\b, for vectors x and b
 ParU_Info ParU_C_Solve_Axb
 (
     // input:
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     double *b,              // vector of size n-by-1
     // output
     double *x,              // vector of size n-by-1
@@ -247,17 +238,17 @@ ParU_Info ParU_C_Solve_Axb
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return (ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       b, x, &Control)) ;
+    return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                        static_cast<ParU_Numeric>(Num_C->num_handle),
+                        b, x, &Control)) ;
 }
 
 // X = A\X, where right-hand side is overwritten with the solution X.
 ParU_Info ParU_C_Solve_AXX
 (
     // input
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     // input/output:
     double *X,              // array of size n-by-nrhs in column-major storage,
@@ -272,17 +263,17 @@ ParU_Info ParU_C_Solve_AXX
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return (ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       nrhs, X, &Control)) ;
+    return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                        static_cast<ParU_Numeric>(Num_C->num_handle),
+                        nrhs, X, &Control)) ;
 }
 
 // X = L\X, where right-hand side is overwritten with the solution X.
 ParU_Info ParU_C_Solve_LXX
 (
     // input
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     // input/output:
     double *X,              // array of size n-by-nrhs in column-major storage,
@@ -297,17 +288,17 @@ ParU_Info ParU_C_Solve_LXX
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return (ParU_LSolve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       nrhs, X, &Control)) ;
+    return (ParU_LSolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                         static_cast<ParU_Numeric>(Num_C->num_handle),
+                         nrhs, X, &Control)) ;
 }
 
 // X = U\X, where right-hand side is overwritten with the solution X.
 ParU_Info ParU_C_Solve_UXX
 (
     // input
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     // input/output:
     double *X,              // array of size n-by-nrhs in column-major storage,
@@ -322,17 +313,17 @@ ParU_Info ParU_C_Solve_UXX
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return (ParU_USolve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       nrhs, X, &Control)) ;
+    return (ParU_USolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                         static_cast<ParU_Numeric>(Num_C->num_handle),
+                         nrhs, X, &Control)) ;
 }
 
 // X = A\B, for matrices X and B
 ParU_Info ParU_C_Solve_AXB
 (
     // input
-    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     double *B,              // array of size n-by-nrhs in column-major storage
     // output:
@@ -348,9 +339,9 @@ ParU_Info ParU_C_Solve_AXB
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
 
-    return (ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
-                       static_cast<ParU_Numeric*>(Num_C->num_handle),
-                       nrhs, B, X, &Control)) ;
+    return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
+                        static_cast<ParU_Numeric>(Num_C->num_handle),
+                         nrhs, B, X, &Control)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -527,8 +518,8 @@ ParU_Info ParU_C_Residual_BAX
 ParU_Info ParU_C_Get_INT64
 (
     // input:
-    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
-    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    const ParU_C_Symbolic Sym_C,  // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
     ParU_Get_enum field,          // field to get
     // output:
     int64_t *result,              // int64_t result: a scalar or an array
@@ -540,10 +531,10 @@ ParU_Info ParU_C_Get_INT64
     {
         return (PARU_INVALID) ;
     }
-    ParU_Symbolic *Sym = (Sym_C == NULL) ? NULL :
-        static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_Numeric *Num = (Num_C == NULL) ? NULL :
-        static_cast<ParU_Numeric*>(Num_C->num_handle);
+    ParU_Symbolic Sym = (Sym_C == NULL) ? NULL :
+        static_cast<ParU_Symbolic>(Sym_C->sym_handle);
+    ParU_Numeric Num = (Num_C == NULL) ? NULL :
+        static_cast<ParU_Numeric>(Num_C->num_handle);
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     return (ParU_Get (Sym, Num, field, result, &Control)) ;
@@ -552,8 +543,8 @@ ParU_Info ParU_C_Get_INT64
 ParU_Info ParU_C_Get_FP64
 (
     // input:
-    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
-    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
     ParU_Get_enum field,          // field to get
     // output:
     double *result,               // double result: a scalar or an array
@@ -565,10 +556,10 @@ ParU_Info ParU_C_Get_FP64
     {
         return (PARU_INVALID) ;
     }
-    ParU_Symbolic *Sym = (Sym_C == NULL) ? NULL : 
-        static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_Numeric *Num = (Num_C == NULL) ? NULL :
-        static_cast<ParU_Numeric*>(Num_C->num_handle);
+    ParU_Symbolic Sym = (Sym_C == NULL) ? NULL : 
+        static_cast<ParU_Symbolic>(Sym_C->sym_handle);
+    ParU_Numeric Num = (Num_C == NULL) ? NULL :
+        static_cast<ParU_Numeric>(Num_C->num_handle);
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     return (ParU_Get (Sym, Num, field, result, &Control)) ;
@@ -577,8 +568,8 @@ ParU_Info ParU_C_Get_FP64
 ParU_Info ParU_C_Get_CONSTCHAR
 (
     // input:
-    const ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_Analyze
-    const ParU_C_Numeric *Num_C,  // numeric factorization from ParU_Factorize
+    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
     ParU_Get_enum field,          // field to get
     // output:
     const char **result,          // string result
@@ -590,10 +581,10 @@ ParU_Info ParU_C_Get_CONSTCHAR
     {
         return (PARU_INVALID) ;
     }
-    ParU_Symbolic *Sym = (Sym_C == NULL) ? NULL : 
-        static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_Numeric *Num = (Num_C == NULL) ? NULL :
-        static_cast<ParU_Numeric*>(Num_C->num_handle);
+    ParU_Symbolic Sym = (Sym_C == NULL) ? NULL : 
+        static_cast<ParU_Symbolic>(Sym_C->sym_handle);
+    ParU_Numeric Num = (Num_C == NULL) ? NULL :
+        static_cast<ParU_Numeric>(Num_C->num_handle);
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     return (ParU_Get (Sym, Num, field, result, &Control)) ;
@@ -605,7 +596,7 @@ ParU_Info ParU_C_Get_CONSTCHAR
 
 ParU_Info ParU_C_FreeNumeric
 (
-    ParU_C_Numeric **Num_handle_C,    // numeric object to free
+    ParU_C_Numeric *Num_handle_C,    // numeric object to free
     // control:
     ParU_C_Control *Control_C
 )
@@ -621,16 +612,16 @@ ParU_Info ParU_C_FreeNumeric
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    ParU_C_Numeric *Num_C = *Num_handle_C;
-    ParU_Numeric *Num = static_cast<ParU_Numeric*>(Num_C->num_handle);
-    ParU_Info info = ParU_FreeNumeric(&Num, &Control);
-    PARU_FREE(1, ParU_C_Numeric, *Num_handle_C);
+    ParU_C_Numeric Num_C = (*Num_handle_C) ;
+    ParU_Numeric Num = static_cast<ParU_Numeric>(Num_C->num_handle);
+    ParU_Info info = ParU_FreeNumeric(&Num, &Control) ;
+    PARU_FREE(1, ParU_C_Numeric_struct, *Num_handle_C) ;
     return info;
 }
 
 ParU_Info ParU_C_FreeSymbolic
 (
-    ParU_C_Symbolic **Sym_handle_C,   // symbolic object to free
+    ParU_C_Symbolic *Sym_handle_C,   // symbolic object to free
     // control:
     ParU_C_Control *Control_C
 )
@@ -646,10 +637,10 @@ ParU_Info ParU_C_FreeSymbolic
     }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    ParU_C_Symbolic *Sym_C = *Sym_handle_C;
-    ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
+    ParU_C_Symbolic Sym_C = (*Sym_handle_C) ;
+    ParU_Symbolic Sym = static_cast<ParU_Symbolic>(Sym_C->sym_handle);
     ParU_Info info = ParU_FreeSymbolic(&Sym, &Control);
-    PARU_FREE(1, ParU_C_Symbolic, *Sym_handle_C);
+    PARU_FREE(1, ParU_C_Symbolic_struct, *Sym_handle_C);
     return info;
 }
 

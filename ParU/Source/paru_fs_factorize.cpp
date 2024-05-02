@@ -51,8 +51,8 @@ bool paru_panel_factorize
     int64_t panel_num,
     int64_t row_end,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
 
@@ -356,8 +356,8 @@ ParU_Info paru_factorize_full_summed
     std::set<int64_t> &stl_colSet,
     std::vector<int64_t> &pivotal_elements,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);

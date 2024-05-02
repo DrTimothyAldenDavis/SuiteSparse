@@ -31,10 +31,10 @@ ParU_Info paru_init_rowFronts
 (
     // input/output:
     paru_work *Work,
-    ParU_Numeric **Num_handle,
+    ParU_Numeric *Num_handle,
     // inputs, not modified:
     cholmod_sparse *A,
-    ParU_Symbolic *Sym,         // symbolic analysis
+    const ParU_Symbolic Sym,    // symbolic analysis
     ParU_Control *Control
 )
 {
@@ -65,8 +65,8 @@ ParU_Info paru_init_rowFronts
     int64_t *row_degree_bound = Work->row_degree_bound = NULL;
 
     // initializing Numeric
-    ParU_Numeric *Num = NULL;
-    Num = PARU_CALLOC (1, ParU_Numeric);
+    ParU_Numeric Num = NULL;
+    Num = PARU_CALLOC (1, ParU_Numeric_struct);
     if (Num == NULL)
     {
         // out of memory

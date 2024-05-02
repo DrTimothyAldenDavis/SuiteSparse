@@ -46,8 +46,8 @@
 ParU_Info ParU_USolve
 (
     // input
-    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    ParU_Numeric Num,       // numeric factorization from ParU_Factorize
     // input/output
     double *x,              // n-by-1, in column-major storage;
                             // holds b on input, solution x on input
@@ -202,8 +202,8 @@ ParU_Info ParU_USolve
 ParU_Info ParU_USolve
 (
     // input
-    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    ParU_Numeric Num,       // numeric factorization from ParU_Factorize
     int64_t nrhs,           // # of right-hand-sides (# columns of X)
     // input/output:
     double *X,              // X is n-by-nrhs, where A is n-by-n;

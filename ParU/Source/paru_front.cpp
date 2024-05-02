@@ -23,8 +23,8 @@ ParU_Info paru_front
 (
     int64_t f,  // front need to be assembled
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(-3);

@@ -18,6 +18,263 @@
 #include "ParU.h"
 #include "paru_omp.hpp"
 
+// =============================================================================
+// =========================== ParU_Symbolic ===================================
+// =============================================================================
+//
+// The contents of this object do not change during numeric factorization.  The
+// ParU_U_singleton and ParU_L_singleton are datas tructures for singletons that
+// has been borrowed from UMFPACK, but it is saved differently
+//
+//              ParU_L_singleton is CSC
+//                                     |
+//                                     v
+//    ParU_U_singleton is CSR -> U U U U U U U U U
+//                               . U U U U U U U U
+//                               . . U U U U U U U
+//                               . . . L . . . . .
+//                               . . . L L . . . .
+//                               . . . L L S S S S
+//                               . . . L L S S S S
+//                               . . . L L S S S S
+//                               . . . L L S S S S
+
+struct ParU_U_singleton
+{
+    // CSR format for U singletons
+    int64_t nnz;   // nnz in submatrix
+    int64_t *Sup;  // size cs1
+    int64_t *Suj;  // size is computed
+};
+
+struct ParU_L_singleton
+{
+    // CSC format for L singletons
+    int64_t nnz;   // nnz in submatrix
+    int64_t *Slp;  // size rs1
+    int64_t *Sli;  // size is computed
+};
+
+struct ParU_Symbolic_struct
+{
+    // -------------------------------------------------------------------------
+    // row-form of the input matrix and its permutations
+    // -------------------------------------------------------------------------
+
+    // During symbolic analysis, the nonzero pattern of S = A(P,Q) is
+    // constructed, where A is the user's input matrix.  Its numerical values
+    // are not constructed.
+
+    // The matrix S is stored in row-oriented form.  The rows of S are
+    // sorted according to their leftmost column index (via Pinv).  Column
+    // indices in each row of S are in strictly ascending order, even though
+    // the input matrix A need not be sorted.
+
+    int64_t m, n, anz;  // A is m-by-n with anz entries
+
+    int64_t snz;  // nnz in submatrix S
+    int64_t *Sp;  // size m+1-n1, row pointers of S
+    int64_t *Sj;  // size snz = Sp [n], column indices of S
+
+    // Usingletons and Lsingltons
+    ParU_U_singleton ustons;
+    ParU_L_singleton lstons;
+
+    int64_t *Qfill;  // size n, fill-reducing column permutation.
+    // Qfill [k] = j if column k of A is column j of S.
+
+    int64_t *Pinit;  // size m, row permutation.
+    // UMFPACK computes it and Pinv  is its inverse
+    int64_t *Pinv;  // Inverse of Pinit; it is used to make S
+
+    int64_t *Diag_map;  // size n,
+    // UMFPACK computes it and I use it to find original diags out of it
+
+    int64_t *Sleft;  // size n-n1+2.  The list of rows of S whose
+    // leftmost column index is j is given by
+    // Sleft [j] ... Sleft [j+1]-1.  This can be empty (that is, Sleft
+    // [j] can equal Sleft [j+1]).  Sleft [n] is the number of
+    // non-empty rows of S, and Sleft [n+1] == m.  That is, Sleft [n]
+    // ... Sleft [n+1]-1 gives the empty rows of S, if any.
+
+    int32_t paru_strategy;      // ParU strategy used (symmetric or unsymmetric)
+    int32_t umfpack_strategy ;  // UMFPACK strategy used (sym. or unsym.)
+    int32_t umfpack_ordering ;  // UMFPACK ordering used
+    int32_t unused ;            // future expansion
+
+    // -------------------------------------------------------------------------
+    // frontal matrices: pattern and tree
+    // -------------------------------------------------------------------------
+
+    // Each frontal matrix is fm-by-fn, with fnpiv pivot columns.  The fn
+    // column indices are given by a set of size fnpiv pivot columns
+
+    int64_t nf;  // number of frontal matrices; nf <= MIN (m,n)
+    int64_t n1;  // number of singletons in the matrix
+    // the matrix S is the one without any singletons
+    int64_t rs1, cs1;  // number of row and column singletons, n1 = rs1+cs1;
+
+    // parent, child, and childp define the row merge tree or etree (A'A)
+    int64_t *Parent;  // size nf+1  Add another node just to make the forest a
+    int64_t *Child;   // size nf+1      tree
+    int64_t *Childp;  // size nf+2
+
+    int64_t *Depth;  // size nf distance of each node from the root
+
+    // The parent of a front f is Parent [f], or EMPTY if f=nf.
+    // A list of children of f can be obtained in the list
+    // Child [Childp [f] ... Childp [f+1]-1].
+
+    // Node nf in the tree is a placeholder; it does not represent a frontal
+    // matrix.  All roots of the frontal "tree" (may be a forest) have the
+    // placeholder node nf as their parent.  Thus, the tree of nodes 0:nf is
+    // truly a tree, with just one parent (node nf).
+
+    int64_t *aParent;  // size m+nf
+    int64_t *aChild;   // size m+nf+1
+    int64_t *aChildp;  // size m+nf+2
+    int64_t *first;    // size nf+1 first successor of front in the tree;
+    // all successors are between first[f]...f-1
+
+    // pivot column in the front F.  This refers to a column of S.  The
+    // number of expected pivot columns in F is thus
+    // Super [f+1] - Super [f].
+
+    // Upper bound number of rows for each front
+    int64_t *Fm;  // size nf+1
+
+    // Upper bound  number of rows in the contribution block of each front
+    int64_t *Cm;  // size nf+1
+
+    int64_t *Super;  // size nf+1.  Super [f] gives the first
+    // pivot column in the front F.  This refers to a column of S.  The
+    // number of expected pivot columns in F is thus
+    // Super [f+1] - Super [f].
+
+    int64_t *row2atree;    // Mapping from rows to augmented tree size m
+    int64_t *super2atree;  // Mapping from super nodes to augmented tree size nf
+
+    int64_t *Chain_start;  // size = n_col +1;  actual size = nfr+1
+    // The kth frontal matrix chain consists of frontal
+    // matrices Chain_start [k] through Chain_start [k+1]-1.
+    // Thus, Chain_start [0] is always 0 and
+    // Chain_start[nchains] is the total number of frontal
+    // matrices, nfr. For two adjacent fornts f and f+1
+    // within a single chian, f+1 is always the parent of f
+    // (that is, Front_parent [f] = f+1).
+
+    int64_t *Chain_maxrows;  // size = n_col +1;  actual size = nfr+1
+    int64_t *Chain_maxcols;  // The kth frontal matrix chain requires a single
+    // working array of dimension Chain_maxrows [k] by
+    // Chain_maxcols [k], for the unifrontal technique that
+    // factorizes the frontal matrix chain. Since the
+    // symbolic factorization only provides
+
+    // only used for statistics when debugging is enabled:
+    int64_t Us_bound_size;   // Upper bound on size of all Us, sum all fp*fn
+    int64_t LUs_bound_size;  // Upper bound on size of all LUs, sum all fp*fm
+    int64_t row_Int_bound;   // Upper bound on size of all ints for rows
+    int64_t col_Int_bound;   // Upper bound on size of all ints for cols
+
+    double *front_flop_bound;  // bound on m*n*k for each front size nf+1
+    double *stree_flop_bound;  // flop bound for front and descendents size nf+1
+
+    // data structure related to ParU tasks
+    int64_t ntasks;        // number of tasks; at most nf
+    int64_t *task_map;     // each task does the fronts
+                       // from task_map[i]+1 to task_map[i+1]; task_map[0] is -1
+    int64_t *task_parent;  // tree data structure for tasks
+    int64_t *task_num_child;  // number of children of each task
+    int64_t *task_depth;      // max depth of each task
+} ;
+
+// =============================================================================
+// =========================== ParU_Numeric ====================================
+// =============================================================================
+// ParU_Numeric contains all the numeric information that user needs for solving
+// a system. The factors are saved as a seried of dense matrices. User can check
+// the ParU_Info to see if the factorization is successful. sizes of
+// ParU_Numeric is size of S matrix in Symbolic analysis.
+
+struct ParU_Factors
+{
+    // dense factorized part pointer
+    int64_t m, n;   //  mxn dense matrix
+    double *p;  //  point to factorized parts
+};
+
+struct ParU_Numeric_struct
+{
+    int64_t m, n;   // size of the sumbatrix(S) that is factorized
+    int64_t sym_m;  // number of rows of original matrix; a copy of Sym->m
+
+    int64_t nf;      // number of fronts copy of Sym->nf
+    double *Rs;  // the array for row scaling based on original matrix
+                 // size = m
+
+    // Permutations are computed after all the factorization
+    int64_t *Ps;  // size m, row permutation.
+    // Permutation from S to LU. needed for lsolve and usolve
+    int64_t *Pfin;  // size m, row permutation.
+    // ParU final permutation.
+
+    int64_t snz;     // nnz in S; copy of Sym->snz
+    double *Sx;  // size snz = Sp [n], numeric values of (scaled) S;
+    // Sp and Sj must be initialized in Symbolic phase
+    int64_t sunz;
+    double *Sux;  // Numeric values u singletons, Sup Suj are in symbolic
+    int64_t slnz;
+    double *Slx;  // Numeric values l singletons, Slp Sli are in symbolic
+
+    ParU_Control *Control;  // a copy of controls for internal use
+    // it is freed after factorize
+
+    // Computed parts of each front
+    int64_t *frowCount;  // size nf   size(CB) = rowCount[f]x
+    int64_t *fcolCount;  // size nf                        colCount[f]
+    int64_t **frowList;  // size nf   frowList[f] is rows of the matrix S
+    int64_t **fcolList;  // size nf   colList[f] is non pivotal cols of the
+    //   matrix S
+    ParU_Factors *partial_Us;   // size nf   size(Us)= fp*colCount[f]
+    ParU_Factors *partial_LUs;  // size nf   size(LUs)= rowCount[f]*fp
+
+    int64_t max_row_count;  // maximum number of rows/cols for all the fronts
+    int64_t max_col_count;  // it is initalized after factorization
+
+    double rcond;       // rough estimate of the reciprocal condition number
+    double min_udiag;   // min (abs (diag (U)))
+    double max_udiag;   // max (abs (diag (U)))
+    ParU_Info res;  // returning value of numeric phase
+} ;
+
+// =========================================================================
+// ========================= ParU_C_Symbolic ===============================
+// =========================================================================
+
+// just a carrier for the C++ data structure
+
+extern "C"
+{
+    struct ParU_C_Symbolic_struct
+    {
+        void *sym_handle ;          // the C++ Symbolic struct
+    } ;
+}
+
+// =========================================================================
+// ========================= ParU_C_Numeric ================================
+// =========================================================================
+
+// just a carrier for the C++ data structure
+
+extern "C"
+{
+    struct ParU_C_Numeric_struct
+    {
+        void *num_handle ;  // the C++ Numeric struct
+    } ;
+}
+
 // -----------------------------------------------------------------------------
 // debugging and printing macros
 // -----------------------------------------------------------------------------
@@ -530,14 +787,20 @@ int64_t paru_get_nmalloc(void);
 #endif
 
 #ifndef NDEBUG
-void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num);
+void paru_write
+(
+    int scale,
+    char *id,
+    paru_work *Work,
+    ParU_Numeric Num
+) ;
 
 void paru_print_element
 (
     int64_t e,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 void paru_print_paru_tupleList(paru_tupleList *listSet, int64_t index);
@@ -556,8 +819,8 @@ ParU_Info paru_factorize_full_summed
     std::set<int64_t> &stl_colSet,
     std::vector<int64_t> &pivotal_elements,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 ParU_Info paru_exec_tasks
@@ -566,8 +829,8 @@ ParU_Info paru_exec_tasks
     int64_t *task_num_child,
     int64_t &chain_task,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 ParU_Info paru_exec_tasks_seq
@@ -575,33 +838,62 @@ ParU_Info paru_exec_tasks_seq
     int64_t t,
     int64_t *task_num_child,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 paru_element *paru_create_element(int64_t nrows, int64_t ncols);
 
-void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
-                          std::vector<int64_t> &colHash, paru_work *Work,
-                          ParU_Numeric *Num);
+void paru_assemble_row_2U
+(
+    int64_t e,
+    int64_t f,
+    int64_t sR,
+    int64_t dR,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    ParU_Numeric Num
+) ;
 
-bool paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp,
-                  int64_t rowCount, int64_t colCount, paru_work *Work,
-                  ParU_Numeric *Num);
-bool paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
-                   int64_t rowCount, int64_t colCount, paru_work *Work,
-                   ParU_Numeric *Num);
+bool paru_trsm
+(
+    int64_t f,
+    double *pF,
+    double *uPart,
+    int64_t fp,
+    int64_t rowCount,
+    int64_t colCount,
+    paru_work *Work,
+    ParU_Numeric Num
+) ;
+bool paru_dgemm
+(
+    int64_t f,
+    double *pF,
+    double *uPart,
+    double *el,
+    int64_t fp,
+    int64_t rowCount,
+    int64_t colCount,
+    paru_work *Work,
+    ParU_Numeric Num
+) ;
 
 void paru_init_rel
 (
     int64_t f,
     paru_work *Work,
-    const ParU_Symbolic *Sym
+    const ParU_Symbolic Sym
 ) ;
 
-void paru_update_rel_ind_col(int64_t e, int64_t f,
-                             std::vector<int64_t> &colHash, paru_work *Work,
-                             ParU_Numeric *Num);
+void paru_update_rel_ind_col
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    ParU_Numeric Num
+) ;
 
 void paru_update_rowDeg
 (
@@ -612,8 +904,8 @@ void paru_update_rowDeg
     std::set<int64_t> &stl_colSet,
     std::vector<int64_t> &pivotal_elements,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 int64_t paru_cumsum(int64_t n, int64_t *X, ParU_Control *Control);
@@ -626,10 +918,10 @@ ParU_Info paru_init_rowFronts
 (
     // input/output:
     paru_work *Work,
-    ParU_Numeric **Num_handle,
+    ParU_Numeric *Num_handle,
     // inputs, not modified:
     cholmod_sparse *A,
-    ParU_Symbolic *Sym,         // symbolic analysis
+    ParU_Symbolic Sym,         // symbolic analysis
     ParU_Control *Control
 ) ;
 
@@ -637,8 +929,8 @@ ParU_Info paru_front
 (
     int64_t f,  // front need to be assembled
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 ParU_Info paru_pivotal
@@ -649,8 +941,8 @@ ParU_Info paru_pivotal
     int64_t f,
     heaps_info &hi,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 int paru_intersection(int64_t e, paru_element **elementList,
@@ -664,8 +956,8 @@ ParU_Info paru_prior_assemble
     std::vector<int64_t> &colHash,
     heaps_info &hi,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 void paru_assemble_all
@@ -674,8 +966,8 @@ void paru_assemble_all
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work, 
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 void paru_assemble_cols
@@ -684,8 +976,8 @@ void paru_assemble_cols
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 void paru_assemble_rows
@@ -694,8 +986,8 @@ void paru_assemble_rows
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 void paru_assemble_el_with0rows
@@ -704,8 +996,8 @@ void paru_assemble_el_with0rows
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 void paru_full_summed
@@ -713,8 +1005,8 @@ void paru_full_summed
     int64_t e,
     int64_t f,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 // heap related
@@ -726,8 +1018,8 @@ ParU_Info paru_make_heap
     heaps_info &hi,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 ParU_Info paru_make_heap_empty_el
@@ -736,8 +1028,8 @@ ParU_Info paru_make_heap_empty_el
     std::vector<int64_t> &pivotal_elements,
     heaps_info &hi,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 ) ;
 
 // hash related
@@ -746,7 +1038,11 @@ void paru_insert_hash(int64_t key, int64_t value,
 int64_t paru_find_hash(int64_t key, std::vector<int64_t> &colHash,
                        int64_t *fcolList);
 
-ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num) ;
+ParU_Info paru_finalize_perm
+(
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
+) ;
 
 int64_t paru_gaxpy(cholmod_sparse *A, const double *x, double *y, double alpha);
 double paru_spm_1norm(cholmod_sparse *A);
@@ -754,21 +1050,57 @@ double paru_vec_1norm(const double *x, int64_t n);
 double paru_matrix_1norm(const double *x, int64_t m, int64_t n);
 
 void paru_diag_update(int64_t pivcol, int64_t pivrow, paru_work *Work);
-bool paru_tasked_dgemm(int64_t f, int64_t m, int64_t n, int64_t k, double *A,
-                          int64_t lda, double *B, int64_t ldb, double beta,
-                          double *C, int64_t ldc, paru_work *Work,
-                          ParU_Numeric *Num);
-bool paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha,
-                         double *a, int64_t lda, double *b, int64_t ldb,
-                         paru_work *Work, ParU_Numeric *Num);
-ParU_Info paru_free_work(const ParU_Symbolic *Sym, paru_work *Work);
+
+bool paru_tasked_dgemm
+(
+    int64_t f,
+    int64_t m,
+    int64_t n,
+    int64_t k,
+    double *A,
+    int64_t lda,
+    double *B,
+    int64_t ldb,
+    double beta,
+    double *C,
+    int64_t ldc,
+    paru_work *Work,
+    ParU_Numeric Num
+) ;
+bool paru_tasked_trsm
+(
+    int64_t f,
+    int64_t m,
+    int64_t n,
+    double alpha,
+    double *a,
+    int64_t lda,
+    double *b,
+    int64_t ldb,
+    paru_work *Work,
+    ParU_Numeric Num
+) ;
+
+ParU_Info paru_free_work
+(
+    const ParU_Symbolic Sym,
+    paru_work *Work
+) ;
 
 void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C) ;
 
 // not user-callable: for testing only
-ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
-                       cholmod_sparse *A, ParU_Symbolic *Sym, ParU_Numeric *Num,
-                       ParU_Control *Control);
+ParU_Info paru_backward
+(
+    double *x1,
+    double &resid,
+    double &anorm,
+    double &xnorm,
+    cholmod_sparse *A,
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num,
+    ParU_Control *Control
+) ;
 
 #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )
 extern "C" {

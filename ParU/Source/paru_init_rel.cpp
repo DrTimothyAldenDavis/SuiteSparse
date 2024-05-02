@@ -22,7 +22,7 @@ void paru_init_rel
 (
     int64_t f,
     paru_work *Work,
-    const ParU_Symbolic *Sym
+    const ParU_Symbolic Sym
 )
 {
     DEBUGLEVEL(0);

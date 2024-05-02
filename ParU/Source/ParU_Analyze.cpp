@@ -83,7 +83,7 @@ ParU_Info ParU_Analyze
     // input:
     cholmod_sparse *A,  // input matrix to analyze of size n-by-n
     // output:
-    ParU_Symbolic **Sym_handle,  // output, symbolic analysis
+    ParU_Symbolic *Sym_handle,  // output, symbolic analysis
     // control:
     ParU_Control *user_Control
 )
@@ -100,8 +100,8 @@ ParU_Info ParU_Analyze
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
 
-    ParU_Symbolic *Sym;
-    Sym = PARU_CALLOC (1, ParU_Symbolic);
+    ParU_Symbolic Sym;
+    Sym = PARU_CALLOC (1, ParU_Symbolic_struct);
     if (!Sym)
     {
         return (PARU_OUT_OF_MEMORY) ;
@@ -425,7 +425,7 @@ ParU_Info ParU_Analyze
         PRLEVEL(1, ("ParU: umfpack_dl_symbolic failed\n"));
         umfpack_dl_free_symbolic(&Symbolic);
         FREE_WORK;
-        PARU_FREE (1, ParU_Symbolic, Sym);
+        PARU_FREE (1, ParU_Symbolic_struct, Sym);
         *Sym_handle = NULL;
         return (info) ;
     }

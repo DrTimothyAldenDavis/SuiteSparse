@@ -17,8 +17,8 @@ void paru_print_element
 (
     int64_t e,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     // print out contribution blocks

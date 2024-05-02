@@ -17,7 +17,11 @@
 // paru_free_work: free all workspace in Numeric Work object
 //------------------------------------------------------------------------------
 
-ParU_Info paru_free_work(const ParU_Symbolic *Sym, paru_work *Work)
+ParU_Info paru_free_work
+(
+    const ParU_Symbolic Sym,
+    paru_work *Work
+)
 {
     int64_t m = Sym->m - Sym->n1;
     int64_t nf = Sym->nf;

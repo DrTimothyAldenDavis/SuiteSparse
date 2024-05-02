@@ -26,8 +26,8 @@ void paru_check_prior_element
     int64_t start_fac,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     int64_t *elRow = Work->elRow;
@@ -61,8 +61,8 @@ ParU_Info paru_make_heap
     heaps_info &hi,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);
@@ -240,8 +240,8 @@ ParU_Info paru_make_heap_empty_el
     std::vector<int64_t> &pivotal_elements,
     heaps_info &hi,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);

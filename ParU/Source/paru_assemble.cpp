@@ -23,8 +23,8 @@ void paru_assemble_all
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work, 
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);
@@ -323,8 +323,8 @@ void paru_assemble_cols
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);
@@ -524,8 +524,8 @@ void paru_assemble_rows
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);
@@ -727,8 +727,8 @@ void paru_assemble_el_with0rows
     int64_t f,
     std::vector<int64_t> &colHash,
     paru_work *Work,
-    const ParU_Symbolic *Sym,
-    ParU_Numeric *Num
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
 )
 {
     // This element contributes to both pivotal rows and pivotal columns

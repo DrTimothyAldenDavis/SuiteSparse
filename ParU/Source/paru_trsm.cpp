@@ -28,8 +28,17 @@
  */
 #include "paru_internal.hpp"
 
-bool paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp, int64_t rowCount,
-              int64_t colCount, paru_work *Work, ParU_Numeric *Num)
+bool paru_trsm
+(
+    int64_t f,
+    double *pF,
+    double *uPart,
+    int64_t fp,
+    int64_t rowCount,
+    int64_t colCount,
+    paru_work *Work,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
     int64_t mB = (int64_t)fp;

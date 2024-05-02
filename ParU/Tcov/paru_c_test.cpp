@@ -53,8 +53,8 @@ int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
     cholmod_sparse *A;
-    ParU_C_Symbolic *Sym = NULL;
-    ParU_C_Numeric *Num = NULL ;
+    ParU_C_Symbolic Sym = NULL;
+    ParU_C_Numeric Num = NULL ;
     double *b = NULL, *B = NULL, *X = NULL, *xx = NULL, *x = NULL,
            *t = NULL, *T = NULL, *R = NULL ;
     int64_t *P = NULL, *Q = NULL ;

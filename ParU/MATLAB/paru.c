@@ -62,8 +62,8 @@ void mexFunction
     cholmod_dense Bmatrix, *X = NULL, *B = NULL ;
     cholmod_common Common, *cm = NULL ;
     int64_t n ;
-    ParU_C_Symbolic *Sym = NULL ;
-    ParU_C_Numeric *Num = NULL ;
+    ParU_C_Symbolic Sym = NULL ;
+    ParU_C_Numeric Num = NULL ;
 
     //--------------------------------------------------------------------------
     // start CHOLMOD

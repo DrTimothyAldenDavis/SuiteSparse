@@ -22,8 +22,8 @@
 ParU_Info ParU_Solve
 (
     // input:
-    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    ParU_Numeric Num,       // numeric factorization from ParU_Factorize
     // input/output:
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
@@ -41,8 +41,8 @@ ParU_Info ParU_Solve
 ParU_Info ParU_Solve
 (
     // input:
-    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    ParU_Numeric Num,       // numeric factorization from ParU_Factorize
     double *b,              // vector of size n-by-1
     // output
     double *x,              // vector of size n-by-1
@@ -133,8 +133,8 @@ ParU_Info ParU_Solve
 ParU_Info ParU_Solve
 (
     // input
-    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    ParU_Numeric Num,       // numeric factorization from ParU_Factorize
     int64_t nrhs,           // # of right-hand sides
     // input/output:
     double *X,              // X is n-by-nrhs, where A is n-by-n;
@@ -153,8 +153,8 @@ ParU_Info ParU_Solve
 ParU_Info ParU_Solve
 (
     // input
-    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+    ParU_Numeric Num,       // numeric factorization from ParU_Factorize
     int64_t nrhs,           // # of right-hand sides
     double *B,              // n-by-nrhs, in column-major storage
     // output:

@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
     cholmod_sparse *A;
-    ParU_Symbolic *Sym;
+    ParU_Symbolic Sym;
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
     cc = &Common;
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     ParU_Analyze(A, &Sym, &Control);
     std::cout << "Input matrix is " << Sym->m << "x" << Sym->n
         << " nnz = " << Sym->anz << std::endl;
-    ParU_Numeric *Num;
+    ParU_Numeric Num;
     ParU_Factorize(A, Sym, &Num, &Control);
 
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
     cholmod_sparse *A;
-    ParU_C_Symbolic *Sym;
+    ParU_C_Symbolic Sym;
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
     cc = &Common;
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
     ParU_C_Analyze(A, &Sym, &Control);
     printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
         Sym->m, Sym->n, Sym->anz);
-    ParU_C_Numeric *Num;
+    ParU_C_Numeric Num;
     ParU_C_Factorize(A, Sym, &Num, &Control);
 
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
@@ -392,7 +392,7 @@ int main(int argc, char **argv)
         // input:
         cholmod_sparse *A,  // input matrix to analyze of size n-by-n
         // output:
-        ParU_Symbolic **Sym_handle,  // output, symbolic analysis
+        ParU_Symbolic *Sym_handle,  // output, symbolic analysis
         // control:
         ParU_Control *Control
     ) ; \end{verbatim}}
@@ -403,8 +403,8 @@ int main(int argc, char **argv)
     On output, the symbolic analysis structure \verb'Sym' is created, passed in
     as \verb'&Sym'.  The symbolic analysis can be used for different calls to
     \verb'ParU_Factorize' for matrices that have the same sparsity pattern but
-    different numerical values.  Details of the \verb'ParU_Symbolic' structure
-    are available in the \verb'ParU.h' file.  The symbolic analysis structure
+    different numerical values.
+    The symbolic analysis structure
     must be freed by \verb'ParU_FreeSymbolic'.
 
     FIXME: make Symbolic object opaque.
@@ -417,9 +417,9 @@ int main(int argc, char **argv)
     (
         // input:
         cholmod_sparse *A,  // input matrix to factorize
-        ParU_Symbolic *Sym, // symbolic analsys from ParU_Analyze
+        ParU_Symbolic Sym, // symbolic analsys from ParU_Analyze
         // output:
-        ParU_Numeric **Num_handle,
+        ParU_Numeric *Num_handle,
         // control:
         ParU_Control *Control
     ) ; \end{verbatim}}
@@ -429,8 +429,7 @@ int main(int argc, char **argv)
     created by a prior call to \verb'ParU_Analyze' with the same matrix
     \verb'A', or one with the same sparsity pattern as the one passed to
     \verb'ParU_Factorize'.  On output, the \verb'&Num' structure is created.
-    Details of the \verb'ParU_Numeric' structure are available in the
-    \verb'ParU.h' file.  The numeric factorization structure must be freed by
+    The numeric factorization structure must be freed by
     \verb'ParU_FreeNumeric'.
 
     FIXME: make Numeric object opaque.
@@ -453,8 +452,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_Solve        // solve Ax=b, overwriting b with the solution x
     (
         // input:
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,      // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,       // numeric factorization from ParU_Factorize
         // input/output:
         double *x,              // vector of size n-by-1; right-hand on input,
                                 // solution on output
@@ -465,8 +464,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_Solve        // solve Ax=b
     (
         // input:
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,      // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,       // numeric factorization from ParU_Factorize
         double *b,              // vector of size n-by-1
         // output
         double *x,              // vector of size n-by-1
@@ -477,8 +476,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_Solve        // solve AX=B, overwriting B with the solution X
     (
         // input
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,      // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,       // numeric factorization from ParU_Factorize
         int64_t nrhs,           // # of right-hand sides
         // input/output:
         double *X,              // X is n-by-nrhs, where A is n-by-n;
@@ -490,8 +489,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_Solve        // solve AX=B
     (
         // input
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,      // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,       // numeric factorization from ParU_Factorize
         int64_t nrhs,           // # of right-hand sides
         double *B,              // n-by-nrhs, in column-major storage
         // output:
@@ -512,8 +511,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_LSolve
     (
         // input
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,      // numeric factorization from ParU_Factorize
         // input/output:
         double *x,              // n-by-1, in column-major storage;
                                 // holds b on input, solution x on input
@@ -526,8 +525,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_LSolve
     (
         // input
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,      // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,       // numeric factorization from ParU_Factorize
         int64_t nrhs,           // # of right-hand-sides (# columns of X)
         // input/output:
         double *X,              // X is n-by-nrhs, where A is n-by-n;
@@ -548,8 +547,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_USolve
     (
         // input
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,      // numeric factorization from ParU_Factorize
         // input/output
         double *x,              // n-by-1, in column-major storage;
                                 // holds b on input, solution x on input
@@ -562,8 +561,8 @@ int main(int argc, char **argv)
     ParU_Info ParU_USolve
     (
         // input
-        ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
-        ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+        ParU_Symbolic Sym,     // symbolic analysis from ParU_Analyze
+        ParU_Numeric Num,      // numeric factorization from ParU_Factorize
         int64_t nrhs,           // # of right-hand-sides (# columns of X)
         // input/output:
         double *X,              // X is n-by-nrhs, where A is n-by-n;
@@ -729,7 +728,7 @@ int main(int argc, char **argv)
     ParU_Info ParU_FreeNumeric
     (
         // input/output:
-        ParU_Numeric **Num_handle,  // numeric object to free
+        ParU_Numeric *Num_handle,  // numeric object to free
         // control:
         ParU_Control *Control
     ) ; \end{verbatim} }
@@ -741,7 +740,7 @@ int main(int argc, char **argv)
     ParU_Info ParU_FreeSymbolic
     (
         // input/output:
-        ParU_Symbolic **Sym_handle, // symbolic object to free
+        ParU_Symbolic *Sym_handle, // symbolic object to free
         // control:
         ParU_Control *Control
     ) ; \end{verbatim} }
@@ -787,7 +786,7 @@ describe the user-callable C functions, their prototypes, and what they can do.
         // input:
         cholmod_sparse *A,  // input matrix to analyze of size n-by-n
         // output:
-        ParU_C_Symbolic **Sym_handle_C,  // output, symbolic analysis
+        ParU_C_Symbolic *Sym_handle_C,  // output, symbolic analysis
         // control:
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
@@ -807,9 +806,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
     (
         // input:
         cholmod_sparse *A,          // input matrix to factorize of size n-by-n
-        ParU_C_Symbolic *Sym_C,     // symbolic analysis from ParU_Analyze
+        ParU_C_Symbolic Sym_C,      // symbolic analysis from ParU_Analyze
         // output:
-        ParU_C_Numeric **Num_handle_C,    // output numerical factorization
+        ParU_C_Numeric *Num_handle_C,    // output numerical factorization
         // control:
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
@@ -830,8 +829,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_Axx
     (
         // input:
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C,  // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         // input/output:
         double *x,              // vector of size n-by-1; right-hand on input,
                                 // solution on output
@@ -844,8 +843,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_Axb
     (
         // input:
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         double *b,              // vector of size n-by-1
         // output
         double *x,              // vector of size n-by-1
@@ -858,8 +857,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_AXX
     (
         // input
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         int64_t nrhs,
         // input/output:
         double *X,              // array of size n-by-nrhs in column-major storage,
@@ -873,8 +872,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_AXB
     (
         // input
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         int64_t nrhs,
         double *B,              // array of size n-by-nrhs in column-major storage
         // output:
@@ -897,8 +896,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_Lxx
     (
         // input:
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         // input/output:
         double *x,              // vector of size n-by-1; right-hand on input,
                                 // solution on output
@@ -911,8 +910,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_LXX
     (
         // input
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         int64_t nrhs,
         // input/output:
         double *X,              // array of size n-by-nrhs in column-major storage,
@@ -934,8 +933,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_Uxx
     (
         // input:
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         // input/output:
         double *x,              // vector of size n-by-1; right-hand on input,
                                 // solution on output
@@ -948,8 +947,8 @@ describe the user-callable C functions, their prototypes, and what they can do.
     ParU_Info ParU_C_Solve_UXX
     (
         // input
-        ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
-        ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
         int64_t nrhs,
         // input/output:
         double *X,              // array of size n-by-nrhs in column-major storage,
@@ -1084,7 +1083,7 @@ describe the user-callable C functions, their prototypes, and what they can do.
     \begin{verbatim}
     ParU_Info ParU_C_FreeNumeric
     (
-        ParU_C_Numeric **Num_handle_C,    // numeric object to free
+        ParU_C_Numeric *Num_handle_C,    // numeric object to free
         // control:
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }
@@ -1097,7 +1096,7 @@ describe the user-callable C functions, their prototypes, and what they can do.
     \begin{verbatim}
     ParU_Info ParU_C_FreeSymbolic
     (
-        ParU_C_Symbolic **Sym_handle_C,   // symbolic object to free
+        ParU_C_Symbolic *Sym_handle_C,   // symbolic object to free
         // control:
         ParU_C_Control *Control_C
     ) ; \end{verbatim} }

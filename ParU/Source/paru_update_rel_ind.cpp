@@ -13,8 +13,14 @@
  * */
 
 #include "paru_internal.hpp"
-void paru_update_rel_ind_col(int64_t e, int64_t f,
-    std::vector<int64_t> &colHash, paru_work *Work, ParU_Numeric *Num)
+void paru_update_rel_ind_col
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    ParU_Numeric Num
+)
 {
     // updating relative column index
     // it might be for curent element or for the Upart therefore we might even

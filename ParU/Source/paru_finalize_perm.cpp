@@ -10,7 +10,11 @@
 
 #include "paru_internal.hpp"
 
-ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
+ParU_Info paru_finalize_perm
+(
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;

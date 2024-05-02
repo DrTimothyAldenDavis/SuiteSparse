@@ -12,8 +12,19 @@
  * @author Aznaveh
  */
 #include "paru_internal.hpp"
-bool paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *a,
-    int64_t lda, double *b, int64_t ldb, paru_work *Work, ParU_Numeric *Num)
+bool paru_tasked_trsm
+(
+    int64_t f,
+    int64_t m,
+    int64_t n,
+    double alpha,
+    double *a,
+    int64_t lda,
+    double *b,
+    int64_t ldb,
+    paru_work *Work,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
     int64_t naft;

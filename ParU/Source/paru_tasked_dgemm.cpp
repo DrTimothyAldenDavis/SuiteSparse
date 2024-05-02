@@ -28,7 +28,7 @@ bool paru_tasked_dgemm
     double *C,
     int64_t ldc,
     paru_work *Work,
-    ParU_Numeric *Num
+    ParU_Numeric Num
 )
 {
     DEBUGLEVEL(0);

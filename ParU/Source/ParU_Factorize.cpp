@@ -25,9 +25,9 @@ ParU_Info ParU_Factorize
 (
     // input:
     cholmod_sparse *A,  // input matrix to factorize
-    ParU_Symbolic *Sym, // symbolic analsys from ParU_Analyze
+    const ParU_Symbolic Sym,  // symbolic analsys from ParU_Analyze
     // output:
-    ParU_Numeric **Num_handle,
+    ParU_Numeric *Num_handle,
     // control:
     ParU_Control *user_Control
 )
@@ -117,8 +117,7 @@ ParU_Info ParU_Factorize
 
     #pragma omp atomic write
     Work->naft = 0;
-    ParU_Numeric *Num;
-    Num = *Num_handle;
+    ParU_Numeric Num = *Num_handle ;
 
     info = paru_init_rowFronts(Work, &Num, A, Sym, Control);
     *Num_handle = Num;

@@ -36,8 +36,8 @@ int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
     cholmod_sparse *A = NULL;
-    ParU_Symbolic *Sym = NULL;
-    ParU_Numeric *Num = NULL;
+    ParU_Symbolic Sym = NULL;
+    ParU_Numeric Num = NULL;
     double *b = NULL, *B = NULL, *X = NULL, *xx = NULL ;
 
     // default log10 of expected residual.  +1 means failure is expected
