@@ -1,5 +1,5 @@
 function paru_demo
-%PARU_DEMO: test a single sparse matrix in ParU
+%PARU_DEMO test a single sparse matrix in ParU
 %
 % Usage: paru_demo
 %
@@ -10,13 +10,14 @@ function paru_demo
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 type paru_demo
-load west0479
+load west0479 %#ok<LOAD>
 A = west0479 ;
 n = size (A,1) ;
 b = rand (n,1) ;
 x = A\b ;
 norm (A*x-b)
 [x2,paru_stats] = paru (A,b) ;
-paru_stats
+paru_stats %#ok<NOPRT>
 norm (A*x2-b)
+
 

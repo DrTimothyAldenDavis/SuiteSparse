@@ -31,7 +31,7 @@ function paru_make (try_intel)
 if (nargin < 1)
     try_intel = true ;
 end
-if (try_intel & (ismac || isunix))
+if (try_intel && (ismac || isunix))
     v = version ('-blas') ;
     try_intel = contains (v, 'Intel') ;
 end
@@ -83,7 +83,7 @@ else
 end
 
 % check if MATLAB has the MKL Intel BLAS on Linux or Mac
-if (try_intel & (ismac || isunix))
+if (try_intel && (ismac || isunix))
     v = version ('-blas') ;
     if (contains (v, 'Intel'))
         flags = [flags ' -DBLAS_Intel10_64ilp'] ;
@@ -400,7 +400,7 @@ for k = 1:length (paru_src)
     slash = strfind (src, '/') ;
     slash = slash (end) + 1 ;
     o = src (slash:end) ;
-    obj_files = [ obj_files ' ' o '.' obj ] ;
+    obj_files = [ obj_files ' ' o '.' obj ] ; %#ok<AGROW>
 end
 
 % compile each SuiteSparse C file (SuiteSparse_config, AMD, COLAMD,
@@ -414,7 +414,7 @@ for k = 1:length (suitesparse_src)
     slash = strfind (src, '/') ;
     slash = slash (end) + 1 ;
     o = src (slash:end) ;
-    obj_files = [ obj_files ' ' o '.' obj ] ;
+    obj_files = [ obj_files ' ' o '.' obj ] ; %#ok<AGROW>
 end
 
 % compile the paru mexFunction

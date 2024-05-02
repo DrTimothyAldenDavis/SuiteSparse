@@ -1,5 +1,5 @@
-function paru_tiny
-%PARU_TINY test a tiny sparse matrix with paru
+function resid = paru_tiny
+%PARU_TINY test a tiny sparse matrix with ParU
 %
 % Usage: paru_tiny
 %
@@ -12,5 +12,6 @@ function paru_tiny
 type paru_tiny
 A = sparse (rand (2)) ;
 b = rand (2,1) ;
-x = paru (A,b)
+x = paru (A,b) %#ok<*NOPRT>
 resid = A*x-b
+

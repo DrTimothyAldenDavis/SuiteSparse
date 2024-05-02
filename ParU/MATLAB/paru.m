@@ -1,4 +1,4 @@
-function [x,stats] = paru (A,b,opts)
+function [x,stats] = paru (A,b,opts)    %#ok
 %PARU solve Ax=b using ParU sparse LU factorization
 %
 % Usage: x = paru(A,b), computes x=A\b using the ParU LU factorization method,

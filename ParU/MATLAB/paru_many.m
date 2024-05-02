@@ -1,5 +1,5 @@
 function paru_many
-%PARU_MANY: test many matrices with ParU
+%PARU_MANY test many matrices with ParU
 %
 % Usage: paru_many
 %
@@ -438,7 +438,7 @@ singular_matrices = [
     ] ;
 
 % these matrices cause METIS to fail
-skip_metis = [1373] ;
+skip_metis = [1373] ; %#ok<NBRAK2>
 
 % skip these matrices (too large, or singluar):
 skip = [too_large ; singular_matrices] ;
@@ -455,8 +455,8 @@ nmat = length (test_matrices) ;
 paru_demo
 
 % start with this matrix:
-first = 1 ;
-first = find (test_matrices == 1235)
+% first = 1 ;
+first = find (test_matrices == 1235) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
@@ -498,7 +498,7 @@ for k = first:nmat
     t_backslash = toc (t1) ;
 
     % try x=paru(A,b), but only if the matrix is not singular
-    [lastmsg, lastid] = lastwarn ;
+    [~, lastid] = lastwarn ;
     lastwarn ('') ;
     if (isempty (lastid))
 
@@ -568,9 +568,10 @@ for k = first:nmat
     else
 
         % add this singular matrix to the list of matrices to skip
-        skip = [skip ; id] ;
+        skip = [skip ; id] ; %#ok<AGROW>
         save skip_set skip
 
     end
 end
+
 
