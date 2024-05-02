@@ -460,8 +460,8 @@ nmat = length (test_matrices) ;
 paru_demo
 
 % start with this matrix:
-% first = 1 ;
-first = find (test_matrices == 1235) ;
+first = 1 ;
+% first = find (test_matrices == 1235) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
