@@ -19,7 +19,8 @@ function paru_many
 % get all real square matrices in the SuiteSparse Collection,
 % that are not candidates for a Cholesky factorization.
 index = ssget ;
-test_matrices = find (index.nrows == index.ncols & index.isReal & ~index.cholcand) ;
+test_matrices = find ((index.nrows == index.ncols) & index.isReal ...
+    & (index.sprank == index.nrows) & ~index.cholcand) ;
 
 % these matrices are too large, causing MATLAB and/or paru to fail or to take
 % far too much time.  Some are graphs that are not meant to represent a sparse
@@ -451,6 +452,10 @@ singular_matrices = [
         2319
         2633
         2624
+        2516
+        2489
+        2291
+        2301
     ] ;
 
 % these matrices cause METIS to fail
@@ -472,7 +477,7 @@ paru_demo
 
 % start with this matrix:
 % first = 1 ;
-first = find (test_matrices == 1898) ;
+first = find (test_matrices == 1897) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
