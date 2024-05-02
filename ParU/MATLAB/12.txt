@@ -1,0 +1,417 @@
+paru_demo
+
+function paru_demo
+%PARU_DEMO: test a single sparse matrix in ParU
+%
+% Usage: paru_demo
+%
+% See also paru, paru_make, paru_many, paru_tiny, mldivide.
+
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
+
+type paru_demo
+load west0479
+A = west0479 ;
+n = size (A,1) ;
+b = rand (n,1) ;
+x = A\b ;
+norm (A*x-b)
+[x2,paru_stats] = paru (A,b) ;
+paru_stats
+norm (A*x2-b)
+
+
+ans =
+
+   3.6601e-10
+
+
+paru_stats = 
+
+  struct with fields:
+
+     analysis_time: 4.0603e-04
+    factorize_time: 0.0012
+        solve_time: 7.4148e-05
+          strategy: 'unsymmetric'
+          ordering: 'colamd(A)'
+
+
+ans =
+
+   2.8711e-09
+
+paru_many
+
+function paru_demo
+%PARU_DEMO: test a single sparse matrix in ParU
+%
+% Usage: paru_demo
+%
+% See also paru, paru_make, paru_many, paru_tiny, mldivide.
+
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
+
+type paru_demo
+load west0479
+A = west0479 ;
+n = size (A,1) ;
+b = rand (n,1) ;
+x = A\b ;
+norm (A*x-b)
+[x2,paru_stats] = paru (A,b) ;
+paru_stats
+norm (A*x2-b)
+
+
+ans =
+
+   9.4624e-11
+
+
+paru_stats = 
+
+  struct with fields:
+
+     analysis_time: 3.2115e-04
+    factorize_time: 7.2384e-04
+        solve_time: 5.4121e-05
+          strategy: 'unsymmetric'
+          ordering: 'colamd(A)'
+
+
+ans =
+
+   1.4562e-09
+
+
+first =
+
+        1015
+
+testing 1328 matrices:
+1015  732: Li/li nz 1215181
+1016 2456: DIMACS10/caidaRouterLevel nz 1218132
+1017 2604: DIMACS10/mn2010 nz 1227102
+1018 2769: Mycielski/mycielskian13 nz 1227742
+1019 2583: DIMACS10/al2010 nz 1230482
+1020 2304: SNAP/amazon0302 nz 1234877
+1021 1334: VanVelzen/std1_Jac2 nz 1248213
+1022 2376: Williams/mac_econ_fwd500 nz 1273389
+1023 2617: DIMACS10/ok2010 nz 1274148
+1024  953: Schenk_IBMNA/c-73 nz 1279274
+1025 1590: Schenk_IBMNA/c-73b nz 1279274
+1026 2596: DIMACS10/in2010 nz 1281716
+1027 1863: Rajat/Raj1 nz 1300261
+1028 1418: Sandia/ASIC_320ks nz 1316085
+1029 2526: DIMACS10/fe_rotor nz 1324862
+1030 1875: HVDC/hvdc2 nz 1339638
+1031  786: Nemeth/nemeth22 nz 1358832
+1032  890: Norris/heart1 nz 1385317
+1033 2626: DIMACS10/va2010 nz 1402128
+1034 2608: DIMACS10/nc2010 nz 1416620
+1035 2591: DIMACS10/ga2010 nz 1418056
+1036 2836: VLSI/imagesensor nz 1446396
+1037 1336: VanVelzen/std1_Jac3 nz 1455374
+1038 2501: DIMACS10/rgg_n_2_17_s0 nz 1457506
+1039 2237: TSOPF/TSOPF_RS_b300_c1 nz 1474325
+1040 2518: DIMACS10/598a nz 1483868
+1041  816: Simon/raefsky3 nz 1488768
+1042  750: Mallya/lhr71 nz 1494006
+1043 2302: SNAP/web-NotreDame nz 1497134
+1044 1297: GHS_indef/boyd2 nz 1500397
+1045  788: Nemeth/nemeth24 nz 1506550
+1046  787: Nemeth/nemeth23 nz 1506810
+1047  789: Nemeth/nemeth25 nz 1511758
+1048  790: Nemeth/nemeth26 nz 1511760
+1049  751: Mallya/lhr71c nz 1528092
+1050 1308: GHS_indef/sparsine nz 1548988
+1051 2473: DIMACS10/delaunay_n18 nz 1572792
+1052 2603: DIMACS10/mi2010 nz 1578090
+1053 2448: LAW/dblp-2010 nz 1615400
+1054 2461: DIMACS10/coAuthorsCiteseer nz 1628268
+1055 2834: VLSI/nv1 nz 1635003
+1056 1231: GHS_indef/d_pretok nz 1641672
+1057 1338: VanVelzen/Zd_Jac2 nz 1642407
+1058 2605: DIMACS10/mo2010 nz 1656568
+1059  925: FEMLAB/ns3Da nz 1679599
+1060  827: Vavasis/av41092 nz 1683902
+1061 1251: GHS_indef/turon_m nz 1690876
+1062 1420: Sandia/ASIC_680ks nz 1693767
+1063 1434: Oberwolfach/gas_sensor nz 1703365
+1064 2615: DIMACS10/ny2010 nz 1709544
+1065 1342: VanVelzen/Zd_Jac6 nz 1711557
+1066  821: Simon/venkat25 nz 1717763
+1067  822: Simon/venkat50 nz 1717777
+1068  820: Simon/venkat01 nz 1717792
+1069 1858: QLi/crashbasis nz 1750416
+1070 1859: QLi/majorbasis nz 1750416
+1071 2616: DIMACS10/oh2010 nz 1768240
+1072  812: Simon/bbmat nz 1771722
+1073 1642: POLYFLOW/invextr1_new nz 1793881
+1074 2824: Goodwin/Goodwin_071 nz 1797934
+1075 2222: TSOPF/TSOPF_FS_b162_c3 nz 1801300
+1076 2778: SNAP/com-Amazon nz 1851744
+1077  811: Simon/appu nz 1853104
+1078 1370: Rajat/rajat21 nz 1876011
+1079 2838: VLSI/power9 nz 1887730
+1080 2788: SNAP/loc-Gowalla nz 1900654
+1081 1340: VanVelzen/Zd_Jac3 nz 1915726
+1082 1417: Sandia/ASIC_320k nz 1931828
+1083 1373: Rajat/rajat24 nz 1946979
+1084 2462: DIMACS10/coAuthorsDBLP nz 1955352
+1085 2227: TSOPF/TSOPF_FS_b39_c19 nz 1977600
+1086 1643: POLYFLOW/mixtank_new nz 1990919
+1087 2851: Precima/analytics nz 2006126
+1088 2539: IPSO/TSC_OPF_1047 nz 2012833
+1089  913: vanHeukelum/cage12 nz 2032536
+1090 1880: Rudnyi/water_tank nz 2035281
+1091 2619: DIMACS10/pa2010 nz 2058462
+1092  931: FEMLAB/sme3Db nz 2081063
+1093  972: Schenk_ISEI/para-10 nz 2094873
+1094  974: Schenk_ISEI/para-5 nz 2094873
+1095  975: Schenk_ISEI/para-6 nz 2094873
+1096  976: Schenk_ISEI/para-7 nz 2094873
+1097  977: Schenk_ISEI/para-8 nz 2094873
+1098  978: Schenk_ISEI/para-9 nz 2094873
+1099 1232: GHS_indef/darcy003 nz 2097566
+1100 1241: GHS_indef/mario002 nz 2097566
+1101 2779: SNAP/com-DBLP nz 2099732
+1102 2377: Williams/mc2depi nz 2100225
+1103 2427: AG-Monien/wave nz 2118662
+1104  964: Schenk_ISEI/barrier2-1 nz 2129496
+1105  965: Schenk_ISEI/barrier2-2 nz 2129496
+1106  966: Schenk_ISEI/barrier2-3 nz 2129496
+1107  967: Schenk_ISEI/barrier2-4 nz 2129496
+1108 2517: DIMACS10/144 nz 2148786
+1109  961: Schenk_ISEI/barrier2-10 nz 2158759
+1110  962: Schenk_ISEI/barrier2-11 nz 2158759
+1111  963: Schenk_ISEI/barrier2-12 nz 2158759
+1112  968: Schenk_ISEI/barrier2-9 nz 2158759
+1113 2595: DIMACS10/il2010 nz 2164464
+1114 1235: GHS_indef/exdata_1 nz 2269500
+1115  979: Kamvar/Stanford nz 2312497
+1116 2303: SNAP/web-Stanford nz 2312497
+1117 2460: DIMACS10/citationCiteseer nz 2313294
+1118  374: Bova/rma10 nz 2329092
+1119 1579: Schenk_IBMNA/c-big nz 2340859
+1120 2590: DIMACS10/fl2010 nz 2346294
+1121  928: FEMLAB/poisson3Db nz 2374949
+1122 2223: TSOPF/TSOPF_FS_b162_c4 nz 2398220
+1123 2642: DIMACS10/vsp_msc10848_300sep_100in_1Kout nz 2442056
+1124 2378: Williams/cop20k_A nz 2624331
+1125 1419: Sandia/ASIC_680k nz 2638997
+1126 2848: Freescale/nxp1 nz 2655880
+1127 1431: Oberwolfach/filter3D nz 2707179
+1128 2260: Botonakis/thermomech_dK nz 2846228
+1129  973: Schenk_ISEI/para-4 nz 2930882
+1130 2238: TSOPF/TSOPF_RS_b300_c2 nz 2943887
+1131  895: Norris/stomach nz 3021648
+1132 2318: SNAP/roadNet-PA nz 3083796
+1133 2502: DIMACS10/rgg_n_2_18_s0 nz 3094566
+1134 2510: DIMACS10/belgium_osm nz 3099940
+1135 2379: Williams/webbase-1M nz 3105536
+1136 2228: TSOPF/TSOPF_FS_b39_c30 nz 3121160
+1137 2474: DIMACS10/delaunay_n19 nz 3145646
+1138  932: FEMLAB/sme3Dc nz 3148656
+1139 2305: SNAP/amazon0312 nz 3200440
+1140 2441: LAW/cnr-2000 nz 3216152
+1141 2825: Goodwin/Goodwin_095 nz 3226066
+1142 2798: SNAP/wiki-talk-temporal nz 3309592
+1143 2306: SNAP/amazon0505 nz 3356824
+1144 2529: DIMACS10/m14b nz 3358036
+1145 2307: SNAP/amazon0601 nz 3387388
+1146 1852: Botonakis/FEM_3D_thermal2 nz 3489300
+1147 2586: DIMACS10/ca2010 nz 3489366
+1148 2830: Embree/ifiss_mat nz 3599932
+1149 2770: Mycielski/mycielskian14 nz 3695512
+1150 1396: Rajat/rajat29 nz 3760246
+1151 1399: Raju/laminar_duct3D nz 3788857
+1152 2319: SNAP/roadNet-TX nz 3843320
+1153  802: Ronis/xenon2 nz 3866688
+1154 2633: DIMACS10/vsp_bcsstk30_500sep_10in_1Kout nz 4033156
+1155 2439: AG-Monien/debr nz 4194298
+1156 1208: Oberwolfach/t3dh_a nz 4352105
+1157 1450: Oberwolfach/t3dh nz 4352105
+1158 2243: TSOPF/TSOPF_RS_b678_c1 nz 4396289
+1159 2220: TSOPF/TSOPF_FS_b300 nz 4400122
+1160 2224: TSOPF/TSOPF_FS_b300_c1 nz 4400122
+1161 2239: TSOPF/TSOPF_RS_b300_c3 nz 4413449
+1162  898: Norris/torso3 nz 4429042
+1163 2624: DIMACS10/tx2010 nz 4456272
+1164 1898: CEMW/tmt_unsym nz 4584801
+1165 1897: CEMW/t2em nz 4590832
+1166 2516: DIMACS10/netherlands_osm nz 4882476
+1167 2489: DIMACS10/kron_g500-logn16 nz 4912469
+1168 2291: SNAP/wiki-Talk nz 5021410
+1169 2301: SNAP/web-Google nz 5105039
+1170 2445: LAW/amazon-2008 nz 5158388
+1171 1893: QLi/largebasis nz 5240084
+1172 1867: Muite/Chebyshev4 nz 5377761
+1173 1201: Hamrle/Hamrle3 nz 5514242
+1174 2839: VLSI/radiation nz 5526637
+1175 2317: SNAP/roadNet-CA nz 5533214
+1176 2826: Goodwin/Goodwin_127 nz 5778545
+1177  285: ATandT/pre2 nz 5834044
+1178 2783: SNAP/com-Youtube nz 5975248
+1179 1397: Rajat/rajat30 nz 6175244
+1180 2849: Martin/marine1 nz 6226538
+1181 2580: DIMACS10/NACA0015 nz 6229636
+1182 2475: DIMACS10/delaunay_n20 nz 6291372
+1183 2503: DIMACS10/rgg_n_2_19_s0 nz 6539532
+1184 2519: DIMACS10/auto nz 6629222
+1185 2235: TSOPF/TSOPF_RS_b2052_c1 nz 6761100
+1186  971: Schenk_ISEI/ohne2 nz 6869939
+1187  914: vanHeukelum/cage13 nz 7479343
+1188  980: Kamvar/Stanford_Berkeley nz 7583376
+1189 2300: SNAP/web-BerkStan nz 7600595
+1190 2336: Fluorem/PR02R nz 8185136
+1191  896: Norris/torso1 nz 8516500
+1192 2225: TSOPF/TSOPF_FS_b300_c2 nz 8767466
+1193 2244: TSOPF/TSOPF_RS_b678_c2 nz 8781949
+1194 2265: Bourchtein/atmosmodd nz 8814880
+1195 2266: Bourchtein/atmosmodj nz 8814880
+1196 2840: VLSI/test1 nz 9447535
+1197 2330: Gleich/flickr nz 9837214
+1198 2490: DIMACS10/kron_g500-logn17 nz 10228360
+1199 2267: Bourchtein/atmosmodl nz 10319760
+1200 2268: Bourchtein/atmosmodm nz 10319760
+1201 2771: Mycielski/mycielskian15 nz 11111110
+1202 2831: Hardesty/Hardesty1 nz 12143314
+1203 2476: DIMACS10/delaunay_n21 nz 12582816
+1204 1876: Zaoui/kkt_power nz 12771361
+1205 2226: TSOPF/TSOPF_FS_b300_c3 nz 13135930
+1206 2274: Freescale/memchip nz 13343948
+1207 2483: DIMACS10/hugetrace-00000 nz 13758266
+1208 2504: DIMACS10/rgg_n_2_20_s0 nz 13783240
+1209 2514: DIMACS10/italy_osm nz 14027956
+1210 2662: Freescale/Freescale2 nz 14313235
+1211 2786: SNAP/higgs-twitter nz 14855842
+1212 2277: Freescale/circuit5M_dc nz 14865409
+1213 1514: Pajek/patents nz 14970767
+1214 2498: DIMACS10/venturiLevel3 nz 16108474
+1215 2219: TSOPF/TSOPF_RS_b2383 nz 16171169
+1216 2236: TSOPF/TSOPF_RS_b2383_c1 nz 16171169
+1217 2513: DIMACS10/great-britain_osm nz 16313034
+1218 2294: SNAP/cit-Patents nz 16518948
+1219 2442: LAW/in-2004 nz 16917053
+1220 2216: Freescale/Freescale1 nz 17052626
+1221 2647: Janna/CoupCons3D nz 17277420
+1222 2486: DIMACS10/hugetric-00000 nz 17467046
+1223 2443: LAW/eu-2005 nz 19235140
+1224 1843: Gleich/wikipedia-20051105 nz 19753078
+1225 2487: DIMACS10/hugetric-00010 nz 19771708
+1226 1398: Rajat/rajat31 nz 20316253
+1227 2579: DIMACS10/M6 nz 21003872
+1228 2491: DIMACS10/kron_g500-logn18 nz 21165908
+1229 2488: DIMACS10/hugetric-00020 nz 21361554
+1230 2329: Dziekonski/gsm_106857 nz 21758924
+1231 2321: SNAP/as-Skitter nz 22190596
+1232 2577: DIMACS10/333SP nz 22217266
+1233 2578: DIMACS10/AS365 nz 22736152
+1234 2649: Janna/Transport nz 23487281
+1235 2512: DIMACS10/germany_osm nz 24738362
+1236 2581: DIMACS10/NLR nz 24975952
+1237 2477: DIMACS10/delaunay_n22 nz 25165738
+1238 2509: DIMACS10/asia_osm nz 25423206
+1239 2841: VLSI/dgreen nz 26606169
+1240 2380: Freescale/FullChip nz 26621983
+1241  915: vanHeukelum/cage14 nz 27130349
+1242 2495: DIMACS10/adaptive nz 27248640
+1243 2648: Janna/ML_Laplace nz 27582698
+1244 1901: Schenk/nlpkkt80 nz 28192672
+1245 2799: SNAP/wiki-topcats nz 28511807
+1246 2505: DIMACS10/rgg_n_2_21_s0 nz 28975990
+1247 2464: DIMACS10/coPapersDBLP nz 30491458
+1248 2789: SNAP/soc-Pokec nz 30622564
+1249 2463: DIMACS10/coPapersCiteseer nz 32073440
+1250 2772: Mycielski/mycielskian16 nz 33382480
+1251 2458: DIMACS10/road_central nz 33866826
+1252 2847: VLSI/ss nz 34753577
+1253 2842: VLSI/vas_stokes_1M nz 34767207
+1254 2497: DIMACS10/packing-500x100x100-b050 nz 34976486
+1255 2484: DIMACS10/hugetrace-00010 nz 36164358
+1256 2794: SNAP/sx-stackoverflow nz 36233450
+1257 1844: Gleich/wikipedia-20060925 nz 37269096
+1258 2337: Fluorem/RM07R nz 37464962
+1259 2835: VLSI/nv2 nz 37475646
+1260 2800: MAWI/mawi_201512012345 nz 38040320
+1261 1845: Gleich/wikipedia-20061104 nz 39383235
+1262 2492: DIMACS10/kron_g500-logn19 nz 43562265
+1263 1846: Gleich/wikipedia-20070206 nz 45030389
+1264 2485: DIMACS10/hugetrace-00020 nz 47997626
+1265 2386: Dziekonski/dielFilterV2real nz 48538952
+1266 2478: DIMACS10/delaunay_n23 nz 50331568
+1267 2480: DIMACS10/hugebubbles-00000 nz 54940162
+1268 1842: Gleich/wb-edu nz 57156537
+1269 2459: DIMACS10/road_usa nz 57708624
+1270 2854: GAP/GAP-road nz 57708624
+1271 2481: DIMACS10/hugebubbles-00010 nz 58359528
+1272 2276: Freescale/circuit5M nz 59524291
+1273 2506: DIMACS10/rgg_n_2_22_s0 nz 60718396
+1274 2482: DIMACS10/hugebubbles-00020 nz 63580358
+1275 2843: VLSI/vas_stokes_2M nz 65129037
+1276 2285: SNAP/soc-LiveJournal1 nz 68993773
+1277 2781: SNAP/com-LiveJournal nz 69362378
+1278 2801: MAWI/mawi_201512020000 nz 74485420
+1279 2446: LAW/ljournal-2008 nz 79023142
+1280 2550: Janna/Long_Coup_dt0 nz 84422970
+1281 2551: Janna/Long_Coup_dt6 nz 84422970
+1282 2496: DIMACS10/channel-500x100x100-b050 nz 85362744
+1283 2493: DIMACS10/kron_g500-logn20 nz 89239674
+1284 2388: Dziekonski/dielFilterV3real nz 89306020
+1285 1902: Schenk/nlpkkt120 nz 95117792
+1286  916: vanHeukelum/cage15 nz 99199551
+1287 2773: Mycielski/mycielskian17 nz 100245742
+1288 2479: DIMACS10/delaunay_n24 nz 100663202
+1289 2511: DIMACS10/europe_osm nz 108109320
+1290 2650: Janna/ML_Geer nz 110686677
+1291 2809: GenBank/kmer_V2a nz 117217600
+1292 2548: Janna/Cube_Coup_dt0 nz 124406070
+1293 2549: Janna/Cube_Coup_dt6 nz 124406070
+1294 2507: DIMACS10/rgg_n_2_23_s0 nz 127002786
+1295 2844: VLSI/vas_stokes_4M nz 131577616
+1296 2807: GenBank/kmer_U1a nz 138778562
+1297 2802: MAWI/mawi_201512020030 nz 143414960
+1298 2494: DIMACS10/kron_g500-logn21 nz 182082942
+1299 2451: LAW/indochina-2004 nz 194109311
+1300 1903: Schenk/nlpkkt160 nz 225422112
+1301 2782: SNAP/com-Orkut nz 234370166
+1302 2508: DIMACS10/rgg_n_2_24_s0 nz 265114400
+1303 2803: MAWI/mawi_201512020130 nz 270234840
+1304 2384: Fluorem/HV15R nz 283073458
+1305 2806: GenBank/kmer_P1a nz 297829984
+1306 2450: LAW/uk-2002 nz 298113762
+1307 2774: Mycielski/mycielskian18 nz 300933832
+1308 2845: VLSI/stokes nz 349321980
+1309 2805: GenBank/kmer_A2a nz 360585172
+1310 1904: Schenk/nlpkkt200 nz 440225632
+1311 2808: GenBank/kmer_V1r nz 465410904
+1312 2804: MAWI/mawi_201512020330 nz 480047894
+1313 2453: LAW/arabic-2005 nz 639999458
+1314 1905: Schenk/nlpkkt240 nz 760648352
+1315 2775: Mycielski/mycielskian19 nz 903194710
+1316 2455: LAW/uk-2005 nz 936364282
+1317 2449: LAW/webbase-2001 nz 1019903190
+1318 2452: LAW/it-2004 nz 1150725436
+1319 2852: GAP/GAP-twitter nz 1468364884
+1320 2796: SNAP/twitter7 nz 1468365182
+1321 2853: GAP/GAP-web nz 1930292948
+1322 2454: LAW/sk-2005 nz 1949412601
+1323 2776: Mycielski/mycielskian20 nz 2710370560
+1324 2780: SNAP/com-Friendster nz 3612134270
+1325 2855: GAP/GAP-kron nz 4223264644
+1326 2856: GAP/GAP-urand nz 4294966740
+1327 2810: Sybrandt/MOLIERE_2016 nz 6669254694
+1328 2893: Sybrandt/AGATHA_2015 nz 11588725964
+Hit enter to continue:
+
+1015  732: Li/li nz 1215181
+A\b  resid 3.95e-14 time:      66.89 sec
+ParU resid 2.59e-11 time:       7.21 sec (default) order:       0.13 factor:       7.01 solve:       0.04 sec speedup:     9.28
+ParU resid 1.72e-11 time:       2.89 sec (METIS)   order:       0.50 factor:       2.35 solve:       0.03 sec speedup:    23.14
+1016 2456: DIMACS10/caidaRouterLevel nz 1218132

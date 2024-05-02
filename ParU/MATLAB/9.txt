@@ -1,0 +1,523 @@
+
+
+
+dir
+
+.             2.txt         4.txt         7.txt         9.txt         paru.c        paru_demo.m   paru_many.m   skip_set.mat  
+..            3.txt         5.txt         8.txt         Makefile      paru.m        paru_make.m   paru_tiny.m   
+
+load skip_set.mat
+skip
+
+skip =
+
+        2575
+        2576
+          56
+        1525
+        1479
+        1527
+        1528
+         185
+        1495
+        1485
+        1516
+          59
+          58
+         186
+         238
+        1515
+        1481
+        1486
+        1474
+        1501
+        1480
+        1499
+        2399
+        1489
+        1496
+        2097
+        1491
+        1482
+        1519
+        1490
+        1498
+        2149
+        1493
+         274
+         109
+        2396
+        1492
+        1497
+        2457
+         264
+        1484
+         317
+        1475
+        1494
+        2400
+        1477
+        1478
+         158
+         273
+        2417
+        2389
+        2416
+        1523
+        1476
+         282
+        2357
+        2365
+        1117
+        1154
+        1156
+        1157
+        1158
+        1159
+        1160
+        1161
+        1162
+        1163
+        1164
+        1165
+        1166
+        1167
+        1168
+        2361
+        2369
+        1488
+        1458
+        2392
+        2015
+        2358
+        2366
+        1465
+        1172
+         212
+        1467
+        1469
+        2362
+        2370
+        2429
+        2431
+         240
+        2407
+        1529
+        1511
+        1522
+        2359
+        2367
+        1518
+        2420
+        2363
+        2371
+        2401
+        1055
+        2705
+        2331
+         843
+        1471
+        1483
+        2428
+        2689
+         314
+        2195
+        2196
+        1463
+        1239
+         230
+        2360
+        2368
+        2364
+        2372
+        1521
+         348
+        2408
+         429
+        1186
+         511
+         512
+         514
+        2419
+        1507
+        2418
+        1530
+        2404
+        2531
+        1533
+        1466
+        1468
+        1470
+         347
+        2422
+        1456
+        1464
+        1512
+        2402
+         375
+         244
+        2777
+         345
+         459
+         456
+         457
+        2311
+         458
+          68
+        1181
+         755
+        1500
+        2790
+        2785
+         519
+         520
+        2784
+        2312
+         754
+        2320
+        2297
+        2398
+        2310
+        2309
+         525
+         526
+        2350
+        2791
+        1841
+        2308
+        2351
+         211
+        1508
+        1185
+        2352
+        2348
+        2256
+        1891
+        2323
+        2405
+        2340
+        2343
+        2339
+        2342
+        2346
+        2341
+        2353
+         209
+         210
+        2104
+        1178
+        2299
+        2698
+        1534
+        2314
+        2425
+        1245
+        2354
+        2313
+        2324
+        2355
+        1622
+        1234
+        1217
+        2430
+        1472
+        2347
+        1242
+        2349
+        2699
+        1176
+        2356
+        1215
+         410
+        1175
+        1216
+        1179
+        2700
+        2433
+        2704
+        2315
+        2413
+        2432
+        2393
+        2390
+        2440
+        2527
+        1624
+        2288
+        2322
+        2643
+        1424
+        2589
+        1473
+        2592
+        2636
+        2620
+         819
+        1531
+        1247
+        1248
+        2434
+        2344
+        2345
+        2438
+        2316
+        2627
+        1180
+        1459
+        2296
+        2797
+        2634
+        2435
+         954
+        1505
+         376
+        2582
+        1182
+         740
+         742
+        2611
+        2298
+        2515
+        2793
+        2394
+        2391
+        2444
+        1173
+        2644
+         956
+        2199
+        2200
+        1517
+         744
+        2499
+         346
+        1174
+        2332
+        1462
+        1461
+        2524
+        2333
+        2602
+        2588
+        1502
+        2395
+        1503
+        2293
+        2290
+         746
+        2645
+        2641
+        2295
+        2622
+        2614
+        2289
+        2292
+        2631
+        2787
+        2637
+         955
+         560
+        2284
+        2326
+         957
+         958
+        2327
+        2328
+        1246
+        1238
+        1513
+         562
+        2625
+        2792
+        2635
+        1369
+        1377
+        2609
+        2607
+         564
+        2630
+        2500
+        2601
+         566
+        2594
+        1244
+         748
+        2600
+        2640
+        2598
+        2056
+        2135
+        2816
+        2612
+        2613
+        2606
+        2325
+        2034
+        2646
+        2621
+         960
+        2584
+        2286
+        2610
+        2795
+        1510
+        2628
+        2287
+        2587
+        2618
+        2599
+        2638
+        2530
+
+whos
+  Name        Size            Bytes  Class     Attributes
+
+  skip      357x1              2856  double              
+
+dir
+
+.             2.txt         4.txt         7.txt         9.txt         paru.c        paru_demo.m   paru_many.m   skip_set.mat  
+..            3.txt         5.txt         8.txt         Makefile      paru.m        paru_make.m   paru_tiny.m   
+
+paru_make ; paru_tiny
+Compiling ParU for MATLAB.
+........................................................................................................................................................................................................................................................................:mex -O -R2018a -silent  CFLAGS='-fPIC  -fopenmp' LDFLAGS=' -fopenmp' -DBLAS_Intel10_64ilp -DNMODIFY -DBLAS64 -O -I../../include -I../Include -I../../SuiteSparse_config  -I../../AMD/Source  -I../../AMD/Include   -I../../CAMD/Source -I../../CAMD/Include  -I../../COLAMD/Source  -I../../COLAMD/Include   -I../../CCOLAMD/Source -I../../CCOLAMD/Include  -I../../UMFPACK/Source -I../../UMFPACK/Include  -I../../CHOLMOD/Include  -I../../CHOLMOD/Check  -I../../CHOLMOD/Cholesky  -I../../CHOLMOD/Utility  -I../../CHOLMOD/MATLAB  -I../../CHOLMOD/MatrixOps  -I../../CHOLMOD/Partition  -I../../CHOLMOD  -I../../CHOLMOD/SuiteSparse_metis/GKlib  -I../../CHOLMOD/SuiteSparse_metis/libmetis  -I../../CHOLMOD/SuiteSparse_metis/include  -I../../CHOLMOD/Supernodal  paru.c   ParU_Factorize.o ParU_Analyze.o paru_assemble.o paru_assemble_row2U.o paru_backward.o paru_bin_search.o ParU_C.o paru_cp_control.o paru_create_element.o paru_cumsum.o paru_dgemm.o paru_diag_update.o paru_exec_tasks.o paru_finalize_perm.o ParU_FreeNumeric.o ParU_FreeSymbolic.o paru_front.o paru_fs_factorize.o paru_full_summed.o paru_gaxpy.o paru_hash.o paru_heap.o paru_init_rel.o paru_init_rowFronts.o paru_intersection.o ParU_InvPerm.o ParU_LSolve.o paru_mem.o paru_free_work.o paru_memcpy.o paru_memset.o paru_norms.o ParU_Perm.o paru_pivotal.o paru_print.o paru_prior_assemble.o ParU_Residual.o ParU_Solve.o paru_tasked_dgemm.o paru_tasked_trsm.o paru_trsm.o paru_tuples.o paru_umfpack_info.o paru_update_rel_ind.o paru_update_rowDeg.o ParU_USolve.o ParU_Version.o paru_write.o SuiteSparse_config.o amd_l1.o amd_l2.o amd_l_aat.o amd_l_control.o amd_l_defaults.o amd_l_dump.o amd_l_info.o amd_l_order.o amd_l_postorder.o amd_l_post_tree.o amd_l_preprocess.o amd_l_valid.o camd_l1.o camd_l2.o camd_l_aat.o camd_l_control.o camd_l_defaults.o camd_l_dump.o camd_l_info.o camd_l_order.o camd_l_postorder.o camd_l_preprocess.o camd_l_valid.o colamd_l.o ccolamd_l.o sputil2.o cholmod_l_aat.o cholmod_l_add.o cholmod_l_add_size_t.o cholmod_l_allocate_dense.o cholmod_l_allocate_factor.o cholmod_l_allocate_sparse.o cholmod_l_allocate_triplet.o cholmod_l_allocate_work.o cholmod_l_alloc_factor.o cholmod_l_alloc_work.o cholmod_l_band.o cholmod_l_band_nnz.o cholmod_l_calloc.o cholmod_l_change_factor.o cholmod_l_clear_flag.o cholmod_l_copy.o cholmod_l_copy_dense2.o cholmod_l_copy_dense.o cholmod_l_copy_factor.o cholmod_l_copy_sparse.o cholmod_l_copy_triplet.o cholmod_l_cumsum.o cholmod_l_dbound.o cholmod_l_defaults.o cholmod_l_dense_nnz.o cholmod_l_dense_to_sparse.o cholmod_l_divcomplex.o cholmod_l_ensure_dense.o cholmod_l_error.o cholmod_l_eye.o cholmod_l_factor_to_sparse.o cholmod_l_finish.o cholmod_l_free.o cholmod_l_free_dense.o cholmod_l_free_factor.o cholmod_l_free_sparse.o cholmod_l_free_triplet.o cholmod_l_free_work.o cholmod_l_hypot.o cholmod_l_malloc.o cholmod_l_maxrank.o cholmod_l_mult_size_t.o cholmod_l_nnz.o cholmod_l_ones.o cholmod_l_pack_factor.o cholmod_l_ptranspose.o cholmod_l_reallocate_column.o cholmod_l_reallocate_factor.o cholmod_l_reallocate_sparse.o cholmod_l_reallocate_triplet.o cholmod_l_realloc.o cholmod_l_realloc_multiple.o cholmod_l_sbound.o cholmod_l_score_comp.o cholmod_l_set_empty.o cholmod_l_sort.o cholmod_l_sparse_to_dense.o cholmod_l_sparse_to_triplet.o cholmod_l_speye.o cholmod_l_spzeros.o cholmod_l_start.o cholmod_l_transpose.o cholmod_l_transpose_sym.o cholmod_l_transpose_unsym.o cholmod_l_triplet_to_sparse.o cholmod_l_version.o cholmod_l_xtype.o cholmod_l_zeros.o cholmod_mult_uint64_t.o cholmod_memdebug.o cholmod_l_check.o cholmod_l_read.o cholmod_l_write.o cholmod_l_amd.o cholmod_l_analyze.o cholmod_l_colamd.o cholmod_l_etree.o cholmod_l_factorize.o cholmod_l_postorder.o cholmod_l_rcond.o cholmod_l_resymbol.o cholmod_l_rowcolcounts.o cholmod_l_rowfac.o cholmod_l_solve.o cholmod_l_spsolve.o cholmod_l_drop.o cholmod_l_horzcat.o cholmod_l_norm.o cholmod_l_scale.o cholmod_l_sdmult.o cholmod_l_ssmult.o cholmod_l_submatrix.o cholmod_l_vertcat.o cholmod_l_symmetry.o cholmod_l_super_numeric.o cholmod_l_super_solve.o cholmod_l_super_symbolic.o cholmod_metis_wrapper.o cholmod_l_ccolamd.o cholmod_l_csymamd.o cholmod_l_camd.o cholmod_l_metis.o cholmod_l_nesdis.o umf_l_analyze.o umf_l_apply_order.o umf_l_cholmod.o umf_l_colamd.o umf_l_free.o umf_l_fsize.o umf_l_is_permutation.o umf_l_malloc.o umf_l_realloc.o umf_l_report_perm.o umf_l_singletons.o umf_dl_assemble.o umf_dl_assemble_fixq.o umf_dl_blas3_update.o umf_dl_build_tuples.o umf_dl_create_element.o umf_dl_dump.o umf_dl_extend_front.o umf_dl_garbage_collection.o umf_dl_get_memory.o umf_dl_grow_front.o umf_dl_init_front.o umf_dl_kernel.o umf_dl_kernel_init.o umf_dl_kernel_wrapup.o umf_dl_lhsolve.o umf_dl_local_search.o umf_dl_lsolve.o umf_dl_ltsolve.o umf_dl_mem_alloc_element.o umf_dl_mem_alloc_head_block.o umf_dl_mem_alloc_tail_block.o umf_dl_mem_free_tail_block.o umf_dl_mem_init_memoryspace.o umf_dl_report_vector.o umf_dl_row_search.o umf_dl_scale.o umf_dl_scale_column.o umf_dl_set_stats.o umf_dl_solve.o umf_dl_start_front.o umf_dl_store_lu.o umf_dl_store_lu_drop.o umf_dl_symbolic_usage.o umf_dl_transpose.o umf_dl_triplet_map_nox.o umf_dl_triplet_map_x.o umf_dl_triplet_nomap_nox.o umf_dl_triplet_nomap_x.o umf_dl_tuple_lengths.o umf_dl_uhsolve.o umf_dl_usolve.o umf_dl_utsolve.o umf_dl_valid_numeric.o umf_dl_valid_symbolic.o umfpack_gn_tictoc.o umfpack_gn_timer.o umfpack_dl_col_to_triplet.o umfpack_dl_defaults.o umfpack_dl_free_numeric.o umfpack_dl_free_symbolic.o umfpack_dl_get_determinant.o umfpack_dl_get_lunz.o umfpack_dl_get_numeric.o umfpack_dl_get_symbolic.o umfpack_dl_load_numeric.o umfpack_dl_load_symbolic.o umfpack_dl_numeric.o umfpack_dl_qsymbolic.o umfpack_dl_report_control.o umfpack_dl_report_info.o umfpack_dl_report_matrix.o umfpack_dl_report_numeric.o umfpack_dl_report_perm.o umfpack_dl_report_status.o umfpack_dl_report_symbolic.o umfpack_dl_report_triplet.o umfpack_dl_report_vector.o umfpack_dl_save_numeric.o umfpack_dl_save_symbolic.o umfpack_dl_scale.o umfpack_dl_solve.o umfpack_dl_symbolic.o umfpack_dl_transpose.o umfpack_dl_triplet_to_col.o umfpack_dl_wsolve.o -L../../lib -lmwlapack -lmwblas -lrt
+
+
+function paru_tiny
+%PARU_TINY test a tiny sparse matrix with paru
+%
+% Usage: paru_tiny
+%
+% See also paru, paru_make, paru_demo, paru_many, mldivide.
+%
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
+
+type paru_tiny
+A = sparse (rand (2)) ;
+b = rand (2,1) ;
+x = paru (A,b)
+resid = A*x-b
+
+x =
+
+    1.7552
+   -0.1775
+
+
+resid =
+
+   1.0e-15 *
+
+   -0.1110
+         0
+
+
+
+
+
+dir
+
+.                               cholmod_l_horzcat.o             paru_umfpack_info.o             
+..                              cholmod_l_hypot.o               paru_update_rel_ind.o           
+2.txt                           cholmod_l_malloc.o              paru_update_rowDeg.o            
+3.txt                           cholmod_l_maxrank.o             paru_write.o                    
+4.txt                           cholmod_l_metis.o               skip_set.mat                    
+5.txt                           cholmod_l_mult_size_t.o         sputil2.o                       
+7.txt                           cholmod_l_nesdis.o              umf_dl_assemble.o               
+8.txt                           cholmod_l_nnz.o                 umf_dl_assemble_fixq.o          
+9.txt                           cholmod_l_norm.o                umf_dl_blas3_update.o           
+Makefile                        cholmod_l_ones.o                umf_dl_build_tuples.o           
+ParU_Analyze.o                  cholmod_l_pack_factor.o         umf_dl_create_element.o         
+ParU_C.o                        cholmod_l_postorder.o           umf_dl_dump.o                   
+ParU_Factorize.o                cholmod_l_ptranspose.o          umf_dl_extend_front.o           
+ParU_FreeNumeric.o              cholmod_l_rcond.o               umf_dl_garbage_collection.o     
+ParU_FreeSymbolic.o             cholmod_l_read.o                umf_dl_get_memory.o             
+ParU_InvPerm.o                  cholmod_l_realloc.o             umf_dl_grow_front.o             
+ParU_LSolve.o                   cholmod_l_realloc_multiple.o    umf_dl_init_front.o             
+ParU_Perm.o                     cholmod_l_reallocate_column.o   umf_dl_kernel.o                 
+ParU_Residual.o                 cholmod_l_reallocate_factor.o   umf_dl_kernel_init.o            
+ParU_Solve.o                    cholmod_l_reallocate_sparse.o   umf_dl_kernel_wrapup.o          
+ParU_USolve.o                   cholmod_l_reallocate_triplet.o  umf_dl_lhsolve.o                
+ParU_Version.o                  cholmod_l_resymbol.o            umf_dl_local_search.o           
+SuiteSparse_config.o            cholmod_l_rowcolcounts.o        umf_dl_lsolve.o                 
+amd_l1.o                        cholmod_l_rowfac.o              umf_dl_ltsolve.o                
+amd_l2.o                        cholmod_l_sbound.o              umf_dl_mem_alloc_element.o      
+amd_l_aat.o                     cholmod_l_scale.o               umf_dl_mem_alloc_head_block.o   
+amd_l_control.o                 cholmod_l_score_comp.o          umf_dl_mem_alloc_tail_block.o   
+amd_l_defaults.o                cholmod_l_sdmult.o              umf_dl_mem_free_tail_block.o    
+amd_l_dump.o                    cholmod_l_set_empty.o           umf_dl_mem_init_memoryspace.o   
+amd_l_info.o                    cholmod_l_solve.o               umf_dl_report_vector.o          
+amd_l_order.o                   cholmod_l_sort.o                umf_dl_row_search.o             
+amd_l_post_tree.o               cholmod_l_sparse_to_dense.o     umf_dl_scale.o                  
+amd_l_postorder.o               cholmod_l_sparse_to_triplet.o   umf_dl_scale_column.o           
+amd_l_preprocess.o              cholmod_l_speye.o               umf_dl_set_stats.o              
+amd_l_valid.o                   cholmod_l_spsolve.o             umf_dl_solve.o                  
+camd_l1.o                       cholmod_l_spzeros.o             umf_dl_start_front.o            
+camd_l2.o                       cholmod_l_ssmult.o              umf_dl_store_lu.o               
+camd_l_aat.o                    cholmod_l_start.o               umf_dl_store_lu_drop.o          
+camd_l_control.o                cholmod_l_submatrix.o           umf_dl_symbolic_usage.o         
+camd_l_defaults.o               cholmod_l_super_numeric.o       umf_dl_transpose.o              
+camd_l_dump.o                   cholmod_l_super_solve.o         umf_dl_triplet_map_nox.o        
+camd_l_info.o                   cholmod_l_super_symbolic.o      umf_dl_triplet_map_x.o          
+camd_l_order.o                  cholmod_l_symmetry.o            umf_dl_triplet_nomap_nox.o      
+camd_l_postorder.o              cholmod_l_transpose.o           umf_dl_triplet_nomap_x.o        
+camd_l_preprocess.o             cholmod_l_transpose_sym.o       umf_dl_tuple_lengths.o          
+camd_l_valid.o                  cholmod_l_transpose_unsym.o     umf_dl_uhsolve.o                
+ccolamd_l.o                     cholmod_l_triplet_to_sparse.o   umf_dl_usolve.o                 
+cholmod_l_aat.o                 cholmod_l_version.o             umf_dl_utsolve.o                
+cholmod_l_add.o                 cholmod_l_vertcat.o             umf_dl_valid_numeric.o          
+cholmod_l_add_size_t.o          cholmod_l_write.o               umf_dl_valid_symbolic.o         
+cholmod_l_alloc_factor.o        cholmod_l_xtype.o               umf_l_analyze.o                 
+cholmod_l_alloc_work.o          cholmod_l_zeros.o               umf_l_apply_order.o             
+cholmod_l_allocate_dense.o      cholmod_memdebug.o              umf_l_cholmod.o                 
+cholmod_l_allocate_factor.o     cholmod_metis_wrapper.o         umf_l_colamd.o                  
+cholmod_l_allocate_sparse.o     cholmod_mult_uint64_t.o         umf_l_free.o                    
+cholmod_l_allocate_triplet.o    colamd_l.o                      umf_l_fsize.o                   
+cholmod_l_allocate_work.o       paru.c                          umf_l_is_permutation.o          
+cholmod_l_amd.o                 paru.m                          umf_l_malloc.o                  
+cholmod_l_analyze.o             paru.mexa64                     umf_l_realloc.o                 
+cholmod_l_band.o                paru_assemble.o                 umf_l_report_perm.o             
+cholmod_l_band_nnz.o            paru_assemble_row2U.o           umf_l_singletons.o              
+cholmod_l_calloc.o              paru_backward.o                 umfpack_dl_col_to_triplet.o     
+cholmod_l_camd.o                paru_bin_search.o               umfpack_dl_defaults.o           
+cholmod_l_ccolamd.o             paru_cp_control.o               umfpack_dl_free_numeric.o       
+cholmod_l_change_factor.o       paru_create_element.o           umfpack_dl_free_symbolic.o      
+cholmod_l_check.o               paru_cumsum.o                   umfpack_dl_get_determinant.o    
+cholmod_l_clear_flag.o          paru_demo.m                     umfpack_dl_get_lunz.o           
+cholmod_l_colamd.o              paru_dgemm.o                    umfpack_dl_get_numeric.o        
+cholmod_l_copy.o                paru_diag_update.o              umfpack_dl_get_symbolic.o       
+cholmod_l_copy_dense.o          paru_exec_tasks.o               umfpack_dl_load_numeric.o       
+cholmod_l_copy_dense2.o         paru_finalize_perm.o            umfpack_dl_load_symbolic.o      
+cholmod_l_copy_factor.o         paru_free_work.o                umfpack_dl_numeric.o            
+cholmod_l_copy_sparse.o         paru_front.o                    umfpack_dl_qsymbolic.o          
+cholmod_l_copy_triplet.o        paru_fs_factorize.o             umfpack_dl_report_control.o     
+cholmod_l_csymamd.o             paru_full_summed.o              umfpack_dl_report_info.o        
+cholmod_l_cumsum.o              paru_gaxpy.o                    umfpack_dl_report_matrix.o      
+cholmod_l_dbound.o              paru_hash.o                     umfpack_dl_report_numeric.o     
+cholmod_l_defaults.o            paru_heap.o                     umfpack_dl_report_perm.o        
+cholmod_l_dense_nnz.o           paru_init_rel.o                 umfpack_dl_report_status.o      
+cholmod_l_dense_to_sparse.o     paru_init_rowFronts.o           umfpack_dl_report_symbolic.o    
+cholmod_l_divcomplex.o          paru_intersection.o             umfpack_dl_report_triplet.o     
+cholmod_l_drop.o                paru_make.m                     umfpack_dl_report_vector.o      
+cholmod_l_ensure_dense.o        paru_many.m                     umfpack_dl_save_numeric.o       
+cholmod_l_error.o               paru_mem.o                      umfpack_dl_save_symbolic.o      
+cholmod_l_etree.o               paru_memcpy.o                   umfpack_dl_scale.o              
+cholmod_l_eye.o                 paru_memset.o                   umfpack_dl_solve.o              
+cholmod_l_factor_to_sparse.o    paru_norms.o                    umfpack_dl_symbolic.o           
+cholmod_l_factorize.o           paru_pivotal.o                  umfpack_dl_transpose.o          
+cholmod_l_finish.o              paru_print.o                    umfpack_dl_triplet_to_col.o     
+cholmod_l_free.o                paru_prior_assemble.o           umfpack_dl_wsolve.o             
+cholmod_l_free_dense.o          paru_tasked_dgemm.o             umfpack_gn_tictoc.o             
+cholmod_l_free_factor.o         paru_tasked_trsm.o              umfpack_gn_timer.o              
+cholmod_l_free_sparse.o         paru_tiny.m                     
+cholmod_l_free_triplet.o        paru_trsm.o                     
+cholmod_l_free_work.o           paru_tuples.o                   
+
+dir *.txt
+
+2.txt  3.txt  4.txt  5.txt  7.txt  8.txt  9.txt  
+
+diary 10.txt

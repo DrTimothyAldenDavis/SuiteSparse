@@ -1,0 +1,441 @@
+paru_make ; paru_many
+Compiling ParU for MATLAB.
+Using the Intel MKL BLAS
+.........................................................................................................................................................................................................................................................................:
+
+function paru_tiny
+%PARU_TINY test a tiny sparse matrix with paru
+%
+% Usage: paru_tiny
+%
+% See also paru, paru_make, paru_demo, paru_many, mldivide.
+%
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
+
+type paru_tiny
+A = sparse (rand (2)) ;
+b = rand (2,1) ;
+x = paru (A,b)
+resid = A*x-b
+
+x =
+
+    0.8984
+   -0.7841
+
+
+resid =
+
+     0
+     0
+
+
+function paru_demo
+%PARU_DEMO: test a single sparse matrix in ParU
+%
+% Usage: paru_demo
+%
+% See also paru, paru_make, paru_many, paru_tiny, mldivide.
+
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
+
+type paru_demo
+load west0479
+A = west0479 ;
+n = size (A,1) ;
+b = rand (n,1) ;
+x = A\b ;
+norm (A*x-b)
+[x2,paru_stats] = paru (A,b) ;
+paru_stats
+norm (A*x2-b)
+
+
+ans =
+
+   7.4839e-10
+
+
+paru_stats = 
+
+  struct with fields:
+
+         analysis_time: 6.7210e-04
+        factorize_time: 0.0034
+            solve_time: 6.1035e-05
+              strategy: 'unsymmetric'
+              ordering: 'colamd(A)'
+                 flops: 0
+                   lnz: 0
+                   unz: 0
+                 rcond: 5.9023e-07
+                  blas: 'Intel MKL 64ilp BLAS (64-bit integers)'
+    front_tree_tasking: 'parallel'
+
+
+ans =
+
+   3.1775e-09
+
+
+function paru_demo
+%PARU_DEMO: test a single sparse matrix in ParU
+%
+% Usage: paru_demo
+%
+% See also paru, paru_make, paru_many, paru_tiny, mldivide.
+
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
+
+type paru_demo
+load west0479
+A = west0479 ;
+n = size (A,1) ;
+b = rand (n,1) ;
+x = A\b ;
+norm (A*x-b)
+[x2,paru_stats] = paru (A,b) ;
+paru_stats
+norm (A*x2-b)
+
+
+ans =
+
+   3.6601e-10
+
+
+paru_stats = 
+
+  struct with fields:
+
+         analysis_time: 3.1710e-04
+        factorize_time: 7.4792e-04
+            solve_time: 5.3883e-05
+              strategy: 'unsymmetric'
+              ordering: 'colamd(A)'
+                 flops: 0
+                   lnz: 0
+                   unz: 0
+                 rcond: 5.9023e-07
+                  blas: 'Intel MKL 64ilp BLAS (64-bit integers)'
+    front_tree_tasking: 'parallel'
+
+
+ans =
+
+   2.8711e-09
+
+
+first =
+
+        1069
+
+testing 1295 matrices:
+1069 2377: Williams/mc2depi nz 2100225
+1070 2427: AG-Monien/wave nz 2118662
+1071  964: Schenk_ISEI/barrier2-1 nz 2129496
+1072  965: Schenk_ISEI/barrier2-2 nz 2129496
+1073  966: Schenk_ISEI/barrier2-3 nz 2129496
+1074  967: Schenk_ISEI/barrier2-4 nz 2129496
+1075 2517: DIMACS10/144 nz 2148786
+1076  961: Schenk_ISEI/barrier2-10 nz 2158759
+1077  962: Schenk_ISEI/barrier2-11 nz 2158759
+1078  963: Schenk_ISEI/barrier2-12 nz 2158759
+1079  968: Schenk_ISEI/barrier2-9 nz 2158759
+1080 2595: DIMACS10/il2010 nz 2164464
+1081 1235: GHS_indef/exdata_1 nz 2269500
+1082  979: Kamvar/Stanford nz 2312497
+1083 2303: SNAP/web-Stanford nz 2312497
+1084 2460: DIMACS10/citationCiteseer nz 2313294
+1085  374: Bova/rma10 nz 2329092
+1086 1579: Schenk_IBMNA/c-big nz 2340859
+1087 2590: DIMACS10/fl2010 nz 2346294
+1088  928: FEMLAB/poisson3Db nz 2374949
+1089 2223: TSOPF/TSOPF_FS_b162_c4 nz 2398220
+1090 2642: DIMACS10/vsp_msc10848_300sep_100in_1Kout nz 2442056
+1091 2378: Williams/cop20k_A nz 2624331
+1092 1419: Sandia/ASIC_680k nz 2638997
+1093 2848: Freescale/nxp1 nz 2655880
+1094 1431: Oberwolfach/filter3D nz 2707179
+1095 2260: Botonakis/thermomech_dK nz 2846228
+1096  973: Schenk_ISEI/para-4 nz 2930882
+1097 2238: TSOPF/TSOPF_RS_b300_c2 nz 2943887
+1098  895: Norris/stomach nz 3021648
+1099 2318: SNAP/roadNet-PA nz 3083796
+1100 2502: DIMACS10/rgg_n_2_18_s0 nz 3094566
+1101 2510: DIMACS10/belgium_osm nz 3099940
+1102 2379: Williams/webbase-1M nz 3105536
+1103 2228: TSOPF/TSOPF_FS_b39_c30 nz 3121160
+1104 2474: DIMACS10/delaunay_n19 nz 3145646
+1105  932: FEMLAB/sme3Dc nz 3148656
+1106 2305: SNAP/amazon0312 nz 3200440
+1107 2441: LAW/cnr-2000 nz 3216152
+1108 2825: Goodwin/Goodwin_095 nz 3226066
+1109 2798: SNAP/wiki-talk-temporal nz 3309592
+1110 2306: SNAP/amazon0505 nz 3356824
+1111 2529: DIMACS10/m14b nz 3358036
+1112 2307: SNAP/amazon0601 nz 3387388
+1113 1852: Botonakis/FEM_3D_thermal2 nz 3489300
+1114 2586: DIMACS10/ca2010 nz 3489366
+1115 2830: Embree/ifiss_mat nz 3599932
+1116 2770: Mycielski/mycielskian14 nz 3695512
+1117 1396: Rajat/rajat29 nz 3760246
+1118 1399: Raju/laminar_duct3D nz 3788857
+1119 2319: SNAP/roadNet-TX nz 3843320
+1120  802: Ronis/xenon2 nz 3866688
+1121 2633: DIMACS10/vsp_bcsstk30_500sep_10in_1Kout nz 4033156
+1122 2439: AG-Monien/debr nz 4194298
+1123 1208: Oberwolfach/t3dh_a nz 4352105
+1124 1450: Oberwolfach/t3dh nz 4352105
+1125 2243: TSOPF/TSOPF_RS_b678_c1 nz 4396289
+1126 2220: TSOPF/TSOPF_FS_b300 nz 4400122
+1127 2224: TSOPF/TSOPF_FS_b300_c1 nz 4400122
+1128 2239: TSOPF/TSOPF_RS_b300_c3 nz 4413449
+1129  898: Norris/torso3 nz 4429042
+1130 2624: DIMACS10/tx2010 nz 4456272
+1131 1898: CEMW/tmt_unsym nz 4584801
+1132 1897: CEMW/t2em nz 4590832
+1133 2516: DIMACS10/netherlands_osm nz 4882476
+1134 2489: DIMACS10/kron_g500-logn16 nz 4912469
+1135 2291: SNAP/wiki-Talk nz 5021410
+1136 2301: SNAP/web-Google nz 5105039
+1137 2445: LAW/amazon-2008 nz 5158388
+1138 1893: QLi/largebasis nz 5240084
+1139 1867: Muite/Chebyshev4 nz 5377761
+1140 1201: Hamrle/Hamrle3 nz 5514242
+1141 2839: VLSI/radiation nz 5526637
+1142 2317: SNAP/roadNet-CA nz 5533214
+1143 2826: Goodwin/Goodwin_127 nz 5778545
+1144  285: ATandT/pre2 nz 5834044
+1145 2783: SNAP/com-Youtube nz 5975248
+1146 1397: Rajat/rajat30 nz 6175244
+1147 2849: Martin/marine1 nz 6226538
+1148 2580: DIMACS10/NACA0015 nz 6229636
+1149 2475: DIMACS10/delaunay_n20 nz 6291372
+1150 2503: DIMACS10/rgg_n_2_19_s0 nz 6539532
+1151 2519: DIMACS10/auto nz 6629222
+1152 2235: TSOPF/TSOPF_RS_b2052_c1 nz 6761100
+1153  971: Schenk_ISEI/ohne2 nz 6869939
+1154  914: vanHeukelum/cage13 nz 7479343
+1155  980: Kamvar/Stanford_Berkeley nz 7583376
+1156 2300: SNAP/web-BerkStan nz 7600595
+1157 2336: Fluorem/PR02R nz 8185136
+1158  896: Norris/torso1 nz 8516500
+1159 2225: TSOPF/TSOPF_FS_b300_c2 nz 8767466
+1160 2244: TSOPF/TSOPF_RS_b678_c2 nz 8781949
+1161 2265: Bourchtein/atmosmodd nz 8814880
+1162 2266: Bourchtein/atmosmodj nz 8814880
+1163 2840: VLSI/test1 nz 9447535
+1164 2330: Gleich/flickr nz 9837214
+1165 2490: DIMACS10/kron_g500-logn17 nz 10228360
+1166 2267: Bourchtein/atmosmodl nz 10319760
+1167 2268: Bourchtein/atmosmodm nz 10319760
+1168 2771: Mycielski/mycielskian15 nz 11111110
+1169 2831: Hardesty/Hardesty1 nz 12143314
+1170 2476: DIMACS10/delaunay_n21 nz 12582816
+1171 1876: Zaoui/kkt_power nz 12771361
+1172 2226: TSOPF/TSOPF_FS_b300_c3 nz 13135930
+1173 2274: Freescale/memchip nz 13343948
+1174 2483: DIMACS10/hugetrace-00000 nz 13758266
+1175 2504: DIMACS10/rgg_n_2_20_s0 nz 13783240
+1176 2514: DIMACS10/italy_osm nz 14027956
+1177 2662: Freescale/Freescale2 nz 14313235
+1178 2786: SNAP/higgs-twitter nz 14855842
+1179 2277: Freescale/circuit5M_dc nz 14865409
+1180 1514: Pajek/patents nz 14970767
+1181 2498: DIMACS10/venturiLevel3 nz 16108474
+1182 2219: TSOPF/TSOPF_RS_b2383 nz 16171169
+1183 2236: TSOPF/TSOPF_RS_b2383_c1 nz 16171169
+1184 2513: DIMACS10/great-britain_osm nz 16313034
+1185 2294: SNAP/cit-Patents nz 16518948
+1186 2442: LAW/in-2004 nz 16917053
+1187 2216: Freescale/Freescale1 nz 17052626
+1188 2647: Janna/CoupCons3D nz 17277420
+1189 2486: DIMACS10/hugetric-00000 nz 17467046
+1190 2443: LAW/eu-2005 nz 19235140
+1191 1843: Gleich/wikipedia-20051105 nz 19753078
+1192 2487: DIMACS10/hugetric-00010 nz 19771708
+1193 1398: Rajat/rajat31 nz 20316253
+1194 2579: DIMACS10/M6 nz 21003872
+1195 2491: DIMACS10/kron_g500-logn18 nz 21165908
+1196 2488: DIMACS10/hugetric-00020 nz 21361554
+1197 2329: Dziekonski/gsm_106857 nz 21758924
+1198 2321: SNAP/as-Skitter nz 22190596
+1199 2577: DIMACS10/333SP nz 22217266
+1200 2578: DIMACS10/AS365 nz 22736152
+1201 2649: Janna/Transport nz 23487281
+1202 2512: DIMACS10/germany_osm nz 24738362
+1203 2581: DIMACS10/NLR nz 24975952
+1204 2477: DIMACS10/delaunay_n22 nz 25165738
+1205 2509: DIMACS10/asia_osm nz 25423206
+1206 2841: VLSI/dgreen nz 26606169
+1207 2380: Freescale/FullChip nz 26621983
+1208  915: vanHeukelum/cage14 nz 27130349
+1209 2495: DIMACS10/adaptive nz 27248640
+1210 2648: Janna/ML_Laplace nz 27582698
+1211 1901: Schenk/nlpkkt80 nz 28192672
+1212 2799: SNAP/wiki-topcats nz 28511807
+1213 2505: DIMACS10/rgg_n_2_21_s0 nz 28975990
+1214 2464: DIMACS10/coPapersDBLP nz 30491458
+1215 2789: SNAP/soc-Pokec nz 30622564
+1216 2463: DIMACS10/coPapersCiteseer nz 32073440
+1217 2772: Mycielski/mycielskian16 nz 33382480
+1218 2458: DIMACS10/road_central nz 33866826
+1219 2847: VLSI/ss nz 34753577
+1220 2842: VLSI/vas_stokes_1M nz 34767207
+1221 2497: DIMACS10/packing-500x100x100-b050 nz 34976486
+1222 2484: DIMACS10/hugetrace-00010 nz 36164358
+1223 2794: SNAP/sx-stackoverflow nz 36233450
+1224 1844: Gleich/wikipedia-20060925 nz 37269096
+1225 2337: Fluorem/RM07R nz 37464962
+1226 2835: VLSI/nv2 nz 37475646
+1227 2800: MAWI/mawi_201512012345 nz 38040320
+1228 1845: Gleich/wikipedia-20061104 nz 39383235
+1229 2492: DIMACS10/kron_g500-logn19 nz 43562265
+1230 1846: Gleich/wikipedia-20070206 nz 45030389
+1231 2485: DIMACS10/hugetrace-00020 nz 47997626
+1232 2386: Dziekonski/dielFilterV2real nz 48538952
+1233 2478: DIMACS10/delaunay_n23 nz 50331568
+1234 2480: DIMACS10/hugebubbles-00000 nz 54940162
+1235 1842: Gleich/wb-edu nz 57156537
+1236 2459: DIMACS10/road_usa nz 57708624
+1237 2854: GAP/GAP-road nz 57708624
+1238 2481: DIMACS10/hugebubbles-00010 nz 58359528
+1239 2276: Freescale/circuit5M nz 59524291
+1240 2506: DIMACS10/rgg_n_2_22_s0 nz 60718396
+1241 2482: DIMACS10/hugebubbles-00020 nz 63580358
+1242 2843: VLSI/vas_stokes_2M nz 65129037
+1243 2285: SNAP/soc-LiveJournal1 nz 68993773
+1244 2781: SNAP/com-LiveJournal nz 69362378
+1245 2801: MAWI/mawi_201512020000 nz 74485420
+1246 2446: LAW/ljournal-2008 nz 79023142
+1247 2550: Janna/Long_Coup_dt0 nz 84422970
+1248 2551: Janna/Long_Coup_dt6 nz 84422970
+1249 2496: DIMACS10/channel-500x100x100-b050 nz 85362744
+1250 2493: DIMACS10/kron_g500-logn20 nz 89239674
+1251 2388: Dziekonski/dielFilterV3real nz 89306020
+1252 1902: Schenk/nlpkkt120 nz 95117792
+1253  916: vanHeukelum/cage15 nz 99199551
+1254 2773: Mycielski/mycielskian17 nz 100245742
+1255 2479: DIMACS10/delaunay_n24 nz 100663202
+1256 2511: DIMACS10/europe_osm nz 108109320
+1257 2650: Janna/ML_Geer nz 110686677
+1258 2809: GenBank/kmer_V2a nz 117217600
+1259 2548: Janna/Cube_Coup_dt0 nz 124406070
+1260 2549: Janna/Cube_Coup_dt6 nz 124406070
+1261 2507: DIMACS10/rgg_n_2_23_s0 nz 127002786
+1262 2844: VLSI/vas_stokes_4M nz 131577616
+1263 2807: GenBank/kmer_U1a nz 138778562
+1264 2802: MAWI/mawi_201512020030 nz 143414960
+1265 2494: DIMACS10/kron_g500-logn21 nz 182082942
+1266 2451: LAW/indochina-2004 nz 194109311
+1267 1903: Schenk/nlpkkt160 nz 225422112
+1268 2782: SNAP/com-Orkut nz 234370166
+1269 2508: DIMACS10/rgg_n_2_24_s0 nz 265114400
+1270 2803: MAWI/mawi_201512020130 nz 270234840
+1271 2384: Fluorem/HV15R nz 283073458
+1272 2806: GenBank/kmer_P1a nz 297829984
+1273 2450: LAW/uk-2002 nz 298113762
+1274 2774: Mycielski/mycielskian18 nz 300933832
+1275 2845: VLSI/stokes nz 349321980
+1276 2805: GenBank/kmer_A2a nz 360585172
+1277 1904: Schenk/nlpkkt200 nz 440225632
+1278 2808: GenBank/kmer_V1r nz 465410904
+1279 2804: MAWI/mawi_201512020330 nz 480047894
+1280 2453: LAW/arabic-2005 nz 639999458
+1281 1905: Schenk/nlpkkt240 nz 760648352
+1282 2775: Mycielski/mycielskian19 nz 903194710
+1283 2455: LAW/uk-2005 nz 936364282
+1284 2449: LAW/webbase-2001 nz 1019903190
+1285 2452: LAW/it-2004 nz 1150725436
+1286 2852: GAP/GAP-twitter nz 1468364884
+1287 2796: SNAP/twitter7 nz 1468365182
+1288 2853: GAP/GAP-web nz 1930292948
+1289 2454: LAW/sk-2005 nz 1949412601
+1290 2776: Mycielski/mycielskian20 nz 2710370560
+1291 2780: SNAP/com-Friendster nz 3612134270
+1292 2855: GAP/GAP-kron nz 4223264644
+1293 2856: GAP/GAP-urand nz 4294966740
+1294 2810: Sybrandt/MOLIERE_2016 nz 6669254694
+1295 2893: Sybrandt/AGATHA_2015 nz 11588725964
+Hit enter to continue:
+
+1069 2377: Williams/mc2depi nz 2100225
+A\b  resid 6.30e-11 time:      11.95 sec
+ParU resid 2.54e-09 time:       2.52 sec (AMD/COLAMD)  order:       0.51 factor:       1.80 solve:       0.14 sec speedup:     4.74 ordering: colamd(A)
+ParU resid 1.66e-08 time:       6.17 sec (METIS_guard) order:       5.23 factor:       0.75 solve:       0.13 sec speedup:     1.94 ordering: metis(A'*A)
+ParU resid 2.01e-08 time:       6.19 sec (METIS)       order:       5.25 factor:       0.75 solve:       0.13 sec speedup:     1.93 ordering: metis(A'*A)
+1070 2427: AG-Monien/wave nz 2118662
+A\b  resid 2.54e-12 time:      12.77 sec
+ParU resid 1.03e-07 time:      26.94 sec (AMD/COLAMD)  order:       0.84 factor:      25.55 solve:       0.32 sec        :     0.47 ordering: colamd(A)
+ParU resid 5.47e-09 time:      25.77 sec (METIS_guard) order:       5.85 factor:      19.70 solve:       0.15 sec        :     0.50 ordering: metis(A'*A)
+ParU resid 5.82e-09 time:      23.06 sec (METIS)       order:       4.65 factor:      18.20 solve:       0.16 sec        :     0.55 ordering: metis(A'*A)
+1071  964: Schenk_ISEI/barrier2-1 nz 2129496
+A\b  resid 1.25e-15 time:      99.92 sec
+ParU resid 4.72e-15 time:      15.22 sec (AMD/COLAMD)  order:       0.90 factor:      14.06 solve:       0.12 sec speedup:     6.56 ordering: amd(A+A')
+ParU resid 3.29e-15 time:       8.01 sec (METIS_guard) order:       2.19 factor:       5.68 solve:       0.08 sec speedup:    12.47 ordering: metis(A+A')
+ParU resid 3.30e-15 time:       7.90 sec (METIS)       order:       2.18 factor:       5.59 solve:       0.09 sec speedup:    12.65 ordering: metis(A+A')
+1072  965: Schenk_ISEI/barrier2-2 nz 2129496
+A\b  resid 1.18e-15 time:      99.47 sec
+ParU resid 5.39e-15 time:      15.15 sec (AMD/COLAMD)  order:       0.90 factor:      14.00 solve:       0.13 sec speedup:     6.57 ordering: amd(A+A')
+ParU resid 3.14e-15 time:       8.06 sec (METIS_guard) order:       2.19 factor:       5.74 solve:       0.09 sec speedup:    12.34 ordering: metis(A+A')
+ParU resid 3.11e-15 time:       8.12 sec (METIS)       order:       2.22 factor:       5.78 solve:       0.08 sec speedup:    12.26 ordering: metis(A+A')
+1073  966: Schenk_ISEI/barrier2-3 nz 2129496
+A\b  resid 1.16e-15 time:     102.12 sec
+ParU resid 5.08e-15 time:      14.87 sec (AMD/COLAMD)  order:       0.90 factor:      13.72 solve:       0.12 sec speedup:     6.87 ordering: amd(A+A')
+ParU resid 2.76e-15 time:       7.99 sec (METIS_guard) order:       2.18 factor:       5.69 solve:       0.09 sec speedup:    12.78 ordering: metis(A+A')
+ParU resid 2.80e-15 time:       8.13 sec (METIS)       order:       2.17 factor:       5.84 solve:       0.08 sec speedup:    12.57 ordering: metis(A+A')
+1074  967: Schenk_ISEI/barrier2-4 nz 2129496
+A\b  resid 1.19e-15 time:     101.71 sec
+ParU resid 6.38e-15 time:      14.87 sec (AMD/COLAMD)  order:       0.91 factor:      13.73 solve:       0.13 sec speedup:     6.84 ordering: amd(A+A')
+ParU resid 2.76e-15 time:       8.20 sec (METIS_guard) order:       2.17 factor:       5.91 solve:       0.08 sec speedup:    12.40 ordering: metis(A+A')
+ParU resid 2.68e-15 time:       8.01 sec (METIS)       order:       2.27 factor:       5.62 solve:       0.09 sec speedup:    12.70 ordering: metis(A+A')
+1075 2517: DIMACS10/144 nz 2148786
+A\b  resid 4.48e-12 time:       6.73 sec
+ParU resid 4.63e-08 time:      12.89 sec (AMD/COLAMD)  order:       0.96 factor:      11.66 solve:       0.13 sec        :     0.52 ordering: colamd(A)
+ParU resid 5.25e-09 time:      15.65 sec (METIS_guard) order:       5.06 factor:      10.40 solve:       0.13 sec        :     0.43 ordering: metis(A'*A)
+ParU resid 5.10e-09 time:      15.68 sec (METIS)       order:       5.01 factor:      10.49 solve:       0.13 sec        :     0.43 ordering: metis(A'*A)
+1076  961: Schenk_ISEI/barrier2-10 nz 2158759
+A\b  resid 1.98e-14 time:     109.47 sec
+ParU resid 5.49e-11 time:      99.42 sec (AMD/COLAMD)  order:       0.97 factor:      97.23 solve:       0.94 sec speedup:     1.10 ordering: amd(A+A')
+ParU resid 3.70e-12 time:      41.88 sec (METIS_guard) order:       2.71 factor:      38.96 solve:       0.20 sec speedup:     2.61 ordering: metis(A+A')
+ParU resid 8.27e-12 time:      35.80 sec (METIS)       order:       2.29 factor:      33.28 solve:       0.19 sec speedup:     3.06 ordering: metis(A+A')
+1077  962: Schenk_ISEI/barrier2-11 nz 2158759
+A\b  resid 1.85e-14 time:     113.27 sec
+ParU resid 4.89e-11 time:      88.68 sec (AMD/COLAMD)  order:       1.01 factor:      87.25 solve:       0.28 sec speedup:     1.28 ordering: amd(A+A')
+ParU resid 2.07e-12 time:      34.50 sec (METIS_guard) order:       2.29 factor:      31.96 solve:       0.18 sec speedup:     3.28 ordering: metis(A+A')
+ParU resid 3.98e-12 time:      33.97 sec (METIS)       order:       2.27 factor:      31.48 solve:       0.20 sec speedup:     3.33 ordering: metis(A+A')
+1078  963: Schenk_ISEI/barrier2-12 nz 2158759
+A\b  resid 1.99e-14 time:     110.74 sec
+ParU resid 4.38e-11 time:      96.62 sec (AMD/COLAMD)  order:       0.98 factor:      95.19 solve:       0.29 sec speedup:     1.15 ordering: amd(A+A')
+ParU resid 3.73e-12 time:      35.64 sec (METIS_guard) order:       2.29 factor:      33.09 solve:       0.19 sec speedup:     3.11 ordering: metis(A+A')
+ParU resid 2.75e-12 time:      35.53 sec (METIS)       order:       2.33 factor:      32.97 solve:       0.21 sec speedup:     3.12 ordering: metis(A+A')
+1079  968: Schenk_ISEI/barrier2-9 nz 2158759
+A\b  resid 1.99e-14 time:     109.80 sec
+ParU resid 2.05e-11 time:      97.67 sec (AMD/COLAMD)  order:       0.97 factor:      96.24 solve:       0.31 sec speedup:     1.12 ordering: amd(A+A')
+ParU resid 4.15e-12 time:      35.42 sec (METIS_guard) order:       2.28 factor:      32.94 solve:       0.18 sec speedup:     3.10 ordering: metis(A+A')
+ParU resid 1.24e-11 time:      35.37 sec (METIS)       order:       2.29 factor:      32.89 solve:       0.18 sec speedup:     3.10 ordering: metis(A+A')
+1080 2595: DIMACS10/il2010 nz 2164464
+[Warning: Matrix is singular to working precision.] 
+[> In paru_many (line 484)
+] 
+1081 1235: GHS_indef/exdata_1 nz 2269500
+A\b  resid 1.53e-15 time:       0.22 sec
+ParU resid 3.07e-15 time:       0.23 sec (AMD/COLAMD)  order:       0.11 factor:       0.11 solve:       0.02 sec        :     0.96 ordering: amd(A+A')
+ParU resid 3.09e-15 time:       0.64 sec (METIS_guard) order:       0.45 factor:       0.17 solve:       0.02 sec        :     0.35 ordering: metis(A+A')
+ParU resid 3.09e-15 time:       0.59 sec (METIS)       order:       0.39 factor:       0.18 solve:       0.01 sec        :     0.38 ordering: metis(A+A')
+1082  979: Kamvar/Stanford nz 2312497
+[Warning: Matrix is singular to working precision.] 
+[> In paru_many (line 484)
+] 
+1083 2303: SNAP/web-Stanford nz 2312497
+[Warning: Matrix is singular to working precision.] 
+[> In paru_many (line 484)
+] 
+1084 2460: DIMACS10/citationCiteseer nz 2313294
