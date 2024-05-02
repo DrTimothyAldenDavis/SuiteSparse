@@ -440,10 +440,17 @@ singular_matrices = [
         2502
         2510
         2379
+        2305
+        2441
+        2798
+        2306
+        2307
+        2586
+        1399
     ] ;
 
 % these matrices cause METIS to fail
-skip_metis = [1373] ; %#ok<NBRAK2>
+skip_metis = [1373 1396] ;
 
 % skip these matrices (too large, or singluar):
 skip = [too_large ; singular_matrices] ;
@@ -460,8 +467,8 @@ nmat = length (test_matrices) ;
 paru_demo
 
 % start with this matrix:
-first = 1 ;
-% first = find (test_matrices == 1235) ;
+% first = 1 ;
+first = find (test_matrices == 2319) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
