@@ -112,12 +112,6 @@ paru_quick_test: paru_quick_test.cpp $(INC) $(OBJ)
 paru_c_test: paru_c_test.cpp $(INC) $(OBJ)
 	$(C)  paru_c_test.cpp -o paru_c_test $(OBJ) $(LIBS)
 
-go1: paru_brutal_test paru_quick_test paru_c_test
-	$(V) ./paru_quick_test -12 1 < ../Matrix/watt_2.mtx
-	$(V) ./paru_quick_test -12 1 < ../Matrix/watt_2.mtx
-	$(V) ./paru_quick_test -12 1 < ../Matrix/watt_2.mtx
-	$(V) ./paru_quick_test -12 1 < ../Matrix/watt_2.mtx
-
 go: paru_brutal_test paru_quick_test paru_c_test
 	$(V) ./paru_c_test < ../Matrix/west0067.mtx
 	- ./cov
