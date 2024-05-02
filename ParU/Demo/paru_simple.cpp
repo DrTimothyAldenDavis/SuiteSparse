@@ -78,8 +78,8 @@ int main(int argc, char **argv)
     OK (ParU_Solve(Sym, Num, b, x, &Control), "solve") ;
     double resid, anorm, xnorm, rcond ;
     OK (ParU_Residual(A, x, b, resid, anorm, xnorm, &Control), "residual");
-    OK (ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control), "rcond") ;
-
+    OK (ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control), 
+        "rcond") ;
     double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     std::cout << std::scientific << std::setprecision(2)
         << "Relative residual is |" << rresid << "| anorm is " << anorm

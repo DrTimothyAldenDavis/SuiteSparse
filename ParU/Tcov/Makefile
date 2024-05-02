@@ -347,6 +347,9 @@ paru_tasked_trsm.o: ../Source/paru_tasked_trsm.cpp
 ParU_C.o: ../Source/ParU_C.cpp
 	$(C) -c $<
 
+ParU_Get.o: ../Source/ParU_Get.cpp
+	$(C) -c $<
+
 paru_cp_control.o: ../Source/paru_cp_control.cpp
 	$(C) -c $<
 

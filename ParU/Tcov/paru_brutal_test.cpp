@@ -46,7 +46,6 @@ int main(int argc, char **argv)
     {
         expected_log10_resid = (double) atoi (argv [1]) ;
     }
-//  printf ("expected log10 of resid: %g\n", expected_log10_resid) ;
 
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
@@ -86,15 +85,8 @@ int main(int argc, char **argv)
 
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//  int ver[3];
-//  char date[128];
-//  ParU_Version(ver, date);
-//  printf("ParU %d.%d.%d", ver[0], ver[1], ver[2]);
-//  printf(" %s\n", date);
-
     ParU_Info info;
 
-    // info = ParU_Analyze(A, &Sym, &Control);
     BRUTAL_ALLOC_TEST(info, ParU_Analyze(A, &Sym, &Control));
     if (info != PARU_SUCCESS)
     {
@@ -104,9 +96,6 @@ int main(int argc, char **argv)
 
     TEST_ASSERT (Sym != NULL) ;
 
-    // printf("In: %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
-
-    // info = ParU_Factorize(A, Sym, &Num, &Control);
     BRUTAL_ALLOC_TEST(info, ParU_Factorize(A, Sym, &Num, &Control));
     if (info != PARU_SUCCESS)
     {
@@ -117,17 +106,17 @@ int main(int argc, char **argv)
     //~~~~~~~~~~~~~~~~~~~Test the results~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    int64_t m = 0;
-    m = Sym->m;
+    int64_t n ;
+    info = ParU_Get (Sym, Num, PARU_GET_N, &n, &Control) ;
+    TEST_ASSERT (info == PARU_SUCCESS) ;
 
-    b = (double *)malloc(m * sizeof(double));
+    b = (double *)malloc(n * sizeof(double));
     TEST_ASSERT (b != NULL) ;
 
-    xx = (double *)malloc(m * sizeof(double));
+    xx = (double *)malloc(n * sizeof(double));
     TEST_ASSERT (xx != NULL) ;
 
-    for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-    // info = ParU_Solve(Sym, Num, b, xx, &Control);
+    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
     BRUTAL_ALLOC_TEST(info, ParU_Solve(Sym, Num, b, xx, &Control));
     if (info != PARU_SUCCESS)
@@ -137,7 +126,6 @@ int main(int argc, char **argv)
     }
 
     double resid, anorm, xnorm;
-    // info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
     BRUTAL_ALLOC_TEST(info, ParU_Residual(A, xx, b,
                 resid, anorm, xnorm, &Control));
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
@@ -149,7 +137,7 @@ int main(int argc, char **argv)
 
     TEST_ASSERT (resid == 0 || log10 (resid) <= expected_log10_resid) ;
 
-    for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
+    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
     BRUTAL_ALLOC_TEST(
         info, paru_backward(b, resid, anorm, xnorm, A, Sym, Num, &Control));
@@ -167,23 +155,21 @@ int main(int argc, char **argv)
     if (xx != NULL) free(xx);
     xx = NULL ;
 
-    const int64_t nrhs = 16;  // number of right handsides
+    const int64_t nrhs = 16;  // number of right hand sides
 
-    B = (double *)malloc(m * nrhs * sizeof(double));
+    B = (double *)malloc(n * nrhs * sizeof(double));
     TEST_ASSERT (B != NULL) ;
 
-    X = (double *)malloc(m * nrhs * sizeof(double));
+    X = (double *)malloc(n * nrhs * sizeof(double));
     TEST_ASSERT (X != NULL) ;
 
-    for (int64_t i = 0; i < m; ++i)
+    for (int64_t i = 0; i < n; ++i)
     {
         for (int64_t j = 0; j < nrhs; ++j)
         {
-            B[j * m + i] = (double)(i + j + 1);
+            B[j * n + i] = (double)(i + j + 1);
         }
     }
-
-    // info = ParU_Solve(Sym, Num, nrhs, B, X, &Control);
 
     BRUTAL_ALLOC_TEST(info, ParU_Solve(Sym, Num, nrhs, B, X, &Control));
     if (info != PARU_SUCCESS)

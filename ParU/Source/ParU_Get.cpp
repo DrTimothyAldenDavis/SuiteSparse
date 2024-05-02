@@ -39,12 +39,12 @@ ParU_Info ParU_Get
         return (PARU_INVALID) ;
     }
 
-    size_t n = Sym->n ;
+    int64_t n = Sym->n ;
 
     switch (field)
     {
         case PARU_GET_N:
-            (*result) = Sym->n ;
+            (*result) = n ;
             break ;
 
         case PARU_GET_ANZ:
@@ -127,7 +127,7 @@ ParU_Info ParU_Get
         return (PARU_INVALID) ;
     }
 
-    size_t n = Sym->n ;
+    int64_t n = Sym->n ;
 
     switch (field)
     {

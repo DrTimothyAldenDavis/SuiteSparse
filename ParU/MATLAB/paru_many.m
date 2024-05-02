@@ -424,6 +424,9 @@ singular_matrices = [
         2838
         1417
         2619
+        2595
+         979
+        2303
     ] ;
 
 skip_metis = [1373] ;
