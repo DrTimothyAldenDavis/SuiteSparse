@@ -456,10 +456,13 @@ singular_matrices = [
         2489
         2291
         2301
+        1867
+        2839
+         285
     ] ;
 
 % these matrices cause METIS to fail
-skip_metis = [1373 1396] ;
+skip_metis = [1373 1396 1397] ;
 
 % skip these matrices (too large, or singular):
 skip = [too_large ; singular_matrices] ;
@@ -477,7 +480,7 @@ paru_demo
 
 % start with this matrix:
 % first = 1 ;
-first = find (test_matrices == 1897) ;
+first = find (test_matrices == 2235) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat

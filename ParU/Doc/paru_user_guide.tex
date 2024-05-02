@@ -403,11 +403,8 @@ int main(int argc, char **argv)
     On output, the symbolic analysis structure \verb'Sym' is created, passed in
     as \verb'&Sym'.  The symbolic analysis can be used for different calls to
     \verb'ParU_Factorize' for matrices that have the same sparsity pattern but
-    different numerical values.
-    The symbolic analysis structure
-    must be freed by \verb'ParU_FreeSymbolic'.
-
-    FIXME: make Symbolic object opaque.
+    different numerical values.  The symbolic analysis structure must be freed
+    by \verb'ParU_FreeSymbolic'.
 
 \subsection{{\sf ParU\_Factorize}: numerical factorization}
 
@@ -431,8 +428,6 @@ int main(int argc, char **argv)
     \verb'ParU_Factorize'.  On output, the \verb'&Num' structure is created.
     The numeric factorization structure must be freed by
     \verb'ParU_FreeNumeric'.
-
-    FIXME: make Numeric object opaque.
 
 \subsection{{\sf ParU\_Solve}: solve a linear system, $Ax=b$}
 
