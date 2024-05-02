@@ -9,3 +9,14 @@ code they can.  ParU has some non-deterministic behavior when creating its
 parallel tasks for factorizing multiple fronts in parallel, and this can affect
 the test coverage.
 
+Files in this folder:
+
+    cov                     run gcov after the tests
+    Makefile                compile and run the tests
+    mtest.m                 test the matrices in MATLAB
+    paru_brutal_test.cpp    brutal ParU test (for out-of-memory conditions)
+    paru_cov.hpp            include file for test programs
+    paru_c_test.cpp         test ParU C interface
+    paru_quick_test.cpp     test ParU C++ interface
+    README.txt              this file
+

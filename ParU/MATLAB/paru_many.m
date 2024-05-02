@@ -12,12 +12,18 @@ function paru_many
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 % FIXME: add the umfpack mexFunction, to get its analyze/factorize/solve times
+% FIXME: save results to a *.mat file for further analysis,
+%   once umfpack mexFunction, stats.lnz, stats.unz, and stats.flops
+%   are added.
 
+% get all real square matrices in the SuiteSparse Collection,
+% that are not candidates for a Cholesky factorization.
 index = ssget ;
 test_matrices = find (index.nrows == index.ncols & index.isReal & ~index.cholcand) ;
 
-% these matrices are too large, causing MATLAB and/or paru to fail or
-% to take far too much time:
+% these matrices are too large, causing MATLAB and/or paru to fail or to take
+% far too much time.  Some are graphs that are not meant to represent a sparse
+% linear system, and suffer very high fill-in if factorized.
 too_large = [
     2575
     2576
@@ -30,6 +36,7 @@ too_large = [
     1370
     913
     2779
+    2460
     ] ;
 
 % these matrices are singular or nearly so:
@@ -427,26 +434,29 @@ singular_matrices = [
         2595
          979
         2303
+        2590
     ] ;
 
+% these matrices cause METIS to fail
 skip_metis = [1373] ;
 
 % skip these matrices (too large, or singluar):
 skip = [too_large ; singular_matrices] ;
 
 test_matrices = setdiff (test_matrices, skip, 'stable') ;
+
+% sort matrices by nnz(A)
 nz = index.nnz (test_matrices) ;
 [~,p] = sort (nz) ;
 test_matrices = test_matrices (p) ;
-
 nmat = length (test_matrices) ;
 
 % warmup to make sure the paru mexFunction is loaded:
 paru_demo
 
+% start with this matrix:
 first = 1 ;
-first = find (test_matrices == 2377)
-
+first = find (test_matrices == 1235)
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
@@ -531,11 +541,11 @@ for k = first:nmat
         end
         fprintf (' ordering: %s\n', stats.ordering) ;
 
+        % ordering: METIS; usually slower overall when considering x=A\b, but
+        % can result in faster numeric factorization time, particularly for
+        % large matrices that represent a 2D or 3D mesh.
         do_metis = (~any (skip_metis == id)) ;
         if (do_metis)
-            % ordering: METIS; usually slower overall when considering
-            % x=A\b, but can result in faster numeric factorization time,
-            % particularly for large problems.
             t2 = tic ;
             [x2, stats] = paru (A,b,opts_metis) ;
             t_paru = toc (t2) ;
@@ -556,9 +566,11 @@ for k = first:nmat
         end
 
     else
+
+        % add this singular matrix to the list of matrices to skip
         skip = [skip ; id] ;
         save skip_set skip
-    end
 
+    end
 end
 

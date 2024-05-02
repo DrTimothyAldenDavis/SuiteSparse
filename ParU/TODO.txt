@@ -1,2 +1,7 @@
 FIXME make Numeric, Symbolic, Control objects opaque
 FIXME test performance results again, for ACM TOMS paper
+FIXME is Doc/Doxyfile needed?
+FIXME add MATLAB/Contents.m and rename the folder to ParU
+FIXME Matrix/xenon1.mtx is very large; try to remove it
+    It is only needed for one line of coverage.
+

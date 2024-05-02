@@ -43,7 +43,7 @@ void paru_write
     else
         name = default_name;
 
-    char dpath[] = "../Demo/Res/";
+    char dpath[] = "./";
 
     //-------------------- writing column permutation to a file
     {

@@ -34,18 +34,20 @@ folder, then `sudo make install`.
 ##  How to use
 
 You should include ParU.h in your C++ or C project. Then for solving Ax=b in
-which A is a sparse matrix in matrix market format with double entries and b is
-a dense vector of double (or a dense matrix B for multiple rhs):
+which A is a CHOLMOD real sparse double-precision matrix and b is a dense
+double vector:
 
-     // you can have different Controls for each
-     info = ParU_Analyze(A, &Sym, &Control);
-     // you can have multiple different factorization with a single ParU_Analyze
-     info = ParU_Factorize(A, Sym, &Num, &Control);
-     info = ParU_Solve(Sym, Num, b, x, &Control);
-     ParU_FreeNumeric(Sym, &Num, &Control);
-     ParU_FreeSymbolic(&Sym, &Control);
+     ParU_Analyze (A, &Sym, &Control) ;
+     ParU_Factorize (A, Sym, &Num, &Control) ;
+     ParU_Solve (Sym, Num, b, x, &Control) ;
+     ParU_FreeNumeric (Sym, &Num, &Control) ;
+     ParU_FreeSymbolic (&Sym, &Control) ;
 
-See Demo for more examples.
+ParU_Analyze only considers the sparsity pattern of A, not its values, so the
+Sym object can be reused for matrices with the same pattern but different
+values.
+
+See Demo for more examples.  See the ParU/ParU folder for a MATLAB interface.
 
 --------------------------------------------------------------------------------
 ## License

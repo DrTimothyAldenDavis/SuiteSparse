@@ -315,7 +315,7 @@ int main(int argc, char **argv)
     if (info == PARU_SUCCESS)
     {
         FILE *res_file;
-        char res_name[] = "../build/Res/res.txt";
+        char res_name[] = "res.txt";
         res_file = fopen(res_name, "a");
         if (res_file == NULL)
         {
