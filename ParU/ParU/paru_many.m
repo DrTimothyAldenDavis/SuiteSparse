@@ -450,6 +450,7 @@ singular_matrices = [
         1399
         2319
         2633
+        2624
     ] ;
 
 % these matrices cause METIS to fail
@@ -471,7 +472,7 @@ paru_demo
 
 % start with this matrix:
 % first = 1 ;
-first = find (test_matrices == 1208) ;
+first = find (test_matrices == 1898) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
