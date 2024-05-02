@@ -349,7 +349,7 @@ end
 % compile and install ParU
 try
     fprintf ('try to install ParU\n') ;
-    paths = add_to_path (paths, [SuiteSparse '/ParU/ParU']) ;
+    paths = add_to_path (paths, [SuiteSparse '/ParU/MATLAB']) ;
     paru_make ;
 catch me
     disp (me.message) ;
