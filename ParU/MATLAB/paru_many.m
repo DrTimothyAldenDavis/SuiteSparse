@@ -435,11 +435,6 @@ singular_matrices = [
          979
         2303
         2590
-        2378
-        2318
-        2502
-        2510
-        2379
     ] ;
 
 % these matrices cause METIS to fail
