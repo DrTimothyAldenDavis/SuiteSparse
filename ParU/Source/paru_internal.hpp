@@ -1079,7 +1079,14 @@ ParU_Info paru_finalize_perm
     ParU_Numeric Num
 ) ;
 
-int64_t paru_gaxpy(cholmod_sparse *A, const double *x, double *y, double alpha);
+void paru_gaxpy
+(
+    cholmod_sparse *A,
+    const double *x,
+    double *y,
+    double alpha
+) ;
+
 double paru_spm_1norm(cholmod_sparse *A);
 double paru_vec_1norm(const double *x, int64_t n);
 double paru_matrix_1norm(const double *x, int64_t m, int64_t n);

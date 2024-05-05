@@ -169,7 +169,7 @@ int main(int argc, char **argv)
         }
     }
 
-    printf ("\n--------- ParU_C_Solve_AXV:\n") ;
+    printf ("\n--------- ParU_C_Solve_AXB:\n") ;
     info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, Control);
     if (info != PARU_SUCCESS)
     {

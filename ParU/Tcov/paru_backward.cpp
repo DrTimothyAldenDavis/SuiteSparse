@@ -6,8 +6,6 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// FIXME: this is only used in tests; move to Tcov
-
 /*! @brief     compute the backward error
  *
  *          get a factorized matrix A and a vector x1
@@ -16,9 +14,10 @@
  *
  * @author Aznaveh
  * */
+
 #include <algorithm>
 
-#include "paru_internal.hpp"
+#include "paru_cov.hpp"
 
 ParU_Info paru_backward
 (
