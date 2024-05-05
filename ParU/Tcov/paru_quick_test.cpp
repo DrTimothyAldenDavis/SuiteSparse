@@ -17,8 +17,9 @@
 
 #define TEST_FREE_ALL                                   \
 {                                                       \
-    ParU_FreeNumeric(&Num, &Control);                   \
-    ParU_FreeSymbolic(&Sym, &Control);                  \
+    ParU_FreeNumeric(&Num, Control);                    \
+    ParU_FreeSymbolic(&Sym, Control);                   \
+    ParU_FreeControl(&Control);                         \
     cholmod_l_free_sparse(&A, cc);                      \
     cholmod_l_finish(cc);                               \
     if (B  != NULL) { free(B);  B  = NULL; }            \
@@ -39,10 +40,12 @@ int main(int argc, char **argv)
     cholmod_sparse *A;
     ParU_Symbolic Sym = NULL;
     ParU_Numeric Num = NULL ;
+    ParU_Control Control = NULL ;
     double *b = NULL, *B = NULL, *X = NULL, *xx = NULL, *x = NULL,
         *Scale = NULL, *R = NULL ;
     int64_t *Perm = NULL, *P = NULL, *Q = NULL ;
     double err = 0 ;
+    ParU_Info info;
 
     // default log10 of expected residual.  +1 means failure is expected
     double expected_log10_resid = -16 ;
@@ -52,7 +55,7 @@ int main(int argc, char **argv)
     }
 
     // ordering to use
-    int umfpack_ordering = 23 ;
+    int umfpack_ordering = UMFPACK_ORDERING_AMD ;
     if (argc > 2)
     {
 
@@ -82,23 +85,15 @@ int main(int argc, char **argv)
     int mtype = -1 ;
     cholmod_l_start(cc);
 
-    ParU_Control Control;
     // puting Control lines to work
-    Control.mem_chunk = 1024;
-    Control.umfpack_ordering = umfpack_ordering ;
-    Control.umfpack_strategy = 23;
-    Control.paru_max_threads = 4;
-    Control.relaxed_amalgamation = -1;
-    Control.paru_strategy = 23;
-    Control.prescale = -1;
-    Control.panel_width = -1;
-    Control.piv_toler = -1;
-    Control.diag_toler = -1;
-    Control.trivial = -1;
-    Control.worthwhile_dgemm = -2;
-    Control.worthwhile_trsm = -1;
-    Control.filter_singletons = 2 ;
-    Control.paru_strategy = PARU_STRATEGY_SYMMETRIC;
+    info = ParU_InitControl (&Control) ;
+    TEST_ASSERT (info == PARU_SUCCESS) ;
+
+    // puting Control lines to work
+    ParU_Set (PARU_CONTROL_MEM_CHUNK, 1024, Control) ;
+    ParU_Set (PARU_CONTROL_ORDERING, umfpack_ordering, Control) ;
+    ParU_Set (PARU_CONTROL_MAX_THREADS, 4, Control) ;
+    ParU_Set (PARU_CONTROL_STRATEGY, PARU_STRATEGY_SYMMETRIC, Control) ;
 
     // read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
@@ -109,9 +104,6 @@ int main(int argc, char **argv)
         TEST_ASSERT (expected_log10_resid == 101) ;
         TEST_PASSES ;
     }
-
-    // to test upper bound on this option (Matrix/xenon1.mtx)
-    Control.relaxed_amalgamation = (A->nrow == 48600) ? 1024 : (-1) ;
 
     /////This part is for covering the codes that cannot be covered through
     ///// factorizing
@@ -149,18 +141,13 @@ int main(int argc, char **argv)
     printf(" %s\n", date);
     TEST_ASSERT (date [0] != '\0') ;
 
-    ParU_Info info;
-
-    info = ParU_Analyze(nullptr, &Sym, &Control);
+    info = ParU_Analyze(nullptr, &Sym, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Analyze(A, nullptr, &Control);
+    info = ParU_Analyze(A, nullptr, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Analyze(A, &Sym, nullptr);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_Analyze(A, &Sym, &Control);
+    info = ParU_Analyze(A, &Sym, Control);
     if (info != PARU_SUCCESS)
     {
         // analysis failed
@@ -170,27 +157,26 @@ int main(int argc, char **argv)
         TEST_PASSES ;
     }
 
-    Control.paru_strategy = PARU_STRATEGY_AUTO;
-    info = ParU_Analyze(A, &Sym, &Control);
+    info = ParU_Set (PARU_CONTROL_STRATEGY, PARU_STRATEGY_AUTO, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_Analyze(A, &Sym, Control);
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 103) ;
         TEST_PASSES ;
     }
 
-    info = ParU_Factorize(nullptr, Sym, &Num, &Control);
+    info = ParU_Factorize(nullptr, Sym, &Num, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Factorize(A, nullptr, &Num, &Control);
+    info = ParU_Factorize(A, nullptr, &Num, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Factorize(A, Sym, nullptr, &Control);
+    info = ParU_Factorize(A, Sym, nullptr, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Factorize(A, Sym, &Num, nullptr);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_Factorize(A, Sym, &Num, &Control);
+    info = ParU_Factorize(A, Sym, &Num, Control);
     if (info != PARU_SUCCESS)
     {
         // matrix is singular
@@ -206,71 +192,70 @@ int main(int argc, char **argv)
     double resid = 0, anorm = 0 , xnorm = 0, rcond,
         min_udiag, max_udiag, flops ;
     int64_t n, anz, rs1, cs1, paru_strategy, umfpack_strategy,
-        umf_ordering, lnz, unz ;
+        umf_ordering, lnz, unz, gunk ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME, &blas_library,
-        &Control) ;
+    info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, &blas_library, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     printf ("blas_library: %s\n", blas_library) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_FRONT_TREE_TASKING, &tasking,
-        &Control) ;
+    info = ParU_Get (PARU_GET_FRONT_TREE_TASKING, &tasking, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     printf ("tasking: %s\n", tasking) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_N, &tasking, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_N, &resid, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME,
-        (const char **) NULL, &Control) ;
+    info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, (const char **) NULL,
+        Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_N, (int64_t *) NULL, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_N, (int64_t *) NULL, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_N, &n, (ParU_Control *) NULL) ;
+    info = ParU_Get (PARU_GET_N, &tasking, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME, &n, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_N, &n, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (n == ((int64_t) (A->nrow))) ;
+
+    info = ParU_Get (NULL, Num, PARU_GET_N, &gunk, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME, &flops, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_FRONT_TREE_TASKING, &gunk, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_N, &n, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_NROW_SINGLETONS, &rs1, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_NROW_SINGLETONS, &rs1, &Control) ;
-    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-
-    info = ParU_Get (Sym, Num, PARU_GET_NCOL_SINGLETONS, &cs1, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_NCOL_SINGLETONS, &cs1, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_PARU_STRATEGY, &paru_strategy,
-        &Control) ;
+        Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_UMFPACK_STRATEGY, &umfpack_strategy,
-        &Control) ;
+        Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_UMFPACK_ORDERING, &umf_ordering,
-        &Control) ;
+        Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_LNZ, &lnz, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_LNZ, &lnz, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_UNZ, &unz, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_UNZ, &unz, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    printf ("n: %ld anz: %ld rs1: %ld cs1: %ld \n"
-        "paru strategy: %ld umfpack_strategy: %ld umfpack_odering: %ld\n"
-        "lnz: %ld unz: %ld\n", n, anz, rs1, cs1, paru_strategy,
-        umfpack_strategy, umf_ordering, lnz, unz) ;
+//  printf ("n: %ld anz: %ld rs1: %ld cs1: %ld \n"
+//      "paru strategy: %ld umfpack_strategy: %ld umfpack_odering: %ld\n"
+//      "lnz: %ld unz: %ld\n", n, anz, rs1, cs1, paru_strategy,
+//      umfpack_strategy, umf_ordering, lnz, unz) ;
 
     Q = (int64_t *) malloc (n * sizeof (int64_t)) ;
     TEST_ASSERT (Q != NULL) ;
@@ -279,31 +264,31 @@ int main(int argc, char **argv)
     R = (double *) malloc (n * sizeof (double)) ;
     TEST_ASSERT (R != NULL) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_P, P, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_P, P, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_Q, Q, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_Q, Q, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_MIN_UDIAG, &min_udiag, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_MIN_UDIAG, &min_udiag, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_MAX_UDIAG, &max_udiag, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_MAX_UDIAG, &max_udiag, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_FLOP_COUNT, &flops, &Control) ;
-    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-
-    info = ParU_Get (Sym, Num, PARU_GET_FLOP_COUNT, &flops, (ParU_Control *) NULL) ;
+    info = ParU_Get (NULL, Num, PARU_GET_FLOP_COUNT, &flops, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_FLOP_COUNT, (double *) NULL, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_FLOP_COUNT, &flops, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_Get (Sym, Num, PARU_GET_FLOP_COUNT, (double *) NULL, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     printf ("min_udiag: %g max_udiag: %g rcond: %g flops: %g\n",
@@ -317,52 +302,40 @@ int main(int argc, char **argv)
 
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
-    info = ParU_LSolve(NULL, Num, b, &Control);
+    info = ParU_LSolve(NULL, Num, b, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_LSolve(Sym, NULL, b, &Control);
+    info = ParU_LSolve(Sym, NULL, b, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_LSolve(Sym, Num, NULL, &Control);
+    info = ParU_LSolve(Sym, Num, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_LSolve(Sym, Num, b, NULL);
+    info = ParU_USolve(NULL, Num, b, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(NULL, Num, b, &Control);
+    info = ParU_USolve(Sym, NULL, b, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(Sym, NULL, b, &Control);
+    info = ParU_USolve(Sym, Num, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(Sym, Num, NULL, &Control);
+    info = ParU_Perm (NULL, R, b, n, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(Sym, Num, b, NULL);
+    info = ParU_Perm (P, R, NULL, n, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (NULL, R, b, n, xx, &Control);
+    info = ParU_Perm (P, R, b, n, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (P, R, NULL, n, xx, &Control);
+    info = ParU_InvPerm (NULL, NULL, b, n, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (P, R, b, n, NULL, &Control);
+    info = ParU_InvPerm (Q, NULL, NULL, n, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (P, R, b, n, xx, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (NULL, NULL, b, n, xx, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (Q, NULL, NULL, n, xx, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (Q, NULL, b, n, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (Q, NULL, b, n, xx, NULL);
+    info = ParU_InvPerm (Q, NULL, b, n, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     Perm = (int64_t *) malloc (n * sizeof(int64_t)) ;
@@ -378,7 +351,7 @@ int main(int argc, char **argv)
         Scale [i] = 2 + i / 100.0 ;
     }
 
-    info = ParU_InvPerm (Perm, Scale, b, n, xx, &Control);
+    info = ParU_InvPerm (Perm, Scale, b, n, xx, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     err = 0 ;
     for (int64_t i = 0 ; i < n ; i++)
@@ -387,7 +360,7 @@ int main(int argc, char **argv)
     }
     TEST_ASSERT (err < 1e-10) ;
 
-    info = ParU_Perm (Perm, NULL, b, n, xx, &Control);
+    info = ParU_Perm (Perm, NULL, b, n, xx, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     err = 0 ;
     for (int64_t i = 0 ; i < n ; i++)
@@ -396,19 +369,16 @@ int main(int argc, char **argv)
     }
     TEST_ASSERT (err < 1e-10) ;
 
-    info = ParU_Solve(NULL, Num, b, xx, &Control);
+    info = ParU_Solve(NULL, Num, b, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, NULL, b, &Control);
+    info = ParU_Solve(Sym, NULL, b, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, Num, NULL, &Control);
+    info = ParU_Solve(Sym, Num, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, Num, b, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_Solve(Sym, Num, b, xx, &Control);
+    info = ParU_Solve(Sym, Num, b, xx, Control);
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 105) ;
@@ -416,10 +386,10 @@ int main(int argc, char **argv)
     }
 
     info =
-        ParU_Residual(A, xx, NULL, resid, anorm, xnorm, &Control);// coverage
+        ParU_Residual(A, xx, NULL, resid, anorm, xnorm, Control);// coverage
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, xx, b, resid, anorm, xnorm, Control);
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {
@@ -427,12 +397,19 @@ int main(int argc, char **argv)
         TEST_PASSES ;
     }
 
+    info = ParU_Residual(A, xx, b, resid, anorm, xnorm, NULL);
+    resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
     printf("Residual is |%.2e|, anorm is %.2e, xnorm is %.2e "
             "and rcond is %.2e.\n", resid, anorm, xnorm, rcond);
     TEST_ASSERT (resid == 0 || log10 (resid) <= expected_log10_resid) ;
 
-    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
-    info = paru_backward(b, resid, anorm, xnorm, NULL, Sym, Num, &Control);
+    for (int64_t i = 0; i < n; ++i)
+    {
+        b[i] = i + 1;
+    }
+    info = paru_backward(b, resid, anorm, xnorm, NULL, Sym, Num, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     if (b != NULL) free(b);
@@ -456,55 +433,43 @@ int main(int argc, char **argv)
         }
     }
 
-    info = ParU_LSolve(NULL, Num, nrhs, X, &Control);
+    info = ParU_LSolve(NULL, Num, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_LSolve(Sym, NULL, nrhs, X, &Control);
+    info = ParU_LSolve(Sym, NULL, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_LSolve(Sym, Num, nrhs, NULL, &Control);
+    info = ParU_LSolve(Sym, Num, nrhs, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_LSolve(Sym, Num, nrhs, X, NULL);
+    info = ParU_USolve(NULL, Num, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(NULL, Num, nrhs, X, &Control);
+    info = ParU_USolve(Sym, NULL, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(Sym, NULL, nrhs, X, &Control);
+    info = ParU_USolve(Sym, Num, nrhs, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(Sym, Num, nrhs, NULL, &Control);
+    info = ParU_Perm (NULL, R, B, n, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_USolve(Sym, Num, nrhs, X, NULL);
+    info = ParU_Perm (P, R, NULL, n, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (NULL, R, B, n, nrhs, X, &Control);
+    info = ParU_Perm (P, R, B, n, nrhs, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (P, R, NULL, n, nrhs, X, &Control);
+    info = ParU_InvPerm (NULL, NULL, B, n, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (P, R, B, n, nrhs, NULL, &Control);
+    info = ParU_InvPerm (Q, NULL, NULL, n, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Perm (P, R, B, n, nrhs, X, NULL);
+    info = ParU_InvPerm (Q, NULL, B, n, nrhs, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_InvPerm (NULL, NULL, B, n, nrhs, X, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (Q, NULL, NULL, n, nrhs, X, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (Q, NULL, B, n, nrhs, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (Q, NULL, B, n, nrhs, X, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_InvPerm (Perm, Scale, B, n, nrhs, X, &Control);
+    info = ParU_InvPerm (Perm, Scale, B, n, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     err = 0 ;
     for (int64_t i = 0 ; i < n ; i++)
@@ -516,7 +481,7 @@ int main(int argc, char **argv)
     }
     TEST_ASSERT (err < 1e-10) ;
 
-    info = ParU_Perm (Perm, NULL, B, n, nrhs, X, &Control);
+    info = ParU_Perm (Perm, NULL, B, n, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     err = 0 ;
     for (int64_t i = 0 ; i < n ; i++)
@@ -528,22 +493,19 @@ int main(int argc, char **argv)
     }
     TEST_ASSERT (err < 1e-10) ;
 
-    info = ParU_Solve(NULL, Num, nrhs, B, X, &Control);
+    info = ParU_Solve(NULL, Num, nrhs, B, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, NULL, nrhs, B, X, &Control);
+    info = ParU_Solve(Sym, NULL, nrhs, B, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, Num, nrhs, NULL, X, &Control);
+    info = ParU_Solve(Sym, Num, nrhs, NULL, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, Num, nrhs, B, NULL, &Control);
+    info = ParU_Solve(Sym, Num, nrhs, B, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, Num, nrhs, B, X, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_Solve(Sym, Num, nrhs, B, X, &Control);
+    info = ParU_Solve(Sym, Num, nrhs, B, X, Control);
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 107) ;
@@ -551,10 +513,10 @@ int main(int argc, char **argv)
     }
 
     // This one is just for more coverage
-    info = ParU_Residual(A, X, NULL, nrhs, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, X, NULL, nrhs, resid, anorm, xnorm, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, Control);
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {
@@ -566,7 +528,7 @@ int main(int argc, char **argv)
     TEST_ASSERT (resid == 0 || log10 (resid) <= expected_log10_resid) ;
 
     // solve again, overwriting B with solution X
-    info = ParU_Solve(Sym, Num, nrhs, B, &Control);
+    info = ParU_Solve(Sym, Num, nrhs, B, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     // compare X and B
     err = 0 ;
@@ -577,17 +539,14 @@ int main(int argc, char **argv)
     err = err / xnorm ;
     TEST_ASSERT (err < 1e-10) ;
 
-    info = ParU_FreeNumeric (NULL, &Control) ;
+    info = ParU_FreeNumeric (NULL, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_FreeNumeric (&Num, NULL) ;
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_FreeSymbolic (NULL, &Control) ;
+    info = ParU_FreeSymbolic (NULL, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_FreeSymbolic (&Sym, NULL) ;
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_FreeControl (NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     // test paru_bin_src_col
     int64_t sorted_list [5] = {1, 4, 9, 99} ;
@@ -603,8 +562,311 @@ int main(int argc, char **argv)
     info = paru_umfpack_info (UMFPACK_ERROR_out_of_memory) ;
     TEST_ASSERT (info == PARU_OUT_OF_MEMORY) ;
 
+    //--------------------------------------------------------------------------
+    // test ParU_Set and ParU_Get
+    //--------------------------------------------------------------------------
+
+    info = ParU_FreeControl (&Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_InitControl (&Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    // int64_t parameters:
+    int64_t c ;
+    c = -1 ;
+
+    info = ParU_Get (PARU_CONTROL_MAX_THREADS, (int64_t *) NULL, Control) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Get (PARU_CONTROL_PIVOT_TOLERANCE, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_MAX_THREADS, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_MAX_THREADS) ;
+
+    info = ParU_Set (PARU_CONTROL_MAX_THREADS, c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Set (PARU_CONTROL_PIVOT_TOLERANCE, c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_STRATEGY, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_STRATEGY) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_STRATEGY, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_STRATEGY) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_UMFPACK_STRATEGY, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_UMFPACK_STRATEGY) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_UMFPACK_STRATEGY, 
+        UMFPACK_STRATEGY_SYMMETRIC, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_UMFPACK_STRATEGY, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == UMFPACK_STRATEGY_SYMMETRIC) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_UMFPACK_STRATEGY, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_UMFPACK_STRATEGY) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_ORDERING, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_ORDERING) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_ORDERING, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_ORDERING) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_ORDERING,
+        UMFPACK_ORDERING_CHOLMOD, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_ORDERING, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == UMFPACK_ORDERING_CHOLMOD) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_ORDERING,
+        UMFPACK_ORDERING_BEST, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_ORDERING, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == UMFPACK_ORDERING_BEST) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_RELAXED_AMALGAMATION, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_RELAXED_AMALGAMATION) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_RELAXED_AMALGAMATION, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_RELAXED_AMALGAMATION) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_RELAXED_AMALGAMATION, 256, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_RELAXED_AMALGAMATION, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 256) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_PANEL_WIDTH, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_PANEL_WIDTH) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_PANEL_WIDTH, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_PANEL_WIDTH) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_PANEL_WIDTH, 64, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_PANEL_WIDTH, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 64) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DGEMM_TINY, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_DGEMM_TINY) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DGEMM_TINY, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_DGEMM_TINY) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_DGEMM_TINY, 16, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DGEMM_TINY, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 16) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DGEMM_TASKED, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_DGEMM_TASKED) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DGEMM_TASKED, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_DGEMM_TASKED) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_DGEMM_TASKED, 1024, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DGEMM_TASKED, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 1024) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DTRSM_TASKED, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_DTRSM_TASKED) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DTRSM_TASKED, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_DTRSM_TASKED) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_DTRSM_TASKED, 2048, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_DTRSM_TASKED, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 2048) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_PRESCALE, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_PRESCALE) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_PRESCALE, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_PRESCALE) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_PRESCALE, 0, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_PRESCALE, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 0) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_SINGLETONS, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_SINGLETONS) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_SINGLETONS, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_SINGLETONS) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_SINGLETONS, 0, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_SINGLETONS, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 0) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_MEM_CHUNK, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_MEM_CHUNK) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_MEM_CHUNK, &c, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == PARU_DEFAULT_MEM_CHUNK) ;
+
+    c = -1 ;
+    info = ParU_Set (PARU_CONTROL_MEM_CHUNK, 10000, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    c = -1 ;
+    info = ParU_Get (PARU_CONTROL_MEM_CHUNK, &c, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (c == 10000) ;
+
+    // double parameters:
+    double z ;
+
+    info = ParU_Get (PARU_CONTROL_PIVOT_TOLERANCE, (double *) NULL, Control) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Get (PARU_CONTROL_STRATEGY, &z, Control) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Set (PARU_CONTROL_PIVOT_TOLERANCE, 0.5, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Set (PARU_CONTROL_MAX_THREADS, 0.5, Control) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    z = -1 ;
+    info = ParU_Get (PARU_CONTROL_PIVOT_TOLERANCE, &z, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (z == PARU_DEFAULT_PIVOT_TOLERANCE) ;
+
+    z = -1 ;
+    info = ParU_Get (PARU_CONTROL_PIVOT_TOLERANCE, &z, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (z == PARU_DEFAULT_PIVOT_TOLERANCE) ;
+
+    z = -1 ;
+    info = ParU_Set (PARU_CONTROL_PIVOT_TOLERANCE, (float) 0.5, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    z = -1 ;
+    info = ParU_Get (PARU_CONTROL_PIVOT_TOLERANCE, &z, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (z == 0.5) ;
+
+    z = -1 ;
+    info = ParU_Get (PARU_CONTROL_DIAG_PIVOT_TOLERANCE, &z, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (z == PARU_DEFAULT_DIAG_PIVOT_TOLERANCE) ;
+
+    z = -1 ;
+    info = ParU_Get (PARU_CONTROL_DIAG_PIVOT_TOLERANCE, &z, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (z == PARU_DEFAULT_DIAG_PIVOT_TOLERANCE) ;
+
+    z = -1 ;
+    info = ParU_Set (PARU_CONTROL_DIAG_PIVOT_TOLERANCE, 0.25, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    z = -1 ;
+    info = ParU_Get (PARU_CONTROL_DIAG_PIVOT_TOLERANCE, &z, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (z == 0.25) ;
+
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    // double free (which is safe)
+    info = ParU_FreeControl (&Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    info = ParU_FreeControl (&Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
     TEST_PASSES ;
 }
 

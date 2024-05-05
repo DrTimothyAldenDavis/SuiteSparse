@@ -29,7 +29,7 @@ ParU_Info paru_backward
     cholmod_sparse *A,
     ParU_Symbolic Sym,
     ParU_Numeric Num,
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
     DEBUGLEVEL(0);

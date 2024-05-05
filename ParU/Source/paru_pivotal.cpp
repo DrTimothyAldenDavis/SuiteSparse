@@ -29,6 +29,10 @@ ParU_Info paru_pivotal
     ParU_Numeric Num
 )
 {
+
+    // get Control
+    int64_t panel_width = Work->panel_width ;
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
@@ -153,8 +157,6 @@ ParU_Info paru_pivotal
     std::set<int64_t> stl_rowSet;
     std::set<int64_t>::iterator it;
 #endif
-    ParU_Control *Control = Num->Control;
-    int64_t panel_width = Control->panel_width;
     int64_t fp = col2 - col1; /* first fp columns are pivotal */
     int64_t num_panels = (int64_t)ceil((double)fp / panel_width);
 

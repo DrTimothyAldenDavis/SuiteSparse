@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//////////////////////////  paru_tasked_trsm  //////////////////////////////////
+//////////////////////////  paru_tasked_dtrsm //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
@@ -11,8 +11,10 @@
  *
  * @author Aznaveh
  */
+
 #include "paru_internal.hpp"
-bool paru_tasked_trsm
+
+bool paru_tasked_dtrsm
 (
     int64_t f,
     int64_t m,
@@ -26,29 +28,32 @@ bool paru_tasked_trsm
     ParU_Numeric Num
 )
 {
+
+    // get Control
+    int32_t nthreads = Work->nthreads ;
+    int64_t worthwhile_dtrsm = Work->worthwhile_dtrsm ;
+
     DEBUGLEVEL(0);
     int64_t naft;
-    ParU_Control *Control = Num->Control;
-    int64_t L = Control->worthwhile_trsm;
+
     bool blas_ok = true ;
 #ifdef PARU_COVERAGE
-    L = 32;
+    worthwhile_dtrsm = 32;
 #endif
     #pragma omp atomic read
     naft = Work->naft;
-    const int32_t max_threads = Control->paru_max_threads;
     if (naft == 1)
     {
-        BLAS_set_num_threads(max_threads);
+        BLAS_set_num_threads(nthreads);
     }
     else
     {
         BLAS_set_num_threads(1);
     }
-    if (n < L || (naft == 1) || (naft >= max_threads))
+    if (n < worthwhile_dtrsm || (naft == 1) || (naft >= nthreads))
     {
 #ifndef NDEBUG
-        if (n < L) PRLEVEL(1, ("%% Small TRSM (" LD "x" LD ") in " LD "\n", m, n, f));
+        if (n < worthwhile_dtrsm) PRLEVEL(1, ("%% Small TRSM (" LD "x" LD ") in " LD "\n", m, n, f));
         if (naft == 1)
             PRLEVEL(1, ("%% All threads for trsm(" LD "x" LD ") in " LD "\n", m, n, f));
 #endif
@@ -58,7 +63,7 @@ bool paru_tasked_trsm
     else
     {
 #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
-        int my_share = max_threads / naft;
+        int my_share = nthreads / naft;
         if (my_share == 0) my_share = 1;
         PRLEVEL(1, ("%% MKL local threads for trsm(" LD "x" LD ") in " LD " [[%d]]\n", m,
                     n, f, my_share));
@@ -69,7 +74,7 @@ bool paru_tasked_trsm
         mkl_set_num_threads_local(0);
 #else
         PRLEVEL(1, ("%%YES tasksingt for trsm(" LD "x" LD ") in " LD " \n", m, n, f));
-        int64_t num_blocks = n / L + 1;
+        int64_t num_blocks = n / worthwhile_dtrsm + 1;
         int64_t len_bloc = n / num_blocks;
         PRLEVEL(1, ("%%  num_blocks = " LD "\n", num_blocks));
         #pragma omp parallel proc_bind(close)

@@ -27,6 +27,10 @@ ParU_Info paru_front
     ParU_Numeric Num
 )
 {
+
+    // get Control
+    int64_t panel_width = Work->panel_width ;
+
     DEBUGLEVEL(-3);
     PARU_DEFINE_PRLEVEL;
     /*
@@ -56,9 +60,6 @@ ParU_Info paru_front
     ASSERT(fp > 0);
 
     /* computing number of rows, set union */
-
-    ParU_Control *Control = Num->Control;
-    int64_t panel_width = Control->panel_width;
 
     try
     {
@@ -194,7 +195,8 @@ ParU_Info paru_front
         PRLEVEL(1, ("%% start_fac= " LD "\n", start_fac));
 
         ParU_Info ffs_blas_ok = paru_factorize_full_summed(
-            f, start_fac, panel_row, stl_colSet, pivotal_elements, Work, Sym,Num);
+            f, start_fac, panel_row, stl_colSet, pivotal_elements, Work, Sym,
+            Num);
         if (ffs_blas_ok != PARU_SUCCESS) return ffs_blas_ok; //failed blas
         ++Work->time_stamp[f];
 
@@ -451,7 +453,7 @@ ParU_Info paru_front
 
         /**** 6 ****                 TRSM and DGEMM                         ***/
 
-        int64_t trsm_blas_ok = paru_trsm(f, pivotalFront, uPart, fp, rowCount,
+        int64_t trsm_blas_ok = paru_dtrsm(f, pivotalFront, uPart, fp, rowCount,
                                      colCount, Work, Num);
         if (!trsm_blas_ok) return PARU_TOO_LARGE;
 
@@ -550,8 +552,8 @@ ParU_Info paru_front
         double *el_numbers =
             (double *)((int64_t *)(curEl + 1) + 2 * colCount + 2 * (rowCount - fp));
 
-        int64_t dgemm_blas_ok = paru_dgemm(f, pivotalFront, uPart, el_numbers, fp,
-                                       rowCount, colCount, Work, Num);
+        int64_t dgemm_blas_ok = paru_dgemm(f, pivotalFront, uPart, el_numbers,
+            fp, rowCount, colCount, Work, Num);
         if (!dgemm_blas_ok) return PARU_TOO_LARGE;
 
 #ifdef COUNT_FLOPS

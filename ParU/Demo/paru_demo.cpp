@@ -28,8 +28,9 @@
     if (X != NULL) free(X);                     \
     umfpack_dl_free_symbolic(&Symbolic);        \
     umfpack_dl_free_numeric(&Numeric);          \
-    ParU_FreeNumeric(&Num, &Control);           \
-    ParU_FreeSymbolic(&Sym, &Control);          \
+    ParU_FreeNumeric(&Num, Control);            \
+    ParU_FreeSymbolic(&Sym, Control);           \
+    ParU_FreeControl(&Control);                 \
     cholmod_l_free_sparse(&A, cc);              \
     cholmod_l_finish(cc);                       \
     return (info) ;                             \
@@ -41,7 +42,7 @@ int main(int argc, char **argv)
     cholmod_sparse *A;
     ParU_Symbolic Sym = NULL;
     ParU_Numeric Num = NULL ;
-    ParU_Control Control;
+    ParU_Control Control = NULL ;
     ParU_Info info;
     double *b = NULL, *xx = NULL, *B = NULL, *X = NULL, *x = NULL ;
     void *Symbolic = NULL, *Numeric = NULL ;
@@ -80,9 +81,14 @@ int main(int argc, char **argv)
         << ver[0] << "." << ver[1] << "."  << ver[2]
         << " ================================== " << date << std::endl;
 
+    info = ParU_InitControl (&Control) ;
+    if (info != PARU_SUCCESS)
+    {
+        FREE_ALL_AND_RETURN (info) ;
+    }
+
     const char *blas_name ;
-    info = ParU_Get (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME, &blas_name,
-        &Control) ;
+    info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, &blas_name, Control) ;
     if (info != PARU_SUCCESS)
     {
         FREE_ALL_AND_RETURN (info) ;
@@ -90,8 +96,7 @@ int main(int argc, char **argv)
     std::cout << "BLAS: " << blas_name << std::endl ;
 
     const char *tasking ;
-    info = ParU_Get (Sym, Num, PARU_GET_FRONT_TREE_TASKING, &tasking,
-        &Control) ;
+    info = ParU_Get (PARU_GET_FRONT_TREE_TASKING, &tasking, Control) ;
     if (info != PARU_SUCCESS)
     {
         FREE_ALL_AND_RETURN (info) ;
@@ -100,14 +105,10 @@ int main(int argc, char **argv)
 
     double my_start_time = SuiteSparse_time ();
 
-    // Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
-    // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;
-    // Control.umfpack_strategy = UMFPACK_STRATEGY_SYMMETRIC;
-    // Control.filter_singletons = 0 ;
-    // Control.paru_max_threads = 6;
-    Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
+    ParU_Set (PARU_CONTROL_ORDERING, UMFPACK_ORDERING_METIS_GUARD, Control) ;
+
     std::cout << "\n--------- ParU_Analyze:\n";
-    info = ParU_Analyze(A, &Sym, &Control);
+    info = ParU_Analyze(A, &Sym, Control);
     double my_time_analyze = SuiteSparse_time () - my_start_time;
     if (info != PARU_SUCCESS)
     {
@@ -116,14 +117,14 @@ int main(int argc, char **argv)
     }
 
     int64_t n, anz ;
-    info = ParU_Get (Sym, Num, PARU_GET_N, &n, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_N, &n, Control) ;
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: stats failed" << std::endl;
         FREE_ALL_AND_RETURN (info) ;
     }
 
-    info = ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, Control) ;
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: stats failed" << std::endl;
@@ -137,7 +138,7 @@ int main(int argc, char **argv)
         << " seconds\n";
     std::cout << "\n--------- ParU_Factorize:" << std::endl;
     double my_start_time_fac = SuiteSparse_time ();
-    info = ParU_Factorize(A, Sym, &Num, &Control);
+    info = ParU_Factorize(A, Sym, &Num, Control);
     double my_time_fac = SuiteSparse_time () - my_start_time_fac;
     if (info != PARU_SUCCESS)
     {
@@ -160,7 +161,7 @@ int main(int argc, char **argv)
     }
 
     double rcond ;
-    info = ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, Control) ;
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: stats failed" << std::endl;
@@ -177,7 +178,7 @@ int main(int argc, char **argv)
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
     std::cout << "\n--------- ParU_Solve:\n";
     double my_solve_time_start = SuiteSparse_time ();
-    info = ParU_Solve(Sym, Num, b, xx, &Control);
+    info = ParU_Solve(Sym, Num, b, xx, Control);
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: solve failed" << std::endl;
@@ -199,7 +200,7 @@ int main(int argc, char **argv)
 
     double resid, anorm, xnorm;
     std::cout << "\n--------- ParU_Residual:\n";
-    info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, xx, b, resid, anorm, xnorm, Control);
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: resid failed" << std::endl;
@@ -224,14 +225,14 @@ int main(int argc, char **argv)
     }
 
     std::cout << "\n--------- ParU_Solve:\n";
-    info = ParU_Solve(Sym, Num, nrhs, B, X, &Control);
+    info = ParU_Solve(Sym, Num, nrhs, B, X, Control);
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: solve failed" << std::endl;
         FREE_ALL_AND_RETURN (info) ;
     }
     std::cout << "\n--------- ParU_Residual:\n";
-    info = ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, Control);
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: solve failed" << std::endl;
@@ -254,11 +255,6 @@ int main(int argc, char **argv)
     // is used in umfpack_dl_symbolic; if
     // passed NULL it will use the defaults
     umfpack_dl_defaults(umf_Control);
-    // umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_AMD;
-    // umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
-    // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC;
-    // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC;
-    // umf_Control [UMFPACK_SINGLETONS] = Control.filter_singletons ;
     umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS_GUARD;
 
     int64_t *Ap = (int64_t *)A->p;
@@ -302,7 +298,7 @@ int main(int argc, char **argv)
     double umf_solve_time = SuiteSparse_time () - solve_start;
     umf_time = SuiteSparse_time () - umf_start_time;
     double umf_resid, umf_anorm, umf_xnorm;
-    info = ParU_Residual(A, x, b, umf_resid, umf_anorm, umf_xnorm, &Control);
+    info = ParU_Residual(A, x, b, umf_resid, umf_anorm, umf_xnorm, Control);
     double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 )
         ? 0 : (umf_resid/(umf_anorm*umf_xnorm));
     std::cout << std::scientific << std::setprecision(2)

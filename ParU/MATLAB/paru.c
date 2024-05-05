@@ -29,8 +29,9 @@
 {                                                                   \
     if ((method) != PARU_SUCCESS)                                   \
     {                                                               \
-        ParU_C_FreeNumeric (&Num, &Control) ;                       \
-        ParU_C_FreeSymbolic (&Sym, &Control) ;                      \
+        ParU_C_FreeNumeric (&Num, Control) ;                        \
+        ParU_C_FreeSymbolic (&Sym, Control) ;                       \
+        ParU_C_FreeControl (&Control) ;                             \
         mexErrMsgIdAndTxt ("ParU:error", "ParU: " error_message) ;  \
     }                                                               \
 }
@@ -64,6 +65,7 @@ void mexFunction
     int64_t n ;
     ParU_C_Symbolic Sym = NULL ;
     ParU_C_Numeric Num = NULL ;
+    ParU_C_Control Control = NULL ;
 
     //--------------------------------------------------------------------------
     // start CHOLMOD
@@ -97,118 +99,6 @@ void mexFunction
     if (nargin == 3 && !mxIsStruct (pargin [2]))
     {
     	mexErrMsgTxt ("3rd input must be a MATLAB struct")  ;
-    }
-
-    // initialize the ParU Control struct
-    ParU_C_Control Control ;
-    PARU_OK (ParU_C_Init_Control (&Control), "initialization failed") ;
-
-    // change the default ordering to AMD/COLAMD
-    Control.umfpack_ordering = UMFPACK_ORDERING_AMD ;
-
-    // get the opts
-    if (nargin == 3)
-    {
-        mxArray *field ;
-        #define STRLEN 256
-        char option [STRLEN+1] ;
-
-        // tol: pivot tolerance
-        if ((field = mxGetField (pargin [2], 0, "tol")) != NULL)
-        {
-            Control.piv_toler = mxGetScalar (field) ;
-        }
-
-        // diagtol: pivot tolerance for diagonal entries
-        if ((field = mxGetField (pargin [2], 0, "diagtol")) != NULL)
-        {
-            Control.diag_toler = mxGetScalar (field) ;
-        }
-
-        // strategy: both ParU and UMFPACK factorization strategy
-        if ((field = mxGetField (pargin [2], 0, "strategy")) != NULL)
-        {
-            if (mxGetString (field, option, STRLEN) == 0)
-            {
-                option [STRLEN] = '\0' ;
-                if (strncmp (option, "auto", STRLEN) == 0)
-                {
-                    // Auto: UMFPACK will select symmetric or unsymmetric
-                    // strategy, as determined by the properties of the matrix.
-                    // ParU will then select the strategy that UMFPACK
-                    // selected.
-                    Control.umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
-                    Control.paru_strategy = PARU_STRATEGY_AUTO ;
-                }
-                else if (strncmp (option, "unsymmetric", STRLEN) == 0)
-                {
-                    // both UMFPACK and ParU will use the unsymmetric strategy
-                    Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
-                    Control.paru_strategy = PARU_STRATEGY_UNSYMMETRIC ;
-                }
-                else if (strncmp (option, "symmetric", STRLEN) == 0)
-                {
-                    // both UMFPACK and ParU will use the symmetric strategy
-                    Control.umfpack_strategy = UMFPACK_STRATEGY_SYMMETRIC ;
-                    Control.paru_strategy = PARU_STRATEGY_SYMMETRIC ;
-                }
-                else
-                {
-                    mexErrMsgIdAndTxt ("ParU:error",
-                        "unrecognized opts.strategy: %s", option) ;
-                }
-            }
-            else
-            {
-                mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.strategy") ;
-            }
-        }
-
-        // ordering: fill-reducing ordering method to use
-        if ((field = mxGetField (pargin [2], 0, "ordering")) != NULL)
-        {
-            if (mxGetString (field, option, STRLEN) == 0)
-            {
-                option [STRLEN] = '\0' ;
-                if (strncmp (option, "amd", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_AMD ;
-                }
-                else if (strncmp (option, "cholmod", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_CHOLMOD ;
-                }
-                else if (strncmp (option, "metis", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_METIS ;
-                }
-                else if (strncmp (option, "metis_guard", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD ;
-                }
-                else if (strncmp (option, "none", STRLEN) == 0)
-                {
-                    Control.umfpack_ordering = UMFPACK_ORDERING_NONE ;
-                }
-                else
-                {
-                    mexErrMsgIdAndTxt ("ParU:error",
-                        "unrecognized opts.ordering: %s", option) ;
-                }
-            }
-            else
-            {
-                mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.ordering") ;
-            }
-        }
-
-        // prescale: whether or not to prescale the input matrix
-        if ((field = mxGetField (pargin [2], 0, "prescale")) != NULL)
-        {
-            // 0: no scaling, 1: prescale each row by max abs value
-            Control.prescale = (int) (mxGetScalar (field) != 0) ;
-        }
-
     }
 
     // get sparse matrix A
@@ -246,6 +136,135 @@ void mexFunction
     SuiteSparse_config_free_func_set (free) ;
 
     //--------------------------------------------------------------------------
+    // initialize the ParU Control struct
+    //--------------------------------------------------------------------------
+
+    PARU_OK (ParU_C_InitControl (&Control), "initialization failed") ;
+
+    // change the default ordering to AMD/COLAMD
+    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+        UMFPACK_ORDERING_AMD, Control), "opts failed") ;
+
+    // get the opts
+    if (nargin == 3)
+    {
+        mxArray *field ;
+        #define STRLEN 256
+        char option [STRLEN+1] ;
+
+        // tol: pivot tolerance
+        if ((field = mxGetField (pargin [2], 0, "tol")) != NULL)
+        {
+            PARU_OK (ParU_C_Set_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
+                (double) mxGetScalar (field), Control), "opts failed") ;
+        }
+
+        // diagtol: pivot tolerance for diagonal entries
+        if ((field = mxGetField (pargin [2], 0, "diagtol")) != NULL)
+        {
+            PARU_OK (ParU_C_Set_FP64 (PARU_CONTROL_DIAG_PIVOT_TOLERANCE,
+                (double) mxGetScalar (field), Control), "opts failed") ;
+        }
+
+        // strategy: both ParU and UMFPACK factorization strategy
+        if ((field = mxGetField (pargin [2], 0, "strategy")) != NULL)
+        {
+            if (mxGetString (field, option, STRLEN) == 0)
+            {
+                option [STRLEN] = '\0' ;
+                if (strncmp (option, "auto", STRLEN) == 0)
+                {
+                    // Auto: UMFPACK will select symmetric or unsymmetric
+                    // strategy, as determined by the properties of the matrix.
+                    // ParU will then select the strategy that UMFPACK
+                    // selected.
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_STRATEGY,
+                        PARU_STRATEGY_AUTO, Control), "opts failed") ;
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                        UMFPACK_STRATEGY_AUTO, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "unsymmetric", STRLEN) == 0)
+                {
+                    // both UMFPACK and ParU will use the unsymmetric strategy
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_STRATEGY,
+                        PARU_STRATEGY_UNSYMMETRIC, Control), "opts failed") ;
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                        UMFPACK_STRATEGY_UNSYMMETRIC, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "symmetric", STRLEN) == 0)
+                {
+                    // both UMFPACK and ParU will use the symmetric strategy
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_STRATEGY,
+                        PARU_STRATEGY_SYMMETRIC, Control), "opts failed") ;
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                        UMFPACK_STRATEGY_SYMMETRIC, Control), "opts failed") ;
+                }
+                else
+                {
+                    mexErrMsgIdAndTxt ("ParU:error",
+                        "unrecognized opts.strategy: %s", option) ;
+                }
+            }
+            else
+            {
+                mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.strategy") ;
+            }
+        }
+
+        // ordering: fill-reducing ordering method to use
+        if ((field = mxGetField (pargin [2], 0, "ordering")) != NULL)
+        {
+            if (mxGetString (field, option, STRLEN) == 0)
+            {
+                option [STRLEN] = '\0' ;
+                if (strncmp (option, "amd", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                        UMFPACK_ORDERING_AMD, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "cholmod", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                        UMFPACK_ORDERING_CHOLMOD, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "metis", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                        UMFPACK_ORDERING_METIS, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "metis_guard", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                        UMFPACK_ORDERING_METIS_GUARD, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "none", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                        UMFPACK_ORDERING_NONE, Control), "opts failed") ;
+                }
+                else
+                {
+                    mexErrMsgIdAndTxt ("ParU:error",
+                        "unrecognized opts.ordering: %s", option) ;
+                }
+            }
+            else
+            {
+                mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.ordering") ;
+            }
+        }
+
+        // prescale: whether or not to prescale the input matrix
+        if ((field = mxGetField (pargin [2], 0, "prescale")) != NULL)
+        {
+            // 0: no scaling, 1: prescale each row by max abs value
+            int64_t prescale = (mxGetScalar (field) != 0) ;
+            PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
+                prescale, Control), "opts failed") ;
+        }
+    }
+
+    //--------------------------------------------------------------------------
     // x = A\b using ParU
     //--------------------------------------------------------------------------
 
@@ -255,7 +274,7 @@ void mexFunction
         t0 = SuiteSparse_time ( ) ;
     }
 
-    PARU_OK (ParU_C_Analyze (A, &Sym, &Control), "symbolic analysis failed") ;
+    PARU_OK (ParU_C_Analyze (A, &Sym, Control), "symbolic analysis failed") ;
 
     if (nargout > 1)
     {
@@ -264,7 +283,7 @@ void mexFunction
         t0 = t1 ;
     }
 
-    PARU_OK (ParU_C_Factorize (A, Sym, &Num, &Control),
+    PARU_OK (ParU_C_Factorize (A, Sym, &Num, Control),
         "numeric factorization failed") ;
 
     if (nargout > 1)
@@ -275,7 +294,7 @@ void mexFunction
     }
 
     PARU_OK (ParU_C_Solve_AXB (Sym, Num, nrhs, (double *) B->x, (double *) X->x,
-        &Control), "solve failed") ;
+        Control), "solve failed") ;
 
     if (nargout > 1)
     {
@@ -289,24 +308,25 @@ void mexFunction
     double rcond, flops ;
     const char *blas_name, *front_tree_tasking ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_PARU_STRATEGY,
-        &paru_strategy, &Control), "stats failed") ;
+        &paru_strategy, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_UMFPACK_ORDERING,
-        &umfpack_ordering, &Control), "stats failed") ;
+        &umfpack_ordering, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_FLOP_COUNT,
-        &flops, &Control), "stats failed") ;
+        &flops, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_LNZ,
-        &lnz, &Control), "stats failed") ;
+        &lnz, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_UNZ,
-        &unz, &Control), "stats failed") ;
+        &unz, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE,
-        &rcond, &Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_CONSTCHAR (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME,
-        &blas_name, &Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_CONSTCHAR (Sym, Num, PARU_GET_FRONT_TREE_TASKING,
-        &front_tree_tasking, &Control), "stats failed") ;
+        &rcond, Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_CONSTCHAR (PARU_GET_BLAS_LIBRARY_NAME,
+        &blas_name, Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_CONSTCHAR (PARU_GET_FRONT_TREE_TASKING,
+        &front_tree_tasking, Control), "stats failed") ;
 
-    ParU_C_FreeNumeric (&Num, &Control) ;
-    ParU_C_FreeSymbolic (&Sym, &Control) ;
+    ParU_C_FreeNumeric (&Num, Control) ;
+    ParU_C_FreeSymbolic (&Sym, Control) ;
+    ParU_C_FreeControl (&Control) ;
 
     //--------------------------------------------------------------------------
     // set the memory manager back to mxMalloc/mxCalloc/mxRealloc/mxFree

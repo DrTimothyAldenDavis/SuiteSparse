@@ -21,8 +21,8 @@
 {                                               \
     if (b != NULL) free(b);                     \
     if (x != NULL) free(x);                     \
-    ParU_FreeNumeric(&Num, &Control);           \
-    ParU_FreeSymbolic(&Sym, &Control);          \
+    ParU_FreeNumeric(&Num, Control);            \
+    ParU_FreeSymbolic(&Sym, Control);           \
     cholmod_l_free_sparse(&A, cc);              \
     cholmod_l_finish(cc);                       \
     return (info) ;                             \
@@ -44,8 +44,8 @@ int main(int argc, char **argv)
     cholmod_sparse *A = NULL ;
     ParU_Symbolic Sym = NULL ;
     ParU_Numeric Num = NULL ;
+    ParU_Control Control = NULL ;
     double *b = NULL, *x = NULL ;
-    ParU_Control Control;
 
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
@@ -62,23 +62,23 @@ int main(int argc, char **argv)
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::cout << "================= ParU, a simple demo: ===================\n";
     ParU_Info info;
-    OK (ParU_Analyze(A, &Sym, &Control), "symbolic analysis");
+    OK (ParU_Analyze(A, &Sym, Control), "symbolic analysis");
     int64_t n, anz ;
-    OK (ParU_Get (Sym, Num, PARU_GET_N, &n, &Control), "n") ;
-    OK (ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, &Control), "anz") ;
+    OK (ParU_Get (Sym, Num, PARU_GET_N, &n, Control), "n") ;
+    OK (ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, Control), "anz") ;
     std::cout << "Input matrix is " << n << "x" << n <<
         " nnz = " << anz << std::endl;
-    OK (ParU_Factorize(A, Sym, &Num, &Control), "numeric factorization") ;
+    OK (ParU_Factorize(A, Sym, &Num, Control), "numeric factorization") ;
     std::cout << "ParU: factorization was successful." << std::endl;
 
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
     b = (double *)malloc(n * sizeof(double));
     x = (double *)malloc(n * sizeof(double));
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
-    OK (ParU_Solve(Sym, Num, b, x, &Control), "solve") ;
+    OK (ParU_Solve(Sym, Num, b, x, Control), "solve") ;
     double resid, anorm, xnorm, rcond ;
-    OK (ParU_Residual(A, x, b, resid, anorm, xnorm, &Control), "residual");
-    OK (ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control), 
+    OK (ParU_Residual(A, x, b, resid, anorm, xnorm, Control), "residual");
+    OK (ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, Control), 
         "rcond") ;
     double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     std::cout << std::scientific << std::setprecision(2)

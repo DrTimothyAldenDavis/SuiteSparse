@@ -34,10 +34,14 @@ ParU_Info paru_init_rowFronts
     ParU_Numeric *Num_handle,
     // inputs, not modified:
     cholmod_sparse *A,
-    const ParU_Symbolic Sym,    // symbolic analysis
-    ParU_Control *Control
+    const ParU_Symbolic Sym     // symbolic analysis
 )
 {
+
+    // get Control
+    int32_t nthreads = Work->nthreads ;
+    size_t mem_chunk = Work->mem_chunk ;
+    bool prescale = Work->prescale ;
 
     // workspace:
     int64_t *cSp = NULL;    // copy of Sp, temporary for making Sx
@@ -82,7 +86,6 @@ ParU_Info paru_init_rowFronts
     m = Num->m = Sym->m - Sym->n1;
     nf = Num->nf = Sym->nf;
     Num->res = PARU_SUCCESS;
-    Num->Control = Control;
 
     Num->frowCount = NULL;
     Num->fcolCount = NULL;
@@ -145,8 +148,10 @@ ParU_Info paru_init_rowFronts
                 return (PARU_OUT_OF_MEMORY) ;
             }
 #ifndef NDEBUG
-            paru_memset(Diag_map, 0, Sym->n * sizeof(int64_t), Control);
-            paru_memset(inv_Diag_map, 0, Sym->n * sizeof(int64_t), Control);
+            paru_memset(Diag_map, 0, Sym->n * sizeof(int64_t),
+                mem_chunk, nthreads) ;
+            paru_memset(inv_Diag_map, 0, Sym->n * sizeof(int64_t),
+                mem_chunk, nthreads) ;
             PR = 2;
 #endif
         }
@@ -190,8 +195,7 @@ ParU_Info paru_init_rowFronts
     }
     double *Slx = Num->Slx ;
 
-    int64_t prescale = Control->prescale;
-    if (prescale == 1)
+    if (prescale)
     {
         // S will be scaled by the maximum absolute value in each row
         Num->Rs = PARU_CALLOC (Sym->m, double);
@@ -207,17 +211,19 @@ ParU_Info paru_init_rowFronts
     if (nf != 0)
     {
         PRLEVEL(PR, ("%% $RowList =%p\n", RowList));
-        paru_memset(rowSize, -1, m * sizeof(int64_t), Control);
+        paru_memset(rowSize, -1, m * sizeof(int64_t), mem_chunk, nthreads) ;
         PRLEVEL(PR, ("%% rowSize pointer=%p size=" LD " \n", rowSize,
                      m * sizeof(int64_t)));
 
         PRLEVEL(PR, ("%% rowMark pointer=%p size=" LD " \n", rowMark,
                      (m + nf) * sizeof(int64_t)));
 
-        paru_memset(elRow, -1, (m + nf) * sizeof(int64_t), Control);
+        paru_memset(elRow, -1, (m + nf) * sizeof(int64_t),
+                mem_chunk, nthreads) ;
         PRLEVEL(PR, ("%% elRow=%p\n", elRow));
 
-        paru_memset(elCol, -1, (m + nf) * sizeof(int64_t), Control);
+        paru_memset(elCol, -1, (m + nf) * sizeof(int64_t),
+                mem_chunk, nthreads) ;
         PRLEVEL(PR, ("%% elCol=%p\n", elCol));
 
         PRLEVEL(PR, ("%% Work =%p\n ", Work));
@@ -230,14 +236,16 @@ ParU_Info paru_init_rowFronts
     const int64_t *Sp = Sym->Sp;
     const int64_t *Slp = (rs1 > 0) ? Sym->lstons.Slp : NULL ;
     const int64_t *Sup = (cs1 > 0) ? Sym->ustons.Sup : NULL ;
-    paru_memcpy(cSp, Sp, (m + 1) * sizeof(int64_t), Control);
+    paru_memcpy(cSp, Sp, (m + 1) * sizeof(int64_t), mem_chunk, nthreads) ;
     if (cs1 > 0)
     {
-        paru_memcpy(cSup, Sup, (cs1 + 1) * sizeof(int64_t), Control);
+        paru_memcpy(cSup, Sup, (cs1 + 1) * sizeof(int64_t),
+                mem_chunk, nthreads) ;
     }
     if (rs1 > 0)
     {
-        paru_memcpy(cSlp, Slp, (rs1 + 1) * sizeof(int64_t), Control);
+        paru_memcpy(cSlp, Slp, (rs1 + 1) * sizeof(int64_t),
+                mem_chunk, nthreads) ;
     }
 #ifndef NDEBUG
     PR = 1;
@@ -282,7 +290,7 @@ ParU_Info paru_init_rowFronts
     PRLEVEL(PR, ("\n"));
 #endif
 
-    if (Rs)
+    if (prescale)
     {
         for (int64_t newcol = 0; newcol < Sym->n; newcol++)
         {
@@ -296,7 +304,7 @@ ParU_Info paru_init_rowFronts
     }
 
     PRLEVEL(PR, ("%% Rs:\n["));
-    if (Rs)
+    if (prescale)
     {
         // making sure that every row has at most one element more than zero
         for (int64_t k = 0; k < m; k++)
@@ -437,7 +445,7 @@ ParU_Info paru_init_rowFronts
         {
             if (Diag_map[i] == -1)
             {
-                PRLEVEL(PR, ("Diag_map[" LD 
+                PRLEVEL(PR, ("Diag_map[" LD
                     "] is not correctly initialized\n", i));
             }
             if (inv_Diag_map[i] == -1)
@@ -455,7 +463,6 @@ ParU_Info paru_init_rowFronts
     // allocating row tuples, elements and updating column tuples
 
     int64_t out_of_memory = 0;
-    int nthreads = Control->paru_max_threads ;
 
     #pragma omp parallel for num_threads(nthreads)
     for (int64_t row = 0; row < m; row++)
@@ -481,7 +488,7 @@ ParU_Info paru_init_rowFronts
             {
                 rowMark[e] = 0;
 
-                // new is calling paru_malloc 
+                // new is calling paru_malloc
                 std::vector<int64_t> *curHeap = Work->heapList[e] =
                     new std::vector<int64_t>;
 

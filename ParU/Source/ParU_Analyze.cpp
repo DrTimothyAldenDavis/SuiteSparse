@@ -24,7 +24,8 @@
 
  *                     2(1)
  *
- **********  Relaxed tree:  relaxed_amalg=3  front(number of pivotal cols)##oldfront
+ **********  Relaxed tree:  relaxed_amalgamation=3
+                front(number of pivotal cols)##oldfront
  *          3(2)##5
  *          |       \
  *          0(1)##0 2(3)##2,3,4
@@ -85,13 +86,31 @@ ParU_Info ParU_Analyze
     // output:
     ParU_Symbolic *Sym_handle,  // output, symbolic analysis
     // control:
-    ParU_Control *user_Control
+    ParU_Control Control
 )
 {
-    if (!A || !Sym_handle || !user_Control || A->nrow != A->ncol ||
+    if (!A || !Sym_handle || A->nrow != A->ncol ||
         A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
         return (PARU_INVALID) ;
+    }
+
+    // get Control
+    int32_t nthreads = paru_nthreads (Control) ;
+    int64_t paru_strategy        = PARU_DEFAULT_STRATEGY ;
+    int64_t umfpack_strategy     = PARU_DEFAULT_UMFPACK_STRATEGY ;
+    int64_t umfpack_ordering     = PARU_DEFAULT_ORDERING ;
+    int64_t relaxed_amalgamation = PARU_DEFAULT_STRATEGY ;
+    int64_t filter_singletons    = PARU_DEFAULT_SINGLETONS ;
+    size_t  mem_chunk            = PARU_DEFAULT_MEM_CHUNK ;
+    if (Control != NULL)
+    {
+        paru_strategy        = Control->paru_strategy ;
+        umfpack_strategy     = Control->umfpack_strategy ;
+        umfpack_ordering     = Control->umfpack_ordering ;
+        relaxed_amalgamation = Control->relaxed_amalgamation ;
+        filter_singletons    = Control->filter_singletons ;
+        mem_chunk            = Control->mem_chunk ;
     }
 
     DEBUGLEVEL(0);
@@ -249,7 +268,7 @@ ParU_Info ParU_Analyze
         // matrix. Q is not necessearily the same as final column
         // permutation in UMFPACK. In UMFPACK if the matrix is
         // structurally singular, and if the symmetric strategy is
-        // used (or if Control [UMFPACK_FIXQ] > 0), then this Q will
+        // used (or if umf_Control [UMFPACK_FIXQ] > 0), then this Q will
         // be the same as the final column permutaion.
         // NOTE: there is no column permutation in paru. So the
         // initial permutaion would stay. SPQR uses Qfill for
@@ -324,7 +343,7 @@ ParU_Info ParU_Analyze
     // passed NULL it will use the defaults
 
     /* ---------------------------------------------------------------------- */
-    /*    Setting up umfpakc symbolic analysis and do the  analysis phase     */
+    /*    Setting up umfpack symbolic analysis and do the  analysis phase     */
     /* ---------------------------------------------------------------------- */
 
     /* get the default control parameters */
@@ -336,60 +355,12 @@ ParU_Info ParU_Analyze
     //      Page 22 UserGuide
     umfpack_dl_defaults(umf_Control);
 
-    // before using the Control checking user input
-    ParU_Control my_Control = *user_Control;
-    {
-        int32_t umfpack_ordering = my_Control.umfpack_ordering;
-        // UMFPACK_ORDERING_GIVEN and UMFPACK_ORDERING_USER not supported
-        if (umfpack_ordering != UMFPACK_ORDERING_METIS &&
-            umfpack_ordering != UMFPACK_ORDERING_METIS_GUARD &&
-            umfpack_ordering != UMFPACK_ORDERING_AMD &&
-            umfpack_ordering != UMFPACK_ORDERING_CHOLMOD &&
-            umfpack_ordering != UMFPACK_ORDERING_BEST &&
-            umfpack_ordering != UMFPACK_ORDERING_NONE)
-        {
-            my_Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
-        }
-
-        int32_t umfpack_strategy = my_Control.umfpack_strategy;
-        if (umfpack_strategy != UMFPACK_STRATEGY_AUTO &&
-            umfpack_strategy != UMFPACK_STRATEGY_SYMMETRIC &&
-            umfpack_strategy != UMFPACK_STRATEGY_UNSYMMETRIC)
-        {
-            my_Control.umfpack_strategy = UMFPACK_STRATEGY_AUTO;
-        }
-
-        int32_t relaxed_amalg = my_Control.relaxed_amalgamation ;
-        if (relaxed_amalg < 0)
-        {
-            my_Control.relaxed_amalgamation  = 32 ;
-        }
-        if (relaxed_amalg > 512)
-        {
-            my_Control.relaxed_amalgamation  = 512 ;
-        }
-
-        int32_t paru_strategy = my_Control.paru_strategy;
-        if (paru_strategy != PARU_STRATEGY_AUTO &&
-            paru_strategy != PARU_STRATEGY_SYMMETRIC &&
-            paru_strategy != PARU_STRATEGY_UNSYMMETRIC)
-        {
-            my_Control.paru_strategy = PARU_STRATEGY_AUTO;
-        }
-
-        int32_t filter_singletons = my_Control.filter_singletons;
-        if (filter_singletons != 0)
-        {
-            my_Control.filter_singletons = 1 ;
-        }
-    }
-    ParU_Control *Control = &my_Control;
-
-    umf_Control[UMFPACK_SINGLETONS] = (double) Control->filter_singletons ;
-    umf_Control[UMFPACK_ORDERING] = (double) Control->umfpack_ordering;
+    umf_Control[UMFPACK_SINGLETONS] = (double) filter_singletons ;
+    umf_Control[UMFPACK_ORDERING] = (double) umfpack_ordering ;
     // umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
     umf_Control[UMFPACK_FIXQ] = (double) -1;
-    umf_Control[UMFPACK_STRATEGY] = (double) Control->umfpack_strategy;
+    umf_Control[UMFPACK_STRATEGY] = (double) umfpack_strategy ;
+
     // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_AUTO;
     // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC;
     // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC;
@@ -397,8 +368,11 @@ ParU_Info ParU_Analyze
 
 #ifndef NDEBUG
     /* print the control parameters */
-    if (PR <= 0) umfpack_dl_report_control(umf_Control);
-    PRLEVEL (1, ("max_threads =%d\n", control_nthreads (Control)));
+    if (PR <= 0)
+    {
+        umf_Control [UMFPACK_PRL] = 999 ;
+        umfpack_dl_report_control(umf_Control);
+    }
 #endif
 
     /* performing the symbolic analysis */
@@ -414,6 +388,9 @@ ParU_Info ParU_Analyze
 
     // translate UMFPACK status to Paru_Info
     ParU_Info info = paru_umfpack_info (status) ;
+
+//      umfpack_dl_report_info(umf_Control, umf_Info);
+//      umfpack_dl_report_status(umf_Control, status);
 
     if (status < 0)
     {
@@ -441,14 +418,14 @@ ParU_Info ParU_Analyze
     // decide on the ParU strategy
     //--------------------------------------------------------------------------
 
-    if (Control->paru_strategy == PARU_STRATEGY_AUTO)
+    if (paru_strategy == PARU_STRATEGY_AUTO)
     {
         // ParU auto strategy: select the same strategy used by UMFPACK
-        Sym->paru_strategy = Sym->umfpack_strategy;
+        Sym->paru_strategy = Sym->umfpack_strategy ;
     }
     else
     {
-        Sym->paru_strategy = Control->paru_strategy;
+        Sym->paru_strategy = paru_strategy ;
     }
 
 #ifndef NDEBUG
@@ -520,7 +497,8 @@ ParU_Info ParU_Analyze
     /*    Copy the contents of Symbolic in my data structure                  */
     /* ---------------------------------------------------------------------- */
 
-    SymbolicType *Sym_umf = static_cast<SymbolicType*>(Symbolic);  // just an alias
+    // Sym_umf is just an alias
+    SymbolicType *Sym_umf = static_cast<SymbolicType*>(Symbolic);
     // temp amalgamation data structure
     fmap = PARU_MALLOC (n + 1, int64_t);
     newParent = PARU_MALLOC (n + 1, int64_t);
@@ -755,7 +733,6 @@ ParU_Info ParU_Analyze
             Super[k] = sum;
             // Super[k] = Front_npivcol[k - 1];
         }
-        // paru_cumsum(nf + 1, Super);
     }
 
     /* ---------------------------------------------------------------------- */
@@ -783,7 +760,7 @@ ParU_Info ParU_Analyze
     // The gist is to make a cumsum over Pivotal columns
     // then start from children and see if I merge it to the father how many
     // pivotal columns will it have;
-    // if it has less than relaxed_amalg merge the child to the father
+    // if it has less than relaxed_amalgamation merge the child to the father
     //
     // Super and Parent  and upperbounds
     // Parent needs an extra work space
@@ -791,8 +768,8 @@ ParU_Info ParU_Analyze
     // Upperbound how to do: maximum of pervious upperbounds
     // Number of the columns of the root of each subtree
     //
-    int64_t relaxed_amalg = (int64_t) (Control->relaxed_amalgamation) ;
-    PRLEVEL(1, ("Relaxed amalgamation relaxed_amalg = " LD "\n", relaxed_amalg));
+
+    PRLEVEL(1, ("Relaxed amalgamation = " LD "\n", relaxed_amalgamation));
     int64_t newF = 0;
 
     // int64_t num_roots = 0; //deprecated I dont use it anymore
@@ -805,7 +782,7 @@ ParU_Info ParU_Analyze
         PRLEVEL(PR, ("%% repr = " LD " Parent =" LD "\n", repr, Parent[repr]));
         PRLEVEL(PR, ("%%size of Potential pivot= " LD "\n",
                      Super[Parent[repr] + 1] - Super[f]));
-        while (Super[Parent[repr] + 1] - Super[f] < relaxed_amalg &&
+        while (Super[Parent[repr] + 1] - Super[f] < relaxed_amalgamation &&
                Parent[repr] != -1)
         {
             repr = Parent[repr];
@@ -1051,7 +1028,7 @@ ParU_Info ParU_Analyze
 #endif
         if (Parent[f] > 0) Childp[Parent[f] + 1]++;
     }
-    paru_cumsum(nf + 2, Childp, Control);
+    paru_cumsum (nf + 2, Childp, mem_chunk, nthreads);
 #ifndef NDEBUG
     Sym->Us_bound_size = Us_bound_size;
     Sym->LUs_bound_size = LUs_bound_size;
@@ -1097,10 +1074,14 @@ ParU_Info ParU_Analyze
     }
 
     if (nf > 0)
-        paru_memcpy(cChildp, Childp, (nf + 2) * sizeof(int64_t), Control);
+    {
+        paru_memcpy(cChildp, Childp, (nf + 2) * sizeof(int64_t),
+            mem_chunk, nthreads);
+    }
     else
+    {
         cChildp = NULL;
-
+    }
     for (int64_t f = 0; f < nf; f++)
     {
         if (Parent[f] > 0) Child[cChildp[Parent[f]]++] = f;
@@ -1426,18 +1407,20 @@ ParU_Info ParU_Analyze
     PRLEVEL(PR, ("\n"));
 #endif
 
-    paru_cumsum(m + 1 - n1, cSp, Control);
-    paru_memcpy(Sp, cSp, (m + 1 - n1) * sizeof(int64_t), Control);
+    paru_cumsum(m + 1 - n1, cSp, mem_chunk, nthreads);
+    paru_memcpy(Sp, cSp, (m + 1 - n1) * sizeof(int64_t), mem_chunk, nthreads);
 
     if (cs1 > 0)
     {
-        paru_cumsum(cs1 + 1, Sup, Control);
-        paru_memcpy(cSup, Sup, (cs1 + 1) * sizeof(int64_t), Control);
+        paru_cumsum(cs1 + 1, Sup, mem_chunk, nthreads);
+        paru_memcpy(cSup, Sup, (cs1 + 1) * sizeof(int64_t),
+            mem_chunk, nthreads);
     }
     if (rs1 > 0)
     {
-        paru_cumsum(rs1 + 1, Slp, Control);
-        paru_memcpy(cSlp, Slp, (rs1 + 1) * sizeof(int64_t), Control);
+        paru_cumsum(rs1 + 1, Slp, mem_chunk, nthreads);
+        paru_memcpy(cSlp, Slp, (rs1 + 1) * sizeof(int64_t),
+            mem_chunk, nthreads);
     }
 
 #ifndef NDEBUG
@@ -1689,13 +1672,17 @@ ParU_Info ParU_Analyze
             return (PARU_OUT_OF_MEMORY) ;
         }
         // initialization
-        paru_memset(aParent, -1, (ms + nf) * sizeof(int64_t), Control);
+        paru_memset(aParent, -1, (ms + nf) * sizeof(int64_t),
+            mem_chunk, nthreads) ;
 #ifndef NDEBUG
-        paru_memset(aChild, -1, (ms + nf + 1) * sizeof(int64_t), Control);
+        paru_memset(aChild, -1, (ms + nf + 1) * sizeof(int64_t),
+            mem_chunk, nthreads) ;
         PR = 1;
 #endif
-        paru_memset(aChildp, -1, (ms + nf + 2) * sizeof(int64_t), Control);
-        paru_memset(first, -1, (nf + 1) * sizeof(int64_t), Control);
+        paru_memset(aChildp, -1, (ms + nf + 2) * sizeof(int64_t),
+            mem_chunk, nthreads) ;
+        paru_memset(first, -1, (nf + 1) * sizeof(int64_t),
+            mem_chunk, nthreads) ;
 
         aChildp[0] = 0;
     }

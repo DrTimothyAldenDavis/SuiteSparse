@@ -36,13 +36,21 @@ ParU_Info ParU_Residual
     double &anorm,      // 1-norm of A
     double &xnorm,      // 1-norm of x
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!A || !x || !b || !Control ||
+    if (!A || !x || !b ||
         A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
         return (PARU_INVALID) ;
+    }
+
+    // get Control
+    int32_t nthreads = paru_nthreads (Control) ;
+    size_t mem_chunk = PARU_DEFAULT_MEM_CHUNK ;
+    if (Control != NULL)
+    {
+        mem_chunk = Control->mem_chunk ;
     }
 
     DEBUGLEVEL(0);
@@ -64,7 +72,7 @@ ParU_Info ParU_Residual
         PRLEVEL(1, ("ParU: memory problem inside residual\n"));
         return PARU_OUT_OF_MEMORY;
     }
-    paru_memcpy(ax_b, b, m * sizeof(double), Control);
+    paru_memcpy(ax_b, b, m * sizeof(double), mem_chunk, nthreads) ;
 
 #ifndef NDEBUG
     PRLEVEL(1, ("%% after copying x is:\n%%"));
@@ -110,14 +118,23 @@ ParU_Info ParU_Residual
     double &anorm,      // 1-norm of A
     double &xnorm,      // 1-norm of X
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!A || !X || !B || !Control ||
+    if (!A || !X || !B ||
         A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
         return (PARU_INVALID) ;
     }
+
+    // get Control
+    int32_t nthreads = paru_nthreads (Control) ;
+    size_t mem_chunk = PARU_DEFAULT_MEM_CHUNK ;
+    if (Control != NULL)
+    {
+        mem_chunk = Control->mem_chunk ;
+    }
+
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% mRHS inside residual\n"));
     int64_t m = A->nrow ;
@@ -143,7 +160,7 @@ ParU_Info ParU_Residual
         PRLEVEL(1, ("ParU: memory problem inside mRHS residual\n"));
         return PARU_OUT_OF_MEMORY;
     }
-    paru_memcpy(AX_B, B, m * nrhs * sizeof(double), Control);
+    paru_memcpy(AX_B, B, m * nrhs * sizeof(double), mem_chunk, nthreads) ;
 
 #ifndef NDEBUG
     PRLEVEL(1, ("%% mRHS after copying X is:\n%%"));

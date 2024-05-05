@@ -226,9 +226,6 @@ struct ParU_Numeric_struct
     int64_t slnz;
     double *Slx;  // Numeric values l singletons, Slp Sli are in symbolic
 
-    ParU_Control *Control;  // a copy of controls for internal use
-    // it is freed after factorize
-
     // Computed parts of each front
     int64_t *frowCount;  // size nf   size(CB) = rowCount[f]x
     int64_t *fcolCount;  // size nf                        colCount[f]
@@ -247,31 +244,54 @@ struct ParU_Numeric_struct
     ParU_Info res;  // returning value of numeric phase
 } ;
 
-// =========================================================================
-// ========================= ParU_C_Symbolic ===============================
-// =========================================================================
+// =============================================================================
+// =========================== ParU_Control ====================================
+// =============================================================================
+// The default value of some control options can be found here. All user
+// callable functions use ParU_Control; some controls are used only in symbolic
+// phase and some controls are only used in numeric phase.
 
-// just a carrier for the C++ data structure
+struct ParU_Control_struct
+{
+    // For all phases of ParU:
+    size_t mem_chunk ;         // chunk size for memset and memcpy
+
+    // Numeric factorization parameters:
+    double piv_toler ;          // tolerance for accepting sparse pivots
+    double diag_toler ;         // tolerance for accepting symmetric pivots
+    int64_t panel_width ;       // width of panel for dense factorizaiton
+    int64_t trivial ;           // dgemms smaller than this do not call BLAS
+    int64_t worthwhile_dgemm ;  // dgemms bigger than this are tasked
+    int64_t worthwhile_dtrsm ;  // dtrsm bigger than this are tasked
+    int64_t prescale ;          // 0: no scaling, 1: scale each row by the max
+                                // absolute value in its row.
+
+    // Symbolic analysis parameters:
+    int64_t umfpack_ordering ;
+    int64_t umfpack_strategy ;
+    int64_t relaxed_amalgamation ;  // symbolic analysis tries to ensure
+        // that each front have more pivot columns than this threshold
+    int64_t paru_strategy ;
+    int64_t filter_singletons ; // filter singletons if nonzero
+
+    // For all phases of ParU:
+    int64_t paru_max_threads ;  // initialized with omp_max_threads
+} ;
 
 extern "C"
 {
+    // These C objects are just carriers for the C++ data structures
     struct ParU_C_Symbolic_struct
     {
         void *sym_handle ;          // the C++ Symbolic struct
     } ;
-}
-
-// =========================================================================
-// ========================= ParU_C_Numeric ================================
-// =========================================================================
-
-// just a carrier for the C++ data structure
-
-extern "C"
-{
     struct ParU_C_Numeric_struct
     {
-        void *num_handle ;  // the C++ Numeric struct
+        void *num_handle ;          // the C++ Numeric struct
+    } ;
+    struct ParU_C_Control_struct
+    {
+        void *control_handle ;      // the C++ Numeric struct
     } ;
 }
 
@@ -585,6 +605,7 @@ struct paru_element
 
 struct paru_work
 {
+
     // gather scatter space for rows
     int64_t *rowSize;  // Initalized data structure, size of rows
     // int64_t rowMark;      // Work->rowSize[x] < rowMark[eli] for each front
@@ -637,6 +658,18 @@ struct paru_work
 
     int64_t naft;  // number of actvie frontal tasks
     int64_t resq;  // number of remainig ready tasks in the queue
+
+    // Control parameters:
+    int64_t worthwhile_dgemm ;
+    int64_t worthwhile_dtrsm ;
+    int64_t trivial ;
+    int64_t panel_width ;
+    double piv_toler ;
+    double diag_toler ;
+    size_t mem_chunk ;
+    int32_t nthreads ;
+    bool prescale ;
+
 };
 
 //------------------------------------------------------------------------------
@@ -676,42 +709,17 @@ inline int64_t flip(int64_t colInd)
 inline int64_t lac_el(paru_element **elementList, int64_t eli)
 {
     // return least numbered column of the element i (eli)
-    if (elementList[eli] == NULL)
-        return LONG_MAX;
-    else
+    int64_t result = INT64_MAX ;
+    if (elementList[eli] != NULL)
     {
         int64_t *el_colIndex = (int64_t *)(elementList[eli] + 1);
         int64_t lac_ind = elementList[eli]->lac;
-        return el_colIndex[lac_ind];
+        result = el_colIndex[lac_ind];
     }
+    return (result) ;
 }
 
-inline int32_t control_nthreads (ParU_Control *Control)
-{
-    int32_t max_threads = PARU_OPENMP_MAX_THREADS ;
-    if (Control == NULL || Control->paru_max_threads <= 0)
-    {
-        // default # of threads
-        return (max_threads) ;
-    }
-    else
-    {
-        return std::min(max_threads, Control->paru_max_threads);
-    }
-}
-
-inline int64_t control_mem_chunk (ParU_Control *Control)
-{
-    if (Control == NULL || Control->mem_chunk <= 0)
-    {
-        // default chunk size
-        return (PARU_MEM_CHUNK) ;
-    }
-    else
-    {
-        return (Control->mem_chunk) ;
-    }
-}
+int32_t paru_nthreads (ParU_Control Control) ;
 
 //------------------------------------------------------------------------------
 // internal routines
@@ -721,8 +729,16 @@ inline int64_t control_mem_chunk (ParU_Control *Control)
 // #define PARU_ALLOC_TESTING
 // #endif
 
+// #ifndef PARU_MEMTABLE_TESTING
+// #define PARU_MEMTABLE_TESTING
+// #endif
+
 // #ifndef PARU_MEMDUMP
 // #define PARU_MEMDUMP
+// #endif
+
+// #ifndef PARU_MALLOC_DEBUG
+// #define PARU_MALLOC_DEBUG
 // #endif
 
 /* Wrappers for managing memory */
@@ -774,9 +790,23 @@ void paru_free_el(int64_t e, paru_element **elementList);
 void *operator new(std::size_t sz);
 void operator delete(void *ptr) noexcept;
 
-void paru_memset(void *ptr, int64_t value, size_t num, ParU_Control *Control);
-void paru_memcpy(void *destination, const void *source, size_t num,
-                 ParU_Control *Control);
+void paru_memset
+(
+    void *ptr,
+    int64_t value,
+    size_t nbytes,
+    size_t mem_chunk,
+    int32_t nthreads
+) ;
+
+void paru_memcpy
+(
+    void *destination,      // output array of size nbytes
+    const void *source,     // input array of size nbytes
+    size_t nbytes,          // # of bytes to copy
+    size_t mem_chunk,
+    int32_t nthreads
+) ;
 
 #ifdef PARU_ALLOC_TESTING
 bool paru_get_malloc_tracking(void);
@@ -855,7 +885,7 @@ void paru_assemble_row_2U
     ParU_Numeric Num
 ) ;
 
-bool paru_trsm
+bool paru_dtrsm
 (
     int64_t f,
     double *pF,
@@ -866,6 +896,7 @@ bool paru_trsm
     paru_work *Work,
     ParU_Numeric Num
 ) ;
+
 bool paru_dgemm
 (
     int64_t f,
@@ -908,11 +939,16 @@ void paru_update_rowDeg
     ParU_Numeric Num
 ) ;
 
-int64_t paru_cumsum(int64_t n, int64_t *X, ParU_Control *Control);
+int64_t paru_cumsum
+(
+    int64_t n,
+    int64_t *X,
+    size_t mem_chunk,
+    int32_t nthreads
+) ;
 
 int64_t paru_bin_srch_col(int64_t *srt_lst, int64_t l, int64_t r, int64_t num);
 int64_t paru_bin_srch(int64_t *srt_lst, int64_t l, int64_t r, int64_t num);
-
 
 ParU_Info paru_init_rowFronts
 (
@@ -921,8 +957,7 @@ ParU_Info paru_init_rowFronts
     ParU_Numeric *Num_handle,
     // inputs, not modified:
     cholmod_sparse *A,
-    ParU_Symbolic Sym,         // symbolic analysis
-    ParU_Control *Control
+    ParU_Symbolic Sym       // symbolic analysis
 ) ;
 
 ParU_Info paru_front
@@ -965,7 +1000,7 @@ void paru_assemble_all
     int64_t e,
     int64_t f,
     std::vector<int64_t> &colHash,
-    paru_work *Work, 
+    paru_work *Work,
     const ParU_Symbolic Sym,
     ParU_Numeric Num
 ) ;
@@ -1054,9 +1089,9 @@ void paru_diag_update(int64_t pivcol, int64_t pivrow, paru_work *Work);
 bool paru_tasked_dgemm
 (
     int64_t f,
-    int64_t m,
-    int64_t n,
-    int64_t k,
+    int64_t M,
+    int64_t N,
+    int64_t K,
     double *A,
     int64_t lda,
     double *B,
@@ -1067,7 +1102,8 @@ bool paru_tasked_dgemm
     paru_work *Work,
     ParU_Numeric Num
 ) ;
-bool paru_tasked_trsm
+
+bool paru_tasked_dtrsm
 (
     int64_t f,
     int64_t m,
@@ -1085,21 +1121,6 @@ ParU_Info paru_free_work
 (
     const ParU_Symbolic Sym,
     paru_work *Work
-) ;
-
-void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C) ;
-
-// not user-callable: for testing only
-ParU_Info paru_backward
-(
-    double *x1,
-    double &resid,
-    double &anorm,
-    double &xnorm,
-    cholmod_sparse *A,
-    const ParU_Symbolic Sym,
-    ParU_Numeric Num,
-    ParU_Control *Control
 ) ;
 
 #if defined ( PARU_ALLOC_TESTING ) && defined ( PARU_MEMTABLE_TESTING )

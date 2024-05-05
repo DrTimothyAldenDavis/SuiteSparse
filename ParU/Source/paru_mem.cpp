@@ -599,7 +599,7 @@ void paru_free(size_t n, size_t size, void *p)
 }
 
 //------------------------------------------------------------------------------
-// new/delete: a wrapper for paru_malloc and paru_free 
+// new/delete: a wrapper for paru_malloc and paru_free
 //------------------------------------------------------------------------------
 
 //  Global replacement of new and delete
@@ -615,7 +615,7 @@ void *operator new(size_t size)
     }
 
     #if defined ( PARU_MALLOC_DEBUG )
-    void *ptr = paru_malloc_debug (n, size, __FILE__, __LINE__) ;
+    void *ptr = paru_malloc_debug (1, size, __FILE__, __LINE__) ;
     #else
     void *ptr = paru_malloc (1, size) ;
     #endif

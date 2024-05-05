@@ -16,8 +16,9 @@
 
 #define TEST_FREE_ALL                       \
 {                                           \
-    ParU_FreeNumeric(&Num, &Control);       \
-    ParU_FreeSymbolic(&Sym, &Control);      \
+    ParU_FreeNumeric(&Num, Control);        \
+    ParU_FreeSymbolic(&Sym, Control);       \
+    ParU_FreeControl(&Control);             \
     cholmod_l_free_sparse(&A, cc);          \
     cholmod_l_finish(cc);                   \
     if (B  != NULL) free(B);                \
@@ -38,7 +39,9 @@ int main(int argc, char **argv)
     cholmod_sparse *A = NULL;
     ParU_Symbolic Sym = NULL;
     ParU_Numeric Num = NULL;
+    ParU_Control Control = NULL ;
     double *b = NULL, *B = NULL, *X = NULL, *xx = NULL ;
+    ParU_Info info;
 
     // default log10 of expected residual.  +1 means failure is expected
     double expected_log10_resid = -16 ;
@@ -53,21 +56,12 @@ int main(int argc, char **argv)
     int mtype;
     cholmod_l_start(cc);
 
-    ParU_Control Control;
     // puting Control lines to work
-    Control.mem_chunk = 0;
-    Control.umfpack_ordering = 23;
-    Control.umfpack_strategy = 23;
-    Control.paru_max_threads = -1;
-    Control.relaxed_amalgamation = -1;
-    Control.paru_strategy = 23;
-    Control.prescale = -1;
-    Control.panel_width = -1;
-    Control.piv_toler = -1;
-    Control.diag_toler = -1;
-    Control.trivial = -1;
-    Control.worthwhile_dgemm = -2;
-    Control.worthwhile_trsm = -1;
+    info = ParU_InitControl (NULL) ;
+    TEST_ASSERT (info == PARU_INVALID) ;
+    BRUTAL_ALLOC_TEST (info, ParU_InitControl (&Control)) ;
+    TEST_ASSERT (info == PARU_SUCCESS) ;
+    ParU_Set (PARU_CONTROL_ORDERING, UMFPACK_ORDERING_AMD, Control) ;
 
     // A = mread (stdin) ; read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
@@ -85,9 +79,8 @@ int main(int argc, char **argv)
 
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    ParU_Info info;
 
-    BRUTAL_ALLOC_TEST(info, ParU_Analyze(A, &Sym, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_Analyze(A, &Sym, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 104) ;
@@ -96,7 +89,7 @@ int main(int argc, char **argv)
 
     TEST_ASSERT (Sym != NULL) ;
 
-    BRUTAL_ALLOC_TEST(info, ParU_Factorize(A, Sym, &Num, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_Factorize(A, Sym, &Num, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 105) ;
@@ -107,7 +100,7 @@ int main(int argc, char **argv)
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     int64_t n ;
-    info = ParU_Get (Sym, Num, PARU_GET_N, &n, &Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_N, &n, Control) ;
     TEST_ASSERT (info == PARU_SUCCESS) ;
 
     b = (double *)malloc(n * sizeof(double));
@@ -118,7 +111,7 @@ int main(int argc, char **argv)
 
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
-    BRUTAL_ALLOC_TEST(info, ParU_Solve(Sym, Num, b, xx, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_Solve(Sym, Num, b, xx, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 106) ;
@@ -127,7 +120,7 @@ int main(int argc, char **argv)
 
     double resid, anorm, xnorm;
     BRUTAL_ALLOC_TEST(info, ParU_Residual(A, xx, b,
-                resid, anorm, xnorm, &Control));
+                resid, anorm, xnorm, Control));
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {
@@ -140,7 +133,7 @@ int main(int argc, char **argv)
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
     BRUTAL_ALLOC_TEST(
-        info, paru_backward(b, resid, anorm, xnorm, A, Sym, Num, &Control));
+        info, paru_backward(b, resid, anorm, xnorm, A, Sym, Num, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 108) ;
@@ -171,7 +164,7 @@ int main(int argc, char **argv)
         }
     }
 
-    BRUTAL_ALLOC_TEST(info, ParU_Solve(Sym, Num, nrhs, B, X, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_Solve(Sym, Num, nrhs, B, X, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 109) ;
@@ -179,7 +172,7 @@ int main(int argc, char **argv)
     }
 
     BRUTAL_ALLOC_TEST(
-        info, ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, &Control));
+        info, ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, Control));
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {

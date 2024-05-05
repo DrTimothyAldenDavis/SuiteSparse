@@ -140,21 +140,21 @@ int main(int argc, char **argv)
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::cout << "================= ParU, a simple demo: ===================\n";
-    ParU_Control Control;
-    ParU_Analyze(A, &Sym, &Control);
+    ParU_Control Control = NULL ;
+    ParU_Analyze(A, &Sym, Control);
     std::cout << "Input matrix is " << Sym->m << "x" << Sym->n
         << " nnz = " << Sym->anz << std::endl;
     ParU_Numeric Num;
-    ParU_Factorize(A, Sym, &Num, &Control);
+    ParU_Factorize(A, Sym, &Num, Control);
 
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
     int64_t m = Sym->m;
     double *b = (double *)malloc(m * sizeof(double));
     double *xx = (double *)malloc(m * sizeof(double));
     for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-    ParU_Solve(Sym, Num, b, xx, &Control);
+    ParU_Solve(Sym, Num, b, xx, Control);
     double resid, anorm, xnorm;
-    ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
+    ParU_Residual(A, xx, b, resid, anorm, xnorm, Control);
     double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     std::cout << std::scientific << std::setprecision(2)
         << "Relative residual is |" << rresid << "| anorm is " << anorm
@@ -164,8 +164,8 @@ int main(int argc, char **argv)
     free(xx);
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_FreeNumeric(&Num, &Control);
-    ParU_FreeSymbolic(&Sym, &Control);
+    ParU_FreeNumeric(&Num, Control);
+    ParU_FreeSymbolic(&Sym, Control);
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);
 }
@@ -190,22 +190,21 @@ int main(int argc, char **argv)
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     printf("================= ParU, a simple demo, using C interface : ====\n");
-    ParU_C_Control Control;
-    ParU_C_Init_Control(&Control);
-    ParU_C_Analyze(A, &Sym, &Control);
+    ParU_C_Control Control = NULL ;
+    ParU_C_Analyze(A, &Sym, Control);
     printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
         Sym->m, Sym->n, Sym->anz);
     ParU_C_Numeric Num;
-    ParU_C_Factorize(A, Sym, &Num, &Control);
+    ParU_C_Factorize(A, Sym, &Num, Control);
 
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
     int64_t m = Sym->m;
     double *b = (double *)malloc(m * sizeof(double));
     double *xx = (double *)malloc(m * sizeof(double));
     for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-    ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
+    ParU_C_Solve_Axb(Sym, Num, b, xx, Control);
     double resid, anorm, xnorm;
-    ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
+    ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, Control);
     double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     printf( "Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e, "
         " and rcond is %.2e.\n",
@@ -214,8 +213,8 @@ int main(int argc, char **argv)
     free(xx);
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_C_FreeNumeric(&Num, &Control);
-    ParU_C_FreeSymbolic(&Sym, &Control);
+    ParU_C_FreeNumeric(&Num, Control);
+    ParU_C_FreeSymbolic(&Sym, Control);
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);
 }
@@ -352,37 +351,6 @@ int main(int argc, char **argv)
     UMFPACK chooses a good ordering; however, there might be cases where users
     prefer unsymmetric ordering on UMFPACK but symmetric computation on ParU.
 
-    The \verb'ParU_Control' structure is defined below:
-
-    {\footnotesize
-    \begin{verbatim}
-    struct ParU_Control
-    {
-        // For all phases of ParU:
-        int64_t mem_chunk = PARU_MEM_CHUNK ;  // chunk size for memset and memcpy
-
-        // Numeric factorization parameters:
-        double piv_toler = 0.1 ;    // tolerance for accepting sparse pivots
-        double diag_toler = 0.001 ; // tolerance for accepting symmetric pivots
-        int32_t panel_width = 32 ;  // width of panel for dense factorizaiton
-        int32_t trivial = 4 ;       // dgemms smaller than this do not call BLAS
-        int32_t worthwhile_dgemm = 512 ; // dgemms bigger than this are tasked
-        int32_t worthwhile_trsm = 4096 ; // trsm bigger than this are tasked
-        int32_t prescale = 1 ;  // 0: no scaling, 1: scale each row by the max
-            // absolute value in its row.
-
-        // Symbolic analysis parameters:
-        int32_t umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD ;
-        int32_t umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
-        int32_t relaxed_amalgamation = 32 ;  // symbolic analysis tries to ensure
-            // that each front have more pivot columns than this threshold
-        int32_t paru_strategy = PARU_STRATEGY_AUTO ;
-        int32_t filter_singletons = 1 ; // filter singletons if nonzero
-
-        // For all phases of ParU:
-        int32_t paru_max_threads = 0 ;  // initialized with omp_max_threads
-    } ; \end{verbatim}}
-
 \subsection{{\sf ParU\_Analyze}: symbolic analysis}
 
     {\footnotesize
@@ -394,7 +362,7 @@ int main(int argc, char **argv)
         // output:
         ParU_Symbolic *Sym_handle,  // output, symbolic analysis
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim}}
 
     \verb'ParU_Analyze' takes as input a sparse matrix in the CHOLMOD data
@@ -418,7 +386,7 @@ int main(int argc, char **argv)
         // output:
         ParU_Numeric *Num_handle,
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim}}
 
     \verb'ParU_Factorize' performs the numerical factorization of its input
@@ -453,7 +421,7 @@ int main(int argc, char **argv)
         double *x,              // vector of size n-by-1; right-hand on input,
                                 // solution on output
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ;
 
     ParU_Info ParU_Solve        // solve Ax=b
@@ -465,7 +433,7 @@ int main(int argc, char **argv)
         // output
         double *x,              // vector of size n-by-1
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ;
 
     ParU_Info ParU_Solve        // solve AX=B, overwriting B with the solution X
@@ -478,7 +446,7 @@ int main(int argc, char **argv)
         double *X,              // X is n-by-nrhs, where A is n-by-n;
                                 // holds B on input, solution X on input
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ;
 
     ParU_Info ParU_Solve        // solve AX=B
@@ -491,7 +459,7 @@ int main(int argc, char **argv)
         // output:
         double *X,              // n-by-nrhs, in column-major storage
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
 \subsection{{\sf ParU\_LSolve}: solve a linear system, $Lx=b$}
@@ -512,7 +480,7 @@ int main(int argc, char **argv)
         double *x,              // n-by-1, in column-major storage;
                                 // holds b on input, solution x on input
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
     {\footnotesize
@@ -527,7 +495,7 @@ int main(int argc, char **argv)
         double *X,              // X is n-by-nrhs, where A is n-by-n;
                                 // holds B on input, solution X on input
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
 \subsection{{\sf ParU\_USolve}: solve a linear system, $Ux=b$}
@@ -548,7 +516,7 @@ int main(int argc, char **argv)
         double *x,              // n-by-1, in column-major storage;
                                 // holds b on input, solution x on input
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
     {\footnotesize
@@ -563,7 +531,7 @@ int main(int argc, char **argv)
         double *X,              // X is n-by-nrhs, where A is n-by-n;
                                 // holds B on input, solution X on input
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
 \subsection{{\sf ParU\_Perm}: permute and scale a dense vector or matrix}
@@ -594,7 +562,7 @@ int main(int argc, char **argv)
         // output
         double *x,          // vector of size n
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
     {\footnotesize
@@ -610,7 +578,7 @@ int main(int argc, char **argv)
         // output
         double *X,          // array of size nrows-by-ncols
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
 \subsection{{\sf ParU\_InvPerm}: permute and scale a dense vector or matrix}
@@ -642,7 +610,7 @@ int main(int argc, char **argv)
         // output
         double *x,          // vector of size n
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
     {\footnotesize
@@ -658,7 +626,7 @@ int main(int argc, char **argv)
         // output
         double *X,          // array of size nrows-by-ncols
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
     The \verb'ParU_LSolve', \verb'ParU_USolve', \verb'ParU_Perm', and
@@ -698,7 +666,7 @@ int main(int argc, char **argv)
         double &anorm,      // 1-norm of A
         double &xnorm,      // 1-norm of x
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ;
 
     ParU_Info ParU_Residual
@@ -713,7 +681,7 @@ int main(int argc, char **argv)
         double &anorm,      // 1-norm of A
         double &xnorm,      // 1-norm of X
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
 \subsection{{\sf ParU\_FreeNumeric}: free a numeric factorization}
@@ -725,7 +693,7 @@ int main(int argc, char **argv)
         // input/output:
         ParU_Numeric *Num_handle,  // numeric object to free
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
 \subsection{{\sf ParU\_FreeSymbolic}: free a symbolic analysis}
@@ -737,7 +705,7 @@ int main(int argc, char **argv)
         // input/output:
         ParU_Symbolic *Sym_handle, // symbolic object to free
         // control:
-        ParU_Control *Control
+        ParU_Control Control
     ) ; \end{verbatim} }
 
 %-------------------------------------------------------------------------------

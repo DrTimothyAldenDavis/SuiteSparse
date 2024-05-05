@@ -27,6 +27,7 @@ ParU_Info paru_exec_tasks_seq
     ParU_Numeric Num
 )
 {
+
     DEBUGLEVEL(0);
     const int64_t *task_parent = Sym->task_parent;
     int64_t daddy = task_parent[t];
@@ -168,7 +169,7 @@ ParU_Info paru_exec_tasks
                 else
                 {
                     return myInfo = paru_exec_tasks(daddy, task_num_child,
-                                                    chain_task, Work, Sym, Num);
+                         chain_task, Work, Sym, Num);
                 }
             }
         }
@@ -190,7 +191,7 @@ ParU_Info paru_exec_tasks
             else
             {
                 return myInfo = paru_exec_tasks(daddy, task_num_child,
-                                                chain_task, Work, Sym, Num);
+                    chain_task, Work, Sym, Num);
             }
         }
     }

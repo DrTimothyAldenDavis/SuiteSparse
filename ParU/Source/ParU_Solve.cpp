@@ -28,7 +28,7 @@ ParU_Info ParU_Solve
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
     return (ParU_Solve (Sym, Num, x, x, Control)) ;
@@ -47,11 +47,11 @@ ParU_Info ParU_Solve
     // output
     double *x,              // vector of size n-by-1
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
 
-    if (!Sym || !Num || !b || !x || !Control)
+    if (!Sym || !Num || !b || !x)
     {
         return PARU_INVALID;
     }
@@ -140,7 +140,7 @@ ParU_Info ParU_Solve
     double *X,              // X is n-by-nrhs, where A is n-by-n;
                             // holds B on input, solution X on input
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
     return (ParU_Solve (Sym, Num, nrhs, X, X, Control)) ;
@@ -160,11 +160,11 @@ ParU_Info ParU_Solve
     // output:
     double *X,              // n-by-nrhs, in column-major storage
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
 
-    if (!Sym || !Num || !B || !X || !Control)
+    if (!Sym || !Num || !B || !X)
     {
         return PARU_INVALID;
     }

@@ -39,6 +39,8 @@ too_large = [
     2779
     2460
     2439
+    2267
+    2649
     ] ;
 
 % these matrices are singular or nearly so:
@@ -459,6 +461,10 @@ singular_matrices = [
         1867
         2839
          285
+        2267
+        2268
+        2662
+        2277
     ] ;
 
 % these matrices cause METIS to fail
@@ -479,8 +485,8 @@ nmat = length (test_matrices) ;
 paru_demo
 
 % start with this matrix:
-% first = 1 ;
-first = find (test_matrices == 2235) ;
+first = 1 ;
+% first = find (test_matrices == 2841) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat

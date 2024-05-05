@@ -26,8 +26,9 @@
     if (X != NULL) free(X);                     \
     umfpack_dl_free_symbolic(&Symbolic);        \
     umfpack_dl_free_numeric(&Numeric);          \
-    ParU_C_FreeNumeric(&Num, &Control);         \
-    ParU_C_FreeSymbolic(&Sym, &Control);        \
+    ParU_C_FreeNumeric(&Num, Control);          \
+    ParU_C_FreeSymbolic(&Sym, Control);         \
+    ParU_C_FreeControl(&Control);               \
     cholmod_l_free_sparse(&A, cc);              \
     cholmod_l_finish(cc);                       \
     return (info) ;                             \
@@ -39,9 +40,9 @@ int main(int argc, char **argv)
     cholmod_sparse *A = NULL ;
     ParU_C_Symbolic Sym = NULL ;
     ParU_C_Numeric Num = NULL ;
+    ParU_C_Control Control = NULL ;
     double *b = NULL, *xx = NULL, *B = NULL, *X = NULL, *x = NULL ;
     void *Symbolic = NULL, *Numeric = NULL ;  // UMFPACK factorization
-    ParU_C_Control Control ;
 
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
@@ -79,17 +80,13 @@ int main(int argc, char **argv)
 
     double my_start_time = SuiteSparse_time ();
 
-    ParU_C_Init_Control(&Control);  // initialize the Control in C
     ParU_Info info;
+    info = ParU_C_InitControl(&Control);  // initialize the Control in C
 
-    // Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
-    // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;
-    // Control.umfpack_strategy = UMFPACK_STRATEGY_SYMMETRIC;
-    // Control.filter_singletons = 0 ;
-    // Control.paru_max_threads = 6;
-    Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
+    ParU_C_Set_INT64 (PARU_CONTROL_ORDERING, UMFPACK_ORDERING_METIS_GUARD,
+        Control) ;
     printf ("\n--------- ParU_C_Analyze:\n") ;
-    info = ParU_C_Analyze(A, &Sym, &Control);
+    info = ParU_C_Analyze(A, &Sym, Control);
     double my_time_analyze = SuiteSparse_time () - my_start_time;
     if (info != PARU_SUCCESS)
     {
@@ -97,13 +94,13 @@ int main(int argc, char **argv)
     }
 
     int64_t n, anz ;
-    ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, &Control) ;
-    ParU_C_Get_INT64 (Sym, Num, PARU_GET_ANZ, &anz, &Control) ;
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, Control) ;
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_ANZ, &anz, Control) ;
     printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", n, n, anz);
     printf("ParU: Symbolic factorization: %lf seconds\n", my_time_analyze);
     printf ("\n--------- ParU_C_Factorize:\n") ;
     double my_start_time_fac = SuiteSparse_time ();
-    info = ParU_C_Factorize(A, Sym, &Num, &Control);
+    info = ParU_C_Factorize(A, Sym, &Num, Control);
     double my_time_fac = SuiteSparse_time () - my_start_time_fac;
     if (info != PARU_SUCCESS)
     {
@@ -126,7 +123,7 @@ int main(int argc, char **argv)
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
     printf ("\n--------- ParU_C_Solve_Axb:\n") ;
     double my_solve_time_start = SuiteSparse_time ();
-    info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
+    info = ParU_C_Solve_Axb(Sym, Num, b, xx, Control);
     if (info != PARU_SUCCESS)
     {
         printf ("ParU: solve failed.\n");
@@ -147,7 +144,7 @@ int main(int argc, char **argv)
     double resid, anorm, xnorm;
     printf ("\n--------- ParU_C_Residual_bAx:\n") ;
     info =
-        ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
+        ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, Control);
     if (info != PARU_SUCCESS)
     {
         printf("ParU: resid failed.\n");
@@ -156,7 +153,7 @@ int main(int argc, char **argv)
     double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
 
     double rcond ;
-    ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control) ;
+    ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, Control) ;
     printf(
         "Residual is |%.2e|, anorm is %.2e, xnorm is %.2e, and rcond is"
         " %.2e.\n", rresid, anorm, xnorm, rcond);
@@ -173,7 +170,7 @@ int main(int argc, char **argv)
     }
 
     printf ("\n--------- ParU_C_Solve_AXV:\n") ;
-    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, &Control);
+    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, Control);
     if (info != PARU_SUCCESS)
     {
         printf("ParU: mRhs Solve has a problem.\n");
@@ -181,7 +178,7 @@ int main(int argc, char **argv)
     }
     printf ("\n--------- ParU_C_Residual_BAX:\n") ;
     info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, &xnorm,
-                               &Control);
+                               Control);
     if (info != PARU_SUCCESS)
     {
         printf("ParU: mRhs Residual has a problem.\n");
@@ -198,16 +195,11 @@ int main(int argc, char **argv)
     double umf_time = 0;
     double umf_start_time = SuiteSparse_time ();
     double status,           // Info [UMFPACK_STATUS]
-        Info[UMFPACK_INFO],  // Contains statistics about the symbolic analysis
+        Info[UMFPACK_INFO],  // statistics about the symbolic analysis
         umf_Control[UMFPACK_CONTROL];  // it is set in umfpack_dl_defaults and
     // is used in umfpack_dl_symbolic; if
     // passed NULL it will use the defaults
     umfpack_dl_defaults(umf_Control);
-    // umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_AMD;
-    // umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
-    // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC;
-    // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC;
-    // umf_Control [UMFPACK_SINGLETONS] = Control.filter_singletons ;
     umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS_GUARD;
 
     int64_t *Ap = (int64_t *)A->p;
@@ -252,7 +244,7 @@ int main(int argc, char **argv)
     umf_time = SuiteSparse_time () - umf_start_time;
     double umf_resid, umf_anorm, umf_xnorm;
     info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm,
-                               &Control);
+                               Control);
     double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 )
         ? 0 : (umf_resid/(umf_anorm*umf_xnorm));
     printf(

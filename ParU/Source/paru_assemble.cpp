@@ -22,11 +22,15 @@ void paru_assemble_all
     int64_t e,
     int64_t f,
     std::vector<int64_t> &colHash,
-    paru_work *Work, 
+    paru_work *Work,
     const ParU_Symbolic Sym,
     ParU_Numeric Num
 )
 {
+
+    // get Control
+    int32_t nthreads = Work->nthreads ;
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME
@@ -145,19 +149,17 @@ void paru_assemble_all
         int64_t naft;  // number of active frontal tasks
         #pragma omp atomic read
         naft = Work->naft;
-        ParU_Control *Control = Num->Control;
-        const int32_t max_threads = Control->paru_max_threads;
 
         if (el->nrowsleft * el->ncolsleft < 4096 || el->nrowsleft < 1024
             #ifndef PARU_COVERAGE
             // In production, do sequential assembly if the number
             // of active fronts is large.  For test coverage, don't
             // check this condition, to exercise the parallel assembly.
-            || naft > max_threads / 2
+            || naft > nthreads / 2
             #endif
             )
         {
-            // not enoght resources or very small assembly
+            // not enough resources or very small assembly
             // sequential
             PRLEVEL(1,
                     ("Seqntial Assembly naft=" LD " colsleft=" LD " rowsleft=" LD " \n",
@@ -191,7 +193,7 @@ void paru_assemble_all
         }
         else
         {
-            // enoght threads and big assembly
+            // enough threads and big assembly
             // go parallel
             PRLEVEL(1, ("Parallel Assembly naft=" LD " colsleft=" LD " rowsleft=" LD " "
                         "el->lac = " LD " nEl=" LD " rem =" LD " (" LD "->" LD ")\n",
@@ -200,7 +202,7 @@ void paru_assemble_all
 
             // // each column a tsk
             //#..pragma omp parallel proc_bind(close)
-            // num_threads(max_threads / naft)
+            // num_threads(nthreads / naft)
             //#..pragma omp single nowait
             //#..pragma omp task untied
             // for (int64_t j = el->lac; j < nEl; j++)
@@ -236,18 +238,19 @@ void paru_assemble_all
             ///////////////////////////////////////////////////////////////////
 
             // This code is tested in ParU/Tcov by the c-62.mtx
-            int64_t ntasks = (max_threads - naft + 1) * 2;
+            int64_t ntasks = (nthreads - naft + 1) * 2;
             ntasks = (ntasks <= 0) ? 1 : ntasks;
             int64_t task_size = (nEl - el->lac) / ntasks;
-            PRLEVEL(1, ("BBB el->lac=" LD " nEl=" LD " ntasks=" LD " task_size=" LD "\n",
-                        el->lac, nEl, ntasks, task_size));
+            PRLEVEL(1, ("BBB el->lac=" LD " nEl=" LD " ntasks=" LD
+                " task_size=" LD "\n", el->lac, nEl, ntasks, task_size));
+
             if (task_size == 0 || task_size == 1)
             {
                 task_size = 1;
                 ntasks = nEl - el->lac;
             }
-            PRLEVEL(1, ("el->lac=" LD " nEl=" LD " ntasks=" LD " task_size=" LD "\n",
-                        el->lac, nEl, ntasks, task_size));
+            PRLEVEL(1, ("el->lac=" LD " nEl=" LD " ntasks=" LD " task_size="
+                LD "\n", el->lac, nEl, ntasks, task_size));
             #pragma omp parallel proc_bind(close) num_threads(ntasks)
             #pragma omp single
             #pragma omp task
@@ -382,10 +385,9 @@ void paru_assemble_cols
     // int64_t naft; //number of active frontal tasks
     // pragma omp atomic read
     // naft = Num->naft;
-    // const int32_t max_threads = Num->paru_max_threads;
     //// const int64_t *Depth = Sym->Depth;
-    // pragma omp parallel proc_bind(close) num_threads(max_threads/naft)
-    // if (naft < max_threads/2 &&
+    // pragma omp parallel proc_bind(close) num_threads(nthreads/naft)
+    // if (naft < nthreads/2 &&
     //        el->nrowsleft*el->ncolsleft < 4096 && el->nrowsleft < 1024 )
     // pragma omp single nowait
     // pragma omp task untied

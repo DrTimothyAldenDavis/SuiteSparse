@@ -22,5 +22,6 @@ done
 
 echo -n "statements not tested: "
 grep "\#\#\#\#\#:" ?ar?_*v | grep -v DEAD | wc -l
+echo " "
 
 set status=0

@@ -25,6 +25,7 @@ ParU_Info paru_prior_assemble
     ParU_Numeric Num
 )
 {
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
@@ -56,7 +57,10 @@ ParU_Info paru_prior_assemble
         }
 #ifndef NDEBUG
         PRLEVEL(PR, ("%%elRow[" LD "]=" LD " \n", e, elRow[e]));
-        // if (elRow[e] != 0) PRLEVEL(-1, ("%%elRow[" LD "]=" LD " \n", e, elRow[e]));
+        // if (elRow[e] != 0)
+        // {
+        //     PRLEVEL(-1, ("%%elRow[" LD "]=" LD " \n", e, elRow[e]));
+        // }
         // ASSERT (elRow[e] == 0);
 #endif
 
@@ -68,11 +72,13 @@ ParU_Info paru_prior_assemble
             {
                 #ifndef NDEBUG
                 PRLEVEL(PR, ("%%assembling " LD " in " LD "\n", e, el_ind));
-                PRLEVEL(PR, ("%% size " LD " x " LD "\n", el->nrows, el->ncols));
+                PRLEVEL(PR, ("%% size " LD " x " LD "\n",
+                    el->nrows, el->ncols));
                 #endif
                 paru_assemble_all(e, f, colHash, Work, Sym, Num);
                 #ifndef NDEBUG
-                PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n", e, el_ind));
+                PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n",
+                    e, el_ind));
                 #endif
                 continue;
             }
@@ -82,7 +88,8 @@ ParU_Info paru_prior_assemble
             #endif
             paru_assemble_cols(e, f, colHash, Work, Sym, Num);
             #ifndef NDEBUG
-            PRLEVEL(PR, ("%%partial col assembly" LD " in " LD " done\n", e, el_ind));
+            PRLEVEL(PR, ("%%partial col assembly" LD " in " LD " done\n",
+                e, el_ind));
             #endif
             if (elementList[e] == NULL) continue;
         }
@@ -109,7 +116,8 @@ ParU_Info paru_prior_assemble
                 paru_assemble_el_with0rows(e, f, colHash, Work, Sym, Num);
                 if (elementList[e] == NULL) continue;
                 #ifndef NDEBUG
-                PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n", e, el_ind));
+                PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n",
+                    e, el_ind));
                 #endif
             }
             // keeping current element

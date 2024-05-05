@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//////////////////////////  paru_trsm //////////////////////////////////////////
+//////////////////////////  paru_dtrsm /////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
@@ -28,7 +28,7 @@
  */
 #include "paru_internal.hpp"
 
-bool paru_trsm
+bool paru_dtrsm
 (
     int64_t f,
     double *pF,
@@ -63,7 +63,7 @@ bool paru_trsm
     }
 #endif
 
-    bool blas_ok = paru_tasked_trsm(f, mB, nB, alpha, pF,
+    bool blas_ok = paru_tasked_dtrsm(f, mB, nB, alpha, pF,
             lda, uPart, ldb, Work, Num);
 
 #ifndef NDEBUG  // Printing the  U part

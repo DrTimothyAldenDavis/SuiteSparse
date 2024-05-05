@@ -47,7 +47,6 @@ bool paru_panel_factorize
     int64_t f,
     int64_t m,
     int64_t n,
-    const int64_t panel_width,
     int64_t panel_num,
     int64_t row_end,
     paru_work *Work,
@@ -56,6 +55,11 @@ bool paru_panel_factorize
 )
 {
 
+    // get Control
+    int64_t panel_width = Work->panel_width ;
+    double piv_toler    = Work->piv_toler ;
+    double diag_toler   = Work->diag_toler ;
+
     // works like dgetf2f.f in netlib v3.0  here is a link:
     // https://github.com/xianyi/OpenBLAS/blob/develop/reference/dgetf2f.f
     DEBUGLEVEL(0);
@@ -63,7 +67,7 @@ bool paru_panel_factorize
     PRLEVEL(1, ("%% Inside panel factorization " LD " \n", panel_num));
 
     int64_t *row_degree_bound = Work->row_degree_bound;
-    ParU_Control *Control = Num->Control;
+
     int64_t j1 = panel_num * panel_width;  // panel starting column
 
     //  j1 <= panel columns < j2
@@ -158,11 +162,11 @@ bool paru_panel_factorize
         int64_t row_piv = row_max;
         int64_t chose_diag = 0;
 
-        if (Control->paru_strategy == PARU_STRATEGY_SYMMETRIC)
+        if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC)
         {
             if (diag_found != -1)
             {
-                if (fabs(Control->diag_toler * maxval) < fabs(diag_val))
+                if (fabs(diag_toler * maxval) < fabs(diag_val))
                 {
                     piv = diag_val;
                     row_piv = diag_found;
@@ -201,7 +205,7 @@ bool paru_panel_factorize
             for (int64_t i = j; i < row_end; i++)
             {
                 double value = F[j * m + i];
-                if (fabs(Control->piv_toler * maxval) < fabs(value) &&
+                if (fabs(piv_toler * maxval) < fabs(value) &&
                     row_degree_bound[frowList[i]] < row_deg_sp)
                 {
                     // numerically acceptalbe and sparser
@@ -216,8 +220,7 @@ bool paru_panel_factorize
             row_piv = row_sp;
         }
 
-        if (Control->paru_strategy == PARU_STRATEGY_SYMMETRIC &&
-            chose_diag == 0)
+        if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC && chose_diag == 0)
         {
             int64_t pivcol = col1 + j + n1;      // S col index + n1
             int64_t pivrow = frowList[row_piv];  // S row index
@@ -360,6 +363,10 @@ ParU_Info paru_factorize_full_summed
     ParU_Numeric Num
 )
 {
+
+    // get Control
+    int64_t panel_width = Work->panel_width ;
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
@@ -371,9 +378,6 @@ ParU_Info paru_factorize_full_summed
     ParU_Factors *LUs = Num->partial_LUs;
     int64_t rowCount = Num->frowCount[f];
     double *F = LUs[f].p;
-
-    ParU_Control *Control = Num->Control;
-    int64_t panel_width = Control->panel_width;
 
     int64_t num_panels =
         (fp % panel_width == 0) ? fp / panel_width : fp / panel_width + 1;
@@ -398,7 +402,7 @@ ParU_Info paru_factorize_full_summed
         int64_t j1 = panel_num * panel_width;
         int64_t j2 = (panel_num + 1) * panel_width;
         // factorize current panel
-        bool blas_ok = paru_panel_factorize(f, rowCount, fp, panel_width,
+        bool blas_ok = paru_panel_factorize(f, rowCount, fp,
             panel_num, row_end, Work, Sym, Num);
         if (!blas_ok) return (PARU_TOO_LARGE);
         // int64_t naft; //number of active frontal tasks
@@ -470,7 +474,8 @@ ParU_Info paru_factorize_full_summed
                 }
 
 #endif
-                blas_ok = paru_tasked_trsm(f, M, N, alpha, A, lda, B, ldb, Work, Num);
+                blas_ok = paru_tasked_dtrsm(f, M, N, alpha, A, lda, B, ldb,
+                    Work, Num);
                 if (!blas_ok) return (PARU_TOO_LARGE);
 #ifndef NDEBUG
                 PRLEVEL(PR, ("%% Pivotal Front After Trsm: " LD " x " LD "\n %%", fp,

@@ -90,7 +90,7 @@ bool paru_dgemm
     // double beta = 0;  // U part is not initialized
 
     bool blas_ok = paru_tasked_dgemm(f, mA, nB, nA, pF + fp,
-            lda, uPart, ldb, 0, el, ldc, Work, Num);
+            lda, uPart, ldb, 0, el, ldc, Work, Num) ;
 
 #ifndef NDEBUG
     int64_t PR = 1;

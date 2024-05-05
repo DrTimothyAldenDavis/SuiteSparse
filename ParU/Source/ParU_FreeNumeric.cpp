@@ -23,17 +23,13 @@ ParU_Info ParU_FreeNumeric
     // input/output:
     ParU_Numeric *Num_handle,   // numeric object to free
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
     if (Num_handle == NULL || *Num_handle == NULL)
     {
         // nothing to do
         return PARU_SUCCESS;
-    }
-    if (!Control)
-    {
-        return (PARU_INVALID) ;
     }
 
     DEBUGLEVEL(0);

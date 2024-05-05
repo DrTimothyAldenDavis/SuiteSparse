@@ -29,97 +29,53 @@ ParU_Info ParU_Factorize
     // output:
     ParU_Numeric *Num_handle,
     // control:
-    ParU_Control *user_Control
+    ParU_Control Control
 )
 {
-    if (!A || !Sym || !Num_handle || !user_Control ||
+    if (!A || !Sym || !Num_handle ||
         A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
         return (PARU_INVALID) ;
     }
+
+    ParU_Info info ;
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME
     double my_start_time = PARU_OPENMP_GET_WTIME;
 #endif
 
-    ParU_Info info;
-    // populate my_Control with tested values of Control
-    ParU_Control my_Control = *user_Control;
+    // get Control
+    paru_work myWork ;
+    paru_work *Work = &myWork ;
+    Work->nthreads         = paru_nthreads (Control) ;
+    Work->mem_chunk        = PARU_DEFAULT_MEM_CHUNK ;
+    Work->worthwhile_dgemm = PARU_DEFAULT_DGEMM_TASKED ;
+    Work->worthwhile_dtrsm = PARU_DEFAULT_DTRSM_TASKED ;
+    Work->trivial          = PARU_DEFAULT_DGEMM_TINY ;
+    Work->panel_width      = PARU_DEFAULT_PANEL_WIDTH ;
+    Work->piv_toler        = PARU_DEFAULT_PIVOT_TOLERANCE ;
+    Work->diag_toler       = PARU_DEFAULT_DIAG_PIVOT_TOLERANCE ;
+    Work->prescale         = PARU_DEFAULT_PRESCALE ;
+    if (Control != NULL)
     {
-        int64_t panel_width = my_Control.panel_width;
-        if (panel_width < 0 || panel_width > Sym->m)
-        {
-            my_Control.panel_width = 32;
-        }
-        int64_t paru_strategy = my_Control.paru_strategy;
-        // at this point the strategy should be known
-        if (paru_strategy == PARU_STRATEGY_AUTO)
-        {
-            // user didn't specify
-            // so I use the same strategy as umfpack
-            my_Control.paru_strategy = Sym->paru_strategy;
-        }
-        else if (paru_strategy != PARU_STRATEGY_SYMMETRIC &&
-                 paru_strategy != PARU_STRATEGY_UNSYMMETRIC)
-        {
-            // user input is not correct so I go to default
-            my_Control.paru_strategy = Sym->paru_strategy;
-        }
-        // else user already picked symmetric or unsymmetric
-        // and it has been copied over
-
-        double piv_toler = my_Control.piv_toler;
-        if (piv_toler > 1 || piv_toler < 0)
-        {
-            my_Control.piv_toler = .1;
-        }
-        double diag_toler = my_Control.diag_toler;
-        if (diag_toler > 1 || diag_toler < 0)
-        {
-            my_Control.diag_toler = .001;
-        }
-        int64_t trivial = my_Control.trivial;
-        if (trivial < 0)
-        {
-            my_Control.trivial = 4;
-        }
-        int64_t worthwhile_dgemm = my_Control.worthwhile_dgemm;
-        if (worthwhile_dgemm < 0)
-        {
-            my_Control.worthwhile_dgemm = 512;
-        }
-        int64_t worthwhile_trsm = my_Control.worthwhile_trsm;
-        if (worthwhile_trsm < 0)
-        {
-            my_Control.worthwhile_trsm = 4096;
-        }
-        int32_t max_threads = PARU_OPENMP_MAX_THREADS;
-        if (my_Control.paru_max_threads > 0)
-        {
-            my_Control.paru_max_threads =
-                std::min(max_threads, my_Control.paru_max_threads);
-        }
-        else
-        {
-            my_Control.paru_max_threads = max_threads;
-        }
-        int32_t prescale = my_Control.prescale;
-        if (prescale != 0 && prescale != 1)
-        {
-            my_Control.prescale = 1;
-        }
+        Work->mem_chunk        = Control->mem_chunk ;
+        Work->trivial          = Control->trivial ;
+        Work->worthwhile_dgemm = Control->worthwhile_dgemm ;
+        Work->worthwhile_dtrsm = Control->worthwhile_dtrsm ;
+        Work->panel_width      = Control->panel_width ;
+        Work->piv_toler        = Control->piv_toler ;
+        Work->diag_toler       = Control->diag_toler ;
+        Work->prescale         = Control->prescale ;
     }
-    ParU_Control *Control = &my_Control;
 
-    paru_work myWork;
-    paru_work *Work;
-    Work = &myWork;
+    int32_t nthreads = Work->nthreads ;
+    size_t mem_chunk = Work->mem_chunk ;
 
     #pragma omp atomic write
     Work->naft = 0;
     ParU_Numeric Num = *Num_handle ;
 
-    info = paru_init_rowFronts(Work, &Num, A, Sym, Control);
+    info = paru_init_rowFronts(Work, &Num, A, Sym);
     *Num_handle = Num;
 
     PRLEVEL(1, ("%% init_row is done\n"));
@@ -140,7 +96,7 @@ ParU_Info ParU_Factorize
     #pragma omp atomic write
     task_num_child = Work->task_num_child;
     paru_memcpy(task_num_child, Sym->task_num_child, ntasks * sizeof(int64_t),
-                Control);
+                mem_chunk, nthreads) ;
 
     try
     {
@@ -202,16 +158,10 @@ ParU_Info ParU_Factorize
     // The parallel factorization gets stuck intermittently on Windows or Mac
     // with gcc, so always use the sequential factorization in that case.
     // This case is handled by cmake.
-    if (task_Q.size() * 2 > ((long unsigned int) (Control->paru_max_threads)))
+    if (task_Q.size() * 2 > ((long unsigned int) nthreads))
     {
         PRLEVEL(1, ("Parallel\n"));
         // checking user input
-        PRLEVEL(1, ("Control: max_th=%d prescale=%d piv_toler=%lf "
-                    "diag_toler=%lf trivial=%d worthwhile_dgemm=%d "
-                    "worthwhile_trsm=%d\n",
-                    Control->paru_max_threads, Control->prescale,
-                    Control->piv_toler, Control->diag_toler, Control->trivial,
-                    Control->worthwhile_dgemm, Control->worthwhile_trsm));
 
 #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
         PARU_OPENMP_SET_DYNAMIC(0);
@@ -234,8 +184,7 @@ ParU_Info ParU_Factorize
             if (start >= size) break;
             int64_t end = start + steps > size ? size : start + steps;
             PRLEVEL(1, ("%% doing Queue tasks <" LD "," LD ">\n", start, end));
-            #pragma omp parallel proc_bind(spread)                             \
-            num_threads(Control->paru_max_threads)
+            #pragma omp parallel proc_bind(spread) num_threads(nthreads)
             #pragma omp single nowait
             #pragma omp task untied  // clang might seg fault on untied
             for (int64_t i = start; i < end; i++)
@@ -315,7 +264,6 @@ ParU_Info ParU_Factorize
     PRLEVEL(1, ("finalize permutation\n"));
     info = paru_finalize_perm(Sym, Num);  // to form the final permutation
     paru_free_work(Sym, Work);   // free the work DS
-    Num->Control = NULL;
 
     if (info == PARU_OUT_OF_MEMORY)
     {
@@ -372,9 +320,9 @@ ParU_Info ParU_Factorize
         {
             //Parallel
             const int64_t *Super = Sym->Super;
-            #pragma omp parallel for reduction(max:max_rc)    \
-            reduction(max: max_cc) if (nf > 65536)            \
-            num_threads(Control->paru_max_threads)
+            #pragma omp parallel for reduction(max:max_rc)      \
+                reduction(max: max_cc) if (nf > 65536)          \
+                num_threads(nthreads)
             for (int64_t f = 0; f < nf; f++)
             {
                 int64_t rowCount = Num->frowCount[f];
@@ -393,9 +341,9 @@ ParU_Info ParU_Factorize
                 int64_t col2 = Super[f + 1];
                 int64_t fp = col2 - col1;
                 double *X = LUs[f].p;
-                #pragma omp parallel for reduction(min:min_udiag) \
-                reduction(max: max_udiag)                         \
-                num_threads(Control->paru_max_threads)
+                #pragma omp parallel for reduction(min:min_udiag)   \
+                    reduction(max: max_udiag)                       \
+                    num_threads(nthreads)
                 for (int64_t i = 0; i < fp; i++)
                 {
                     double udiag = fabs(X[rowCount * i + i]);

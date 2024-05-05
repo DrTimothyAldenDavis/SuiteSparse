@@ -42,9 +42,12 @@ INC = ../Include/ParU.h
 
 OBJ = \
 	paru_mem.o \
+	paru_nthreads.o \
 	paru_free_work.o \
 	ParU_FreeSymbolic.o \
 	ParU_FreeNumeric.o \
+	ParU_InitControl.o \
+	ParU_FreeControl.o \
 	paru_memset.o \
 	paru_memcpy.o \
 	paru_heap.o \
@@ -59,7 +62,7 @@ OBJ = \
 	paru_fs_factorize.o\
 	paru_create_element.o\
 	paru_assemble_row2U.o\
-	paru_trsm.o\
+	paru_dtrsm.o\
 	paru_dgemm.o\
 	paru_init_rel.o\
 	paru_update_rowDeg.o\
@@ -82,10 +85,10 @@ OBJ = \
 	paru_diag_update.o \
 	paru_full_summed.o \
 	paru_tasked_dgemm.o \
-	paru_tasked_trsm.o \
+	paru_tasked_dtrsm.o \
 	ParU_C.o \
 	ParU_Get.o \
-	paru_cp_control.o \
+	ParU_Set.o \
 	ParU_Version.o  \
 	paru_umfpack_info.o  \
 	SuiteSparse_config.o
@@ -96,8 +99,10 @@ OBJ = \
 
 $(OBJ): $(INC)
 
-VFLAGS = --leak-check=yes  --log-file="valgrindlogfile.log"\
-		   --show-leak-kinds=all --track-origins=yes
+# VFLAGS = --leak-check=yes  --log-file="valgrindlogfile.log"\
+# 		   --show-leak-kinds=all --track-origins=yes
+
+VFLAGS = --leak-check=yes --show-leak-kinds=all --track-origins=yes
 
 # V = valgrind $(VFLAGS)
 V =
@@ -115,12 +120,6 @@ paru_c_test: paru_c_test.cpp $(INC) $(OBJ)
 go: paru_brutal_test paru_quick_test paru_c_test
 	$(V) ./paru_c_test < ../Matrix/west0067.mtx
 	- ./cov
-	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
-	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
-	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
-	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
-	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
-	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
 	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
 	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
 	$(V) ./paru_quick_test -12 3 < ../Matrix/bp_1200.mtx
@@ -189,8 +188,6 @@ go: paru_brutal_test paru_quick_test paru_c_test
 	- ./cov
 	$(V) ./paru_brutal_test < ../Matrix/494_bus.mtx
 	- ./cov
-	$(V) ./paru_quick_test < ../Matrix/xenon1.mtx
-	- ./cov
 	$(V) ./paru_quick_test < ../Matrix/c-62.mtx
 	- ./cov
 	$(V) ./paru_quick_test < ../Matrix/c-62.mtx
@@ -209,6 +206,9 @@ qgo:
 paru_mem.o: ../Source/paru_mem.cpp
 	$(C) -c $<
 
+paru_nthreads.o: ../Source/paru_nthreads.cpp
+	$(C) -c $<
+
 paru_free_work.o: ../Source/paru_free_work.cpp
 	$(C) -c $<
 
@@ -216,6 +216,12 @@ ParU_FreeSymbolic.o: ../Source/ParU_FreeSymbolic.cpp
 	$(C) -c $<
 
 ParU_FreeNumeric.o: ../Source/ParU_FreeNumeric.cpp
+	$(C) -c $<
+
+ParU_FreeControl.o: ../Source/ParU_FreeControl.cpp
+	$(C) -c $<
+
+ParU_InitControl.o: ../Source/ParU_InitControl.cpp
 	$(C) -c $<
 
 paru_memset.o: ../Source/paru_memset.cpp
@@ -260,7 +266,7 @@ paru_create_element.o: ../Source/paru_create_element.cpp
 paru_assemble_row2U.o: ../Source/paru_assemble_row2U.cpp
 	$(C) -c $<
 
-paru_trsm.o: ../Source/paru_trsm.cpp
+paru_dtrsm.o: ../Source/paru_dtrsm.cpp
 	$(C) -c $<
 
 paru_dgemm.o: ../Source/paru_dgemm.cpp
@@ -317,9 +323,6 @@ ParU_Solve.o: ../Source/ParU_Solve.cpp
 ParU_Residual.o: ../Source/ParU_Residual.cpp
 	$(C) -c $<
 
-paru_backward.o: ../Source/paru_backward.cpp
-	$(C) -c $<
-
 paru_gaxpy.o: ../Source/paru_gaxpy.cpp
 	$(C) -c $<
 
@@ -335,13 +338,16 @@ paru_full_summed.o: ../Source/paru_full_summed.cpp
 paru_tasked_dgemm.o: ../Source/paru_tasked_dgemm.cpp
 	$(C) -c $<
 
-paru_tasked_trsm.o: ../Source/paru_tasked_trsm.cpp
+paru_tasked_dtrsm.o: ../Source/paru_tasked_dtrsm.cpp
 	$(C) -c $<
 
 ParU_C.o: ../Source/ParU_C.cpp
 	$(C) -c $<
 
 ParU_Get.o: ../Source/ParU_Get.cpp
+	$(C) -c $<
+
+ParU_Set.o: ../Source/ParU_Set.cpp
 	$(C) -c $<
 
 paru_cp_control.o: ../Source/paru_cp_control.cpp
@@ -357,6 +363,13 @@ SuiteSparse_config.o: ../../SuiteSparse_config/SuiteSparse_config.c
 	gcc -c -fopenmp -DBLAS32 $<
 
 #-------------------------------------------------------------------------------
+
+paru_backward.o: ./paru_backward.cpp
+	$(C) -c $<
+
+#-------------------------------------------------------------------------------
+just: paru_brutal_test paru_quick_test paru_c_test
+
 purge: clean
 
 clean:

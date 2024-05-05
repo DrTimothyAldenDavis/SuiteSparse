@@ -11,9 +11,22 @@
 
 #include "paru_internal.hpp"
 
+// not user-callable: for testing only
+ParU_Info paru_backward
+(
+    double *x1,
+    double &resid,
+    double &anorm,
+    double &xnorm,
+    cholmod_sparse *A,
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num,
+    ParU_Control Control
+) ;
+
 #define TEST_PASSES                 \
 {                                   \
-    printf ("all tests pass\n") ;   \
+    printf ("all tests pass\n\n") ; \
     TEST_FREE_ALL                   \
     return (PARU_SUCCESS) ;         \
 }

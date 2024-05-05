@@ -31,21 +31,24 @@ bool paru_tasked_dgemm
     ParU_Numeric Num
 )
 {
+
+    // get Control
+    int32_t nthreads = Work->nthreads ;
+    int64_t worthwhile_dgemm = Work->worthwhile_dgemm ;
+    int64_t trivial = Work->trivial ;
+
     DEBUGLEVEL(0);
     // alpha is always -1  in my DGEMMs
     double alpha = -1;
     int64_t naft;
 
     bool blas_ok = true ;
-    ParU_Control *Control = Num->Control;
-    int64_t trivial = Control->trivial;
-    int64_t L = Control->worthwhile_dgemm;
+
     #pragma omp atomic read
     naft = Work->naft;
-    const int32_t max_threads = Control->paru_max_threads;
     if (naft == 1)
     {
-        BLAS_set_num_threads(max_threads);
+        BLAS_set_num_threads(nthreads);
     }
     else
     {
@@ -77,7 +80,8 @@ bool paru_tasked_dgemm
         }
 
     }
-    else if ((M < L && N < L) || (naft == 1) || (naft >= max_threads))
+    else if ((M < worthwhile_dgemm && N < worthwhile_dgemm) ||
+        (naft == 1) || (naft >= nthreads))
     {
 
         //----------------------------------------------------------------------
@@ -88,10 +92,10 @@ bool paru_tasked_dgemm
 #ifndef NDEBUG
         if (naft == 1)
         {
-            PRLEVEL(1, ("%% A max_threads DGEMM (" LD "x" LD ") in " LD
+            PRLEVEL(1, ("%% A nthreads DGEMM (" LD "x" LD ") in " LD
                 "\n", M, N, f));
         }
-        else if (M < L && N < L)
+        else if (M < worthwhile_dgemm && N < worthwhile_dgemm)
         {
             PRLEVEL(1, ("%% Single call DGEMM (" LD "x" LD ") in " LD
                 "\n", M, N, f));
@@ -118,7 +122,7 @@ bool paru_tasked_dgemm
             // tasked dgemm with MKL BLAS: requires mkl_set_num_threads_local
             //------------------------------------------------------------------
 
-            int my_share = max_threads / naft;
+            int my_share = nthreads / naft;
             if (my_share == 0) my_share = 1;
             PRLEVEL(1, ("%% MKL local threads for DGEMM (" LD "x" LD ") in "
                 LD " [[%d]]\n", M, N, f, my_share));
@@ -145,8 +149,8 @@ bool paru_tasked_dgemm
 
             PRLEVEL(1, ("%%YES tasking for DGEMM (" LD "x" LD
                 ") in " LD " \n", M, N, f));
-            int64_t num_col_blocks = N / L + 1;
-            int64_t num_row_blocks = M / L + 1;
+            int64_t num_col_blocks = N / worthwhile_dgemm + 1;
+            int64_t num_row_blocks = M / worthwhile_dgemm + 1;
 
             int64_t len_col = N / num_col_blocks;
             int64_t len_row = M / num_row_blocks;

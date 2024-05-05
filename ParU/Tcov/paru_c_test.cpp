@@ -17,8 +17,9 @@
 {                                           \
     umfpack_dl_free_symbolic(&Symbolic);    \
     umfpack_dl_free_numeric(&Numeric);      \
-    ParU_C_FreeNumeric(&Num, &Control);     \
-    ParU_C_FreeSymbolic(&Sym, &Control);    \
+    ParU_C_FreeNumeric(&Num, Control);      \
+    ParU_C_FreeSymbolic(&Sym, Control);     \
+    ParU_C_FreeControl(&Control);           \
     cholmod_l_free_sparse(&A, cc);          \
     cholmod_l_finish(cc);                   \
     if (B  != NULL) free(B);                \
@@ -55,6 +56,7 @@ int main(int argc, char **argv)
     cholmod_sparse *A;
     ParU_C_Symbolic Sym = NULL;
     ParU_C_Numeric Num = NULL ;
+    ParU_C_Control Control = NULL ;
     double *b = NULL, *B = NULL, *X = NULL, *xx = NULL, *x = NULL,
            *t = NULL, *T = NULL, *R = NULL ;
     int64_t *P = NULL, *Q = NULL ;
@@ -73,14 +75,15 @@ int main(int argc, char **argv)
     cc = &Common;
     int mtype;
     cholmod_l_start(cc);
-    ParU_Info info;
+    ParU_Info info ;
+
+    // create the C Control object
+    BRUTAL_ALLOC_TEST(info, ParU_C_InitControl (&Control)) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     // null pointer tests
-    info = ParU_C_Init_Control(NULL);
+    info = ParU_C_InitControl (NULL) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    ParU_C_Control Control;
-    ParU_C_Init_Control(&Control); //initialize the Control in C
 
     // A = mread (stdin) ; read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
@@ -101,23 +104,22 @@ int main(int argc, char **argv)
     char date[128];
     ParU_C_Version(ver, date);
 
-    // Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
-    // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;
-    // Control.umfpack_strategy = UMFPACK_STRATEGY_SYMMETRIC;
-    // Control.filter_singletons = 0 ;
-    // Control.paru_max_threads = 6;
-    Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
+    info = ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+        UMFPACK_ORDERING_METIS_GUARD, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_C_Set_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
+        0.2, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     // null pointer tests
-    info = ParU_C_Analyze(NULL, &Sym, &Control);
+    info = ParU_C_Analyze(NULL, &Sym, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Analyze(A, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Analyze(A, &Sym, NULL);
+    info = ParU_C_Analyze(A, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // analyze
-    BRUTAL_ALLOC_TEST(info, ParU_C_Analyze(A, &Sym, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_C_Analyze(A, &Sym, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 104) ;
@@ -125,17 +127,16 @@ int main(int argc, char **argv)
     }
 
     // null pointer tests
-    info = ParU_C_Factorize(NULL, Sym, &Num, &Control);
+    info = ParU_C_Factorize(NULL, Sym, &Num, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Factorize(A, NULL, &Num, &Control);
+    info = ParU_C_Factorize(A, NULL, &Num, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Factorize(A, Sym, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Factorize(A, Sym, &Num, NULL);
+    info = ParU_C_Factorize(A, Sym, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
+
     // factorize
-    BRUTAL_ALLOC_TEST(info, ParU_C_Factorize(A, Sym, &Num, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_C_Factorize(A, Sym, &Num, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 105) ;
@@ -146,19 +147,14 @@ int main(int argc, char **argv)
 
     const char *blas_library ;
 
-    info = ParU_C_Get_CONSTCHAR (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME, &blas_library, NULL) ;
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_C_Get_CONSTCHAR (Sym, Num, PARU_GET_BLAS_LIBRARY_NAME, &blas_library, &Control) ;
+    info = ParU_C_Get_CONSTCHAR (PARU_GET_BLAS_LIBRARY_NAME, &blas_library,
+        Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     printf ("BLAS: [%s]\n", blas_library) ;
 
     int64_t n ;
 
-    info = ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, NULL) ;
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, &Control) ;
+    info = ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     Q = (int64_t *) malloc (n * sizeof (int64_t)) ;
@@ -168,22 +164,20 @@ int main(int argc, char **argv)
     R = (double *) malloc (n * sizeof (double)) ;
     TEST_ASSERT (R != NULL) ;
 
-    info = ParU_C_Get_INT64 (Sym, Num, PARU_GET_P, P, &Control) ;
+    info = ParU_C_Get_INT64 (Sym, Num, PARU_GET_P, P, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_C_Get_INT64 (Sym, Num, PARU_GET_Q, Q, &Control) ;
+    info = ParU_C_Get_INT64 (Sym, Num, PARU_GET_Q, Q, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_C_Get_FP64 (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R, NULL) ;
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-
-    info = ParU_C_Get_FP64 (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R, &Control) ;
+    info = ParU_C_Get_FP64 (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     // double my_time, my_solve_time;
     double resid = 0, anorm = 0, xnorm = 0, rcond = 0 ;
 
-    info = ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, &Control) ;
+    info = ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond,
+        Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     b = (double *)malloc(n * sizeof(double));
@@ -195,19 +189,17 @@ int main(int argc, char **argv)
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
     // null pointer tests
-    info = ParU_C_Solve_Axb(NULL, Num, b, xx, &Control);
+    info = ParU_C_Solve_Axb(NULL, Num, b, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Axb(Sym, NULL, b, xx, &Control);
+    info = ParU_C_Solve_Axb(Sym, NULL, b, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Axb(Sym, Num, NULL, xx, &Control);
+    info = ParU_C_Solve_Axb(Sym, Num, NULL, xx, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Axb(Sym, Num, b, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Axb(Sym, Num, b, xx, NULL);
+    info = ParU_C_Solve_Axb(Sym, Num, b, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // solve Ax=b
-    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_Axb(Sym, Num, b, xx, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_Axb(Sym, Num, b, xx, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 106) ;
@@ -216,7 +208,7 @@ int main(int argc, char **argv)
 
     // compute residual for Ax=b
     BRUTAL_ALLOC_TEST(info, ParU_C_Residual_bAx(A, xx, b, &resid,
-                &anorm, &xnorm, &Control));
+                &anorm, &xnorm, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 108) ;
@@ -230,17 +222,17 @@ int main(int argc, char **argv)
     // solve Ax=b using Perm, LSolve, USolve, and InvPerm:
     t = (double *) malloc (n * sizeof(double)) ;
     TEST_ASSERT (t != NULL) ;
-    info = ParU_C_Perm (P, R, b, n, t, &Control);
+    info = ParU_C_Perm (P, R, b, n, t, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_Solve_Lxx (Sym, Num, t, &Control);
+    info = ParU_C_Solve_Lxx (Sym, Num, t, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_Solve_Uxx (Sym, Num, t, &Control);
+    info = ParU_C_Solve_Uxx (Sym, Num, t, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_InvPerm (Q, NULL, t, n, xx, &Control);
+    info = ParU_C_InvPerm (Q, NULL, t, n, xx, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     // compute residual for Ax=b
-    info = ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
+    info = ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, Control);
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 108) ;
@@ -251,49 +243,39 @@ int main(int argc, char **argv)
             " is %.2e.\n", resid, anorm, xnorm, rcond);
 
     // null pointer tests
-    info = ParU_C_Solve_Axx(NULL, Num, b, &Control);
+    info = ParU_C_Solve_Axx(NULL, Num, b, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Axx(Sym, NULL, b, &Control);
+    info = ParU_C_Solve_Axx(Sym, NULL, b, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Axx(Sym, Num, NULL, &Control);
+    info = ParU_C_Solve_Axx(Sym, Num, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Axx(Sym, Num, b, NULL);
+    info = ParU_C_Solve_Lxx (NULL, Num, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Lxx (NULL, Num, t, &Control);
+    info = ParU_C_Solve_Lxx (Sym, NULL, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Lxx (Sym, NULL, t, &Control);
+    info = ParU_C_Solve_Lxx (Sym, Num, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Lxx (Sym, Num, NULL, &Control);
+    info = ParU_C_Solve_Uxx (NULL, Num, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Lxx (Sym, Num, t, NULL);
+    info = ParU_C_Solve_Uxx (Sym, NULL, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Uxx (NULL, Num, t, &Control);
+    info = ParU_C_Solve_Uxx (Sym, Num, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Uxx (Sym, NULL, t, &Control);
+    info = ParU_C_Perm (NULL, R, b, n, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Uxx (Sym, Num, NULL, &Control);
+    info = ParU_C_Perm (P, R, NULL, n, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_Uxx (Sym, Num, t, NULL);
+    info = ParU_C_Perm (P, R, b, n, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm (NULL, R, b, n, t, &Control);
+    info = ParU_C_InvPerm (NULL, NULL, b, n, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm (P, R, NULL, n, t, &Control);
+    info = ParU_C_InvPerm (P, NULL, NULL, n, t, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm (P, R, b, n, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm (P, R, b, n, t, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm (NULL, NULL, b, n, t, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm (P, NULL, NULL, n, t, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm (P, NULL, b, n, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm (P, NULL, b, n, t, NULL);
+    info = ParU_C_InvPerm (P, NULL, b, n, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // solve Ax=b usin Axx method
-    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_Axx(Sym, Num, b, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_Axx(Sym, Num, b, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 107) ;
@@ -331,20 +313,18 @@ int main(int argc, char **argv)
     }
 
     // null pointer tests
-    info = ParU_C_Solve_AXB(NULL, Num, nrhs, B, X, &Control);
+    info = ParU_C_Solve_AXB(NULL, Num, nrhs, B, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_AXB(Sym, NULL, nrhs, B, X, &Control);
+    info = ParU_C_Solve_AXB(Sym, NULL, nrhs, B, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_AXB(Sym, Num, nrhs, NULL, X, &Control);
+    info = ParU_C_Solve_AXB(Sym, Num, nrhs, NULL, X, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, NULL);
+    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // solve AX=B
     BRUTAL_ALLOC_TEST(info, ParU_C_Solve_AXB(Sym, Num, nrhs, B, X,
-                &Control));
+                Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 109) ;
@@ -352,24 +332,25 @@ int main(int argc, char **argv)
     }
 
     // null pointer tests
-    info = ParU_C_Residual_BAX(NULL, X, B, nrhs, &resid, &anorm, &xnorm, &Control);
+    info = ParU_C_Residual_BAX(NULL, X, B, nrhs, &resid, &anorm, &xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_BAX(A, NULL, B, nrhs, &resid, &anorm, &xnorm, &Control);
+    info = ParU_C_Residual_BAX(A, NULL, B, nrhs, &resid, &anorm, &xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_BAX(A, X, NULL, nrhs, &resid, &anorm, &xnorm, &Control);
+    info = ParU_C_Residual_BAX(A, X, NULL, nrhs, &resid, &anorm, &xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_BAX(A, X, B, nrhs, NULL, &anorm, &xnorm, &Control);
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, NULL, &anorm, &xnorm, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, NULL, &xnorm, &Control);
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, NULL, &xnorm, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, &xnorm, NULL);
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // compute the residual for AX=B
     BRUTAL_ALLOC_TEST (info, ParU_C_Residual_BAX(A, X, B, nrhs, &resid,
-                &anorm, &xnorm, &Control));
+                &anorm, &xnorm, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 110) ;
@@ -382,17 +363,18 @@ int main(int argc, char **argv)
     // solve AX=B using Perm, LSolve, USolve, and InvPerm:
     T = (double *) malloc (n * nrhs * sizeof(double)) ;
     TEST_ASSERT (T != NULL) ;
-    info = ParU_C_Perm_X (P, R, B, n, nrhs, T, &Control);
+    info = ParU_C_Perm_X (P, R, B, n, nrhs, T, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_Solve_LXX (Sym, Num, nrhs, T, &Control);
+    info = ParU_C_Solve_LXX (Sym, Num, nrhs, T, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_Solve_UXX (Sym, Num, nrhs, T, &Control);
+    info = ParU_C_Solve_UXX (Sym, Num, nrhs, T, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_InvPerm_X (Q, NULL, T, n, nrhs, X, &Control);
+    info = ParU_C_InvPerm_X (Q, NULL, T, n, nrhs, X, Control);
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     // compute the residual for AX=B
-    info = ParU_C_Residual_BAX (A, X, B, nrhs, &resid, &anorm, &xnorm, &Control) ;
+    info = ParU_C_Residual_BAX (A, X, B, nrhs, &resid, &anorm, &xnorm,
+        Control) ;
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 108) ;
@@ -403,49 +385,44 @@ int main(int argc, char **argv)
             " is %.2e.\n", resid, anorm, xnorm, rcond);
 
     // null pointer tests
-    info = ParU_C_Solve_AXX(NULL, Num, nrhs, B, &Control);
+    info = ParU_C_Solve_AXX(NULL, Num, nrhs, B, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_AXX(Sym, NULL, nrhs, B, &Control);
+    info = ParU_C_Solve_AXX(Sym, NULL, nrhs, B, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_AXX(Sym, Num, nrhs, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_AXX(Sym, Num, nrhs, B, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_LXX(NULL, Num, nrhs, B, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_LXX(Sym, NULL, nrhs, B, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_LXX(Sym, Num, nrhs, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_LXX(Sym, Num, nrhs, B, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_UXX(NULL, Num, nrhs, B, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_UXX(Sym, NULL, nrhs, B, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_UXX(Sym, Num, nrhs, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Solve_UXX(Sym, Num, nrhs, B, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm_X (NULL, R, B, n, nrhs, T, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm_X (P, R, NULL, n, nrhs, T, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm_X (P, R, B, n, nrhs, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Perm_X (P, R, B, n, nrhs, T, NULL);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm_X (NULL, NULL, B, n, nrhs, T, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm_X (P, NULL, NULL, n, nrhs, T, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm_X (P, NULL, B, n, nrhs, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_InvPerm_X (P, NULL, B, n, nrhs, T, NULL);
+    info = ParU_C_Solve_AXX(Sym, Num, nrhs, NULL, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
+    info = ParU_C_Solve_LXX(NULL, Num, nrhs, B, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_Solve_LXX(Sym, NULL, nrhs, B, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_Solve_LXX(Sym, Num, nrhs, NULL, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_UXX(NULL, Num, nrhs, B, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_Solve_UXX(Sym, NULL, nrhs, B, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_Solve_UXX(Sym, Num, nrhs, NULL, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Perm_X (NULL, R, B, n, nrhs, T, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_Perm_X (P, R, NULL, n, nrhs, T, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_Perm_X (P, R, B, n, nrhs, NULL, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_InvPerm_X (NULL, NULL, B, n, nrhs, T, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_InvPerm_X (P, NULL, NULL, n, nrhs, T, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_InvPerm_X (P, NULL, B, n, nrhs, NULL, Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+
     // solve AX=B using AXX method
-    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_AXX(Sym, Num, nrhs, B, &Control));
+    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_AXX(Sym, Num, nrhs, B, Control));
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 111) ;
@@ -474,7 +451,7 @@ int main(int argc, char **argv)
     // double umf_time = 0;
 
     int status ;           // Info [UMFPACK_STATUS]
-    double Info[UMFPACK_INFO],  // Contains statistics about the symbolic analysis
+    double Info[UMFPACK_INFO],  // statistics about the symbolic analysis
         umf_Control[UMFPACK_CONTROL];  // it is set in umfpack_dl_defaults and
     // is used in umfpack_dl_symbolic; if
     // passed NULL it will use the defaults
@@ -483,7 +460,6 @@ int main(int argc, char **argv)
     // umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
     // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC;
     // umf_Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC;
-    // umf_Control [UMFPACK_SINGLETONS] = Control.filter_singletons ;
     umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS_GUARD;
 
     int64_t *Ap = (int64_t *)A->p;
@@ -495,7 +471,6 @@ int main(int argc, char **argv)
     // umf_Control[UMFPACK_PRL] = 0;
     // umfpack_dl_report_info(umf_Control, Info);
     TEST_ASSERT_INFO (status == UMFPACK_OK, status) ;
-
 
     status =
         umfpack_dl_numeric(Ap, Ai, Ax, Symbolic, &Numeric, umf_Control, Info);
@@ -521,24 +496,28 @@ int main(int argc, char **argv)
     double umf_resid, umf_anorm, umf_xnorm;
 
     // null pointer tests
-    info = ParU_C_Residual_bAx(NULL, x, b, &umf_resid, &umf_anorm, &umf_xnorm, &Control);
+    info = ParU_C_Residual_bAx(NULL, x, b, &umf_resid, &umf_anorm, &umf_xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_bAx(A, NULL, b, &umf_resid, &umf_anorm, &umf_xnorm, &Control);
+    info = ParU_C_Residual_bAx(A, NULL, b, &umf_resid, &umf_anorm, &umf_xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_bAx(A, x, NULL, &umf_resid, &umf_anorm, &umf_xnorm, &Control);
+    info = ParU_C_Residual_bAx(A, x, NULL, &umf_resid, &umf_anorm, &umf_xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_bAx(A, x, b, NULL, &umf_anorm, &umf_xnorm, &Control);
+    info = ParU_C_Residual_bAx(A, x, b, NULL, &umf_anorm, &umf_xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, NULL, &umf_xnorm, &Control);
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, NULL, &umf_xnorm,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, NULL, &Control);
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm, NULL);
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, NULL,
+        Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // compute the residual for Ax=b
-    info = ParU_C_Residual_bAx(A, x, b, &umf_resid,
-            &umf_anorm, &umf_xnorm, &Control);
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm,
+        Control);
     if (info != PARU_SUCCESS)
     {
         TEST_ASSERT (expected_log10_resid == 112) ;
@@ -551,14 +530,18 @@ int main(int argc, char **argv)
     TEST_ASSERT (umf_resid == 0 || log10 (umf_resid) <= expected_log10_resid) ;
 
     // free nothing
-    info = ParU_C_FreeNumeric (NULL, &Control) ;
+    info = ParU_C_FreeNumeric (NULL, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_FreeNumeric (&Num, NULL) ;
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
-    info = ParU_C_FreeSymbolic (NULL, &Control) ;
+    info = ParU_C_FreeSymbolic (NULL, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    info = ParU_C_FreeSymbolic (&Sym, NULL) ;
-    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+    info = ParU_C_FreeControl (NULL) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    // double free (which is safe)
+    info = ParU_C_FreeControl (&Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    info = ParU_C_FreeControl (&Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     TEST_PASSES ;

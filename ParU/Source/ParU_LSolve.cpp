@@ -52,13 +52,17 @@ ParU_Info ParU_LSolve
     double *x,              // n-by-1, in column-major storage;
                             // holds b on input, solution x on input
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!Sym || !Num || !x || !Control)
+    if (!Sym || !Num || !x)
     {
         return (PARU_INVALID) ;
     }
+
+    // get Control
+    BLAS_set_num_threads (paru_nthreads (Control)) ;
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
     int64_t nf = Sym->nf;
@@ -115,8 +119,6 @@ ParU_Info ParU_LSolve
     }
     PRLEVEL(1, (" \n"));
 #endif
-
-    BLAS_set_num_threads(control_nthreads (Control)) ;
 
     // gather scatter space for dgemm
     double *work = PARU_MALLOC (Num->max_row_count, double);
@@ -226,13 +228,17 @@ ParU_Info ParU_LSolve
     double *X,              // X is n-by-nrhs, where A is n-by-n;
                             // holds B on input, solution X on input
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!Sym || !Num || !X || !Control)
+    if (!Sym || !Num || !X)
     {
         return (PARU_INVALID) ;
     }
+
+    // get Control
+    BLAS_set_num_threads (paru_nthreads (Control)) ;
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
     int64_t m = Sym->m;
@@ -309,8 +315,6 @@ ParU_Info ParU_LSolve
     }
     PRLEVEL(PR, (" \n"));
 #endif
-
-    BLAS_set_num_threads(control_nthreads (Control)) ;
 
     // gather scatter space for dgemm
     double *work = PARU_MALLOC (Num->max_row_count * nrhs, double);

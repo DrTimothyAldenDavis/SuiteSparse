@@ -29,30 +29,32 @@ ParU_Info ParU_C_Version (int ver [3], char date [128])
 }
 
 //------------------------------------------------------------------------------
-// ParU_C_Init_Control: initialize C_Control with the default values
+// ParU_C_InitControl: allocate Control and set to default values
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_C_Init_Control (ParU_C_Control *Control_C)
+ParU_Info ParU_C_InitControl (ParU_C_Control *Control_C_handle)
 {
-    if (!Control_C)
+    if (Control_C_handle == NULL)
     {
+        // null pointer on input
         return (PARU_INVALID) ;
     }
-
-    Control_C->mem_chunk = PARU_MEM_CHUNK ;
-    Control_C->umfpack_ordering = UMFPACK_ORDERING_METIS ;
-    Control_C->umfpack_strategy = UMFPACK_STRATEGY_AUTO ;
-    Control_C->filter_singletons = 1 ;
-    Control_C->relaxed_amalgamation = 32 ;
-    Control_C->prescale = 1 ;
-    Control_C->panel_width = 32 ;
-    Control_C->paru_strategy = PARU_STRATEGY_AUTO ;
-    Control_C->piv_toler = .1 ;
-    Control_C->diag_toler = .001 ;
-    Control_C->trivial = 4 ;
-    Control_C->worthwhile_dgemm = 512 ;
-    Control_C->worthwhile_trsm = 4096 ;
-    Control_C->paru_max_threads = 0 ;
+    ParU_C_Control Control_C = PARU_CALLOC (1, ParU_C_Control_struct) ;
+    if (Control_C == NULL)
+    {
+        // out of memory
+        return (PARU_OUT_OF_MEMORY) ;
+    }
+    ParU_Control Control = NULL ;
+    ParU_Info info = ParU_InitControl (&Control) ;
+    if (info != PARU_SUCCESS)
+    {
+        // out of memory
+        PARU_FREE (1, ParU_C_Control_struct, Control_C) ;
+        return (info) ;
+    }
+    Control_C->control_handle = static_cast<void*>(Control) ;
+    (*Control_C_handle) = Control_C ;
     return (PARU_SUCCESS) ;
 }
 
@@ -70,22 +72,25 @@ ParU_Info ParU_C_Analyze
     // output:
     ParU_C_Symbolic *Sym_handle_C,  // output, symbolic analysis
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!A || !Sym_handle_C || !Control_C)
+    if (!A || !Sym_handle_C)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+
+
     ParU_C_Symbolic Sym_C = PARU_CALLOC (1, ParU_C_Symbolic_struct);
     if (!Sym_C)
     {
         return (PARU_OUT_OF_MEMORY) ;
     }
     ParU_Symbolic Sym ;
-    ParU_Info info = ParU_Analyze(A, &Sym, &Control);
+    ParU_Info info = ParU_Analyze(A, &Sym, Control);
     if (info != PARU_SUCCESS)
     {
         PARU_FREE (1, ParU_C_Symbolic_struct, Sym_C);
@@ -111,15 +116,17 @@ ParU_Info ParU_C_Factorize
     // output:
     ParU_C_Numeric *Num_handle_C,    // output numerical factorization
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!A || !Sym_C || !Num_handle_C || !Control_C)
+    if (!A || !Sym_C || !Num_handle_C)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+
     ParU_Symbolic Sym = static_cast<ParU_Symbolic>(Sym_C->sym_handle);
     ParU_C_Numeric Num_C = PARU_CALLOC (1, ParU_C_Numeric_struct) ;
     if (!Num_C)
@@ -129,7 +136,7 @@ ParU_Info ParU_C_Factorize
 
     ParU_Info info;
     ParU_Numeric Num ;
-    info = ParU_Factorize(A, Sym, &Num, &Control);
+    info = ParU_Factorize(A, Sym, &Num, Control);
     if (info != PARU_SUCCESS)
     {
         PARU_FREE (1, ParU_C_Numeric_struct, Num_C);
@@ -157,18 +164,18 @@ ParU_Info ParU_C_Solve_Axx
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !x || !Control_C)
+    if (!Sym_C || !Num_C || !x)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                         static_cast<ParU_Numeric>(Num_C->num_handle),
-                        x, &Control)) ;
+                        x, Control)) ;
 }
 
 // x = L\x, where right-hand side is overwritten with the solution x.
@@ -181,18 +188,18 @@ ParU_Info ParU_C_Solve_Lxx
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !x || !Control_C)
+    if (!Sym_C || !Num_C || !x)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_LSolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                          static_cast<ParU_Numeric>(Num_C->num_handle),
-                         x, &Control)) ;
+                         x, Control)) ;
 }
 
 // x = U\x, where right-hand side is overwritten with the solution x.
@@ -205,18 +212,18 @@ ParU_Info ParU_C_Solve_Uxx
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !x || !Control_C)
+    if (!Sym_C || !Num_C || !x)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_USolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                          static_cast<ParU_Numeric>(Num_C->num_handle),
-                         x, &Control)) ;
+                         x, Control)) ;
 }
 
 // x = A\b, for vectors x and b
@@ -229,18 +236,18 @@ ParU_Info ParU_C_Solve_Axb
     // output
     double *x,              // vector of size n-by-1
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !b || !x || !Control_C)
+    if (!Sym_C || !Num_C || !b || !x)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                         static_cast<ParU_Numeric>(Num_C->num_handle),
-                        b, x, &Control)) ;
+                        b, x, Control)) ;
 }
 
 // X = A\X, where right-hand side is overwritten with the solution X.
@@ -254,18 +261,18 @@ ParU_Info ParU_C_Solve_AXX
     double *X,              // array of size n-by-nrhs in column-major storage,
                             // right-hand-side on input, solution on output.
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !X || !Control_C)
+    if (!Sym_C || !Num_C || !X)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                         static_cast<ParU_Numeric>(Num_C->num_handle),
-                        nrhs, X, &Control)) ;
+                        nrhs, X, Control)) ;
 }
 
 // X = L\X, where right-hand side is overwritten with the solution X.
@@ -279,18 +286,18 @@ ParU_Info ParU_C_Solve_LXX
     double *X,              // array of size n-by-nrhs in column-major storage,
                             // right-hand-side on input, solution on output.
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !X || !Control_C)
+    if (!Sym_C || !Num_C || !X)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_LSolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                          static_cast<ParU_Numeric>(Num_C->num_handle),
-                         nrhs, X, &Control)) ;
+                         nrhs, X, Control)) ;
 }
 
 // X = U\X, where right-hand side is overwritten with the solution X.
@@ -304,18 +311,18 @@ ParU_Info ParU_C_Solve_UXX
     double *X,              // array of size n-by-nrhs in column-major storage,
                             // right-hand-side on input, solution on output.
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !X || !Control_C)
+    if (!Sym_C || !Num_C || !X)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_USolve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                          static_cast<ParU_Numeric>(Num_C->num_handle),
-                         nrhs, X, &Control)) ;
+                         nrhs, X, Control)) ;
 }
 
 // X = A\B, for matrices X and B
@@ -329,19 +336,18 @@ ParU_Info ParU_C_Solve_AXB
     // output:
     double *X,              // array of size n-by-nrhs in column-major storage
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Sym_C || !Num_C || !B || !X || !Control_C)
+    if (!Sym_C || !Num_C || !B || !X)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
-
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     return (ParU_Solve (static_cast<ParU_Symbolic>(Sym_C->sym_handle),
                         static_cast<ParU_Numeric>(Num_C->num_handle),
-                         nrhs, B, X, &Control)) ;
+                         nrhs, B, X, Control)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -359,16 +365,16 @@ ParU_Info ParU_C_Perm
     // output
     double *x,          // vector of size n
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!x || !b || !P || !Control_C)
+    if (!x || !b || !P)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control ;
-    paru_cp_control (&Control, Control_C) ;
-    return (ParU_Perm (P, s, b, n, x, &Control)) ;
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Perm (P, s, b, n, x, Control)) ;
 }
 
 // apply permutation to a matrix, X=B(p,:)./s
@@ -383,16 +389,16 @@ ParU_Info ParU_C_Perm_X
     // output
     double *X,          // array of size nrows-by-ncols
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!X || !B || !P || !Control_C)
+    if (!X || !B || !P)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control ;
-    paru_cp_control (&Control, Control_C) ;
-    return (ParU_Perm (P, s, B, nrows, ncols, X, &Control)) ;
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Perm (P, s, B, nrows, ncols, X, Control)) ;
 }
 
 // apply inverse permutation to a vector, x(p)=b, then scale x=x./s
@@ -406,16 +412,16 @@ ParU_Info ParU_C_InvPerm
     // output
     double *x,          // vector of size n
     // control
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!x || !b || !P || !Control_C)
+    if (!x || !b || !P)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control ;
-    paru_cp_control (&Control, Control_C) ;
-    return (ParU_InvPerm (P, s, b, n, x, &Control)) ;
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_InvPerm (P, s, b, n, x, Control)) ;
 }
 
 // apply inverse permutation to a matrix, X(p,:)=b, then scale X=X./s
@@ -430,16 +436,16 @@ ParU_Info ParU_C_InvPerm_X
     // output
     double *X,          // array of size nrows-by-ncols
     // control
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!X || !B || !P || !Control_C)
+    if (!X || !B || !P)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control ;
-    paru_cp_control (&Control, Control_C) ;
-    return (ParU_InvPerm (P, s, B, nrows, ncols, X, &Control)) ;
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_InvPerm (P, s, B, nrows, ncols, X, Control)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -460,19 +466,18 @@ ParU_Info ParU_C_Residual_bAx
     double *anormc,     // 1-norm of A
     double *xnormc,     // 1-norm of x
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!A || !x || !b || !residc || !anormc || !xnormc || !Control_C)
+    if (!A || !x || !b || !residc || !anormc || !xnormc)
     {
         return (PARU_INVALID) ;
     }
-
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     double resid, anorm, xnorm;
     ParU_Info info;
-    info = ParU_Residual (A, x, b, resid, anorm, xnorm, &Control);
+    info = ParU_Residual (A, x, b, resid, anorm, xnorm, Control);
     *residc = resid;
     *anormc = anorm;
     *xnormc = xnorm;
@@ -493,18 +498,18 @@ ParU_Info ParU_C_Residual_BAX
     double *anormc,     // 1-norm of A
     double *xnormc,     // 1-norm of X
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!A || !X || !B || !residc || !anormc || !xnormc || !Control_C)
+    if (!A || !X || !B || !residc || !anormc || !xnormc)
     {
         return (PARU_INVALID) ;
     }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     double resid, anorm, xnorm;
     ParU_Info info;
-    info = ParU_Residual (A, X, B, nrhs, resid, anorm, xnorm, &Control);
+    info = ParU_Residual (A, X, B, nrhs, resid, anorm, xnorm, Control);
     *residc = resid;
     *anormc = anorm;
     *xnormc = xnorm;
@@ -524,70 +529,84 @@ ParU_Info ParU_C_Get_INT64
     // output:
     int64_t *result,              // int64_t result: a scalar or an array
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Control_C)
-    {
-        return (PARU_INVALID) ;
-    }
     ParU_Symbolic Sym = (Sym_C == NULL) ? NULL :
         static_cast<ParU_Symbolic>(Sym_C->sym_handle);
     ParU_Numeric Num = (Num_C == NULL) ? NULL :
         static_cast<ParU_Numeric>(Num_C->num_handle);
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
-    return (ParU_Get (Sym, Num, field, result, &Control)) ;
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Get (Sym, Num, field, result, Control)) ;
 }
 
 ParU_Info ParU_C_Get_FP64
 (
     // input:
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+    const ParU_C_Symbolic Sym_C,  // symbolic analysis from ParU_Analyze
     const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
     ParU_Get_enum field,          // field to get
     // output:
     double *result,               // double result: a scalar or an array
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Control_C)
-    {
-        return (PARU_INVALID) ;
-    }
-    ParU_Symbolic Sym = (Sym_C == NULL) ? NULL : 
+    ParU_Symbolic Sym = (Sym_C == NULL) ? NULL :
         static_cast<ParU_Symbolic>(Sym_C->sym_handle);
     ParU_Numeric Num = (Num_C == NULL) ? NULL :
         static_cast<ParU_Numeric>(Num_C->num_handle);
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
-    return (ParU_Get (Sym, Num, field, result, &Control)) ;
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Get (Sym, Num, field, result, Control)) ;
 }
 
 ParU_Info ParU_C_Get_CONSTCHAR
 (
     // input:
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
     ParU_Get_enum field,          // field to get
     // output:
     const char **result,          // string result
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
-    if (!Control_C)
-    {
-        return (PARU_INVALID) ;
-    }
-    ParU_Symbolic Sym = (Sym_C == NULL) ? NULL : 
-        static_cast<ParU_Symbolic>(Sym_C->sym_handle);
-    ParU_Numeric Num = (Num_C == NULL) ? NULL :
-        static_cast<ParU_Numeric>(Num_C->num_handle);
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
-    return (ParU_Get (Sym, Num, field, result, &Control)) ;
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Get (field, result, Control)) ;
+}
+
+//------------------------------------------------------------------------------
+//------------ ParU_C_Set_*-----------------------------------------------------
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_C_Set_INT64
+(
+    // input
+    ParU_Control_enum parameter,    // parameter to set
+    int64_t c,                      // value to set it to
+    // control:
+    ParU_C_Control Control_C
+)
+{
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Set (parameter, c, Control)) ;
+}
+
+ParU_Info ParU_C_Set_FP64
+(
+    // input
+    ParU_Control_enum parameter,    // parameter to set
+    double c,                       // value to set it to
+    // control:
+    ParU_C_Control Control_C
+)
+{
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Set (parameter, c, Control)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -598,7 +617,7 @@ ParU_Info ParU_C_FreeNumeric
 (
     ParU_C_Numeric *Num_handle_C,    // numeric object to free
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
     if (Num_handle_C == NULL || *Num_handle_C == NULL)
@@ -606,15 +625,11 @@ ParU_Info ParU_C_FreeNumeric
         // nothing to do
         return (PARU_SUCCESS) ;
     }
-    if (!Control_C)
-    {
-        return (PARU_INVALID) ;
-    }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     ParU_C_Numeric Num_C = (*Num_handle_C) ;
     ParU_Numeric Num = static_cast<ParU_Numeric>(Num_C->num_handle);
-    ParU_Info info = ParU_FreeNumeric(&Num, &Control) ;
+    ParU_Info info = ParU_FreeNumeric(&Num, Control) ;
     PARU_FREE(1, ParU_C_Numeric_struct, *Num_handle_C) ;
     return info;
 }
@@ -623,7 +638,7 @@ ParU_Info ParU_C_FreeSymbolic
 (
     ParU_C_Symbolic *Sym_handle_C,   // symbolic object to free
     // control:
-    ParU_C_Control *Control_C
+    ParU_C_Control Control_C
 )
 {
     if (Sym_handle_C == NULL || *Sym_handle_C == NULL)
@@ -631,16 +646,30 @@ ParU_Info ParU_C_FreeSymbolic
         // nothing to do
         return (PARU_SUCCESS) ;
     }
-    if (!Control_C)
-    {
-        return (PARU_INVALID) ;
-    }
-    ParU_Control Control;
-    paru_cp_control (&Control, Control_C);
+
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
     ParU_C_Symbolic Sym_C = (*Sym_handle_C) ;
     ParU_Symbolic Sym = static_cast<ParU_Symbolic>(Sym_C->sym_handle);
-    ParU_Info info = ParU_FreeSymbolic(&Sym, &Control);
+    ParU_Info info = ParU_FreeSymbolic(&Sym, Control);
     PARU_FREE(1, ParU_C_Symbolic_struct, *Sym_handle_C);
+    return info;
+}
+
+ParU_Info ParU_C_FreeControl
+(
+    ParU_C_Control *Control_handle_C    // control object to free
+)
+{
+    if (Control_handle_C == NULL || *Control_handle_C == NULL)
+    {
+        // nothing to do
+        return (PARU_SUCCESS) ;
+    }
+    ParU_C_Control Control_C = (*Control_handle_C) ;
+    ParU_Control Control = static_cast<ParU_Control>(Control_C->control_handle) ;
+    ParU_Info info = ParU_FreeControl (&Control) ;
+    PARU_FREE (1, ParU_C_Control_struct, *Control_handle_C) ;
     return info;
 }
 

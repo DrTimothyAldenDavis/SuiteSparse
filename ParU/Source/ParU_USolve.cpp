@@ -52,13 +52,16 @@ ParU_Info ParU_USolve
     double *x,              // n-by-1, in column-major storage;
                             // holds b on input, solution x on input
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!Sym || !Num || !x || !Control)
+    if (!Sym || !Num || !x)
     {
         return PARU_INVALID ;
     }
+
+    // get Control
+    BLAS_set_num_threads (paru_nthreads (Control)) ;
 
     DEBUGLEVEL(0);
     bool blas_ok = true ;
@@ -75,7 +78,6 @@ ParU_Info ParU_USolve
     const ParU_Factors *Us = Num->partial_Us;
     const int64_t *Super = Sym->Super;
 
-    BLAS_set_num_threads(control_nthreads (Control)) ;
     double *work = PARU_MALLOC (Num->max_col_count, double);
     if (work == NULL)
     {
@@ -209,13 +211,17 @@ ParU_Info ParU_USolve
     double *X,              // X is n-by-nrhs, where A is n-by-n;
                             // holds B on input, solution X on input
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!Sym || !Num || !X || !Control)
+    if (!Sym || !Num || !X)
     {
         return PARU_INVALID ;
     }
+
+    // get Control
+    BLAS_set_num_threads (paru_nthreads (Control)) ;
+
     DEBUGLEVEL(0);
     bool blas_ok = true ;
     PARU_DEFINE_PRLEVEL;
@@ -244,7 +250,6 @@ ParU_Info ParU_USolve
     const ParU_Factors *Us = Num->partial_Us;
     const int64_t *Super = Sym->Super;
 
-    BLAS_set_num_threads(control_nthreads (Control)) ;
     double *work = PARU_MALLOC (Num->max_col_count * nrhs, double);
     if (work == NULL)
     {

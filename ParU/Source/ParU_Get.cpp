@@ -23,7 +23,7 @@ ParU_Info ParU_Get
     // output:
     int64_t *result,            // int64_t result: a scalar or an array
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
 
@@ -34,12 +34,20 @@ ParU_Info ParU_Get
 
     (*result) = 0 ;
 
-    if (!Sym || !Control)
+    if (!Sym)
     {
         return (PARU_INVALID) ;
     }
 
     int64_t n = Sym->n ;
+
+    // get Control
+    int32_t nthreads = paru_nthreads (Control) ;
+    size_t mem_chunk = PARU_DEFAULT_MEM_CHUNK ;
+    if (Control != NULL)
+    {
+        mem_chunk = Control->mem_chunk ;
+    }
 
     switch (field)
     {
@@ -83,11 +91,13 @@ ParU_Info ParU_Get
 
         case PARU_GET_P:
             if (!Num || Num->sym_m != n) return (PARU_INVALID) ;
-            paru_memcpy (result, Num->Pfin, sizeof (int64_t) * n, Control) ;
+            paru_memcpy (result, Num->Pfin, sizeof (int64_t) * n,
+                mem_chunk, nthreads) ;
             break ;
 
         case PARU_GET_Q:
-            paru_memcpy (result, Sym->Qfill, sizeof (int64_t) * n, Control) ;
+            paru_memcpy (result, Sym->Qfill, sizeof (int64_t) * n,
+                mem_chunk, nthreads) ;
             break ;
 
         default:
@@ -111,7 +121,7 @@ ParU_Info ParU_Get
     // output:
     double *result,             // double result: a scalar or an array
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
 
@@ -122,12 +132,20 @@ ParU_Info ParU_Get
 
     (*result) = 0 ;
 
-    if (!Sym || !Control || !Num || (Sym->n != Num->sym_m))
+    if (!Sym || !Num || (Sym->n != Num->sym_m))
     {
         return (PARU_INVALID) ;
     }
 
     int64_t n = Sym->n ;
+
+    // get Control
+    int32_t nthreads = paru_nthreads (Control) ;
+    size_t mem_chunk = PARU_DEFAULT_MEM_CHUNK ;
+    if (Control != NULL)
+    {
+        mem_chunk = Control->mem_chunk ;
+    }
 
     switch (field)
     {
@@ -148,7 +166,8 @@ ParU_Info ParU_Get
             break ;
 
         case PARU_GET_ROW_SCALE_FACTORS:
-            paru_memcpy (result, Num->Rs, sizeof (double) * n, Control) ;
+            paru_memcpy (result, Num->Rs, sizeof (double) * n,
+                mem_chunk, nthreads) ;
             break ;
 
         default:
@@ -166,13 +185,11 @@ ParU_Info ParU_Get
 ParU_Info ParU_Get
 (
     // input:
-    const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
-    const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
     ParU_Get_enum field,        // field to get
     // output:
     const char **result,        // string result
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
 
@@ -206,3 +223,138 @@ ParU_Info ParU_Get
     return (PARU_SUCCESS) ;
 }
 
+//------------------------------------------------------------------------------
+// ParU_Get: get an int64_t parameter from the Control object
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_Get
+(
+    // input
+    ParU_Control_enum parameter,    // parameter to get
+    // output:
+    int64_t *c,                     // value of parameter
+    // control:
+    ParU_Control Control
+)
+{
+
+    if (!c)
+    {
+        return (PARU_INVALID) ;
+    }
+
+    (*c) = 0 ;
+
+    switch (parameter)
+    {
+
+        case PARU_CONTROL_MAX_THREADS:            // max number of threads
+            (*c) = (Control == NULL) ? PARU_DEFAULT_MAX_THREADS :
+                Control->paru_max_threads ;
+            break ;
+
+        case PARU_CONTROL_STRATEGY:               // ParU strategy
+            (*c) = (Control == NULL) ? PARU_DEFAULT_STRATEGY :
+                Control->paru_strategy ;
+            break ;
+
+        case PARU_CONTROL_UMFPACK_STRATEGY:       // UMFPACK strategy
+            (*c) = (Control == NULL) ? PARU_DEFAULT_UMFPACK_STRATEGY :
+                Control->umfpack_strategy ;
+            break ;
+
+        case PARU_CONTROL_ORDERING:               // UMFPACK ordering
+            (*c) = (Control == NULL) ? PARU_DEFAULT_ORDERING :
+                Control->umfpack_ordering ;
+            break ;
+
+        case PARU_CONTROL_RELAXED_AMALGAMATION:   // goal # pivots in each front
+            (*c) = (Control == NULL) ? PARU_DEFAULT_RELAXED_AMALGAMATION :
+                Control->relaxed_amalgamation ;
+            break ;
+
+        case PARU_CONTROL_PANEL_WIDTH:            // # of pivots in a panel
+            (*c) = (Control == NULL) ? PARU_DEFAULT_PANEL_WIDTH :
+                Control->panel_width ;
+            break ;
+
+        case PARU_CONTROL_DGEMM_TINY:             // dimension of tiny dgemm's
+            (*c) = (Control == NULL) ? PARU_DEFAULT_DGEMM_TINY :
+                Control->trivial ;
+            break ;
+
+        case PARU_CONTROL_DGEMM_TASKED:           // dimension of tasked dgemm's
+            (*c) = (Control == NULL) ? PARU_DEFAULT_DGEMM_TASKED :
+                Control->worthwhile_dgemm ;
+            break ;
+
+        case PARU_CONTROL_DTRSM_TASKED:           // dimension of tasked dtrsm's
+            (*c) = (Control == NULL) ? PARU_DEFAULT_DTRSM_TASKED :
+                Control->worthwhile_dtrsm ;
+            break ;
+
+        case PARU_CONTROL_PRESCALE:               // prescale input matrix
+            (*c) = (Control == NULL) ? PARU_DEFAULT_PRESCALE :
+                Control->prescale ;
+            break ;
+
+        case PARU_CONTROL_SINGLETONS:             // filter singletons, or not
+            (*c) = (Control == NULL) ? PARU_DEFAULT_SINGLETONS :
+                Control->filter_singletons ;
+            break ;
+
+        case PARU_CONTROL_MEM_CHUNK:              // chunk size memset, memcpy
+            (*c) = (Control == NULL) ? PARU_DEFAULT_MEM_CHUNK :
+                Control->mem_chunk ;
+            break ;
+
+        default:
+            return (PARU_INVALID) ;
+            break ;
+    }
+
+    return (PARU_SUCCESS) ;
+}
+
+//------------------------------------------------------------------------------
+// ParU_Get: get a double parameter from the Control object
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_Get
+(
+    // input
+    ParU_Control_enum parameter,    // parameter to get
+    // output:
+    double *c,                      // value of parameter
+    // control:
+    ParU_Control Control
+)
+{
+
+    if (!c)
+    {
+        return (PARU_INVALID) ;
+    }
+
+    (*c) = 0 ;
+
+    switch (parameter)
+    {
+
+        case PARU_CONTROL_PIVOT_TOLERANCE:          // pivot tolerance
+            (*c) = (Control == NULL) ? PARU_DEFAULT_PIVOT_TOLERANCE :
+                Control->piv_toler ;
+            break ;
+
+        case PARU_CONTROL_DIAG_PIVOT_TOLERANCE:     // diagonal pivot tolerance
+            (*c) = (Control == NULL) ? PARU_DEFAULT_DIAG_PIVOT_TOLERANCE :
+                Control->diag_toler ;
+            break ;
+
+        default:
+            return (PARU_INVALID) ;
+            break ;
+    }
+
+    return (PARU_SUCCESS) ;
+}

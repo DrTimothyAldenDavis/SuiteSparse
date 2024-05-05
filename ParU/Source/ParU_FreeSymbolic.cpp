@@ -23,17 +23,13 @@ ParU_Info ParU_FreeSymbolic
     // input/output:
     ParU_Symbolic *Sym_handle, // symbolic object to free
     // control:
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
     if (Sym_handle == NULL || *Sym_handle == NULL)
     {
         // nothing to do
         return PARU_SUCCESS;
-    }
-    if (!Control)
-    {
-        return (PARU_INVALID) ;
     }
 
     DEBUGLEVEL(0);

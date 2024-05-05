@@ -59,10 +59,10 @@ ParU_Info ParU_InvPerm
     // output
     double *x,          // vector of size n
     // control
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!x || !b || !P || !Control)
+    if (!x || !b || !P)
     {
         return (PARU_INVALID) ;
     }
@@ -127,10 +127,10 @@ ParU_Info ParU_InvPerm
     // output
     double *X,          // array of size nrows-by-ncols
     // control
-    ParU_Control *Control
+    ParU_Control Control
 )
 {
-    if (!X || !B || !P || !Control)
+    if (!X || !B || !P)
     {
         return (PARU_INVALID) ;
     }

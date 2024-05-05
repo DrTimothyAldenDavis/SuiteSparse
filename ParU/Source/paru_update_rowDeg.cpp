@@ -26,6 +26,10 @@ void paru_update_rowDeg
     ParU_Numeric Num
 )
 {
+
+    // get Control
+    int64_t panel_width = Work->panel_width ;
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 
@@ -35,8 +39,7 @@ void paru_update_rowDeg
 #endif
     PRLEVEL(1, ("%%-------ROW degree update of panel " LD " of front " LD " \n",
                 panel_num, f));
-    ParU_Control *Control = Num->Control;
-    int64_t panel_width = Control->panel_width;
+
     paru_element **elementList = Work->elementList;
 
     int64_t *elRow = Work->elRow;
