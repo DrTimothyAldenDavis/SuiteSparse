@@ -39,10 +39,10 @@
 static const char *stat_names [ ] =
 {
     "analysis_time",        //  0: analysis time in seconds
-    "factorize_time",       //  1: factorization time in seconds
+    "factorization_time",   //  1: factorization time in seconds
     "solve_time",           //  2: solve time in seconds
-    "strategy",             //  3: strategy used, symmetric or unsymmetric
-    "ordering",             //  4: ordering used
+    "strategy_used",        //  3: strategy used, symmetric or unsymmetric
+    "ordering_used",        //  4: ordering used
     "flops",                //  5: flop count for LU factorization
     "lnz",                  //  6: nnz (L)
     "unz",                  //  7: nnz (U)

@@ -1,12 +1,7 @@
 function paru_make (try_intel)
 %PARU_MAKE compiles the ParU mexFunction
 %
-% Usage: x = paru(A,b), computes x=A\b using ParU.
-% Note that the MATLAB cannot use the fully parallel version of
-% ParU, because of limitations in the MATLAB memory allocator for
-% C/C++ mexFunctions.  The performance of the paru MATLAB
-% interface will thus be slower than when using its C/C++
-% interface.
+% Usage: paru_make
 %
 % Example:
 %
@@ -21,6 +16,15 @@ function paru_make (try_intel)
 %   norm (A*x2-b)
 %
 % You must type the paru_make command while in the ParU/MATLAB directory.
+%
+% For best performance, paru relies on functions unique to the Intel MKL BLAS.
+% An optional input, paru_make(try_intel), is true by default.  paru_make
+% detects the BLAS library used by MATLAB and then attempts to use functions
+% unique to the Intel MKL BLAS library (mkl*set_num_threads_local).  This may
+% fail when paru is compiled (in which case paru is compiled with try_intel
+% false).  If paru fails when it runs, with a link error reporting that an an
+% mkl_* routine is not found, use paru_make(false) to disable the Intel MKL
+% functions.
 %
 % See also paru, paru_demo, paru_many, paru_tiny, mldivide.
 

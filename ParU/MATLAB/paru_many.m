@@ -3,18 +3,17 @@ function paru_many
 %
 % Usage: paru_many
 %
-% Requires ssget in the SuiteSparse meta-package.
+% Requires ssget and umfpack in the SuiteSparse meta-package.
 %
-% See also paru, paru_make, paru_demo, paru_tiny, mldivide, ssget.
+% See also paru, paru_make, paru_demo, paru_tiny, mldivide, ssget,
+% umfpack.
 
 % ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
-% FIXME: add the umfpack mexFunction, to get its analyze/factorize/solve times
 % FIXME: save results to a *.mat file for further analysis,
-%   once umfpack mexFunction, stats.lnz, stats.unz, and stats.flops
-%   are added.
+%   once stats.lnz, stats.unz, and stats.flops are added.
 
 % get all real square matrices in the SuiteSparse Collection,
 % that are not candidates for a Cholesky factorization.
@@ -41,6 +40,8 @@ too_large = [
     2439
     2267
     2649
+    2380
+    1396
     ] ;
 
 % these matrices are singular or nearly so:
@@ -465,6 +466,15 @@ singular_matrices = [
         2268
         2662
         2277
+        2840
+        2841
+        1141
+        1155
+        2701
+         455
+        2377
+        1335
+        1339
     ] ;
 
 % these matrices cause METIS to fail
@@ -485,8 +495,8 @@ nmat = length (test_matrices) ;
 paru_demo
 
 % start with this matrix:
-first = 1 ;
-% first = find (test_matrices == 2841) ;
+% first = 1 ;
+first = find (test_matrices == 2830) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
@@ -495,7 +505,7 @@ for k = first:nmat
         index.Group {id}, index.Name {id}, index.nnz (id)) ;
 end
 fprintf ('Hit enter to continue:\n') ;
-pause
+% pause
 fprintf ('\n') ;
 
 clear opts_metis
@@ -527,7 +537,7 @@ for k = first:nmat
     x = A\b ;
     t_backslash = toc (t1) ;
 
-    % try x=paru(A,b), but only if the matrix is not singular
+    % try other methods if the matrix is not singular
     [~, lastid] = lastwarn ;
     lastwarn ('') ;
     if (isempty (lastid))
@@ -536,61 +546,79 @@ for k = first:nmat
         resid = norm (A*x-b,1) / anorm ;
         fprintf ('A\\b  resid %8.2e time: %10.2f sec\n', resid, t_backslash) ;
 
-        % default options:
+        % try the UMFPACK mexFunction with default options
+        t1 = tic ;
+        [x, stats] = umfpack (A, '\', b) ;
+        t_umfpack = toc (t1) ;
+        resid = norm (A*x-b,1) / anorm ;
+        fprintf ('UMF  resid %8.2e time: %10.2f sec               ', ...
+            resid, t_umfpack) ;
+        fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
+            stats.analysis_time, stats.factorization_time, stats.solve_time) ;
+        speedup = t_backslash / t_umfpack ;
+        if (speedup > 1)
+            fprintf ('speedup: %8.2f', speedup) ;
+        else
+            fprintf ('       : %8.2f', speedup) ;
+        end
+        fprintf (' ordering: %s\n', stats.ordering_used) ;
+
+        % try the ParU mexFunction with default options:
         % ordering: AMD for symmetric strategy, COLAMD for unsymmetric
         t2 = tic ;
-        [x2, stats] = paru (A,b) ;
+        [x, stats] = paru (A,b) ;
         t_paru = toc (t2) ;
-        resid2 = norm (A*x2-b,1) / anorm ;
+        resid = norm (A*x-b,1) / anorm ;
         fprintf ('ParU resid %8.2e time: %10.2f sec (AMD/COLAMD)  ', ...
-            resid2, t_paru) ;
+            resid, t_paru) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
-            stats.analysis_time, stats.factorize_time, stats.solve_time) ;
+            stats.analysis_time, stats.factorization_time, stats.solve_time) ;
         speedup = t_backslash / t_paru ;
         if (speedup > 1)
             fprintf ('speedup: %8.2f', speedup) ;
         else
             fprintf ('       : %8.2f', speedup) ;
         end
-        fprintf (' ordering: %s\n', stats.ordering) ;
+        fprintf (' ordering: %s\n', stats.ordering_used) ;
 
-        % ordering: METIS_guard
+        % try the ParU mexFunction with ordering: METIS_guard
         t2 = tic ;
-        [x2, stats] = paru (A,b,opts_metis_guard) ;
+        [x, stats] = paru (A,b,opts_metis_guard) ;
         t_paru = toc (t2) ;
-        resid2 = norm (A*x2-b,1) / anorm ;
+        resid = norm (A*x-b,1) / anorm ;
         fprintf ('ParU resid %8.2e time: %10.2f sec (METIS_guard) ', ...
-            resid2, t_paru) ;
+            resid, t_paru) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
-            stats.analysis_time, stats.factorize_time, stats.solve_time) ;
+            stats.analysis_time, stats.factorization_time, stats.solve_time) ;
         speedup = t_backslash / t_paru ;
         if (speedup > 1)
             fprintf ('speedup: %8.2f', speedup) ;
         else
             fprintf ('       : %8.2f', speedup) ;
         end
-        fprintf (' ordering: %s\n', stats.ordering) ;
+        fprintf (' ordering: %s\n', stats.ordering_used) ;
 
+        % try the ParU mexFunction with ordering: METIS
         % ordering: METIS; usually slower overall when considering x=A\b, but
         % can result in faster numeric factorization time, particularly for
         % large matrices that represent a 2D or 3D mesh.
         do_metis = (~any (skip_metis == id)) ;
         if (do_metis)
             t2 = tic ;
-            [x2, stats] = paru (A,b,opts_metis) ;
+            [x, stats] = paru (A,b,opts_metis) ;
             t_paru = toc (t2) ;
-            resid2 = norm (A*x2-b,1) / anorm ;
+            resid = norm (A*x-b,1) / anorm ;
             fprintf ('ParU resid %8.2e time: %10.2f sec (METIS)       ', ...
-                resid2, t_paru) ;
+                resid, t_paru) ;
             fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
-                stats.analysis_time, stats.factorize_time, stats.solve_time) ;
+                stats.analysis_time, stats.factorization_time, stats.solve_time) ;
             speedup = t_backslash / t_paru ;
             if (speedup > 1)
                 fprintf ('speedup: %8.2f', speedup) ;
             else
                 fprintf ('       : %8.2f', speedup) ;
             end
-            fprintf (' ordering: %s\n', stats.ordering) ;
+            fprintf (' ordering: %s\n', stats.ordering_used) ;
         else
             fprintf ('ParU (METIS) skipped\n') ;
         end
@@ -603,5 +631,4 @@ for k = first:nmat
 
     end
 end
-
 
