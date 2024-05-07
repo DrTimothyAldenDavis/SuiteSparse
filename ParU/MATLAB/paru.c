@@ -383,11 +383,11 @@ void mexFunction
             // These cases cannot occur.  Some of them can be specified on
             // input, with opts.ordering, but they are ordering strategies
             // that select amd, colamd, or metis.
-            case PARU_ORDERING_GIVEN:
-            case PARU_ORDERING_BEST:
-            case PARU_ORDERING_USER:
-            case PARU_ORDERING_METIS_GUARD:
             case PARU_ORDERING_CHOLMOD:
+            case PARU_ORDERING_BEST:
+            case PARU_ORDERING_METIS_GUARD:
+            case UMFPACK_ORDERING_GIVEN:
+            case UMFPACK_ORDERING_USER:
             default:
                 ordering = "undefined" ;
                 break ;
