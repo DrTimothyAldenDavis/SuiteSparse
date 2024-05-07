@@ -67,16 +67,16 @@ ParU_Info ParU_Get
             (*result) = Sym->cs1 ;
             break ;
 
-        case PARU_GET_PARU_STRATEGY:
-            (*result) = (int64_t) Sym->paru_strategy ;
+        case PARU_GET_STRATEGY:
+            (*result) = (int64_t) Sym->strategy_used ;
             break ;
 
         case PARU_GET_UMFPACK_STRATEGY:
             (*result) = (int64_t) Sym->umfpack_strategy ;
             break ;
 
-        case PARU_GET_UMFPACK_ORDERING:
-            (*result) = (int64_t) Sym->umfpack_ordering ;
+        case PARU_GET_ORDERING:
+            (*result) = (int64_t) Sym->ordering_used ;
             break ;
 
         case PARU_GET_LNZ:
@@ -255,7 +255,7 @@ ParU_Info ParU_Get
 
         case PARU_CONTROL_STRATEGY:               // ParU strategy
             (*c) = (Control == NULL) ? PARU_DEFAULT_STRATEGY :
-                Control->paru_strategy ;
+                Control->strategy ;
             break ;
 
         case PARU_CONTROL_UMFPACK_STRATEGY:       // UMFPACK strategy
@@ -263,9 +263,9 @@ ParU_Info ParU_Get
                 Control->umfpack_strategy ;
             break ;
 
-        case PARU_CONTROL_ORDERING:               // UMFPACK ordering
+        case PARU_CONTROL_ORDERING:               // ParU ordering
             (*c) = (Control == NULL) ? PARU_DEFAULT_ORDERING :
-                Control->umfpack_ordering ;
+                Control->ordering ;
             break ;
 
         case PARU_CONTROL_RELAXED_AMALGAMATION:   // goal # pivots in each front

@@ -137,7 +137,7 @@ ParU_Info paru_init_rowFronts
             return (PARU_OUT_OF_MEMORY) ;
         }
 
-        if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC)
+        if (Sym->strategy_used == PARU_STRATEGY_SYMMETRIC)
         {
             Diag_map = Work->Diag_map = PARU_MALLOC (Sym->n, int64_t);
             inv_Diag_map = Work->inv_Diag_map = PARU_MALLOC (Sym->n, int64_t);

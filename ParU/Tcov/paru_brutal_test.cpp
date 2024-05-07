@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     TEST_ASSERT (info == PARU_INVALID) ;
     BRUTAL_ALLOC_TEST (info, ParU_InitControl (&Control)) ;
     TEST_ASSERT (info == PARU_SUCCESS) ;
-    ParU_Set (PARU_CONTROL_ORDERING, UMFPACK_ORDERING_AMD, Control) ;
+    ParU_Set (PARU_CONTROL_ORDERING, PARU_ORDERING_AMD, Control) ;
 
     // A = mread (stdin) ; read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);

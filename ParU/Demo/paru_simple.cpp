@@ -23,6 +23,7 @@
     if (x != NULL) free(x);                     \
     ParU_FreeNumeric(&Num, Control);            \
     ParU_FreeSymbolic(&Sym, Control);           \
+    ParU_FreeControl(&Control);                 \
     cholmod_l_free_sparse(&A, cc);              \
     cholmod_l_finish(cc);                       \
     return (info) ;                             \

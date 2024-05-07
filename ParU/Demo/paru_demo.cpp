@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 
     double my_start_time = SuiteSparse_time ();
 
-    ParU_Set (PARU_CONTROL_ORDERING, UMFPACK_ORDERING_METIS_GUARD, Control) ;
+    ParU_Set (PARU_CONTROL_ORDERING, PARU_ORDERING_METIS_GUARD, Control) ;
 
     std::cout << "\n--------- ParU_Analyze:\n";
     info = ParU_Analyze(A, &Sym, Control);

@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     ParU_Info info;
     info = ParU_C_InitControl(&Control);  // initialize the Control in C
 
-    ParU_C_Set_INT64 (PARU_CONTROL_ORDERING, UMFPACK_ORDERING_METIS_GUARD,
+    ParU_C_Set_INT64 (PARU_CONTROL_ORDERING, PARU_ORDERING_METIS_GUARD,
         Control) ;
     printf ("\n--------- ParU_C_Analyze:\n") ;
     info = ParU_C_Analyze(A, &Sym, Control);

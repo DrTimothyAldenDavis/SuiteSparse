@@ -97,9 +97,9 @@ struct ParU_Symbolic_struct
     // non-empty rows of S, and Sleft [n+1] == m.  That is, Sleft [n]
     // ... Sleft [n+1]-1 gives the empty rows of S, if any.
 
-    int32_t paru_strategy;      // ParU strategy used (symmetric or unsymmetric)
+    int32_t strategy_used ;     // ParU strategy used (symmetric or unsymmetric)
     int32_t umfpack_strategy ;  // UMFPACK strategy used (sym. or unsym.)
-    int32_t umfpack_ordering ;  // UMFPACK ordering used
+    int32_t ordering_used ;     // UMFPACK ordering used
     int32_t unused ;            // future expansion
 
     // -------------------------------------------------------------------------
@@ -267,11 +267,11 @@ struct ParU_Control_struct
                                 // absolute value in its row.
 
     // Symbolic analysis parameters:
-    int64_t umfpack_ordering ;
-    int64_t umfpack_strategy ;
+    int64_t strategy ;          // ParU strategy to use
+    int64_t ordering ;          // ParU ordering to use
+    int64_t umfpack_strategy ;  // UMFPACK strategy to use
     int64_t relaxed_amalgamation ;  // symbolic analysis tries to ensure
         // that each front have more pivot columns than this threshold
-    int64_t paru_strategy ;
     int64_t filter_singletons ; // filter singletons if nonzero
 
     // For all phases of ParU:

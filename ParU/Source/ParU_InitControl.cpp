@@ -37,9 +37,9 @@ ParU_Info ParU_InitControl
 
     // set the defaults for all Control parameters
     Control->paru_max_threads       = PARU_DEFAULT_MAX_THREADS ;
-    Control->paru_strategy          = PARU_DEFAULT_STRATEGY ;
+    Control->strategy               = PARU_DEFAULT_STRATEGY ;
     Control->umfpack_strategy       = PARU_DEFAULT_UMFPACK_STRATEGY ;
-    Control->umfpack_ordering       = PARU_DEFAULT_ORDERING ;
+    Control->ordering               = PARU_DEFAULT_ORDERING ;
     Control->relaxed_amalgamation   = PARU_DEFAULT_RELAXED_AMALGAMATION ;
     Control->panel_width            = PARU_DEFAULT_PANEL_WIDTH ;
     Control->trivial                = PARU_DEFAULT_DGEMM_TINY ;

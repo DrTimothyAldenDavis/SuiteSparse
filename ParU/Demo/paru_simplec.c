@@ -19,6 +19,7 @@
     if (x != NULL) free(x);                     \
     ParU_C_FreeNumeric(&Num, Control);          \
     ParU_C_FreeSymbolic(&Sym, Control);         \
+    ParU_C_FreeControl(&Control);               \
     cholmod_l_free_sparse(&A, cc);              \
     cholmod_l_finish(cc);                       \
     return (info) ;                             \
@@ -81,9 +82,8 @@ int main(int argc, char **argv)
     double rcond ;
     OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, Control),
         "rcond") ;
-    printf( "Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e, "
-        " and rcond is %.2e.\n",
-        rresid, anorm, xnorm, rcond);
+    printf("Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e, "
+        " and rcond is %.2e.\n", rresid, anorm, xnorm, rcond);
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     FREE_ALL_AND_RETURN (PARU_SUCCESS) ;

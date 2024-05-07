@@ -98,9 +98,9 @@ typedef enum
     PARU_GET_UNZ = 3,               // # of entries in U
     PARU_GET_NROW_SINGLETONS = 4,   // # of row singletons
     PARU_GET_NCOL_SINGLETONS = 5,   // # of column singletons
-    PARU_GET_PARU_STRATEGY = 6,     // strategy used by ParU
+    PARU_GET_STRATEGY = 6,          // strategy used by ParU
     PARU_GET_UMFPACK_STRATEGY = 7,  // strategy used by UMFPACK
-    PARU_GET_UMFPACK_ORDERING = 8,  // ordering used by UMFPACK
+    PARU_GET_ORDERING = 8,          // ordering used by UMFPACK
 
     // int64_t arrays of size n:
     PARU_GET_P = 101,               // partial pivoting row ordering
@@ -143,11 +143,32 @@ typedef enum
 }
 ParU_Control_enum ;
 
+// ordering options available to ParU:
+#define PARU_ORDERING_CHOLMOD UMFPACK_ORDERING_CHOLMOD
+#define PARU_ORDERING_AMD     UMFPACK_ORDERING_AMD
+#define PARU_ORDERING_METIS   UMFPACK_ORDERING_METIS
+#define PARU_ORDERING_BEST    UMFPACK_ORDERING_BEST
+#define PARU_ORDERING_NONE    UMFPACK_ORDERING_NONE
+#define PARU_ORDERING_METIS_GUARD UMFPACK_ORDERING_METIS_GUARD
+
+    // ordering options described:
+    // PARU_ORDERING_CHOLMOD: use CHOLMOD (AMD/COLAMD then METIS, see below)
+    // PARU_ORDERING_AMD: use AMD on A+A' (symmetric strategy) or COLAMD
+    //      (unsymmetric strategy)
+    // PARU_ORDERING_METIS: use METIS on A+A' (symmetric strategy) or A'A
+    //      (unsymmetric strategy)
+    // PARU_ORDERING_BEST: try many orderings, pick best
+    // PARU_ORDERING_NONE: natural ordering
+    // PARU_ORDERING_METIS_GUARD: use METIS, AMD, or COLAMD.  Symmetric
+    // strategy: always use METIS on A+A'.  Unsymmetric strategy: use METIS on
+    // A'A, unless A has one or more very dense rows.  In that case, A'A is
+    // very costly to form, and COLAMD is used instead of METIS.
+
 // default values of Control parameters
 #define PARU_DEFAULT_MAX_THREADS            (0) /* get default from OpenMP */
 #define PARU_DEFAULT_STRATEGY               PARU_STRATEGY_AUTO
 #define PARU_DEFAULT_UMFPACK_STRATEGY       UMFPACK_STRATEGY_AUTO
-#define PARU_DEFAULT_ORDERING               UMFPACK_ORDERING_METIS_GUARD
+#define PARU_DEFAULT_ORDERING               PARU_ORDERING_METIS_GUARD
 #define PARU_DEFAULT_RELAXED_AMALGAMATION   (32)
 #define PARU_DEFAULT_PANEL_WIDTH            (32)
 #define PARU_DEFAULT_DGEMM_TINY             (4)
@@ -647,41 +668,12 @@ ParU_Info ParU_C_Factorize
 //--------------------- Solve routines -----------------------------------------
 //------------------------------------------------------------------------------
 
-// In all the solve routines Num structure must come with the same Sym struct
-// that comes from ParU_Factorize
-
 // x = A\x, where right-hand side is overwritten with the solution x.
-ParU_Info ParU_C_Solve_Axx
+ParU_Info ParU_C_Solve_Axx       // solve Ax=b, overwriting b with solution x
 (
     // input:
-    const ParU_C_Symbolic Sym_C,  // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
-    // input/output:
-    double *x,              // vector of size n-by-1; right-hand on input,
-                            // solution on output
-    // control:
-    ParU_C_Control Control_C
-) ;
-
-// x = L\x, where right-hand side is overwritten with the solution x.
-ParU_Info ParU_C_Solve_Lxx
-(
-    // input:
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
-    // input/output:
-    double *x,              // vector of size n-by-1; right-hand on input,
-                            // solution on output
-    // control:
-    ParU_C_Control Control_C
-) ;
-
-// x = U\x, where right-hand side is overwritten with the solution x.
-ParU_Info ParU_C_Solve_Uxx
-(
-    // input:
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     // input/output:
     double *x,              // vector of size n-by-1; right-hand on input,
                             // solution on output
@@ -690,11 +682,11 @@ ParU_Info ParU_C_Solve_Uxx
 ) ;
 
 // x = A\b, for vectors x and b
-ParU_Info ParU_C_Solve_Axb
+ParU_Info ParU_C_Solve_Axb        // solve Ax=b
 (
     // input:
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     double *b,              // vector of size n-by-1
     // output
     double *x,              // vector of size n-by-1
@@ -703,39 +695,11 @@ ParU_Info ParU_C_Solve_Axb
 ) ;
 
 // X = A\X, where right-hand side is overwritten with the solution X.
-ParU_Info ParU_C_Solve_AXX
+ParU_Info ParU_C_Solve_AXX       // solve AX=B, overwriting B with solution X
 (
     // input
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
-    int64_t nrhs,
-    // input/output:
-    double *X,              // array of size n-by-nrhs in column-major storage,
-                            // right-hand-side on input, solution on output.
-    // control:
-    ParU_C_Control Control_C
-) ;
-
-// X = L\X, where right-hand side is overwritten with the solution X.
-ParU_Info ParU_C_Solve_LXX
-(
-    // input
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
-    int64_t nrhs,
-    // input/output:
-    double *X,              // array of size n-by-nrhs in column-major storage,
-                            // right-hand-side on input, solution on output.
-    // control:
-    ParU_C_Control Control_C
-) ;
-
-// X = U\X, where right-hand side is overwritten with the solution X.
-ParU_Info ParU_C_Solve_UXX
-(
-    // input
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     // input/output:
     double *X,              // array of size n-by-nrhs in column-major storage,
@@ -745,15 +709,69 @@ ParU_Info ParU_C_Solve_UXX
 ) ;
 
 // X = A\B, for matrices X and B
-ParU_Info ParU_C_Solve_AXB
+ParU_Info ParU_C_Solve_AXB       // solve AX=B, overwriting B with solution X
 (
     // input
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     double *B,              // array of size n-by-nrhs in column-major storage
     // output:
     double *X,              // array of size n-by-nrhs in column-major storage
+    // control:
+    ParU_C_Control Control_C
+) ;
+
+// x = L\x, where right-hand side is overwritten with the solution x.
+ParU_Info ParU_C_Solve_Lxx       // solve Lx=b, overwriting b with solution x
+(
+    // input:
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+    // input/output:
+    double *x,              // vector of size n-by-1; right-hand on input,
+                            // solution on output
+    // control:
+    ParU_C_Control Control_C
+) ;
+
+// X = L\X, where right-hand side is overwritten with the solution X.
+ParU_Info ParU_C_Solve_LXX       // solve LX=B, overwriting B with solution X
+(
+    // input
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+    int64_t nrhs,
+    // input/output:
+    double *X,              // array of size n-by-nrhs in column-major storage,
+                            // right-hand-side on input, solution on output.
+    // control:
+    ParU_C_Control Control_C
+) ;
+
+// x = U\x, where right-hand side is overwritten with the solution x.
+ParU_Info ParU_C_Solve_Uxx       // solve Ux=b, overwriting b with solution x
+(
+    // input:
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+    // input/output:
+    double *x,              // vector of size n-by-1; right-hand on input,
+                            // solution on output
+    // control:
+    ParU_C_Control Control_C
+) ;
+
+// X = U\X, where right-hand side is overwritten with the solution X.
+ParU_Info ParU_C_Solve_UXX       // solve UX=B, overwriting B with solution X
+(
+    // input
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+    int64_t nrhs,
+    // input/output:
+    double *X,              // array of size n-by-nrhs in column-major storage,
+                            // right-hand-side on input, solution on output.
     // control:
     ParU_C_Control Control_C
 ) ;
@@ -862,11 +880,11 @@ ParU_Info ParU_C_Residual_BAX
 ParU_Info ParU_C_Get_INT64
 (
     // input:
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
-    ParU_Get_enum field,        // field to get
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+    ParU_Get_enum field,         // field to get
     // output:
-    int64_t *result,            // int64_t result: a scalar or an array
+    int64_t *result,             // int64_t result: a scalar or an array
     // control:
     ParU_C_Control Control_C
 ) ;
@@ -874,11 +892,11 @@ ParU_Info ParU_C_Get_INT64
 ParU_Info ParU_C_Get_FP64
 (
     // input:
-    const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_C_Analyze
-    const ParU_C_Numeric Num_C,   // numeric factorization from ParU_C_Factorize
-    ParU_Get_enum field,        // field to get
+    const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+    const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+    ParU_Get_enum field,         // field to get
     // output:
-    double *result,            // double result: a scalar or an array
+    double *result,              // double result: a scalar or an array
     // control:
     ParU_C_Control Control_C
 ) ;

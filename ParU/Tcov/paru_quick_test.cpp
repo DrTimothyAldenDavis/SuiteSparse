@@ -55,28 +55,11 @@ int main(int argc, char **argv)
     }
 
     // ordering to use
-    int umfpack_ordering = UMFPACK_ORDERING_AMD ;
+    int ordering = PARU_ORDERING_AMD ;
     if (argc > 2)
     {
-
-#if 0
-/* Control [UMFPACK_ORDERING] and Info [UMFPACK_ORDERING_USED] are one of: */
-#define UMFPACK_ORDERING_CHOLMOD 0      /* use CHOLMOD (AMD/COLAMD then METIS)*/
-#define UMFPACK_ORDERING_AMD 1          /* use AMD/COLAMD */
-#define UMFPACK_ORDERING_GIVEN 2        /* user-provided Qinit */
-#define UMFPACK_ORDERING_METIS 3        /* use METIS */
-#define UMFPACK_ORDERING_BEST 4         /* try many orderings, pick best */
-#define UMFPACK_ORDERING_NONE 5         /* natural ordering */
-#define UMFPACK_ORDERING_USER 6         /* user-provided function */
-#define UMFPACK_ORDERING_METIS_GUARD 7  // Use METIS, AMD, or COLAMD.
-    // Symmetric strategy: always use METIS on A+A'.  Unsymmetric strategy: use
-    // METIS on A'A, unless A has one or more very dense rows.  In that case,
-    // A'A is very costly to form.  In this case, COLAMD is used instead of
-    // METIS.
-#endif
-
-        umfpack_ordering = (int) atoi (argv [2]) ;
-        printf ("umfpack ordering to use: %d\n", umfpack_ordering) ;
+        ordering = (int) atoi (argv [2]) ;
+        printf ("umfpack ordering to use: %d\n", ordering) ;
     }
 
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
@@ -91,7 +74,7 @@ int main(int argc, char **argv)
 
     // puting Control lines to work
     ParU_Set (PARU_CONTROL_MEM_CHUNK, 1024, Control) ;
-    ParU_Set (PARU_CONTROL_ORDERING, umfpack_ordering, Control) ;
+    ParU_Set (PARU_CONTROL_ORDERING, ordering, Control) ;
     ParU_Set (PARU_CONTROL_MAX_THREADS, 4, Control) ;
     ParU_Set (PARU_CONTROL_STRATEGY, PARU_STRATEGY_SYMMETRIC, Control) ;
 
@@ -191,7 +174,7 @@ int main(int argc, char **argv)
     const char *blas_library, *tasking ;
     double resid = 0, anorm = 0 , xnorm = 0, rcond,
         min_udiag, max_udiag, flops ;
-    int64_t n, anz, rs1, cs1, paru_strategy, umfpack_strategy,
+    int64_t n, anz, rs1, cs1, strategy, umfpack_strategy,
         umf_ordering, lnz, unz, gunk ;
 
     info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, &blas_library, Control) ;
@@ -234,16 +217,14 @@ int main(int argc, char **argv)
     info = ParU_Get (Sym, Num, PARU_GET_NCOL_SINGLETONS, &cs1, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_PARU_STRATEGY, &paru_strategy,
-        Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_STRATEGY, &strategy, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_UMFPACK_STRATEGY, &umfpack_strategy,
         Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_UMFPACK_ORDERING, &umf_ordering,
-        Control) ;
+    info = ParU_Get (Sym, Num, PARU_GET_ORDERING, &umf_ordering, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_LNZ, &lnz, Control) ;
@@ -254,7 +235,7 @@ int main(int argc, char **argv)
 
 //  printf ("n: %ld anz: %ld rs1: %ld cs1: %ld \n"
 //      "paru strategy: %ld umfpack_strategy: %ld umfpack_odering: %ld\n"
-//      "lnz: %ld unz: %ld\n", n, anz, rs1, cs1, paru_strategy,
+//      "lnz: %ld unz: %ld\n", n, anz, rs1, cs1, strategy,
 //      umfpack_strategy, umf_ordering, lnz, unz) ;
 
     Q = (int64_t *) malloc (n * sizeof (int64_t)) ;
@@ -635,23 +616,23 @@ int main(int argc, char **argv)
 
     c = -1 ;
     info = ParU_Set (PARU_CONTROL_ORDERING,
-        UMFPACK_ORDERING_CHOLMOD, Control) ;
+        PARU_ORDERING_CHOLMOD, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     c = -1 ;
     info = ParU_Get (PARU_CONTROL_ORDERING, &c, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    TEST_ASSERT (c == UMFPACK_ORDERING_CHOLMOD) ;
+    TEST_ASSERT (c == PARU_ORDERING_CHOLMOD) ;
 
     c = -1 ;
     info = ParU_Set (PARU_CONTROL_ORDERING,
-        UMFPACK_ORDERING_BEST, Control) ;
+        PARU_ORDERING_BEST, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     c = -1 ;
     info = ParU_Get (PARU_CONTROL_ORDERING, &c, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    TEST_ASSERT (c == UMFPACK_ORDERING_BEST) ;
+    TEST_ASSERT (c == PARU_ORDERING_BEST) ;
 
     c = -1 ;
     info = ParU_Get (PARU_CONTROL_RELAXED_AMALGAMATION, &c, Control) ;

@@ -50,7 +50,7 @@ ParU_Info ParU_Set
             break ;
 
         case PARU_CONTROL_STRATEGY:               // ParU strategy
-            Control->paru_strategy =
+            Control->strategy =
                 (c == PARU_STRATEGY_AUTO ||
                  c == PARU_STRATEGY_UNSYMMETRIC ||
                  c == PARU_STRATEGY_SYMMETRIC) ? c : PARU_DEFAULT_STRATEGY ;
@@ -64,14 +64,14 @@ ParU_Info ParU_Set
                  PARU_DEFAULT_UMFPACK_STRATEGY ;
             break ;
 
-        case PARU_CONTROL_ORDERING:               // UMFPACK ordering
-            Control->umfpack_ordering =
-                (c == UMFPACK_ORDERING_AMD ||
-                 c == UMFPACK_ORDERING_METIS ||
-                 c == UMFPACK_ORDERING_METIS_GUARD ||
-                 c == UMFPACK_ORDERING_CHOLMOD ||
-                 c == UMFPACK_ORDERING_BEST ||
-                 c == UMFPACK_ORDERING_NONE) ? c : PARU_DEFAULT_ORDERING ;
+        case PARU_CONTROL_ORDERING:               // ParU ordering, via UMFPACK
+            Control->ordering =
+                (c == PARU_ORDERING_AMD ||
+                 c == PARU_ORDERING_METIS ||
+                 c == PARU_ORDERING_METIS_GUARD ||
+                 c == PARU_ORDERING_CHOLMOD ||
+                 c == PARU_ORDERING_BEST ||
+                 c == PARU_ORDERING_NONE) ? c : PARU_DEFAULT_ORDERING ;
             break ;
 
         case PARU_CONTROL_RELAXED_AMALGAMATION:   // goal # pivots in each front

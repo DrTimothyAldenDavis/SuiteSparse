@@ -143,7 +143,7 @@ void mexFunction
 
     // change the default ordering to AMD/COLAMD
     PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
-        UMFPACK_ORDERING_AMD, Control), "opts failed") ;
+        PARU_ORDERING_AMD, Control), "opts failed") ;
 
     // get the opts
     if (nargin == 3)
@@ -220,27 +220,27 @@ void mexFunction
                 if (strncmp (option, "amd", STRLEN) == 0)
                 {
                     PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
-                        UMFPACK_ORDERING_AMD, Control), "opts failed") ;
+                        PARU_ORDERING_AMD, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "cholmod", STRLEN) == 0)
                 {
                     PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
-                        UMFPACK_ORDERING_CHOLMOD, Control), "opts failed") ;
+                        PARU_ORDERING_CHOLMOD, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "metis", STRLEN) == 0)
                 {
                     PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
-                        UMFPACK_ORDERING_METIS, Control), "opts failed") ;
+                        PARU_ORDERING_METIS, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "metis_guard", STRLEN) == 0)
                 {
                     PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
-                        UMFPACK_ORDERING_METIS_GUARD, Control), "opts failed") ;
+                        PARU_ORDERING_METIS_GUARD, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "none", STRLEN) == 0)
                 {
                     PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
-                        UMFPACK_ORDERING_NONE, Control), "opts failed") ;
+                        PARU_ORDERING_NONE, Control), "opts failed") ;
                 }
                 else
                 {
@@ -304,13 +304,13 @@ void mexFunction
     }
 
     // get statistics from ParU
-    int64_t paru_strategy, umfpack_ordering, lnz, unz ;
+    int64_t strategy_used, ordering_used, lnz, unz ;
     double rcond, flops ;
     const char *blas_name, *front_tree_tasking ;
-    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_PARU_STRATEGY,
-        &paru_strategy, Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_UMFPACK_ORDERING,
-        &umfpack_ordering, Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_STRATEGY,
+        &strategy_used, Control), "stats failed") ;
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_ORDERING,
+        &ordering_used, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_FLOP_COUNT,
         &flops, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_LNZ,
@@ -360,34 +360,34 @@ void mexFunction
         mxSetFieldByNumber (pargout [1], 0, 2, mxCreateDoubleScalar (t [2])) ;
 
         // UMFPACK and ParU strategy:
-        bool symmetric = (paru_strategy == PARU_STRATEGY_SYMMETRIC) ;
+        bool symmetric = (strategy_used == PARU_STRATEGY_SYMMETRIC) ;
         mxSetFieldByNumber (pargout [1], 0, 3,
             mxCreateString (symmetric ? "symmetric" : "unsymmetric")) ;
 
-        // UMFPACK ordering used
+        // ordering used
         char *ordering ;
-        switch (umfpack_ordering)
+        switch (ordering_used)
         {
-            case UMFPACK_ORDERING_AMD:
+            case PARU_ORDERING_AMD:
                 ordering = symmetric ? "amd(A+A')" : "colamd(A)" ;
                 break ;
 
-            case UMFPACK_ORDERING_METIS:
+            case PARU_ORDERING_METIS:
                 ordering = symmetric ? "metis(A+A')" : "metis(A'*A)" ;
                 break ;
 
-            case UMFPACK_ORDERING_NONE:
+            case PARU_ORDERING_NONE:
                 ordering = "none" ;
                 break ;
 
             // These cases cannot occur.  Some of them can be specified on
             // input, with opts.ordering, but they are ordering strategies
             // that select amd, colamd, or metis.
-            case UMFPACK_ORDERING_GIVEN:
-            case UMFPACK_ORDERING_BEST:
-            case UMFPACK_ORDERING_USER:
-            case UMFPACK_ORDERING_METIS_GUARD:
-            case UMFPACK_ORDERING_CHOLMOD:
+            case PARU_ORDERING_GIVEN:
+            case PARU_ORDERING_BEST:
+            case PARU_ORDERING_USER:
+            case PARU_ORDERING_METIS_GUARD:
+            case PARU_ORDERING_CHOLMOD:
             default:
                 ordering = "undefined" ;
                 break ;

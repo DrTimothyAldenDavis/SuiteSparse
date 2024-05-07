@@ -25,7 +25,7 @@ function [x,stats] = paru (A,b,opts)    %#ok
 %
 %   opts.ordering:  fill-reducing ordering option, as a string (default: 'amd')
 %       'amd': AMD for the symmetric strategy, COLAMD for unsymmetric
-%       'cholmod: use CHOLMOD's ordering strategy: try AMD or COLAMD,
+%       'cholmod': use CHOLMOD's ordering strategy: try AMD or COLAMD,
 %           and then try METIS if the fill-in from AMD/COLAMD is high;
 %           then selects the best ordering found.
 %       'metis': METIS on A+A' for symmetric strategy, A'*A for unsymmetric
@@ -34,17 +34,17 @@ function [x,stats] = paru (A,b,opts)    %#ok
 %       'none': no fill-reducing ordering.
 %
 %   opts.prescale:  if true, pre-scale the input matrix (default: true).
-%       The prescaled matrix is R*A where R(i,i) = 1/(max(abs(A(i,:))).
+%       The prescaled matrix is R*A where R(i,i) = 1/max(abs(A(i,:))).
 %
 % stats: an optional output that provides information on the ParU
 % analysis and factorization of the matrix:
 %
 %   stats.analysis_time: symbolic analysis time in seconds
-%   stats.factorize_time: numeric factorization time in seconds
+%   stats.factorization_time: numeric factorization time in seconds
 %   stats.solve_time: forward/backward solve time in seconds
-%   stats.strategy: strategy used: symmetric or unsymmetric
-%   stats.ordering: ordering used: amd(A+A'), colamd(A), metis(A+A'),
-%       metis(A'*A), or none.
+%   stats.strategy_used: symmetric or unsymmetric
+%   stats.ordering_used: amd(A+A'), colamd(A), metis(A+A'), metis(A'*A), or
+%       none.
 %   stats.flops: flop count for LU factorization
 %   stats.lnz: # of entries in L
 %   stats.unz: # of entries in U

@@ -105,7 +105,7 @@ int main(int argc, char **argv)
     ParU_C_Version(ver, date);
 
     info = ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
-        UMFPACK_ORDERING_METIS_GUARD, Control) ;
+        PARU_ORDERING_METIS_GUARD, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     info = ParU_C_Set_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,

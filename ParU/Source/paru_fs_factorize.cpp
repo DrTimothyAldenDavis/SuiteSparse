@@ -121,7 +121,7 @@ bool paru_panel_factorize
 
         int64_t row_diag = (Diag_map) ? Diag_map[col1 + j + n1] - n1 : -1;
         double diag_val = maxval;  // initialization
-        int64_t diag_found = frowList[j] == row_diag ? j : -1;
+        int64_t diag_found = (frowList[j] == row_diag ? j : -1) ;
         PRLEVEL(1, ("%%curCol=" LD " row_diag=" LD "\n", j + col1 + n1, row_diag));
         PRLEVEL(1, ("%%##j=" LD " value= %2.4lf\n", j, F[j * m + j]));
 
@@ -162,7 +162,7 @@ bool paru_panel_factorize
         int64_t row_piv = row_max;
         int64_t chose_diag = 0;
 
-        if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC)
+        if (Sym->strategy_used == PARU_STRATEGY_SYMMETRIC)
         {
             if (diag_found != -1)
             {
@@ -220,7 +220,7 @@ bool paru_panel_factorize
             row_piv = row_sp;
         }
 
-        if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC && chose_diag == 0)
+        if (Sym->strategy_used == PARU_STRATEGY_SYMMETRIC && chose_diag == 0)
         {
             int64_t pivcol = col1 + j + n1;      // S col index + n1
             int64_t pivrow = frowList[row_piv];  // S row index

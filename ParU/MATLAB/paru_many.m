@@ -15,6 +15,8 @@ function paru_many
 % FIXME: save results to a *.mat file for further analysis,
 %   once stats.lnz, stats.unz, and stats.flops are added.
 
+addpath ('../../UMFPACK/MATLAB') ;
+
 % get all real square matrices in the SuiteSparse Collection,
 % that are not candidates for a Cholesky factorization.
 index = ssget ;
@@ -42,6 +44,10 @@ too_large = [
     2649
     2380
     1396
+    1397
+    1901
+    2847
+    2386
     ] ;
 
 % these matrices are singular or nearly so:
@@ -495,8 +501,8 @@ nmat = length (test_matrices) ;
 paru_demo
 
 % start with this matrix:
-% first = 1 ;
-first = find (test_matrices == 2830) ;
+first = 1 ;
+first = find (test_matrices == 2276) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
@@ -505,7 +511,7 @@ for k = first:nmat
         index.Group {id}, index.Name {id}, index.nnz (id)) ;
 end
 fprintf ('Hit enter to continue:\n') ;
-% pause
+pause
 fprintf ('\n') ;
 
 clear opts_metis

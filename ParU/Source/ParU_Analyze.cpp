@@ -97,17 +97,17 @@ ParU_Info ParU_Analyze
 
     // get Control
     int32_t nthreads = paru_nthreads (Control) ;
-    int64_t paru_strategy        = PARU_DEFAULT_STRATEGY ;
+    int64_t strategy             = PARU_DEFAULT_STRATEGY ;
     int64_t umfpack_strategy     = PARU_DEFAULT_UMFPACK_STRATEGY ;
-    int64_t umfpack_ordering     = PARU_DEFAULT_ORDERING ;
+    int64_t ordering             = PARU_DEFAULT_ORDERING ;
     int64_t relaxed_amalgamation = PARU_DEFAULT_STRATEGY ;
     int64_t filter_singletons    = PARU_DEFAULT_SINGLETONS ;
     size_t  mem_chunk            = PARU_DEFAULT_MEM_CHUNK ;
     if (Control != NULL)
     {
-        paru_strategy        = Control->paru_strategy ;
+        strategy             = Control->strategy ;
         umfpack_strategy     = Control->umfpack_strategy ;
-        umfpack_ordering     = Control->umfpack_ordering ;
+        ordering             = Control->ordering ;
         relaxed_amalgamation = Control->relaxed_amalgamation ;
         filter_singletons    = Control->filter_singletons ;
         mem_chunk            = Control->mem_chunk ;
@@ -347,23 +347,11 @@ ParU_Info ParU_Analyze
     /* ---------------------------------------------------------------------- */
 
     /* get the default control parameters */
-
-    // Here is where the pre-ordering strategy is being chosen. I need a nested
-    // dissection method here like metis:
-    //      umf_Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
-    //      However I am using the default for now; Page 40 UMFPACK_UserGuide
-    //      Page 22 UserGuide
     umfpack_dl_defaults(umf_Control);
-
     umf_Control[UMFPACK_SINGLETONS] = (double) filter_singletons ;
-    umf_Control[UMFPACK_ORDERING] = (double) umfpack_ordering ;
-    // umf_Control[UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS;
+    umf_Control[UMFPACK_ORDERING] = (double) ordering ;
     umf_Control[UMFPACK_FIXQ] = (double) -1;
     umf_Control[UMFPACK_STRATEGY] = (double) umfpack_strategy ;
-
-    // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_AUTO;
-    // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC;
-    // umf_Control[UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC;
     umf_Control[UMFPACK_STRATEGY_THRESH_SYM] = (double) 0.3;
 
 #ifndef NDEBUG
@@ -389,9 +377,6 @@ ParU_Info ParU_Analyze
     // translate UMFPACK status to Paru_Info
     ParU_Info info = paru_umfpack_info (status) ;
 
-//      umfpack_dl_report_info(umf_Control, umf_Info);
-//      umfpack_dl_report_status(umf_Control, status);
-
     if (status < 0)
     {
         // UMFPACK symbolic analysis failed
@@ -412,44 +397,36 @@ ParU_Info ParU_Analyze
     //--------------------------------------------------------------------------
 
     Sym->umfpack_strategy = umf_Info [UMFPACK_STRATEGY_USED] ;
-    Sym->umfpack_ordering = umf_Info [UMFPACK_ORDERING_USED] ;
+    Sym->ordering_used = umf_Info [UMFPACK_ORDERING_USED] ;
 
     //--------------------------------------------------------------------------
     // decide on the ParU strategy
     //--------------------------------------------------------------------------
 
-    if (paru_strategy == PARU_STRATEGY_AUTO)
+    if (strategy == PARU_STRATEGY_AUTO)
     {
         // ParU auto strategy: select the same strategy used by UMFPACK
-        Sym->paru_strategy = Sym->umfpack_strategy ;
+        Sym->strategy_used = Sym->umfpack_strategy ;
     }
     else
     {
-        Sym->paru_strategy = paru_strategy ;
+        Sym->strategy_used = strategy ;
     }
 
 #ifndef NDEBUG
     PR = 0;
-    if (Sym->umfpack_strategy == UMFPACK_STRATEGY_SYMMETRIC)
+    if (Sym->umfpack_strategy == PARU_STRATEGY_SYMMETRIC)
     {
         PRLEVEL(PR, ("\n%% umfpack_strategy used:  symmetric\n"));
-        if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
+        if (Sym->ordering_used == PARU_ORDERING_AMD)
         {
             PRLEVEL(PR, ("%% ordering used:  amd on A+A'\n"));
         }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
-        {
-            PRLEVEL(PR, ("%% ordering used: user perm.\n"));
-        }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
-        {
-            PRLEVEL(PR, ("%% ordering used:  user function\n"));
-        }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
+        else if (Sym->ordering_used == PARU_ORDERING_NONE)
         {
             PRLEVEL(PR, ("%% ordering used: none\n"));
         }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
+        else if (Sym->ordering_used == PARU_ORDERING_METIS)
         {
             PRLEVEL(PR, ("%% ordering used: metis on A+A'\n"));
         }
@@ -461,23 +438,15 @@ ParU_Info ParU_Analyze
     else
     {
         PRLEVEL(PR, ("\n%% umfpack_strategy used:unsymmetric\n"));
-        if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
+        if (Sym->ordering_used == PARU_ORDERING_AMD)
         {
             PRLEVEL(PR, ("%% ordering used: colamd on A\n"));
         }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
-        {
-            PRLEVEL(PR, ("%% ordering used: user perm.\n"));
-        }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
-        {
-            PRLEVEL(PR, ("%% ordering used: user function\n"));
-        }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
+        else if (Sym->ordering_used == PARU_ORDERING_NONE)
         {
             PRLEVEL(PR, ("%% ordering used: none\n"));
         }
-        else if (umf_Info[UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
+        else if (Sym->ordering_used == PARU_ORDERING_METIS)
         {
             PRLEVEL(PR, ("%% ordering used: metis on A'A\n"));
         }
@@ -486,7 +455,6 @@ ParU_Info ParU_Analyze
             PRLEVEL(PR, ("%% ordering used: not computed\n"));
         }
     }
-
     PR = -1;
     PRLEVEL(PR, ("\n%% Symbolic factorization of A: "));
     if (PR <= 0) (void)umfpack_dl_report_symbolic(Symbolic, umf_Control);
@@ -504,7 +472,7 @@ ParU_Info ParU_Analyze
     newParent = PARU_MALLOC (n + 1, int64_t);
     bool ok = true ;
 
-    if (Sym->paru_strategy == PARU_STRATEGY_SYMMETRIC)
+    if (Sym->strategy_used == PARU_STRATEGY_SYMMETRIC)
     {
         Diag_map = Sym_umf->Diagonal_map;
     }
@@ -605,8 +573,9 @@ ParU_Info ParU_Analyze
     for (int64_t i = 0; i < nfr; i++)
     {
         int64_t fnpiv = Front_npivcol[i];
-        PRLEVEL(PR, ("Front " LD ": parent front: " LD " number of pivot cols: " LD "\n",
-                     i, Front_parent[i], fnpiv));
+        PRLEVEL(PR, ("Front " LD ": parent front: " LD
+            " number of pivot cols: " LD "\n",
+            i, Front_parent[i], fnpiv));
         // PRLEVEL(PR, ("%% first row is " LD "\n", Front_1strow[i]));
 
         for (int64_t j = 0; j < fnpiv; j++)
@@ -910,20 +879,31 @@ ParU_Info ParU_Analyze
     }
 
     PRLEVEL(PR, ("Pivot cols=\n"));
-    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Front_npivcol[i]));
+    for (int64_t i = 0; i < nf + 1; i++)
+    {
+        PRLEVEL(PR, ("" LD " ", Front_npivcol[i]));
+    }
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Upper bound on Rows =\n"));
-    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Front_nrows[i]));
+    for (int64_t i = 0; i < nf + 1; i++)
+    {
+        PRLEVEL(PR, ("" LD " ", Front_nrows[i]));
+    }
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Upper bound on Cols=\n"));
-    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Front_ncols[i]));
+    for (int64_t i = 0; i < nf + 1; i++)
+    {
+        PRLEVEL(PR, ("" LD " ", Front_ncols[i]));
+    }
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("%%%% Super:\n"));
     if (nf > 0)
+    {
         for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  " LD "", Super[k]));
+    }
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("%%%% fmap:\n"));
@@ -961,11 +941,12 @@ ParU_Info ParU_Analyze
             {
                 p = Parent[p];
                 d++;
-                PRLEVEL(PR, ("%% Up Depth[" LD "]=" LD " d=" LD "\n", p, Depth[p], d));
+                PRLEVEL(PR, ("%% Up Depth[" LD "]=" LD " d=" LD "\n",
+                    p, Depth[p], d));
             }
             Depth[f] = d + Depth[p];  // depth is computed
-            PRLEVEL(PR, ("%% Depth[" LD "]=" LD " Depth[" LD "]=" LD "\n", p, Depth[p], f,
-                         Depth[f]));
+            PRLEVEL(PR, ("%% Depth[" LD "]=" LD " Depth[" LD "]=" LD "\n",
+                    p, Depth[p], f, Depth[f]));
             // updating ancestors
             d = Depth[f];
             p = Parent[f];
@@ -973,7 +954,8 @@ ParU_Info ParU_Analyze
             {
                 Depth[p] = --d;
                 p = Parent[p];
-                PRLEVEL(PR, ("%% down Depth[" LD "]=" LD " d=" LD "\n", p, Depth[p], d));
+                PRLEVEL(PR, ("%% down Depth[" LD "]=" LD " d=" LD "\n",
+                    p, Depth[p], d));
             }
         }
         PRLEVEL(PR, ("%% Postcompute Depth[" LD "]=" LD "\n", f, Depth[f]));
@@ -1045,7 +1027,10 @@ ParU_Info ParU_Analyze
     PRLEVEL(PR, ("%%%%-Chidlp-----"));
     if (Childp)
     {
-        for (int64_t f = 0; f < nf + 2; f++) PRLEVEL(PR, ("" LD " ", Childp[f]));
+        for (int64_t f = 0; f < nf + 2; f++)
+        {
+            PRLEVEL(PR, ("" LD " ", Childp[f]));
+        }
         PRLEVEL(PR, ("\n"));
     }
 #endif
@@ -1086,12 +1071,16 @@ ParU_Info ParU_Analyze
     {
         if (Parent[f] > 0) Child[cChildp[Parent[f]]++] = f;
     }
+
 #ifndef NDEBUG
     if (cChildp)
     {
         PR = 1;
         PRLEVEL(PR, ("%%%%_cChidlp_____"));
-        for (int64_t f = 0; f < nf + 2; f++) PRLEVEL(PR, ("" LD " ", cChildp[f]));
+        for (int64_t f = 0; f < nf + 2; f++)
+        {
+            PRLEVEL(PR, ("" LD " ", cChildp[f]));
+        }
         PRLEVEL(PR, ("\n"));
     }
 #endif
@@ -1229,8 +1218,10 @@ ParU_Info ParU_Analyze
                 // if (newcol-cs1 +1 == 0)
                 if (newcol < cs1)
                 {
-                    PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n", newrow, oldrow));
-                    PRLEVEL(PR, ("!!!! newcol=" LD " cs1=" LD "\n", newcol, cs1));
+                    PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n",
+                        newrow, oldrow));
+                    PRLEVEL(PR, ("!!!! newcol=" LD " cs1=" LD "\n",
+                        newcol, cs1));
                 }
                 ASSERT(newcol - cs1 + 1 != 0);
                 ASSERT(newcol >= cs1);
@@ -1251,7 +1242,10 @@ ParU_Info ParU_Analyze
     if (rs1 > 0)
     {
         PRLEVEL(PR, ("(" LD ") Slp =", slnz));
-        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
+        for (int64_t k = cs1; k <= n1; k++)
+        {
+            PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
+        }
         PRLEVEL(PR, ("\n"));
     }
 #endif
@@ -1264,8 +1258,8 @@ ParU_Info ParU_Analyze
             int64_t oldrow = Ai[p];
             int64_t newrow = Pinv[oldrow];
             int64_t srow = newrow - n1;
-            PRLEVEL(1, ("\tnewrow=" LD " oldrow=" LD " srow=" LD "\n", newrow, oldrow,
-                        srow));
+            PRLEVEL(1, ("\tnewrow=" LD " oldrow=" LD " srow=" LD "\n",
+                newrow, oldrow, srow));
             if (srow >= 0)
             {
                 // it is inside S otherwise it is part of singleton
@@ -1310,8 +1304,8 @@ ParU_Info ParU_Analyze
 
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("Sup and Slp finished (before cumsum)U-sing =" LD " L-sing=" LD "\n",
-                 sunz, slnz));
+    PRLEVEL(PR, ("Sup and Slp finished (before cumsum)U-sing =" LD
+        " L-sing=" LD "\n", sunz, slnz));
     if (cs1 > 0)
     {
         PRLEVEL(PR, ("(" LD ") Sup =", sunz));
@@ -1321,7 +1315,10 @@ ParU_Info ParU_Analyze
     if (rs1 > 0)
     {
         PRLEVEL(PR, ("(" LD ") Slp =", slnz));
-        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
+        for (int64_t k = cs1; k <= n1; k++)
+        {
+            PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
+        }
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -1346,8 +1343,8 @@ ParU_Info ParU_Analyze
         // That must not happen anyway if umfpack finds it
         PRLEVEL(1, ("ParU: Empty rows in submatrix\n"));
 #ifndef NDEBUG
-        PRLEVEL(1, ("m = " LD ", n1 = " LD ", rowcount = " LD ", snz = " LD "\n", m, n1,
-                    rowcount, snz));
+        PRLEVEL(1, ("m = " LD ", n1 = " LD ", rowcount = " LD ", snz = " LD
+            "\n", m, n1, rowcount, snz));
         for (int64_t srow = 0; srow < m - n1; srow++)
         {
             if (Sp[srow] == 0)
@@ -1434,7 +1431,10 @@ ParU_Info ParU_Analyze
             PRLEVEL(PR, ("" LD " ", Sup[k]));
             PRLEVEL(PR + 2, ("c" LD " ", cSup[k]));
             if (Sup[k] != cSup[k])
-                PRLEVEL(PR, ("Sup[" LD "] =" LD ", cSup=" LD "", k, Sup[k], cSup[k]));
+            {
+                PRLEVEL(PR, ("Sup[" LD "] =" LD ", cSup=" LD "",
+                    k, Sup[k], cSup[k]));
+            }
             ASSERT(Sup[k] == cSup[k]);
         }
         PRLEVEL(PR, ("\n"));
@@ -1447,8 +1447,10 @@ ParU_Info ParU_Analyze
             PRLEVEL(PR, ("" LD " ", Slp[k]));
             PRLEVEL(PR + 2, ("o" LD " ", cSlp[k]));
             if (Slp[k] != cSlp[k])
-                PRLEVEL(PR,
-                        ("\nSup[" LD "] =" LD ", cSup=" LD "\n", k, Slp[k], cSlp[k]));
+            {
+                PRLEVEL(PR, ("\nSup[" LD "] =" LD ", cSup=" LD "\n",
+                    k, Slp[k], cSlp[k]));
+            }
             ASSERT(Slp[k] == cSlp[k]);
         }
         PRLEVEL(PR, ("\n"));
@@ -1596,7 +1598,10 @@ ParU_Info ParU_Analyze
     if (rs1 > 0)
     {
         PRLEVEL(PR, ("L singleons(CSC) (nnz=" LD ") Slp =", slnz));
-        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
+        for (int64_t k = cs1; k <= n1; k++)
+        {
+            PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
+        }
         PRLEVEL(PR, ("\n"));
 
         for (int64_t newcol = cs1; newcol < n1; newcol++)
@@ -1638,7 +1643,7 @@ ParU_Info ParU_Analyze
         int64_t fp = Super[f + 1] - Super[f];
         PRLEVEL(PR, ("%% Front=" LD " Parent=" LD "\n", f, Parent[f]));
         PRLEVEL(PR, ("%% " LD "..." LD " npivotal=" LD "\n", col1, col2, fp));
-        PRLEVEL(PR, ("%% list of " LD " children: ", Childp[f + 1] - Childp[f]));
+        PRLEVEL(PR, ("%% list of " LD " children:", Childp[f + 1] - Childp[f]));
         for (int64_t i = Childp[f]; i <= Childp[f + 1] - 1; i++)
             PRLEVEL(PR, ("" LD " ", Child[i]));
         PRLEVEL(PR, ("\n"));
@@ -1703,7 +1708,7 @@ ParU_Info ParU_Analyze
         // computing works in each front
         int64_t fp = Super[f + 1] - Super[f];  // k
         int64_t fm = Sym->Fm[f];               // m
-        int64_t fn = Sym->Cm[f];               // n Upper bound number of cols of f
+        int64_t fn = Sym->Cm[f]; // fn: Upper bound number of cols of f
         front_flop_bound[f] = (double)(fp * fm * fn + fp * fm + fp * fn);
         stree_flop_bound[f] += front_flop_bound[f];
         for (int64_t i = Childp[f]; i <= Childp[f + 1] - 1; i++)
@@ -1744,8 +1749,8 @@ ParU_Info ParU_Analyze
         {
             ASSERT(aChildp[i + 1] == -1);
             aChildp[i + 1] = aChildp[i];
-            PRLEVEL(1, ("%% @i=" LD " aCp[" LD "]=" LD " aCp[" LD "]=" LD "", i, i + 1,
-                        aChildp[i + 1], i, aChildp[i]));
+            PRLEVEL(1, ("%% @i=" LD " aCp[" LD "]=" LD " aCp[" LD "]=" LD "",
+                i, i + 1, aChildp[i + 1], i, aChildp[i]));
         }
 
         for (int64_t i = Sleft[Super[f]]; i < Sleft[Super[f + 1]]; i++)
@@ -1765,8 +1770,8 @@ ParU_Info ParU_Analyze
         ASSERT(offset < ms + nf + 1);
         ASSERT(aChildp[offset] == -1);
         aChildp[offset] = aChildp[offset - 1] + numRow + numoforiginalChild;
-        PRLEVEL(
-            1, ("\n %% f=" LD " numoforiginalChild=" LD "\n", f, numoforiginalChild));
+        PRLEVEL( 1, ("\n %% f=" LD " numoforiginalChild=" LD "\n",
+            f, numoforiginalChild));
 
         if (Parent[f] == f + 1)
         {
@@ -1864,8 +1869,8 @@ ParU_Info ParU_Analyze
         {
             task_depth[t] = std::max(Depth[node], task_depth[t]);
             while (task_helper[rep] < 0) rep = Parent[rep];
-            PRLEVEL(1,
-                    ("After a while t=" LD " node=" LD " rep =" LD "\n", t, node, rep));
+            PRLEVEL(1, ("After a while t=" LD " node=" LD " rep =" LD
+                "\n", t, node, rep));
             task_parent[t] = task_helper[rep];
         }
     }
@@ -1905,10 +1910,16 @@ ParU_Info ParU_Analyze
         for (int64_t i = 0; i < nf; i++)
             PRLEVEL(PR, ("" LD ")" LD " ", i, task_helper[i]));
         PRLEVEL(PR, ("\n%% tasknodes map (" LD "):\n", ntasks));
-        for (int64_t i = 0; i <= ntasks; i++) PRLEVEL(PR, ("" LD " ", task_map[i]));
+        for (int64_t i = 0; i <= ntasks; i++)
+        {
+            PRLEVEL(PR, ("" LD " ", task_map[i]));
+        }
         PR = -1;
         PRLEVEL(PR, ("%% tasktree :\n"));
-        for (int64_t i = 0; i < ntasks; i++) PRLEVEL(PR, ("" LD " ", task_parent[i]));
+        for (int64_t i = 0; i < ntasks; i++)
+        {
+            PRLEVEL(PR, ("" LD " ", task_parent[i]));
+        }
         PRLEVEL(PR, ("\n"));
         PR = 1;
         PRLEVEL(PR, ("\n%% task_num_child:\n"));
@@ -1918,7 +1929,8 @@ ParU_Info ParU_Analyze
         PRLEVEL(PR, ("\n%% " LD " tasks:\n", ntasks));
         for (int64_t t = 0; t < ntasks; t++)
         {
-            PRLEVEL(PR, ("" LD "[" LD "-" LD "] ", t, task_map[t] + 1, task_map[t + 1]));
+            PRLEVEL(PR, ("" LD "[" LD "-" LD "] ",
+                t, task_map[t] + 1, task_map[t + 1]));
         }
         PRLEVEL(PR, ("\n%% task depth:\n"));
         for (int64_t t = 0; t < ntasks; t++)
@@ -1956,21 +1968,30 @@ ParU_Info ParU_Analyze
     if (aParent)
     {
         PRLEVEL(PR, ("%% aParent: "));
-        for (int64_t i = 0; i < ms + nf; i++) PRLEVEL(PR, ("" LD " ", aParent[i]));
+        for (int64_t i = 0; i < ms + nf; i++)
+        {
+            PRLEVEL(PR, ("" LD " ", aParent[i]));
+        }
         PRLEVEL(PR, ("%% \n"));
     }
 
     if (aChildp)
     {
         PRLEVEL(PR, ("%% aChildp: "));
-        for (int64_t i = 0; i < ms + nf + 2; i++) PRLEVEL(PR, ("" LD " ", aChildp[i]));
+        for (int64_t i = 0; i < ms + nf + 2; i++)
+        {
+            PRLEVEL(PR, ("" LD " ", aChildp[i]));
+        }
         PRLEVEL(PR, ("\n"));
     }
 
     if (aChild)
     {
         PRLEVEL(PR, ("%% aChild: "));
-        for (int64_t i = 0; i < ms + nf + 1; i++) PRLEVEL(PR, ("" LD " ", aChild[i]));
+        for (int64_t i = 0; i < ms + nf + 1; i++)
+        {
+            PRLEVEL(PR, ("" LD " ", aChild[i]));
+        }
         PRLEVEL(PR, ("\n"));
     }
 
@@ -2003,6 +2024,10 @@ ParU_Info ParU_Analyze
     PRLEVEL(PR, ("\n"));
 
 #endif
+
+    //--------------------------------------------------------------------------
+    // free workspace and return result
+    //--------------------------------------------------------------------------
 
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
