@@ -451,8 +451,14 @@ int main(int argc, char **argv)
         single thread each.
 
     \item \verb'PARU_CONTROL_PRESCALE': % prescale input matrix, or not
-        If zero, no scaling is performed.  If nonzero, each row is scaled by
+
+        \begin{itemize}
+        \item \verb'PARU_PRESCALE_MAX':  each row is scaled by
         the maximum absolute value in the row.
+        \item \verb'PARU_PRESCALE_SUM':  each row is scaled by
+        the sum of absolute values in the row.
+        \item \verb'PARU_PRESCALE_NONE': no scaling is performed.
+        \end{itemize}
 
     \item \verb'PARU_CONTROL_SINGLETONS': % filter singletons, or not
         If nonzero, singletons are permuted to the front of the matrix before
@@ -492,7 +498,7 @@ Default values of Control parameters are defined below:
     #define PARU_DEFAULT_DGEMM_TINY             (4)
     #define PARU_DEFAULT_DGEMM_TASKED           (512)
     #define PARU_DEFAULT_DTRSM_TASKED           (4096)
-    #define PARU_DEFAULT_PRESCALE               (1)
+    #define PARU_DEFAULT_PRESCALE               PARU_PRESCALE_MAX
     #define PARU_DEFAULT_SINGLETONS             (1)
     #define PARU_DEFAULT_MEM_CHUNK              (1024*1024)
     #define PARU_DEFAULT_PIVOT_TOLERANCE        (0.1)
@@ -531,7 +537,7 @@ the \verb'ParU_Control_enum' is used.  To query the other two objects
         PARU_CONTROL_DGEMM_TINY = 1007,           // dimension of tiny dgemm's
         PARU_CONTROL_DGEMM_TASKED = 1008,         // dimension of tasked dgemm's
         PARU_CONTROL_DTRSM_TASKED = 1009,         // dimension of tasked dtrsm's
-        PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix, or not
+        PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix
         PARU_CONTROL_SINGLETONS = 1011,           // filter singletons, or not
         PARU_CONTROL_MEM_CHUNK = 1012,            // chunk size of memset and memcpy
         // double parameters:
@@ -1620,9 +1626,18 @@ recognized is ignored, and missing fields are treated as their defaults:
 
         \end{itemize}
 
-    \item \verb'opts.prescale':  if true, pre-scale the input matrix (default:
-    true).  The prescaled matrix is $RA$ where
-    \verb'R(i,i) = 1/max(abs(A(i,:)))'.
+    \item \verb'opts.prescale': prescaling the input matrix
+        (default \verb"'max'").
+
+        \begin{itemize}
+        \item \verb"'none'": no prescaling.
+        \item \verb"'sum'": scale each row by the sum of the absolute values
+            of the row.  The prescaled matrix is $RA$ where
+            \verb'R(i,i) = 1/sum(abs(A(i,:)))'.
+        \item \verb"'max'": scale each row by the sum of the absolute values
+            of the row.  The prescaled matrix is $RA$ where
+            \verb'R(i,i) = 1/max(abs(A(i,:)))'.
+        \end{itemize}
 
 \end{itemize}
 

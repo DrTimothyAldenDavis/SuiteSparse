@@ -80,6 +80,7 @@ int main(int argc, char **argv)
 
     // read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
+    int64_t n = A->nrow ;
 
     if (mtype != CHOLMOD_SPARSE)
     {
@@ -150,6 +151,30 @@ int main(int argc, char **argv)
         TEST_PASSES ;
     }
 
+    // select the scaling
+    if (argc > 3)
+    {
+        int prescale = (int) atoi (argv [3]) ;
+        switch (prescale)
+        {
+            case 0:
+                info = ParU_Set (PARU_CONTROL_PRESCALE, PARU_PRESCALE_NONE,
+                    Control) ;
+                break ;
+            case 1:
+                info = ParU_Set (PARU_CONTROL_PRESCALE, PARU_PRESCALE_SUM,
+                    Control) ;
+                break ;
+            case 2:
+                info = ParU_Set (PARU_CONTROL_PRESCALE, PARU_PRESCALE_MAX,
+                    Control) ;
+                break ;
+            default:
+                break ;
+        }
+    }
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
     info = ParU_Factorize(nullptr, Sym, &Num, Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
@@ -169,13 +194,16 @@ int main(int argc, char **argv)
         TEST_PASSES ;
     }
 
+    // restore default scaling
+    info = ParU_Set (PARU_CONTROL_PRESCALE, PARU_DEFAULT_PRESCALE, Control) ;
+
     //~~~~~~~~~~~~~~~~~~~Test the results ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     const char *blas_library, *tasking ;
     double resid = 0, anorm = 0 , xnorm = 0, rcond,
         min_udiag, max_udiag, flops ;
-    int64_t n, anz, rs1, cs1, strategy, umfpack_strategy,
-        umf_ordering, lnz, unz, gunk ;
+    int64_t anz, rs1, cs1, strategy, umfpack_strategy, umf_ordering, lnz,
+        unz, gunk ;
 
     info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, &blas_library, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
@@ -740,13 +768,13 @@ int main(int argc, char **argv)
     TEST_ASSERT (c == PARU_DEFAULT_PRESCALE) ;
 
     c = -1 ;
-    info = ParU_Set (PARU_CONTROL_PRESCALE, 0, Control) ;
+    info = ParU_Set (PARU_CONTROL_PRESCALE, PARU_PRESCALE_NONE, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
     c = -1 ;
     info = ParU_Get (PARU_CONTROL_PRESCALE, &c, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
-    TEST_ASSERT (c == 0) ;
+    TEST_ASSERT (c == PARU_PRESCALE_NONE) ;
 
     c = -1 ;
     info = ParU_Get (PARU_CONTROL_SINGLETONS, &c, Control) ;

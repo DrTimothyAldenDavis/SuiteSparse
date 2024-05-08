@@ -134,7 +134,7 @@ typedef enum
     PARU_CONTROL_DGEMM_TINY = 1007,           // dimension of tiny dgemm's
     PARU_CONTROL_DGEMM_TASKED = 1008,         // dimension of tasked dgemm's
     PARU_CONTROL_DTRSM_TASKED = 1009,         // dimension of tasked dtrsm's
-    PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix, or not
+    PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix
     PARU_CONTROL_SINGLETONS = 1011,           // filter singletons, or not
     PARU_CONTROL_MEM_CHUNK = 1012,            // chunk size of memset and memcpy
     // double parameters:
@@ -150,6 +150,11 @@ ParU_Control_enum ;
 #define PARU_ORDERING_BEST    UMFPACK_ORDERING_BEST
 #define PARU_ORDERING_NONE    UMFPACK_ORDERING_NONE
 #define PARU_ORDERING_METIS_GUARD UMFPACK_ORDERING_METIS_GUARD
+
+// scaling options for ParU:
+#define PARU_PRESCALE_NONE 0
+#define PARU_PRESCALE_SUM 1
+#define PARU_PRESCALE_MAX 2
 
     // ordering options described:
     // PARU_ORDERING_CHOLMOD: use CHOLMOD (AMD/COLAMD then METIS, see below)
@@ -174,11 +179,13 @@ ParU_Control_enum ;
 #define PARU_DEFAULT_DGEMM_TINY             (4)
 #define PARU_DEFAULT_DGEMM_TASKED           (512)
 #define PARU_DEFAULT_DTRSM_TASKED           (4096)
-#define PARU_DEFAULT_PRESCALE               (1)
+#define PARU_DEFAULT_PRESCALE               PARU_PRESCALE_MAX
 #define PARU_DEFAULT_SINGLETONS             (1)
 #define PARU_DEFAULT_MEM_CHUNK              (1024*1024)
 #define PARU_DEFAULT_PIVOT_TOLERANCE        (0.1)
 #define PARU_DEFAULT_DIAG_PIVOT_TOLERANCE   (0.001)
+
+// Note that the default UMFPACK scaling is SUM, not MAX.
 
 // =============================================================================
 // ParU C++ definitions ========================================================

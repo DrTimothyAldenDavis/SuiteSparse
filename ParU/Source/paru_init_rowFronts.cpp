@@ -41,7 +41,7 @@ ParU_Info paru_init_rowFronts
     // get Control
     int32_t nthreads = Work->nthreads ;
     size_t mem_chunk = Work->mem_chunk ;
-    bool prescale = Work->prescale ;
+    int32_t prescale = Work->prescale ;
 
     // workspace:
     int64_t *cSp = NULL;    // copy of Sp, temporary for making Sx
@@ -119,7 +119,8 @@ ParU_Info paru_init_rowFronts
 
         Work->time_stamp = PARU_MALLOC (nf, int64_t);
         Work->task_num_child = PARU_MALLOC (Sym->ntasks, int64_t);
-        heapList = Work->heapList = PARU_CALLOC (m+nf+1, std::vector<int64_t> *);
+        heapList = Work->heapList =
+            PARU_CALLOC (m+nf+1, std::vector<int64_t> *);
         elementList = Work->elementList = PARU_CALLOC (m+nf+1, paru_element *);
 
         if (rowMark == NULL || elRow == NULL || elCol == NULL ||
@@ -195,7 +196,8 @@ ParU_Info paru_init_rowFronts
     }
     double *Slx = Num->Slx ;
 
-    if (prescale)
+    bool prescaling = (prescale != PARU_PRESCALE_NONE) ;
+    if (prescaling)
     {
         // S will be scaled by the maximum absolute value in each row
         Num->Rs = PARU_CALLOC (Sym->m, double);
@@ -285,13 +287,15 @@ ParU_Info paru_init_rowFronts
     const int64_t *Pinv = Sym->Pinv;
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("Iniit Pinv =\n"));
+    PRLEVEL(PR, ("Init Pinv =\n"));
     for (int64_t i = 0; i < m; i++) PRLEVEL(PR, ("" LD " ", Pinv[i]));
     PRLEVEL(PR, ("\n"));
 #endif
 
-    if (prescale)
+    // compute the scale factors
+    if (prescale == PARU_PRESCALE_MAX)
     {
+        // this is the ParU default
         for (int64_t newcol = 0; newcol < Sym->n; newcol++)
         {
             int64_t oldcol = Qinit[newcol];
@@ -302,9 +306,22 @@ ParU_Info paru_init_rowFronts
             }
         }
     }
+    else if (prescale == PARU_PRESCALE_SUM)
+    {
+        // this is the UMFPACK default
+        for (int64_t newcol = 0; newcol < Sym->n; newcol++)
+        {
+            int64_t oldcol = Qinit[newcol];
+            for (int64_t p = Ap[oldcol]; p < Ap[oldcol + 1]; p++)
+            {
+                int64_t oldrow = Ai[p];
+                Rs[oldrow] += fabs(Ax[p]);
+            }
+        }
+    }
 
     PRLEVEL(PR, ("%% Rs:\n["));
-    if (prescale)
+    if (prescaling)
     {
         // making sure that every row has at most one element more than zero
         for (int64_t k = 0; k < m; k++)
@@ -312,7 +329,8 @@ ParU_Info paru_init_rowFronts
             PRLEVEL(PR, ("%lf ", Rs[k]));
             if (Rs[k] <= 0)
             {
-                PRLEVEL(1, ("ParU: Matrix is singular, row " LD " is zero\n", k));
+                PRLEVEL(1, ("ParU: Matrix is singular, row " LD
+                    " is zero\n", k));
                 Num->res = PARU_SINGULAR;
                 return PARU_SINGULAR;
             }
@@ -332,7 +350,8 @@ ParU_Info paru_init_rowFronts
             if (srow >= 0 && scol >= 0)
             {
                 // it is inside S otherwise it is part of singleton
-                Sx[cSp[srow]++] = (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
+                Sx[cSp[srow]++] =
+                    (prescaling) ? (Ax[p] / Rs[oldrow]) : Ax[p];
             }
             else if (srow < 0 && scol >= 0)
             {
@@ -340,7 +359,8 @@ ParU_Info paru_init_rowFronts
                 PRLEVEL(PR, ("Usingleton newcol = " LD " newrow=" LD "\n",
                     newcol, newrow));
                 // let the diagonal entries be first
-                Sux[++cSup[newrow]] = (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
+                Sux[++cSup[newrow]] =
+                    (prescaling) ? (Ax[p] / Rs[oldrow]) : Ax[p];
             }
             else
             {
@@ -352,12 +372,12 @@ ParU_Info paru_init_rowFronts
                     {
                         // diagonal entry
                         Sux[Sup[newrow]] =
-                            (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
+                            (prescaling) ? (Ax[p] / Rs[oldrow]) : Ax[p];
                     }
                     else
                     {
                         Sux[++cSup[newrow]] =
-                            (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
+                            (prescaling) ? (Ax[p] / Rs[oldrow]) : Ax[p];
                     }
                 }
                 else
@@ -368,12 +388,12 @@ ParU_Info paru_init_rowFronts
                     {
                         // diagonal entry
                         Slx[Slp[newcol - cs1]] =
-                            (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
+                            (prescaling) ? (Ax[p] / Rs[oldrow]) : Ax[p];
                     }
                     else
                     {
                         Slx[++cSlp[newcol - cs1]] =
-                            (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
+                            (prescaling) ? (Ax[p] / Rs[oldrow]) : Ax[p];
                     }
                 }
             }

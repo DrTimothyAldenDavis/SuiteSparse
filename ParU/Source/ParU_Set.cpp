@@ -100,7 +100,7 @@ ParU_Info ParU_Set
 
         case PARU_CONTROL_PRESCALE:               // prescale input matrix
             Control->prescale =
-                (c < 0) ? PARU_DEFAULT_PRESCALE : std::min (c, (int64_t) 1) ;
+                (c < 0 || c > PARU_PRESCALE_MAX) ? PARU_DEFAULT_PRESCALE : c ;
             break ;
 
         case PARU_CONTROL_SINGLETONS:             // filter singletons, or not

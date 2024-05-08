@@ -5,23 +5,20 @@ function paru_many
 %
 % Requires ssget and umfpack in the SuiteSparse meta-package.
 %
-% See also paru, paru_make, paru_demo, paru_tiny, mldivide, ssget,
-% umfpack.
+% See also paru, paru_make, paru_demo, paru_tiny, mldivide, ssget, umfpack.
 
 % ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
-% FIXME: save results to a *.mat file for further analysis,
-%   once stats.lnz, stats.unz, and stats.flops are added.
-
 addpath ('../../UMFPACK/MATLAB') ;
 
-% get all real square matrices in the SuiteSparse Collection,
+% get all real square unsymmetric matrices in the SuiteSparse Collection,
 % that are not candidates for a Cholesky factorization.
 index = ssget ;
 test_matrices = find ((index.nrows == index.ncols) & index.isReal ...
-    & (index.sprank == index.nrows) & ~index.cholcand) ;
+    & (index.sprank == index.nrows) & ~index.cholcand ...
+    & index.numerical_symmetry < 1) ;
 
 % these matrices are too large, causing MATLAB and/or paru to fail or to take
 % far too much time.  Some are graphs that are not meant to represent a sparse
@@ -46,9 +43,14 @@ too_large = [
     1396
     1397
     1901
+    1902
+    1903
+    1904
+    1905
     2847
     2386
     2843
+     916
     ] ;
 
 % these matrices are singular or nearly so:
@@ -482,6 +484,8 @@ singular_matrices = [
         2377
         1335
         1339
+        2550
+        2551
     ] ;
 
 % these matrices cause METIS to fail
@@ -503,7 +507,7 @@ paru_demo
 
 % start with this matrix:
 first = 1 ;
-first = find (test_matrices == 2550) ;
+% first = find (test_matrices == 916) ;
 
 fprintf ('testing %d matrices:\n', nmat) ;
 for k = first:nmat
@@ -515,12 +519,77 @@ fprintf ('Hit enter to continue:\n') ;
 pause
 fprintf ('\n') ;
 
+save test_matrices
+
 clear opts_metis
 opts_metis.ordering = 'metis' ;
 
 clear opts_metis_guard
 opts_metis_guard.ordering = 'metis_guard' ;
 
+% record statistics for further analysis
+backslash_stats.time = inf (nmat,1) ;
+
+% umfpack scaling default is SUM, paru default is MAX;
+umf_scale_max = umfpack ;
+umf_scale_max.scale = 'max' ;
+
+% UMFPACK with defaults (sum scaling)
+umfpack_stats.time = inf (nmat,1) ;
+umfpack_stats.factorization_time = inf (nmat,1) ;
+umfpack_stats.analysis_time = inf (nmat,1) ;
+umfpack_stats.solve_time = inf (nmat,1) ;
+umfpack_stats.flops = zeros (nmat,1) ;  % in factorization
+umfpack_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+umfpack_stats.strategy_used = char (nmat,3) ; % sym, uns
+umfpack_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
+umfpack_stats.scaling = char (nmat,3) ; % sum, max, non
+
+% UMFPACK with max scaling
+umfpack_maxscale_stats.time = inf (nmat,1) ;
+umfpack_maxscale_stats.factorization_time = inf (nmat,1) ;
+umfpack_maxscale_stats.analysis_time = inf (nmat,1) ;
+umfpack_maxscale_stats.solve_time = inf (nmat,1) ;
+umfpack_maxscale_stats.flops = zeros (nmat,1) ;  % in factorization
+umfpack_maxscale_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), incl singletons
+umfpack_maxscale_stats.strategy_used = char (nmat,3) ; % sym, uns
+umfpack_maxscale_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
+umfpack_maxscale_stats.scaling = char (nmat,3) ; % sum, max, non
+
+% ParU with default (in MATLAB) ordering: AMD/COLAMD
+paru_amd_stats.time = inf (nmat,1) ;
+paru_amd_stats.factorization_time = inf (nmat,1) ;
+paru_amd_stats.analysis_time = inf (nmat,1) ;
+paru_amd_stats.solve_time = inf (nmat,1) ;
+paru_amd_stats.flops = zeros (nmat,1) ;  % in factorization
+paru_amd_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+paru_amd_stats.strategy_used = char (nmat,3) ; % sym, uns
+paru_amd_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
+paru_amd_stats.scaling = char (nmat,3) ; % sum, max, non
+
+% ParU with METIS_GUARD ordering
+paru_meg_stats.time = inf (nmat,1) ;
+paru_meg_stats.factorization_time = inf (nmat,1) ;
+paru_meg_stats.analysis_time = inf (nmat,1) ;
+paru_meg_stats.solve_time = inf (nmat,1) ;
+paru_meg_stats.flops = zeros (nmat,1) ;  % in factorization
+paru_meg_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+paru_meg_stats.strategy_used = char (nmat,3) ; % sym, uns
+paru_meg_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
+paru_meg_stats.scaling = char (nmat,3) ; % sum, max, non
+
+% ParU with METIS ordering
+paru_met_stats.time = inf (nmat,1) ;
+paru_met_stats.factorization_time = inf (nmat,1) ;
+paru_met_stats.analysis_time = inf (nmat,1) ;
+paru_met_stats.solve_time = inf (nmat,1) ;
+paru_met_stats.flops = zeros (nmat,1) ;  % in factorization
+paru_met_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+paru_met_stats.strategy_used = char (nmat,3) ; % sym, uns
+paru_met_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
+paru_met_stats.scaling = char (nmat,3) ; % sum, max, non
+
+% solve each matrix
 for k = first:nmat
     id = test_matrices (k) ;
     fprintf ('%4d %4d: %s/%s nz %d\n', k, id, ...
@@ -543,6 +612,7 @@ for k = first:nmat
     t1 = tic ;
     x = A\b ;
     t_backslash = toc (t1) ;
+    backslash_stats.time (k) = t_backslash ;
 
     % try other methods if the matrix is not singular
     [~, lastid] = lastwarn ;
@@ -551,14 +621,15 @@ for k = first:nmat
 
         % print results of x=A\b
         resid = norm (A*x-b,1) / anorm ;
-        fprintf ('A\\b  resid %8.2e time: %10.2f sec\n', resid, t_backslash) ;
+        fprintf ('A\\b      resid %8.2e time: %10.2f sec\n', ...
+            resid, t_backslash) ;
 
         % try the UMFPACK mexFunction with default options
         t1 = tic ;
         [x, stats] = umfpack (A, '\', b) ;
         t_umfpack = toc (t1) ;
         resid = norm (A*x-b,1) / anorm ;
-        fprintf ('UMF  resid %8.2e time: %10.2f sec               ', ...
+        fprintf ('UMF:sum  resid %8.2e time: %10.2f sec               ', ...
             resid, t_umfpack) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
             stats.analysis_time, stats.factorization_time, stats.solve_time) ;
@@ -568,7 +639,48 @@ for k = first:nmat
         else
             fprintf ('       : %8.2f', speedup) ;
         end
-        fprintf (' ordering: %s\n', stats.ordering_used) ;
+        strat = stats.strategy_used (1:3) ;
+        fprintf (' ordering: %s %s\n', strat, stats.ordering_used) ;
+
+        % record UMFPACK stats
+        umfpack_stats.time (k) = t_umfpack ;
+        umfpack_stats.factorization_time (k) = stats.factorization_time ;
+        umfpack_stats.analysis_time (k) = stats.analysis_time ;
+        umfpack_stats.solve_time (k) = stats.solve_time ;
+        umfpack_stats.flops (k) = stats.factorization_flop_count ;
+        umfpack_stats.nnzLU (k) = stats.nnz_in_L_plus_U ;
+        umfpack_stats.strategy_used (k,1:3) = strat ;
+        umfpack_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
+
+        % try the UMFPACK mexFunction with MAX scaling
+        t1 = tic ;
+        [x, stats] = umfpack (A, '\', b, umf_scale_max) ;
+        t_umfpack = toc (t1) ;
+        resid = norm (A*x-b,1) / anorm ;
+        fprintf ('UMF:max  resid %8.2e time: %10.2f sec               ', ...
+            resid, t_umfpack) ;
+        fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
+            stats.analysis_time, stats.factorization_time, stats.solve_time) ;
+        speedup = t_backslash / t_umfpack ;
+        if (speedup > 1)
+            fprintf ('speedup: %8.2f', speedup) ;
+        else
+            fprintf ('       : %8.2f', speedup) ;
+        end
+        strat = stats.strategy_used (1:3) ;
+        fprintf (' ordering: %s %s\n', strat, stats.ordering_used) ;
+
+        % record UMFPACK stats
+        umfpack_maxscale_stats.time (k) = t_umfpack ;
+        umfpack_maxscale_stats.factorization_time (k) = ...
+            stats.factorization_time ;
+        umfpack_maxscale_stats.analysis_time (k) = stats.analysis_time ;
+        umfpack_maxscale_stats.solve_time (k) = stats.solve_time ;
+        umfpack_maxscale_stats.flops (k) = stats.factorization_flop_count ;
+        umfpack_maxscale_stats.nnzLU (k) = stats.nnz_in_L_plus_U ;
+        umfpack_maxscale_stats.strategy_used (k,1:3) = strat ;
+        umfpack_maxscale_stats.ordering_used (k,1:3) = ...
+            stats.ordering_used (1:3) ;
 
         % try the ParU mexFunction with default options:
         % ordering: AMD for symmetric strategy, COLAMD for unsymmetric
@@ -576,7 +688,7 @@ for k = first:nmat
         [x, stats] = paru (A,b) ;
         t_paru = toc (t2) ;
         resid = norm (A*x-b,1) / anorm ;
-        fprintf ('ParU resid %8.2e time: %10.2f sec (AMD/COLAMD)  ', ...
+        fprintf ('ParU:max resid %8.2e time: %10.2f sec (AMD/COLAMD)  ', ...
             resid, t_paru) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
             stats.analysis_time, stats.factorization_time, stats.solve_time) ;
@@ -586,14 +698,25 @@ for k = first:nmat
         else
             fprintf ('       : %8.2f', speedup) ;
         end
-        fprintf (' ordering: %s\n', stats.ordering_used) ;
+        strat = stats.strategy_used (1:3) ;
+        fprintf (' ordering: %s %s\n', strat, stats.ordering_used) ;
+
+        % record ParU stats with AMD
+        paru_amd_stats.time (k) = t_paru ;
+        paru_amd_stats.factorization_time (k) = stats.factorization_time ;
+        paru_amd_stats.analysis_time (k) = stats.analysis_time ;
+        paru_amd_stats.solve_time (k) = stats.solve_time ;
+        paru_amd_stats.flops (k) = stats.factorization_flop_count ;
+        paru_amd_stats.nnzLU (k) = stats.lnz + stats.unz - n ;
+        paru_amd_stats.strategy_used (k,1:3) = strat ;
+        paru_amd_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
 
         % try the ParU mexFunction with ordering: METIS_guard
         t2 = tic ;
         [x, stats] = paru (A,b,opts_metis_guard) ;
         t_paru = toc (t2) ;
         resid = norm (A*x-b,1) / anorm ;
-        fprintf ('ParU resid %8.2e time: %10.2f sec (METIS_guard) ', ...
+        fprintf ('ParU:max resid %8.2e time: %10.2f sec (METIS_guard) ', ...
             resid, t_paru) ;
         fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
             stats.analysis_time, stats.factorization_time, stats.solve_time) ;
@@ -603,7 +726,18 @@ for k = first:nmat
         else
             fprintf ('       : %8.2f', speedup) ;
         end
-        fprintf (' ordering: %s\n', stats.ordering_used) ;
+        strat = stats.strategy_used (1:3) ;
+        fprintf (' ordering: %s %s\n', strat, stats.ordering_used) ;
+
+        % record ParU stats with METIS_GUARD
+        paru_meg_stats.time (k) = t_paru ;
+        paru_meg_stats.factorization_time (k) = stats.factorization_time ;
+        paru_meg_stats.analysis_time (k) = stats.analysis_time ;
+        paru_meg_stats.solve_time (k) = stats.solve_time ;
+        paru_meg_stats.flops (k) = stats.factorization_flop_count ;
+        paru_meg_stats.nnzLU (k) = stats.lnz + stats.unz - n ;
+        paru_meg_stats.strategy_used (k,1:3) = strat ;
+        paru_meg_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
 
         % try the ParU mexFunction with ordering: METIS
         % ordering: METIS; usually slower overall when considering x=A\b, but
@@ -615,7 +749,7 @@ for k = first:nmat
             [x, stats] = paru (A,b,opts_metis) ;
             t_paru = toc (t2) ;
             resid = norm (A*x-b,1) / anorm ;
-            fprintf ('ParU resid %8.2e time: %10.2f sec (METIS)       ', ...
+            fprintf ('ParU:max resid %8.2e time: %10.2f sec (METIS)       ', ...
                 resid, t_paru) ;
             fprintf ('order: %10.2f factor: %10.2f solve: %10.2f sec ', ...
                 stats.analysis_time, stats.factorization_time, stats.solve_time) ;
@@ -625,7 +759,19 @@ for k = first:nmat
             else
                 fprintf ('       : %8.2f', speedup) ;
             end
-            fprintf (' ordering: %s\n', stats.ordering_used) ;
+            strat = stats.strategy_used (1:3) ;
+            fprintf (' ordering: %s %s\n', strat, stats.ordering_used) ;
+
+            % record ParU stats with METIS
+            paru_met_stats.time (k) = t_paru ;
+            paru_met_stats.factorization_time (k) = stats.factorization_time ;
+            paru_met_stats.analysis_time (k) = stats.analysis_time ;
+            paru_met_stats.solve_time (k) = stats.solve_time ;
+            paru_met_stats.flops (k) = stats.factorization_flop_count ;
+            paru_met_stats.nnzLU (k) = stats.lnz + stats.unz - n ;
+            paru_met_stats.strategy_used (k,1:3) = strat ;
+            paru_met_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
+
         else
             fprintf ('ParU (METIS) skipped\n') ;
         end
@@ -637,5 +783,7 @@ for k = first:nmat
         save skip_set skip
 
     end
+
+    save Stats backslash_stats umfpack_stats umfpack_maxscale_stats paru_amd_stats paru_meg_stats paru_met_stats
 end
 

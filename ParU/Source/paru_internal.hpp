@@ -263,8 +263,7 @@ struct ParU_Control_struct
     int64_t trivial ;           // dgemms smaller than this do not call BLAS
     int64_t worthwhile_dgemm ;  // dgemms bigger than this are tasked
     int64_t worthwhile_dtrsm ;  // dtrsm bigger than this are tasked
-    int64_t prescale ;          // 0: no scaling, 1: scale each row by the max
-                                // absolute value in its row.
+    int64_t prescale ;          // 0: none, 1: scale by sum, 2: scale by max
 
     // Symbolic analysis parameters:
     int64_t strategy ;          // ParU strategy to use
@@ -668,7 +667,7 @@ struct paru_work
     double diag_toler ;
     size_t mem_chunk ;
     int32_t nthreads ;
-    bool prescale ;
+    int32_t prescale ;
 
 };
 

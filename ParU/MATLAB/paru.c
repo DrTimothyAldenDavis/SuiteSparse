@@ -43,7 +43,7 @@ static const char *stat_names [ ] =
     "solve_time",           //  2: solve time in seconds
     "strategy_used",        //  3: strategy used, symmetric or unsymmetric
     "ordering_used",        //  4: ordering used
-    "flops",                //  5: flop count for LU factorization
+    "factorization_flop_count", //  5: flop count for LU factorization
     "lnz",                  //  6: nnz (L)
     "unz",                  //  7: nnz (U)
     "rcond",                //  8: rough estimate of reciprocal condition number
@@ -254,13 +254,37 @@ void mexFunction
             }
         }
 
-        // prescale: whether or not to prescale the input matrix
+        // prescale: 'sum', 'max', or 'none'
         if ((field = mxGetField (pargin [2], 0, "prescale")) != NULL)
         {
-            // 0: no scaling, 1: prescale each row by max abs value
-            int64_t prescale = (mxGetScalar (field) != 0) ;
-            PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
-                prescale, Control), "opts failed") ;
+            if (mxGetString (field, option, STRLEN) == 0)
+            {
+                option [STRLEN] = '\0' ;
+                if (strncmp (option, "none", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
+                        PARU_PRESCALE_NONE, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "sum", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
+                        PARU_PRESCALE_SUM, Control), "opts failed") ;
+                }
+                else if (strncmp (option, "max", STRLEN) == 0)
+                {
+                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
+                        PARU_PRESCALE_MAX, Control), "opts failed") ;
+                }
+                else
+                {
+                    mexErrMsgIdAndTxt ("ParU:error",
+                        "unrecognized opts.ordering: %s", option) ;
+                }
+            }
+            else
+            {
+                mexErrMsgIdAndTxt ("ParU:error", "unrecognized opts.prescale") ;
+            }
         }
     }
 

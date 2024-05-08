@@ -33,8 +33,10 @@ function [x,stats] = paru (A,b,opts)    %#ok
 %           more rows with 3.2*sqrt(n) entries, in which case use 'amd'
 %       'none': no fill-reducing ordering.
 %
-%   opts.prescale:  if true, pre-scale the input matrix (default: true).
-%       The prescaled matrix is R*A where R(i,i) = 1/max(abs(A(i,:))).
+%   opts.prescale: prescale the input matrix (default: 'max')
+%       'none': no prescaling
+%       'sum': The prescaled matrix is R*A where R(i,i) = 1/sum(abs(A(i,:))).
+%       'max': The prescaled matrix is R*A where R(i,i) = 1/max(abs(A(i,:))).
 %
 % stats: an optional output that provides information on the ParU
 % analysis and factorization of the matrix:

@@ -352,6 +352,8 @@ ParU_Info ParU_Analyze
     umf_Control[UMFPACK_ORDERING] = (double) ordering ;
     umf_Control[UMFPACK_FIXQ] = (double) -1;
     umf_Control[UMFPACK_STRATEGY] = (double) umfpack_strategy ;
+
+    // change the UMFPACK symmetry threshold for auto strategy
     umf_Control[UMFPACK_STRATEGY_THRESH_SYM] = (double) 0.3;
 
 #ifndef NDEBUG

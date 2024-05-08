@@ -393,6 +393,7 @@ paru_src = {
     '../Source/ParU_Version' } ;
 
 obj_files = ' ' ;
+objs = { } ;
 
 % compile each ParU C++ file
 for k = 1:length (paru_src)
@@ -405,6 +406,7 @@ for k = 1:length (paru_src)
     slash = slash (end) + 1 ;
     o = src (slash:end) ;
     obj_files = [ obj_files ' ' o '.' obj ] ; %#ok<AGROW>
+    objs {end+1} = [o '.' obj] ;
 end
 
 % compile each SuiteSparse C file (SuiteSparse_config, AMD, COLAMD,
@@ -419,6 +421,7 @@ for k = 1:length (suitesparse_src)
     slash = slash (end) + 1 ;
     o = src (slash:end) ;
     obj_files = [ obj_files ' ' o '.' obj ] ; %#ok<AGROW>
+    objs {end+1} = [o '.' obj] ;
 end
 
 % compile the paru mexFunction
@@ -427,6 +430,14 @@ s = sprintf ('mex %s -O %s paru.c %s %s', flags, include, obj_files, libs) ;
 % fprintf ('%s\n', s) ;
 eval (s) ;
 fprintf ('\n') ;
+
+% delete the object files
+for k = 1:length (objs)
+    o = objs {k} ;
+    if (length (dir (o)) > 0)
+        delete (o) ;
+    end
+end
 
 % try a quick demo
 paru_tiny
