@@ -8,8 +8,6 @@
 
 //------------------------------------------------------------------------------
 
-// FIXME test the paru mexFunction on the Mac (intel and m1)
-
 // Usage:
 //      x = paru (A, b)
 //      [x,stats] = paru (A, b, opts)
