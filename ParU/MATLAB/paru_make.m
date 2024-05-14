@@ -33,10 +33,10 @@ function paru_make (try_intel)
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (nargin < 1)
-    try_intel = true ;
+    try_intel = (~ismac && isunix) ;
 end
-if (try_intel && ~ismac && isunix)
-    v = version ('-blas') ;
+if (try_intel)
+    v = version ('-blas')
     try_intel = contains (v, 'Intel') ;
 end
 if (try_intel)

@@ -338,8 +338,8 @@ end
 % compile and install SPEX
 try
     fprintf ('try to install SPEX (requires GMP and MPFR)\n') ;
-    paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX_Left_LU/MATLAB']) ;
-    SPEX_Left_LU_install (0) ;
+    paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX/MATLAB']) ;
+    spex_mex_install ;
 catch me
     disp (me.message) ;
     fprintf ('SPEX not installed\n') ;
