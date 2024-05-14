@@ -1695,6 +1695,8 @@ factorized one at a time (but still in parallel).  For best performance, nested
 parallelism is required.  However, when using the \verb'gcc' compiler on
 Windows and Mac, we have found that the OpenMP library can hang.  As a result,
 on those platforms, nested parallelism is disabled when using \verb'gcc'.
+If using \verb'gcc', use a recent compiler (version 7.5.0 fails; 12.2.0
+works).
 
 You can query ParU at run time to determine which BLAS library it is using, and
 whether or not it is compiled to use parallel or sequential factorization of
