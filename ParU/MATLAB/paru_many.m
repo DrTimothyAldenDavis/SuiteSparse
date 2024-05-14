@@ -51,6 +51,7 @@ too_large = [
     2386
     2843
      916
+    2844
     ] ;
 
 % these matrices are singular or nearly so:
@@ -486,6 +487,7 @@ singular_matrices = [
         1339
         2550
         2551
+        2835
     ] ;
 
 % these matrices cause METIS to fail

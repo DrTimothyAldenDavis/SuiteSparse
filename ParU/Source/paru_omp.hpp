@@ -31,7 +31,7 @@
     #define PARU_OPENMP_GET_NUM_THREADS   (1)
     #define PARU_OPENMP_GET_WTIME         (0)
     #define PARU_OPENMP_GET_THREAD_ID     (0)
-    #define PARU_OPENMP_SET_DYNAMIC
+    #define PARU_OPENMP_SET_DYNAMIC(d)
     #define PARU_OPENMP_SET_MAX_ACTIVE_LEVELS(l)
     #define PARU_OPENMP_GET_ACTIVE_LEVEL   (0)
     #define PARU_OPENMP_GET_THREAD_NUM     (0)
