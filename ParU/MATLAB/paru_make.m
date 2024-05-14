@@ -35,7 +35,7 @@ function paru_make (try_intel)
 if (nargin < 1)
     try_intel = true ;
 end
-if (try_intel && (ismac || isunix))
+if (try_intel && ~ismac && isunix)
     v = version ('-blas') ;
     try_intel = contains (v, 'Intel') ;
 end
