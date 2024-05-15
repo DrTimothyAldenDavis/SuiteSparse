@@ -83,6 +83,10 @@ else
     end
 end
 
+if (ismac)
+    flags = [ flags  sprintf(' LDFLAGS="$LDFLAGS  -rpath %s/../../build"', pwd) ] ;
+end
+
 if ispc
     % Windows
     object_suffix = '.obj' ;
@@ -180,6 +184,7 @@ for k = 1:length (cfiles)
         % fprintf ('%s\n', cfile) ;
         fprintf ('.') ;
         mexcmd = sprintf ('mex -c %s -silent %s ''%s''', flags, inc, cfile) ;
+        % fprintf ('%s\n', mexcmd) ;
         eval (mexcmd) ;
         any_c_compiled = true ;
     end
