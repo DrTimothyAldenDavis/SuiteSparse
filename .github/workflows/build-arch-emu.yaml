@@ -35,20 +35,28 @@ jobs:
       matrix:
         # For available CPU architectures, see:
         # https://github.com/marketplace/actions/setup-alpine-linux-environment
-        arch: [x86, aarch64, armv7, ppc64le, s390x]
+        arch: [x86, aarch64, armv7, ppc64le, s390x, riscv64]
         include:
           - arch: x86
             ccache-max: 80M
             extra-build-libs: ":GraphBLAS:LAGraph"
             extra-check-libs: ":GraphBLAS:LAGraph"
+            branch: latest-stable
           - arch: aarch64
             ccache-max: 42M
+            branch: latest-stable
           - arch: armv7
             ccache-max: 42M
+            branch: latest-stable
           - arch: ppc64le
             ccache-max: 45M
+            branch: latest-stable
           - arch: s390x
             ccache-max: 42M
+            branch: latest-stable
+          - arch: riscv64
+            ccache-max: 42M
+            branch: edge
 
     name: alpine (${{ matrix.arch }})
 
@@ -66,6 +74,7 @@ jobs:
         # shell: bash
         with:
           arch: ${{ matrix.arch }}
+          branch: ${{ matrix.branch }}
           packages: >
             build-base
             ccache
@@ -76,11 +85,11 @@ jobs:
             mpfr-dev
             lapack-dev
             python3
-            valgrind
             util-linux-misc
             autoconf
             automake
             libtool
+            ${{ matrix.arch != 'riscv64' && 'valgrind' || '' }}
 
       - name: get CPU information (emulated)
         run: lscpu
@@ -97,7 +106,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           # location of the ccache of the chroot in the root file system
-          path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
+          path: /home/runner/rootfs/alpine-${{ matrix.arch == 'riscv64' && 'edge' || 'latest'}}-${{ matrix.arch }}/home/runner/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
@@ -166,7 +175,7 @@ jobs:
         # This helps to retain the ccache even if the subsequent steps are failing.
         uses: actions/cache/save@v4
         with:
-          path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
+          path: /home/runner/rootfs/alpine-${{ matrix.arch == 'riscv64' && 'edge' || 'latest' }}-${{ matrix.arch }}/home/runner/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: install
@@ -187,6 +196,7 @@ jobs:
           cmake \
             -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
             -DBLA_VENDOR="Generic" \
+            ${{ matrix.arch == 'riscv64' && '-DBUILD_STATIC_LIBS=FALSE' || '' }} \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"
