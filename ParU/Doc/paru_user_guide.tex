@@ -1554,6 +1554,10 @@ ParU will fail catastrophically.
 \section{Using ParU in MATLAB}
 %-------------------------------------------------------------------------------
 
+%-------------------------------------------------------------------------------
+\subsection{Compiling ParU for MATLAB}
+%-------------------------------------------------------------------------------
+
 To use ParU in MATLAB, you must first compile the \verb'paru' mexFunction.
 In MATLAB, go to the \verb'ParU/MATLAB' directory and type \verb'paru_make'.
 Then add the \verb'ParU/MATLAB' directory to your MATLAB path for future use.
@@ -1566,6 +1570,16 @@ use functions unique to the Intel MKL BLAS library
 which case paru is compiled with \verb'try_intel' false).  If \verb'paru' fails
 when it runs, with a link error reporting that an an \verb'mkl_*' routine is
 not found, use \verb'paru_make(false)' to disable the Intel MKL functions.
+
+{\bf Limitations:}  The ParU mexFunction does not yet work in MATLAB R2024a
+on the Apple Mac (as a native app for Apple Silicon).
+It has not yet been tested in Windows.  % FIXME: test mexFunction on Windows
+The built-in compiler used by the MATLAB \verb'mex' command on Windoes does not
+support OpenMP, so only parallelism within the BLAS can be used on Windows.
+
+%-------------------------------------------------------------------------------
+\subsection{Using ParU in MATLAB}
+%-------------------------------------------------------------------------------
 
 The basic usage \verb'x=paru(A,b)' solves the linear system $Ax=b$, computing
 \verb'x=A\b'.  The matrix \verb'A' must be sparse, square, non-singular, and
