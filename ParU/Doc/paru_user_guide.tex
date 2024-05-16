@@ -347,7 +347,7 @@ int main(int argc, char **argv)
             by selecting whichever strategy that UMFPACK selects.
 
         \item \verb'PARU_STRATEGY_UNSYMMETRIC':
-            % ParU will order columns of the matrix $A'A$ via COLAMD or METIS.  
+            % ParU will order columns of the matrix $A'A$ via COLAMD or METIS.
             During numerical factorization, no preference is
             given for diagonal entries when looking for pivots.
         \item \verb'PARU_STRATEGY_SYMMETRIC':
@@ -520,7 +520,7 @@ containing a numeric factorization.
 There are several signatures for \verb'ParU_Get' depending on which
 object is being queried.  To query the \verb'ParU_Control' object,
 the \verb'ParU_Control_enum' is used.  To query the other two objects
-(\verb'ParU_Symbolic' and  \verb'ParU_Numeric'), the 
+(\verb'ParU_Symbolic' and  \verb'ParU_Numeric'), the
 \verb'ParU_Get_enum' is used.  Both enums are listed below:
 
     {\footnotesize
@@ -1571,9 +1571,9 @@ which case paru is compiled with \verb'try_intel' false).  If \verb'paru' fails
 when it runs, with a link error reporting that an an \verb'mkl_*' routine is
 not found, use \verb'paru_make(false)' to disable the Intel MKL functions.
 
-{\bf Limitations:}  The ParU mexFunction does not yet work in MATLAB R2024a
-on the Apple Mac (as a native app for Apple Silicon).
-It has not yet been tested in Windows.  % FIXME: test mexFunction on Windows
+{\bf Limitations:}
+The MATLAB interface to ParU
+has not yet been tested in Windows.  % FIXME: test mexFunction on Windows
 The built-in compiler used by the MATLAB \verb'mex' command on Windoes does not
 support OpenMP, so only parallelism within the BLAS can be used on Windows.
 

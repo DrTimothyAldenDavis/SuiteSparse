@@ -431,3 +431,8 @@ void mexFunction
     }
 }
 
+#if defined ( __clang__ ) && defined ( CLANG_NEEDS_MAIN )
+// when using clang inside MATLAB, it seems to require a "_main" symbol.
+int main (void) { return (0) ; }
+#endif
+
