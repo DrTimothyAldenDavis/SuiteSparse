@@ -253,6 +253,14 @@ ParU_Info ParU_Get
                 Control->paru_max_threads ;
             break ;
 
+        case PARU_CONTROL_OPENMP:                 // 1 if OpenMP, 0 if not
+            #if defined ( _OPENMP )
+            (*c) = 1 ;
+            #else
+            (*c) = 0 ;
+            #endif
+            break ;
+
         case PARU_CONTROL_STRATEGY:               // ParU strategy
             (*c) = (Control == NULL) ? PARU_DEFAULT_STRATEGY :
                 Control->strategy ;

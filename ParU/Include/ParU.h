@@ -137,6 +137,8 @@ typedef enum
     PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix
     PARU_CONTROL_SINGLETONS = 1011,           // filter singletons, or not
     PARU_CONTROL_MEM_CHUNK = 1012,            // chunk size of memset and memcpy
+    PARU_CONTROL_OPENMP = 1013,               // if ParU compiled with OpenMP;
+                                              // (for ParU_Get only, not set)
     // double parameters:
     PARU_CONTROL_PIVOT_TOLERANCE = 2001,        // pivot tolerance
     PARU_CONTROL_DIAG_PIVOT_TOLERANCE = 2002,   // diagonal pivot tolerance
@@ -914,6 +916,26 @@ ParU_Info ParU_C_Get_CONSTCHAR
     ParU_Get_enum field,          // field to get
     // output:
     const char **result,          // string result
+    // control:
+    ParU_C_Control Control_C
+) ;
+
+ParU_Info ParU_C_Get_Control_INT64
+(
+    // input:
+    ParU_Control_enum field,      // field to get
+    // output:
+    int64_t *result,              // int64_t result: a scalar or an array
+    // control:
+    ParU_C_Control Control_C
+) ;
+
+ParU_Info ParU_C_Get_Control_FP64
+(
+    // input:
+    ParU_Control_enum field,      // field to get
+    // output:
+    double *result,               // int64_t result: a scalar or an array
     // control:
     ParU_C_Control Control_C
 ) ;

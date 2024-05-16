@@ -56,6 +56,7 @@ function [x,stats] = paru (A,b,opts)    %#ok
 %       compiled, whether or not tasking is available for factorizing multiple
 %       fronts at the same time ('sequential' or 'parallel').  Requires OpenMP
 %       tasking.
+%   stats.openmp: whether or not ParU is using OpenMP (a string).
 %
 % Note that if the matrix is singular, ParU will report an error, while
 % x=A\b reports a warning instead.

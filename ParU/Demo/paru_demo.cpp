@@ -103,6 +103,15 @@ int main(int argc, char **argv)
     }
     std::cout << "frontal tree tasking: " << tasking << std::endl ;
 
+    int64_t using_openmp ;
+    info = ParU_Get (PARU_CONTROL_OPENMP, &using_openmp, Control) ;
+    if (info != PARU_SUCCESS)
+    {
+        FREE_ALL_AND_RETURN (info) ;
+    }
+    std::cout << "OpenMP in ParU: " << (using_openmp ? "yes" : "no" )
+        << std::endl ;
+
     double my_start_time = SuiteSparse_time ();
 
     ParU_Set (PARU_CONTROL_ORDERING, PARU_ORDERING_METIS_GUARD, Control) ;
