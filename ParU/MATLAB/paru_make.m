@@ -68,6 +68,10 @@ if (ispc)
     flags = [flags ' -DNO_SSIZE_T'] ;
 end
 
+if (ismac)
+    flags = [flags ' -DCLANG_NEEDS_MAIN'] ;
+end
+
 libs = '-lmwlapack -lmwblas' ;
 if (~(ispc || ismac))
     % for POSIX timing routine

@@ -71,11 +71,15 @@ if (~ismac && isunix)
     openmp = ' -fopenmp' ;
 end
 if (ismac)
-    flags = sprintf ('CFLAGS=''-std=c11 -fPIC %s'' LDFLAGS=''-Wl,-rpath ''%s''''', ...
+    flags = sprintf ('CFLAGS=''-std=c11 -DCLANG_NEEDS_MAIN=1 -fPIC %s'' LDFLAGS=''-Wl,-rpath ''%s''''', ...
     openmp, suitesparse_libdir) ;
 else
     flags = sprintf ('CFLAGS=''-std=c11 -fPIC %s'' LDFLAGS=''-Wl,-rpath=''%s''''', ...
     openmp, suitesparse_libdir) ;
+end
+
+if (ismac)
+    flags = [flags ' -DCLANG_NEEDS_MAIN'] ;
 end
 
 % libraries:

@@ -120,7 +120,9 @@
 
     // SPEX will not be thread-safe.
     spex_gmp_t *spex_gmp = NULL ;
+    #ifndef MATLAB_MEX_FILE
     #warning "SPEX not compiled with OpenMP or thread keyword; SPEX will not be thread-safe!"
+    #endif
 
 #endif
 
