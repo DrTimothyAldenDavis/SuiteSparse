@@ -337,9 +337,9 @@ end
 
 % compile and install SPEX
 try
-    fprintf ('try to install SPEX (requires GMP and MPFR)\n') ;
-    paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX/MATLAB']) ;
-    spex_mex_install ;
+    fprintf ('\nCompiling SPEX (requires GMP and MPFR)\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/SPEX/MATLAB']) ;
+    spex_mex_install (0) ;
 catch me
     disp (me.message) ;
     fprintf ('SPEX not installed\n') ;
@@ -348,7 +348,7 @@ end
 
 % compile and install ParU
 try
-    fprintf ('try to install ParU\n') ;
+    fprintf ('\nCompiling ParU\n') ;
     paths = add_to_path (paths, [SuiteSparse '/ParU/MATLAB']) ;
     paru_make ;
 catch me
