@@ -20,4 +20,3 @@ norm (A*x-b)
 paru_stats %#ok<NOPRT>
 norm (A*x2-b)
 
-

@@ -190,15 +190,19 @@ endif ( )
 # additional definitions
 #-------------------------------------------------------------------------------
 
-if ( (APPLE OR WIN32) AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
+if (( NOT PARU_HAS_OPENMP ) OR
+   ((APPLE OR WIN32) AND CMAKE_C_COMPILER_ID STREQUAL "GNU" ))
     # Some parallelization levels don't work correctly with GCC on Windows or
     # Mac (because of emuTLS?). Omit them.  See the user guide for details.
+    message ( STATUS "ParU frontal tree tasking: sequential")
     if ( BUILD_SHARED_LIBS )
         target_compile_definitions (ParU PRIVATE PARU_1TASK )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         target_compile_definitions (ParU_static PRIVATE PARU_1TASK )
     endif ( )
+else ( )
+    message ( STATUS "ParU frontal tree tasking: parallel")
 endif ( )
 
 #-------------------------------------------------------------------------------

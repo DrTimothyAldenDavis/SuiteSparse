@@ -47,6 +47,7 @@ static const char *stat_names [ ] =
     "rcond",                //  8: rough estimate of reciprocal condition number
     "blas",                 //  9: BLAS library used
     "front_tree_tasking",   // 10: frontal tree task: sequential or parallel
+    "openmp",               // 11: ParU using OpenMP or not
 } ;
 
 void mexFunction
@@ -326,9 +327,11 @@ void mexFunction
     }
 
     // get statistics from ParU
-    int64_t strategy_used, ordering_used, lnz, unz ;
+    int64_t strategy_used, ordering_used, lnz, unz, using_openmp ;
     double rcond, flops ;
     const char *blas_name, *front_tree_tasking ;
+    PARU_OK (ParU_C_Get_Control_INT64 (PARU_CONTROL_OPENMP,
+        &using_openmp, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_STRATEGY,
         &strategy_used, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_ORDERING,
@@ -374,7 +377,7 @@ void mexFunction
 
     if (nargout > 1)
     {
-        pargout [1] = mxCreateStructMatrix (1, 1, 11, stat_names) ;
+        pargout [1] = mxCreateStructMatrix (1, 1, 12, stat_names) ;
 
         // analysis, factorization, and solve times:
         mxSetFieldByNumber (pargout [1], 0, 0, mxCreateDoubleScalar (t [0])) ;
@@ -428,6 +431,12 @@ void mexFunction
         // frontal tree tasking
         mxSetFieldByNumber (pargout [1], 0, 10,
             mxCreateString (front_tree_tasking)) ;
+
+        // openmp:
+        mxSetFieldByNumber (pargout [1], 0, 11,
+            mxCreateString (using_openmp ? "yes" :
+            "not in ParU itself but could be used in the BLAS,"
+            " depending on MATLAB (see 'version -blas')")) ;
     }
 }
 

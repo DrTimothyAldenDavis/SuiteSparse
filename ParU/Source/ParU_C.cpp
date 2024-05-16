@@ -577,6 +577,36 @@ ParU_Info ParU_C_Get_CONSTCHAR
     return (ParU_Get (field, result, Control)) ;
 }
 
+ParU_Info ParU_C_Get_Control_INT64
+(
+    // input:
+    ParU_Control_enum field,      // field to get
+    // output:
+    int64_t *result,              // int64_t result: a scalar or an array
+    // control:
+    ParU_C_Control Control_C
+)
+{
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Get (field, result, Control)) ;
+}
+
+ParU_Info ParU_C_Get_Control_FP64
+(
+    // input:
+    ParU_Control_enum field,      // field to get
+    // output:
+    double *result,               // int64_t result: a scalar or an array
+    // control:
+    ParU_C_Control Control_C
+)
+{
+    ParU_Control Control = (Control_C == NULL) ? NULL :
+        static_cast<ParU_Control>(Control_C->control_handle) ;
+    return (ParU_Get (field, result, Control)) ;
+}
+
 //------------------------------------------------------------------------------
 //------------ ParU_C_Set_*-----------------------------------------------------
 //------------------------------------------------------------------------------

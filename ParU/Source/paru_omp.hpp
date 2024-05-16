@@ -27,6 +27,11 @@
 
 #else
 
+    // no OpenMP, so use sequential frontal tree tasking
+    #ifndef PARU_1TASK
+    #define PARU_1TASK
+    #endif
+
     #define PARU_OPENMP_MAX_THREADS       (1)
     #define PARU_OPENMP_GET_NUM_THREADS   (1)
     #define PARU_OPENMP_GET_WTIME         (0)
