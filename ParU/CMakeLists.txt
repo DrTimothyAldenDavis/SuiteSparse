@@ -111,7 +111,7 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
 
     find_package ( UMFPACK 6.3.3
         PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
-    if ( NOT CAMD_FOUND )
+    if ( NOT UMFPACK_FOUND )
         find_package ( UMFPACK 6.3.3 REQUIRED )
     endif ( )
 endif ( )
