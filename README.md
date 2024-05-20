@@ -713,9 +713,9 @@ particular BLAS library use either:
     cd Package ; cmake -DBLA_VENDOR=OpenBLAS .. make
 
 To use the default (hunt for a BLAS), do not set `BLA_VENDOR`, or set it to
-`ANY`.  In this case, if `SUITESPARSE_USE_64BIT_BLAS` is ON, preference is
-given to a 64-bit BLAS, but a 32-bit BLAS library will be used if no 64-bit
-library is found.  However, if both `SUITESPARSE_USE_64BIT_BLAS` and
+an empty string.  In this case, if `SUITESPARSE_USE_64BIT_BLAS` is ON,
+preference is given to a 64-bit BLAS, but a 32-bit BLAS library will be used if
+no 64-bit library is found.  However, if both `SUITESPARSE_USE_64BIT_BLAS` and
 `SUITESPARSE_USE_STRICT` are ON, then only a 64-bit BLAS is considered.
 
 When selecting a particular BLAS library, the `SUITESPARSE_USE_64BIT_BLAS`
