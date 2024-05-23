@@ -2,7 +2,7 @@
 // SuiteSparse/Example/Include/my_internal.h
 //------------------------------------------------------------------------------
 
-// Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
+// Copyright (c) 2022-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
 //------------------------------------------------------------------------------
@@ -110,7 +110,9 @@
 #endif
 
 // OpenMP include file:
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 // GMP and MPFR
 #include <gmp.h>
