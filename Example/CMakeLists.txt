@@ -95,7 +95,7 @@ find_package ( CCOLAMD 3.3.3 REQUIRED )
 find_package ( CHOLMOD 5.3.0 REQUIRED )
 find_package ( COLAMD 3.3.3 REQUIRED )
 find_package ( CXSparse 4.4.0 REQUIRED )
-find_package ( GraphBLAS 9.1.0 )            # FIXME NOW
+find_package ( GraphBLAS 9.2.0 )
 find_package ( KLU 2.3.3 REQUIRED )
 find_package ( KLU_CHOLMOD 2.3.3 REQUIRED )
 find_package ( LDL 3.3.2 REQUIRED )
