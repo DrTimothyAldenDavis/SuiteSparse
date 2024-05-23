@@ -81,12 +81,12 @@ ParU_Info ParU_Get
 
         case PARU_GET_LNZ:
             if (!Num || Num->sym_m != n) return (PARU_INVALID) ;
-            (*result) = 0 ;     // FIXME: get nnz(L)
+            (*result) = 0 ;     // FIXME NOW: get nnz(L)
             break ;
 
         case PARU_GET_UNZ:
             if (!Num || Num->sym_m != n) return (PARU_INVALID) ;
-            (*result) = 0 ;     // FIXME: get nnz(U)
+            (*result) = 0 ;     // FIXME NOW: get nnz(U)
             break ;
 
         case PARU_GET_P:
@@ -150,7 +150,7 @@ ParU_Info ParU_Get
     switch (field)
     {
         case PARU_GET_FLOP_COUNT:
-            (*result) = 0 ;     // FIXME: get flop count
+            (*result) = 0 ;     // FIXME NOW: get flop count
             break ;
 
         case PARU_GET_RCOND_ESTIMATE:
