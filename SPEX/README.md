@@ -58,6 +58,19 @@ Default installation locations:
     lib
     share
 
+Compilation options:
+
+* `SPEX_USE_PYTHON`:
+
+  If `ON`, build Python interface for SPEX.
+  If `OFF`: do not build the SPEX Python interface.
+  Default: `ON`.
+
+* `SPEX_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in SPEX if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
+
 To compile SPEX and its dependencies, just type "make" in this folder.
 This will also run a few short demos
 To install the package system-wide, copy the `lib/*` to /usr/local/lib,
