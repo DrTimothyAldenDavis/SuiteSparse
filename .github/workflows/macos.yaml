@@ -51,6 +51,8 @@ jobs:
           brew install --overwrite python@3.10 python@3.11 python@3.12
           brew reinstall gcc
           brew install autoconf automake ccache cmake gmp lapack libomp mpfr openblas
+          HOMEBREW_PREFIX=$(brew --prefix)
+          echo "HOMEBREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -90,7 +92,7 @@ jobs:
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="Apple" \
-                  -DCMAKE_PREFIX_PATH="/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+                  -DCMAKE_PREFIX_PATH="${HOMEBREW_PREFIX}/opt/lapack;${HOMEBREW_PREFIX}/opt/openblas;${HOMEBREW_PREFIX}/opt/libomp" \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -212,7 +214,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
-            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;${HOMEBREW_PREFIX}/opt/lapack;${HOMEBREW_PREFIX}/opt/openblas;${HOMEBREW_PREFIX}/opt/libomp" \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"
