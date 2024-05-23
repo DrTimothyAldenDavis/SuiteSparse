@@ -490,7 +490,7 @@ if ( SUITESPARSE_DEMOS )
         target_link_libraries ( spex_demo_threaded          PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
     endif ( )
 
-    if ( SPEX_USE_OPENMP )
+    if ( SPEX_HAS_OPENMP )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( spex_demo_threaded PUBLIC OpenMP::OpenMP_C )
         endif ( )
