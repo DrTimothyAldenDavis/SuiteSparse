@@ -83,9 +83,10 @@
 #error "This library requires RBio 4.3.2 or later"
 #endif
 
+// FIXME NOW: SPEX will be SPEX 3.2.0 for SuiteSparse 7.8.0
 #include "SPEX.h"
-#if !defined (SPEX__VERSION) || SPEX__VERSION < SUITESPARSE__VERCODE(3,1,0)
-#error "This library requires SPEX 3.1.0 or later"
+#if !defined (SPEX__VERSION) || SPEX__VERSION < SUITESPARSE__VERCODE(3,1,1)
+#error "This library requires SPEX 3.1.1 or later"
 #endif
 
 #include "SuiteSparseQR_C.h"

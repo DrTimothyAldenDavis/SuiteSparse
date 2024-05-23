@@ -5,6 +5,9 @@ May XX, 2024: version 7.8.0     FIXME NOW
         to query which Modules and features have been configured.
     * GraphBLAS 9.2.0: simpler MATLAB install; sanitize environment variables
     * SPQR 4.3.4: changes to reflect updates to CHOLMOD
+    * SPEX 3.1.1: control Python interface, fix build issues on Mac; this
+        will likely be replace with SPEX 3.2.0 with additional updates,
+        for SuiteSparse 7.8.0.
     * Package versions in this release: (* denotes a new version)
         SuiteSparse_config 7.8.0    *
         AMD 3.3.2

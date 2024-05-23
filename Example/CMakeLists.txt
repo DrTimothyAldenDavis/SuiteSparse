@@ -103,7 +103,8 @@ find_package ( LAGraph 1.1.3 )
 find_package ( SuiteSparse_Mongoose 3.3.3 REQUIRED )
 find_package ( ParU 1.0.0 REQUIRED )
 find_package ( RBio 4.3.2 REQUIRED )
-find_package ( SPEX 3.1.0 REQUIRED )    # requires GMP and MPFR
+# FIXME NOW: SPEX will be 3.2.0 for SuiteSparse 7.8.0 and Example 1.8.0
+find_package ( SPEX 3.1.1 REQUIRED )    # requires GMP and MPFR
 find_package ( SPQR 4.3.4 REQUIRED )
 find_package ( UMFPACK 6.3.3 REQUIRED )
 
