@@ -75,6 +75,8 @@ option ( UMFPACK_USE_CHOLMOD "ON (default): use CHOLMOD in UMFPACK.  OFF: do not
 # library takes a long time
 option ( GRAPHBLAS_BUILD_STATIC_LIBS "OFF (default): Do not build static libraries for GraphBLAS project.  ON: Use same value of BUILD_STATIC_LIBS for GraphBLAS like in the other projects" OFF )
 
+option ( SUITESPARSE_ENABLE_PYTHON "ON (default): build Python interfaces for SuiteSparse packages (SPEX).  OFF: do not build Python interfaces for SuiteSparse packages" ON )
+
 # options to build with libraries installed on the system instead of building
 # dependencies automatically
 option ( SUITESPARSE_USE_SYSTEM_BTF "ON: use BTF libraries installed on the build system.  OFF (default): Automatically build BTF as dependency if needed." OFF )

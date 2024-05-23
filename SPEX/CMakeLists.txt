@@ -410,8 +410,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 # python interface
 #-------------------------------------------------------------------------------
-
-if ( BUILD_SHARED_LIBS )
+option ( SPEX_ENABLE_PYTHON "ON (default): build Python interface for SPEX.  OFF: do not build Python interface for SPEX" ${SUITESPARSE_ENABLE_PYTHON} )
+if ( BUILD_SHARED_LIBS AND SPEX_ENABLE_PYTHON)
 
     file ( GLOB SPEX_PYTHON_SOURCES "Python/SPEXpy/Source/*.c" )
     add_library ( spexpython SHARED ${SPEX_PYTHON_SOURCES} )
