@@ -1,6 +1,9 @@
 name: macos
 on:
   workflow_dispatch:
+  schedule:
+    # Run job every Saturday at 08:20 UTC
+    - cron: '20 8 * * 6'
 # push:
 #   branches-ignore:
 #     - '**/dev2'
