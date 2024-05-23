@@ -40,11 +40,6 @@
 #ifndef GRAPHBLAS_H
 #define GRAPHBLAS_H
 
-#if defined ( __cplusplus )
-extern "C"
-{
-#endif
-
 //==============================================================================
 //=== GraphBLAS macros, typedefs, enums, and global variables  =================
 //==============================================================================
@@ -2681,6 +2676,11 @@ GrB_Format ;
 // The GB_CUDA_FOLDER flag is only meant for use by the C++ functions in
 // GraphBLAS/CUDA, since they do not need access these definitions.  User
 // applications have access to these methods.
+
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
 
 #ifndef GB_CUDA_FOLDER
 
