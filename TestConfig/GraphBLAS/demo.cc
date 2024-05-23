@@ -11,8 +11,6 @@
 
 #include <iostream>
 
-// try fixing mingw (CLANG64) build error:
-#include <complex>
 #include "GraphBLAS.h"
 
 int main (void)
