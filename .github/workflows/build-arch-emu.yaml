@@ -35,7 +35,7 @@ jobs:
       matrix:
         # For available CPU architectures, see:
         # https://github.com/marketplace/actions/setup-alpine-linux-environment
-        arch: [x86, aarch64, armv7, ppc64le, s390x]
+        arch: [x86, aarch64, armv7, ppc64le, s390x, riscv64]
         include:
           - arch: x86
             ccache-max: 80M
@@ -48,6 +48,8 @@ jobs:
           - arch: ppc64le
             ccache-max: 45M
           - arch: s390x
+            ccache-max: 42M
+          - arch: riscv64
             ccache-max: 42M
 
     name: alpine (${{ matrix.arch }})
@@ -76,7 +78,7 @@ jobs:
             mpfr-dev
             lapack-dev
             python3
-            valgrind
+            ${{ matrix.arch != 'riscv64' && 'valgrind' || '' }}
             util-linux-misc
             autoconf
             automake
