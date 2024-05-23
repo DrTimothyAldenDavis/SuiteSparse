@@ -89,7 +89,7 @@ jobs:
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
-                  -DBLA_VENDOR="OpenBLAS" \
+                  -DBLA_VENDOR="Apple" \
                   -DCMAKE_PREFIX_PATH="/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
                   ..
             echo "::endgroup::"
