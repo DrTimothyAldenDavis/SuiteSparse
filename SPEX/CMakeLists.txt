@@ -417,7 +417,19 @@ endif ( )
 
 option ( SPEX_USE_PYTHON "ON (default): build Python interface for SPEX.  OFF: do not build Python interface for SPEX" ${SUITESPARSE_USE_PYTHON} )
 
-if ( BUILD_SHARED_LIBS AND SPEX_USE_PYTHON)
+if ( SPEX_USE_PYTHON AND BUILD_SHARED_LIBS )
+    set ( SPEX_HAS_PYTHON ON )
+else ( )
+    set ( SPEX_HAS_PYTHON OFF )
+endif ( )
+message ( STATUS "SPEX with Python interface: ${SPEX_HAS_PYTHON}" )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND SPEX_USE_PYTHON AND NOT SPEX_HAS_PYTHON )
+    message ( FATAL_ERROR "Python interface for SPEX requires building shared libraries" )
+endif ( )
+
+if ( SPEX_HAS_PYTHON )
 
     file ( GLOB SPEX_PYTHON_SOURCES "Python/SPEXpy/Source/*.c" )
     add_library ( spexpython SHARED ${SPEX_PYTHON_SOURCES} )
@@ -427,7 +439,8 @@ if ( BUILD_SHARED_LIBS AND SPEX_USE_PYTHON)
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         SOVERSION ${SPEX_VERSION_MAJOR}
-        PUBLIC_HEADER "Python/SPEXpy/Source/spex_python_connect.h" )
+        PUBLIC_HEADER "Python/SPEXpy/Source/spex_python_connect.h"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
     # MPFR:
     target_link_libraries ( spexpython PRIVATE ${MPFR_LIBRARIES} )
@@ -445,6 +458,7 @@ if ( BUILD_SHARED_LIBS AND SPEX_USE_PYTHON)
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
