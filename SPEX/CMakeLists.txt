@@ -415,7 +415,13 @@ endif ( )
 # SPEX_USE_PYTHON (for just SPEX) or SUITESPARSE_USE_PYTHON (for all of
 # SuiteSparse).  Currently, only SPEX has a Python interface in SuiteSparse.
 
-option ( SPEX_USE_PYTHON "ON (default): build Python interface for SPEX.  OFF: do not build Python interface for SPEX" ${SUITESPARSE_USE_PYTHON} )
+if ( BUILD_SHARED_LIBS )
+    set ( _spex_use_python_default ${SUITESPARSE_USE_PYTHON} )
+else ( )
+    set ( _spex_use_python_default OFF )
+endif ( )
+
+option ( SPEX_USE_PYTHON "ON (default if building shared libraries): build Python interface for SPEX.  OFF (default if not building shared libraries): do not build Python interface for SPEX" ${_spex_use_python_default} )
 
 if ( SPEX_USE_PYTHON AND BUILD_SHARED_LIBS )
     set ( SPEX_HAS_PYTHON ON )
