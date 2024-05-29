@@ -2,9 +2,9 @@
 //////////////////////////  paru_init_rel /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief Initializing element f's  time_stamp
  *          check all f's children and find the maximum time_stamp
@@ -15,15 +15,21 @@
  *
  * @author Aznaveh
  */
+
 #include "paru_internal.hpp"
-void paru_init_rel(int64_t f, paru_work *Work)
+
+void paru_init_rel
+(
+    int64_t f,
+    paru_work *Work,
+    const ParU_Symbolic Sym
+)
 {
     DEBUGLEVEL(0);
-    ParU_Symbolic *Sym = Work->Sym;
     int64_t *time_stamp = Work->time_stamp;
 
-    int64_t *Child = Sym->Child;
-    int64_t *Childp = Sym->Childp;
+    const int64_t *Child = Sym->Child;
+    const int64_t *Childp = Sym->Childp;
     int64_t max_time = 0;
 
     PRLEVEL(1, ("%% begining=" LD " end=" LD " \n", Childp[f], Childp[f + 1]));

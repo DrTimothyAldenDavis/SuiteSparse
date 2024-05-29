@@ -2,9 +2,9 @@
 /////////////////////////  paru_update_rel_ind ////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief updating element's relative indices in regard to another element
  *      using my hash to find the columns and update relative indices
@@ -13,8 +13,14 @@
  * */
 
 #include "paru_internal.hpp"
-void paru_update_rel_ind_col(int64_t e, int64_t f,
-    std::vector<int64_t> &colHash, paru_work *Work, ParU_Numeric *Num)
+void paru_update_rel_ind_col
+(
+    int64_t e,
+    int64_t f,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    ParU_Numeric Num
+)
 {
     // updating relative column index
     // it might be for curent element or for the Upart therefore we might even

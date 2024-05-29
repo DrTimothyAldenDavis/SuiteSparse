@@ -8,10 +8,11 @@
 // SPDX-License-Identifier: GPL-2.0+
 //------------------------------------------------------------------------------
 
-#ifdef CHOLMOD_HAS_CUDA
-
 #include <stdio.h>
 #include "SuiteSparse_config.h"
+#include "cholmod.h"
+
+#if defined ( CHOLMOD_HAS_CUDA )
 
 /* 64-bit version only */
 

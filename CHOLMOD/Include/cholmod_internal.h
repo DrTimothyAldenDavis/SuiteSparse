@@ -143,11 +143,6 @@
 
 #include "cholmod_types.h"
 
-#ifndef CHOLMOD_INT64
-// GPU acceleration only available for the CHOLMOD_INT64 case (int64)
-#undef CHOLMOD_HAS_CUDA
-#endif
-
 //------------------------------------------------------------------------------
 // internal routines
 //------------------------------------------------------------------------------

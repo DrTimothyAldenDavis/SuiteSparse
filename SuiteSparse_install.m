@@ -335,14 +335,26 @@ catch me
     failed {end+1} = 'GraphBLAS' ;
 end
 
+% compile and install SPEX
 try
-    fprintf ('try to install SPEX (requires GMP and MPFR)\n') ;
-    paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX_Left_LU/MATLAB']) ;
-    SPEX_Left_LU_install (0) ;
+    fprintf ('\nCompiling SPEX (requires GMP and MPFR)\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/SPEX/MATLAB']) ;
+    spex_mex_install (0) ;
 catch me
     disp (me.message) ;
     fprintf ('SPEX not installed\n') ;
     failed {end+1} = 'SPEX' ;
+end
+
+% compile and install ParU
+try
+    fprintf ('\nCompiling ParU\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/ParU/MATLAB']) ;
+    paru_make ;
+catch me
+    disp (me.message) ;
+    fprintf ('ParU not installed\n') ;
+    failed {end+1} = 'ParU' ;
 end
 
 %-------------------------------------------------------------------------------

@@ -1,3 +1,8 @@
+May XX, 2024: version 3.1.1
+
+    * minor update to MATLAB interface: for Mac, with MATLAB R2024a
+        on Apple Silicon (native app)
+
 Mar 22, 2024: version 3.1.0
 
     * major update to build system

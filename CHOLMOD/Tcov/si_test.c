@@ -42,3 +42,4 @@
 #include "t_error_tests.c"
 #include "t_tofrom_tests.c"
 #include "t_suitesparse.c"
+#include "t_query.c"

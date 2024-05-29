@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0)
-#error "This library requires SuiteSparse_config 7.7.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0)
+#error "This library requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #include "amd.h"
@@ -39,8 +39,8 @@
 #endif
 
 #include "cholmod.h"
-#if !defined (CHOLMOD__VERSION) || CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,2,1)
-#error "This library requires CHOLMOD 5.2.1 or later"
+#if !defined (CHOLMOD__VERSION) || CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,0)
+#error "This library requires CHOLMOD 5.3.0 or later"
 #endif
 
 #include "colamd.h"
@@ -56,8 +56,8 @@
 #if ! defined (NO_GRAPHBLAS)
     #include "GraphBLAS.h"
     #if !defined ( GxB_SUITESPARSE_GRAPHBLAS ) || \
-        GxB_IMPLEMENTATION < GxB_VERSION (9,1,0)
-    #error "This library requires SuiteSparse:GraphBLAS 9.1.0 or later"
+        GxB_IMPLEMENTATION < GxB_VERSION (9,2,0)
+    #error "This library requires SuiteSparse:GraphBLAS 9.2.0 or later"
     #endif
 #endif
 
@@ -83,14 +83,15 @@
 #error "This library requires RBio 4.3.2 or later"
 #endif
 
+// FIXME NOW: SPEX will be SPEX 3.2.0 for SuiteSparse 7.8.0
 #include "SPEX.h"
-#if !defined (SPEX__VERSION) || SPEX__VERSION < SUITESPARSE__VERCODE(3,1,0)
-#error "This library requires SPEX 3.1.0 or later"
+#if !defined (SPEX__VERSION) || SPEX__VERSION < SUITESPARSE__VERCODE(3,1,1)
+#error "This library requires SPEX 3.1.1 or later"
 #endif
 
 #include "SuiteSparseQR_C.h"
-#if !defined (SPQR__VERSION) || SPQR__VERSION < SUITESPARSE__VERCODE(4,3,3)
-#error "This library requires SPQR 4.3.3 or later"
+#if !defined (SPQR__VERSION) || SPQR__VERSION < SUITESPARSE__VERCODE(4,3,4)
+#error "This library requires SPQR 4.3.4 or later"
 #endif
 
 #include "umfpack.h"

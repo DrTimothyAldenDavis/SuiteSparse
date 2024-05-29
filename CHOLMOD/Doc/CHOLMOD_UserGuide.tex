@@ -2670,6 +2670,16 @@ prototypes.  Both use {\tt int}'s.  Unlike all other CHOLMOD functions, this
 function does not take the {\tt Common} object as an input parameter.
 
 %-------------------------------------------------------------------------------
+\newpage \section{{\tt Utility} Module: query CHOLMOD configuration}
+%-------------------------------------------------------------------------------
+
+\input{_query.tex}
+Returns \verb'true' if CHOLMOD has been compiled with the specific feature.
+The feature is an enum defined as follows:
+
+\input{_query_t.tex}
+
+%-------------------------------------------------------------------------------
 \newpage \section{{\tt Check} Module routines}
 %-------------------------------------------------------------------------------
 

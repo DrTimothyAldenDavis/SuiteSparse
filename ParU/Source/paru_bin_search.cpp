@@ -2,9 +2,9 @@
 //////////////////////////  paru_bin_search ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief binary search in different contexts.
  *  IMPORTANT: it includes r.
@@ -41,7 +41,9 @@ int64_t paru_bin_srch(int64_t *srt_lst, int64_t l, int64_t r, int64_t num)
     if (r >= l)
     {
         for (int64_t i = l; i <= r; i++)
+        {
             if (srt_lst[i] == num) return i;
+        }
     }
 
     return (-1);
@@ -64,7 +66,10 @@ int64_t paru_bin_srch_col(int64_t *srt_lst, int64_t l, int64_t r, int64_t num)
     if (r >= l)
     {
         for (int64_t i = l; i <= r; i++)
-            if (srt_lst[i] == num) return i;
+        {
+            int64_t srt_lsti = (srt_lst[i] < 0) ? flip(srt_lst[i]) : srt_lst[i];
+            if (srt_lsti == num) return i;
+        }
     }
     return (-1);
 }

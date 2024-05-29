@@ -11,11 +11,13 @@
 
 #include <iostream>
 
-#include "ParU.hpp"
+#include "ParU.h"
 
 int main (void)
 {
-    // FIXME: Actually call a function from ParU
-
+    int ver [3] ;
+    char date [128] ;
+    ParU_Version (ver, date) ;
+    printf ("ParU: %d.%d.%d, %s\n", ver [0], ver [1], ver [2], date) ;
     return 0;
 }

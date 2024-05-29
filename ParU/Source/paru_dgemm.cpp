@@ -2,9 +2,9 @@
 //////////////////////////  paru_dgemm /////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief      A wraper around dgemm for outer product.
  *
@@ -18,8 +18,18 @@
  */
 #include "paru_internal.hpp"
 
-int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
-               int64_t rowCount, int64_t colCount, paru_work *Work, ParU_Numeric *Num)
+bool paru_dgemm
+(
+    int64_t f,
+    double *pF,
+    double *uPart,
+    double *el,
+    int64_t fp,
+    int64_t rowCount,
+    int64_t colCount,
+    paru_work *Work,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% rowCount =" LD "  ", rowCount));
@@ -79,8 +89,8 @@ int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
 
     // double beta = 0;  // U part is not initialized
 
-    int64_t blas_ok = paru_tasked_dgemm(f, mA, nB, nA, pF + fp, 
-            lda, uPart, ldb, 0, el, ldc, Work, Num);
+    bool blas_ok = paru_tasked_dgemm(f, mA, nB, nA, pF + fp,
+            lda, uPart, ldb, 0, el, ldc, Work, Num) ;
 
 #ifndef NDEBUG
     int64_t PR = 1;

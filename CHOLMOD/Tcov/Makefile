@@ -25,11 +25,11 @@ default: go
     # NVIDIA CUDA configuration for CHOLMOD and SPQR
     #---------------------------------------------------------------------------
 
-#   ifneq ($(CUDA),no)
-#       CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
-#   else
+    ifneq ($(CUDA),no)
+        CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
+    else
         CUDA_PATH =
-#   endif
+    endif
 
     ifeq ($(wildcard $(CUDA_PATH)),)
         # CUDA is not present
@@ -45,12 +45,7 @@ default: go
     else
         # with CUDA for CHOLMOD and SPQR
         GPU_BLAS_PATH = $(CUDA_PATH)
-        # GPU_CONFIG must include -DCHOLMOD_HAS_CUDA to compile SuiteSparse for
-        # the GPU.  You can add additional GPU-related flags to it as well.
-        # with 4 cores (default):
-        GPU_CONFIG    = -DCHOLMOD_HAS_CUDA
-        # For example, to compile CHOLMOD for 10 CPU cores when using the GPU:
-        # GPU_CONFIG  = -DCHOLMOD_HAS_CUDA
+        GPU_CONFIG    = yes
         CUDART_LIB    = $(CUDA_PATH)/lib64/libcudart.so
         CUBLAS_LIB    = $(CUDA_PATH)/lib64/libcublas.so
         CUDA_INC_PATH = $(CUDA_PATH)/include/
@@ -60,8 +55,6 @@ default: go
                             -gencode=arch=compute_53,code=sm_53 \
                             -gencode=arch=compute_60,code=compute_60
     endif
-
-    CHOLMOD_CONFIG ?= $(GPU_CONFIG)
 
     # remove object files, but keep compiled libraries via 'make clean'
     CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d \
@@ -125,8 +118,6 @@ I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
         -I../../COLAMD/Source -I../../CCOLAMD/Source \
         -I../Utility
 
-I += $(GPU_CONFIG)
-
 ccode:  \
     di_test dl_test si_test sl_test \
     di_demo dl_demo si_demo sl_demo \
@@ -143,6 +134,7 @@ TEMPLATES =             \
     t_camdtest.c        \
     t_cctest.c          \
     t_cm.c              \
+    t_query.c           \
     t_read_triplet.c    \
     t_rhs.c             \
     t_znorm_diag.c      \
@@ -390,6 +382,7 @@ IUTIL_OBJ = \
     ui_start.o \
     ui_triplet_to_sparse.o \
     ui_version.o \
+    ui_query.o \
     ui_xtype.o \
     ui_zeros.o
 
@@ -460,6 +453,7 @@ LUTIL_OBJ = \
     ul_start.o \
     ul_triplet_to_sparse.o \
     ul_version.o \
+    ul_query.o \
     ul_xtype.o \
     ul_zeros.o
 
@@ -1450,6 +1444,10 @@ ui_version.o: ../Utility/cholmod_version.c
 	- ln -s $< ui_version.c
 	$(C) -c $(I) ui_version.c
 
+ui_query.o: ../Utility/cholmod_query.c
+	- ln -s $< ui_query.c
+	$(C) -c $(I) ui_query.c
+
 ui_xtype.o: ../Utility/cholmod_xtype.c
 	- ln -s $< ui_xtype.c
 	$(C) -c $(I) ui_xtype.c
@@ -1737,6 +1735,10 @@ ul_triplet_to_sparse.o: ../Utility/cholmod_l_triplet_to_sparse.c
 ul_version.o: ../Utility/cholmod_l_version.c
 	- ln -s $< ul_version.c
 	$(C) -c $(I) ul_version.c
+
+ul_query.o: ../Utility/cholmod_l_query.c
+	- ln -s $< ul_query.c
+	$(C) -c $(I) ul_query.c
 
 ul_xtype.o: ../Utility/cholmod_l_xtype.c
 	- ln -s $< ul_xtype.c
@@ -2052,5 +2054,5 @@ l_super_solve.o: ../Supernodal/cholmod_l_super_solve.c
 # GPU kernels only use int64_t:
 l_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.cu
 	- ln -s $< l_gpu_kernels.cu
-	$(NVCC) $(CHOLMOD_CONFIG) -I../../SuiteSparse_config -Xcompiler -fPIC -O3 -c l_gpu_kernels.cu
+	$(NVCC) $(CHOLMOD_CONFIG) $(I) -Xcompiler -fPIC -O3 -c l_gpu_kernels.cu
 
