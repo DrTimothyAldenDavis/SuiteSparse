@@ -56,8 +56,8 @@
 #if ! defined (NO_GRAPHBLAS)
     #include "GraphBLAS.h"
     #if !defined ( GxB_SUITESPARSE_GRAPHBLAS ) || \
-        GxB_IMPLEMENTATION < GxB_VERSION (9,2,0)
-    #error "This library requires SuiteSparse:GraphBLAS 9.2.0 or later"
+        GxB_IMPLEMENTATION < GxB_VERSION (9,3,0)
+    #error "This library requires SuiteSparse:GraphBLAS 9.3.0 or later"
     #endif
 #endif
 

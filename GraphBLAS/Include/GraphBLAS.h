@@ -1,4 +1,4 @@
-// SuiteSparse:GraphBLAS 9.2.0
+// SuiteSparse:GraphBLAS 9.3.0
 //------------------------------------------------------------------------------
 // GraphBLAS.h: definitions for the GraphBLAS package
 //------------------------------------------------------------------------------
@@ -254,9 +254,9 @@
 
 // The version of this implementation, and the GraphBLAS API version:
 #define GxB_IMPLEMENTATION_NAME "SuiteSparse:GraphBLAS"
-#define GxB_IMPLEMENTATION_DATE "May 22, 2024"
+#define GxB_IMPLEMENTATION_DATE "June 1, 2024"
 #define GxB_IMPLEMENTATION_MAJOR 9
-#define GxB_IMPLEMENTATION_MINOR 2
+#define GxB_IMPLEMENTATION_MINOR 3
 #define GxB_IMPLEMENTATION_SUB   0
 #define GxB_SPEC_DATE "Dec 22, 2023"
 #define GxB_SPEC_MAJOR 2
@@ -7116,7 +7116,7 @@ GrB_Info GrB_Vector_apply_BinaryOp1st_Scalar    // w<mask> = accum (w, op(x,u))
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
 
-// historical: identical to GxB_Vector_apply_BinaryOp1st
+// historical: identical to GrB_Vector_apply_BinaryOp1st_Scalar
 GrB_Info GxB_Vector_apply_BinaryOp1st           // w<mask> = accum (w, op(x,u))
 (
     GrB_Vector w,                   // input/output vector for results

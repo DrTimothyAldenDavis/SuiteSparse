@@ -140,7 +140,16 @@ else
     object_suffix = '.o' ;
 end
 
-inc = '-Iutil -I../../../Include -I../../../Source -I../../../Source/Shared -I../../../Source/Template -I../../../Source/Factories ' ;
+inc = '-Iutil -I../../../Include -I../../../Source ' ;
+    inc = [inc '-I../../../Source/include '] ;
+    inc = [inc '-I../../.. ' ] ;
+    inc = [inc '-I../../../Source/ij ' ] ;
+    inc = [inc '-I../../../Source/math ' ] ;
+    inc = [inc '-I../../../Source/cast ' ] ;
+    inc = [inc '-I../../../Source/binaryop ' ] ;
+    inc = [inc '-I../../../Source/transpose ' ] ;
+    inc = [inc '-I../../../Source/helper ' ] ;
+    inc = [inc '-I../../../Source/builtin ' ] ;
 
 if (need_rename)
     % use the renamed library for MATLAB

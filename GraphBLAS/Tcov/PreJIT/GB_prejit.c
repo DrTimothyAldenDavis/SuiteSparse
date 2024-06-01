@@ -2,7 +2,7 @@
 // GraphBLAS/Config/GB_prejit.c: return list of PreJIT kernels
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -11,8 +11,8 @@
 // indexed the following 9 kernels in GraphBLAS/PreJIT:
 
 #include "GB.h"
-#include "GB_jit_kernel_proto.h"
-#include "GB_jitifyer.h"
+#include "jitifyer/GB_jitifyer.h"
+#include "jit_kernels/include/GB_jit_kernel_proto.h"
 
 //------------------------------------------------------------------------------
 // prototypes for all PreJIT kernels
