@@ -126,8 +126,8 @@
 #define UMFPACK_SIZE_OF_ENTRY 7         /* sizeof (Entry), real or complex */
 #define UMFPACK_NDENSE_ROW 8            /* number of dense rows */
 #define UMFPACK_NEMPTY_ROW 9            /* number of empty rows */
-#define UMFPACK_NDENSE_COL 10           /* number of dense rows */
-#define UMFPACK_NEMPTY_COL 11           /* number of empty rows */
+#define UMFPACK_NDENSE_COL 10           /* number of dense cols */
+#define UMFPACK_NEMPTY_COL 11           /* number of empty cols */
 #define UMFPACK_SYMBOLIC_DEFRAG 12      /* # of memory compactions */
 #define UMFPACK_SYMBOLIC_PEAK_MEMORY 13 /* memory used by symbolic analysis */
 #define UMFPACK_SYMBOLIC_SIZE 14        /* size of Symbolic object, in Units */
