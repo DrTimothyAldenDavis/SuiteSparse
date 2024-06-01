@@ -13,7 +13,8 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPEX_DATE "May XX, 2024" )    # FIXME NOW
+set ( SPEX_DATE "June XX, 2024" )    # FIXME NOW
+#FIXME NOW: use SPEX 3.2.0 for SuiteSparse 7.8.0:
 set ( SPEX_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_MINOR 1 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_SUB   1 CACHE STRING "" FORCE )
