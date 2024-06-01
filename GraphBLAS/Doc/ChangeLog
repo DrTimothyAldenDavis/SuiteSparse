@@ -1,3 +1,8 @@
+June 1, 2024: version 9.3.0
+
+    * code restructuring:  Source folder split into many subfolders, and
+        some files and internal functions renamed.  No visible external change.
+
 May 22, 2024: version 9.2.0
 
     * Added graphblas_install.m: for a simpler method of compiling

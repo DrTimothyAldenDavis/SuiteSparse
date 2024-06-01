@@ -1,4 +1,3 @@
-#include "GraphBLAS_cuda.hpp"
 #include "GB_cuda.hpp"
 
 bool GB_cuda_apply_unop_branch

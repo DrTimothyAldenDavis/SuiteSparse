@@ -259,7 +259,7 @@ int main (void)
     // require a new JIT kernel to be compiled: if this is the first run of
     // this demo, the cache folder is empty.  Otherwise, the good gauss type
     // will be left in the cache folder from a prior run of this program, and
-    // its type defintion does not match this one.  The burble will say "jit:
+    // its type definition does not match this one.  The burble will say "jit:
     // loaded but must recompile" in this case.
     GrB_Type BadGauss = NULL ;
     info = GxB_Type_new (&BadGauss, 0, "gauss", BAD_GAUSS_DEFN) ;

@@ -207,17 +207,35 @@ configure_file ( "Config/README.md.in"
 # include directories for both graphblas and the demos
 #-------------------------------------------------------------------------------
 
-if ( GRAPHBLAS_COMPACT )
-    # do not compile the FactoryKernels
-    include_directories ( Source/Template Source Include Source/Shared
-        Config xxHash Config lz4 zstd zstd/zstd_subset JITpackage
-        Source/Factories Demo/Include rmm_wrap Source/JitKernels )
-else ( )
-    include_directories ( Source/Template Source Include Source/Shared
-        Config xxHash Config lz4 zstd zstd/zstd_subset JITpackage
-        Source/FactoryKernels
-        Source/Factories Demo/Include rmm_wrap Source/JitKernels )
-endif ( )
+include_directories ( ${PROJECT_SOURCE_DIR} Source Include Config
+    xxHash lz4 zstd zstd/zstd_subset JITpackage Demo/Include rmm_wrap
+    # include all Source/* folders that have include/ or template/ subfolders:
+    Source/apply
+    Source/assign
+    Source/builder
+    Source/builtin
+    Source/callback
+    Source/concat
+    Source/convert
+    Source/ewise
+    Source/hyper
+    Source/jit_kernels
+    Source/math
+    Source/memory
+    Source/monoid
+    Source/mxm
+    Source/ok
+    Source/omp
+    Source/print
+    Source/reduce
+    Source/select
+    Source/split
+    Source/slice
+    Source/transpose
+    Source/type
+    Source/wait
+    Source/werk
+    )
 
 #-------------------------------------------------------------------------------
 # compiler options
@@ -229,50 +247,21 @@ include ( GraphBLAS_compiler_options )
 # dynamic graphblas library properties
 #-------------------------------------------------------------------------------
 
-# Notes from Sebastien Villemot (sebastien@debian.org):
-# SOVERSION policy: if a binary compiled against the old version of the shared
-# library needs recompiling in order to work with the new version, then a
-# SO_VERSION increase # is needed. Otherwise not.  Examples of the changes that
-# require a SO_VERSION increase:
-#
-#   - a public function or static variable is removed
-#   - the prototype of a public function changes
-#   - the integer value attached to a public #define or enum changes
-#   - the fields of a public structure are modified
-#
-# Examples of changes that do not require a SO_VERSION increase:
-#
-#   - a new public function or static variable is added
-#   - a private function or static variable is removed or modified
-#   - changes in the internals of a structure that is opaque to the calling
-#       program (i.e. is only a pointer manipulated through public functions of
-#       the library)
-#   - a public enum is extended (by adding a new item at the end, but without
-#       changing the already existing items)
+file ( GLOB GRAPHBLAS_SOURCES "PreJIT/*.c" "Config/*.c" "Source/*/*.c" )
+
+if ( NOT GRAPHBLAS_COMPACT )
+    # compile the FactoryKernels
+    file ( GLOB GRAPHBLAS_FACTORYKERNELS "FactoryKernels/*.c" )
+    list ( APPEND GRAPHBLAS_SOURCES ${GRAPHBLAS_FACTORYKERNELS} )
+endif ( )
 
 if ( GRAPHBLAS_USE_JIT )
     # generate compressed JIT sources
     add_subdirectory ( JITpackage )
-    if ( GRAPHBLAS_COMPACT )
-        # with the JIT; but do not compile the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" )
-    else ( )
-        # with the JIT and the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c"
-            "Source/FactoryKernels/*.c" )
-    endif ( )
     # GLOB does not include files that do not yet exist, so prepend
     # the GB_JITpackage.c file here:
-    list ( PREPEND GRAPHBLAS_SOURCES $<TARGET_PROPERTY:GB_JITpackage,GENERATED_FILE> )
-else ( )
-    if ( GRAPHBLAS_COMPACT )
-        # no JIT, do not compile the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" )
-    else ( )
-        # no JIT, but do compile the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c"
-            "Source/FactoryKernels/*.c" )
-    endif ( )
+    list ( PREPEND GRAPHBLAS_SOURCES
+        $<TARGET_PROPERTY:GB_JITpackage,GENERATED_FILE> )
 endif ( )
 
 if ( BUILD_SHARED_LIBS )

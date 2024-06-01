@@ -9,8 +9,8 @@
 
 #include "GB_mex.h"
 #include "GB_mex_errors.h"
-#include "GB_file.h"
-#include "GB_jitifyer.h"
+#include "../Source/jitifyer/GB_file.h"
+#include "../Source/jitifyer/GB_jitifyer.h"
 
 #define USAGE "GB_mex_test11"
 

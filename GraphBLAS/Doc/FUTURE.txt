@@ -1,22 +1,22 @@
-FUTURE plans For 9.0.1: and beyond:
+FUTURE plans for GraphBLAS:
 
-GraphBLAS:
+    GrB_IndexBinaryOp : very important for many graph algorithms
 
-    don't just check 1st line of GraphBLAS.h when deciding to unpack
-    the src in user cache folder. Use a crc test.
-
-CUDA:
-
-    finding src
-    kernel source location, and name
-
-Future features:
+    JIT package: don't just check 1st line of GraphBLAS.h when deciding to
+        unpack the src in user cache folder. Use a crc test.
 
     cumulative sum (or other monoid)
 
+    Raye: link-time optimization with binary for operators, for Julia
+
     pack/unpack COO
+
     kernel fusion
+
     CUDA kernels
+        CUDA: finding src
+        CUDA: kernel source location, and name
+
     distributed framework
 
     fine-grain parallelism for dot-product based mxm, mxv, vxm,
@@ -24,7 +24,7 @@ Future features:
         (or call them GxB_outerProduct and GxB_innerProduct?)
 
     aggregators
-    index binary ops
+
     GrB_extract with GrB_Vectors instead of (GrB_Index *) arrays for I and J
 
     iso: set a flag with GrB_get/set to disable iso.  useful if the matrix is
@@ -55,10 +55,10 @@ Future features:
         * check if vectorization of GrB_mxm is effective when using clang
         * see how HNSW vector search could be implemented in GraphBLAS
 
-CUDA JIT:
+    for CUDA JIT:
 
-    https://developer.nvidia.com/blog/cuda-12-0-compiler-support-for-runtime-lto-using-nvjitlink-library/
-        Developer webpage talking about ways to do nvJit with link time
-        optimization using CUDA 12.0  Shows precompiled path and JIT path to
-        generate kernels
+        https://developer.nvidia.com/blog/cuda-12-0-compiler-support-for-runtime-lto-using-nvjitlink-library/
+            Developer webpage talking about ways to do nvJit with link time
+            optimization using CUDA 12.0  Shows precompiled path and JIT path to
+            generate kernels
 

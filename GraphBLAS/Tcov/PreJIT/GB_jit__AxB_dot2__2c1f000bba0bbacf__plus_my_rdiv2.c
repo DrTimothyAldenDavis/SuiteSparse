@@ -1,14 +1,14 @@
 //------------------------------------------------------------------------------
 // GB_jit__AxB_dot2__2c1f000bba0bbacf__plus_my_rdiv2.c
 //------------------------------------------------------------------------------
-// SuiteSparse:GraphBLAS v9.0.0, Timothy A. Davis, (c) 2017-2023,
+// SuiteSparse:GraphBLAS v9.3.0, Timothy A. Davis, (c) 2017-2024,
 // All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 // The above copyright and license do not apply to any
 // user-defined types and operators defined below.
 //------------------------------------------------------------------------------
 
-#include "GB_jit_kernel.h"
+#include "include/GB_jit_kernel.h"
 
 // semiring: (plus, my_rdiv2, double)
 
@@ -22,6 +22,7 @@
 #define GB_IDENTITY_BYTE 0x00
 #define GB_PRAGMA_SIMD_REDUCTION_MONOID(z) GB_PRAGMA_SIMD_REDUCTION (+,z)
 #define GB_Z_IGNORE_OVERFLOW 1
+#define GB_Z_SIZE  8
 #define GB_Z_NBITS 64
 #define GB_Z_ATOMIC_BITS 64
 #define GB_Z_HAS_ATOMIC_UPDATE 1
@@ -31,6 +32,8 @@
 #define GB_Z_CUDA_ATOMIC_TYPE double
 
 // multiplicative operator:
+#define GB_X_TYPE double
+#define GB_Y_TYPE float
 #ifndef GB_GUARD_my_rdiv2_DEFINED
 #define GB_GUARD_my_rdiv2_DEFINED
 GB_STATIC_INLINE
@@ -113,12 +116,12 @@ void my_rdiv2 (double *z, const double *x, const float *y)
 #define GB_DECLAREB(b) float b
 #define GB_GETB(b,Bx,p,iso) b = Bx [p]
 
-#include "GB_mxm_shared_definitions.h"
+#include "include/GB_mxm_shared_definitions.h"
 #ifndef GB_JIT_RUNTIME
 #define GB_jit_kernel GB_jit__AxB_dot2__2c1f000bba0bbacf__plus_my_rdiv2
 #define GB_jit_query  GB_jit__AxB_dot2__2c1f000bba0bbacf__plus_my_rdiv2_query
 #endif
-#include "GB_jit_kernel_AxB_dot2.c"
+#include "template/GB_jit_kernel_AxB_dot2.c"
 GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query) ;
 GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query)
 {
@@ -126,6 +129,7 @@ GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query)
     v [0] = GxB_IMPLEMENTATION_MAJOR ;      // keep at current version
     v [1] = GxB_IMPLEMENTATION_MINOR ;
     v [2] = GxB_IMPLEMENTATION_SUB ;
+    v [0] = 9 ; v [1] = 3 ; v [2] = 0 ;
     defn [0] = NULL ;
     defn [1] = GB_my_rdiv2_USER_DEFN ;
     defn [2] = NULL ;

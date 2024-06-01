@@ -8117,8 +8117,7 @@ prior versions, user-defined types and operators were handled by {\em generic}
 kernels that used function pointers for each operator and for any typecasting
 required.  Even built-in types and operators were sometimes handled by the
 generic kernels, if any typecasting was done, or if the specific operator,
-monoid, or semiring was disabled by the \verb'Source/GB_control.h' file when
-GraphBLAS was compiled.
+monoid, or semiring was disabled when GraphBLAS was compiled.
 
 \subsection{Using the JIT}
 
@@ -14483,6 +14482,13 @@ GraphBLAS folder.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item June 1, 2024: version 9.3.0
+
+    \begin{itemize}
+    \item code restructuring:  Source folder split into many subfolders, and
+        some files and internal functions renamed.  No visible external change.
+    \end{itemize}
 
 \item May 22, 2024: version 9.2.0
 

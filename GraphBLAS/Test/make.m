@@ -80,11 +80,10 @@ mexfunctions = dir ('GB_mex_*.c') ;
 cfiles = [ dir('../Demo/Include/usercomplex.c') ; dir('GB_mx_*.c') ] ;
 
 hfiles = [ dir('*.h') ; dir('Template/*.c') ; dir('../Demo/Include/usercomplex.h') ] ;
-inc = '-ITemplate -I../Include -I../Source -I../Source/Template -I../lz4 -I../rmm_wrap' ;
+inc = '-ITemplate -I../Include -I../Source -I../lz4 -I../rmm_wrap' ;
 inc = [inc ' -I../zstd -I../zstd/zstd_subset -I.'] ;
-inc = [inc ' -I../Source/Shared '] ;
 inc = [inc ' -I../Config '] ;
-inc = [inc ' -I../Source/Factories '] ;
+inc = [inc ' -I../Source/builtin '] ;
 
 if (ismac)
     % Mac (do 'make install' for GraphBLAS first)

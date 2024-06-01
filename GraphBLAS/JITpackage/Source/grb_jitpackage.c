@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 //------------------------------------------------------------------------------
 // zstd.h include file
@@ -71,6 +72,36 @@
 #include "zstd_subset/decompress/zstd_decompress_block.c"
 #include "zstd_subset/decompress/zstd_decompress.c"
 */
+
+//------------------------------------------------------------------------------
+// match_prefix: return true if the input string matches the prefix
+//------------------------------------------------------------------------------
+
+bool match_prefix (char *string, char *prefix) ;
+
+bool match_prefix (char *string, char *prefix)
+{
+    char *s = string ;
+    char *p = prefix ;
+    while (*s && *p)
+    {
+        if (*s != *p)
+        {
+            // both the string and prefix character are present, but
+            // do not match
+            return (false) ;
+        }
+        s++ ;
+        p++ ;
+        if (*p == '\0')
+        {
+            // the prefix is exhausted, so it has been found as the first part
+            // of the string
+            return (true) ;
+        }
+    }
+    return (false) ;
+}
 
 //------------------------------------------------------------------------------
 // grb_prepackage main program
@@ -192,18 +223,27 @@ int main (int argc, char **argv)
         nfiles) ;
     for (int k = 1 ; k < argc ; k++)
     {
-        // get the filename (without the path)
-        char *name = argv [k] ;
-        for (char *p = argv [k] ; *p != '\0' ; p++)
+        // get the filename
+        char *fullname = argv [k] ;
+        char *filename = fullname ;
+        int len = (int) strlen (fullname) ;
+//      for (char *p = argv [k] ; *p != '\0' ; p++)
+
+        for (int i = 0 ; i < len ; i++)
         {
-            if (*p == '/')
+            if (fullname [i] == '/')
             {
-                name = p + 1 ;
+                filename = fullname + i + 1 ;
+                if (match_prefix (filename, "template") ||
+                    match_prefix (filename, "include"))
+                {
+                    break ;
+                }
             }
         }
         // append this file to the index
         fprintf (fp, "    { %8zu, %8zu, GB_JITpackage_%-3d, \"%s\" },\n",
-            Uncompressed_size [k], Compressed_size [k], k-1, name) ;
+            Uncompressed_size [k], Compressed_size [k], k-1, filename) ;
     }
     fprintf (fp, "} ;\n#endif\n\n") ;
     fclose (fp) ;

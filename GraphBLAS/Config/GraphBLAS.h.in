@@ -7116,7 +7116,7 @@ GrB_Info GrB_Vector_apply_BinaryOp1st_Scalar    // w<mask> = accum (w, op(x,u))
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
 
-// historical: identical to GxB_Vector_apply_BinaryOp1st
+// historical: identical to GrB_Vector_apply_BinaryOp1st_Scalar
 GrB_Info GxB_Vector_apply_BinaryOp1st           // w<mask> = accum (w, op(x,u))
 (
     GrB_Vector w,                   // input/output vector for results

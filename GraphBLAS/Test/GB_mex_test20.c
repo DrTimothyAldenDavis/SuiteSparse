@@ -9,7 +9,7 @@
 
 #include "GB_mex.h"
 #include "GB_mex_errors.h"
-#include "GB_mask.h"
+#include "../Source/mask/GB_mask.h"
 
 #define USAGE "GB_mex_test20"
 
