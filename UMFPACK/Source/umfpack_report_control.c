@@ -384,7 +384,7 @@ void UMFPACK_report_control
 
     PRINTF (("    CPU timer: ")) ;
 #ifdef SUITESPARSE_TIMER_ENABLED
-    PRINTF (( xstr( SUITESPARSE_TIME ) "\n")) ;
+    PRINTF (( xstr( SUITESPARSE_CONFIG_TIMER ) "\n")) ;
 #else
     PRINTF (("no timer used.\n")) ;
 #endif
