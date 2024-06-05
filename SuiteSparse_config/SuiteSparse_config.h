@@ -376,7 +376,13 @@ int SuiteSparse_divcomplex
     #define SUITESPARSE_HAVE_CLOCK_GETTIME
     #define SUITESPARSE_CONFIG_TIMER omp_get_wtime
     #if defined ( SUITESPARSE_TIMER_ENABLED )
-        #define SUITESPARSE_TIME (SuiteSparse_time ( ))
+        #if defined ( _OPENMP )
+            // Avoid indirection through the library if the compilation unit
+            // including this header happens to use OpenMP.
+            #define SUITESPARSE_TIME (omp_get_wtime ( ))
+        #else
+            #define SUITESPARSE_TIME (SuiteSparse_time ( ))
+        #endif
     #else
         // No timer is available
         #define SUITESPARSE_TIME (0)
