@@ -88,7 +88,7 @@ typedef enum ParU_Info
                                            prefer diagonal */
 #endif
 
-// enum for ParU_Get:
+// enum for ParU_Get for Symbolic/Numeric objects
 typedef enum
 {
     // int64_t scalars:
@@ -115,16 +115,14 @@ typedef enum
     // double array of size n:
     PARU_GET_ROW_SCALE_FACTORS = 301,   // row scaling factors
 
-    // pointer to const string (const char **):
-    PARU_GET_BLAS_LIBRARY_NAME = 401,   // BLAS library used
-    PARU_GET_FRONT_TREE_TASKING = 402,  // frontal tree: parallel or sequential
 }
 ParU_Get_enum ;
 
 // enum for ParU_Set/ParU_Get for Control object
 typedef enum
 {
-    // int64_t parameters:
+
+    // int64_t parameters for ParU_Set and ParU_Get:
     PARU_CONTROL_MAX_THREADS = 1001,          // max number of threads
     PARU_CONTROL_STRATEGY = 1002,             // ParU strategy
     PARU_CONTROL_UMFPACK_STRATEGY = 1003,     // UMFPACK strategy
@@ -137,11 +135,19 @@ typedef enum
     PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix
     PARU_CONTROL_SINGLETONS = 1011,           // filter singletons, or not
     PARU_CONTROL_MEM_CHUNK = 1012,            // chunk size of memset and memcpy
+
+    // int64_t parameter, for ParU_Get only:
     PARU_CONTROL_OPENMP = 1013,               // if ParU compiled with OpenMP;
                                               // (for ParU_Get only, not set)
-    // double parameters:
-    PARU_CONTROL_PIVOT_TOLERANCE = 2001,        // pivot tolerance
-    PARU_CONTROL_DIAG_PIVOT_TOLERANCE = 2002,   // diagonal pivot tolerance
+
+    // double parameters for ParU_Set and ParU_Get:
+    PARU_CONTROL_PIVOT_TOLERANCE = 2001,      // pivot tolerance
+    PARU_CONTROL_DIAG_PIVOT_TOLERANCE = 2002, // diagonal pivot tolerance
+
+    // pointer to const string (const char **), for ParU_Get only:
+    PARU_CONTROL_BLAS_LIBRARY_NAME = 3001,    // BLAS library used
+    PARU_CONTROL_FRONT_TREE_TASKING = 3002,   // parallel or sequential
+
 }
 ParU_Control_enum ;
 
@@ -476,7 +482,7 @@ ParU_Info ParU_Residual
 //------------ Get statistics and contents of factorization --------------------
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get              // get int64_t from the symbolic/numeric objects
 (
     // input:
     const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
@@ -488,7 +494,7 @@ ParU_Info ParU_Get
     ParU_Control Control
 ) ;
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get              // get double from the symbolic/numeric objects
 (
     // input:
     const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
@@ -500,72 +506,72 @@ ParU_Info ParU_Get
     ParU_Control Control
 ) ;
 
-ParU_Info ParU_Get
-(
-    // input:
-    ParU_Get_enum field,        // field to get
-    // output:
-    const char **result,        // string result
-    // control:
-    ParU_Control Control
-) ;
-
 //------------------------------------------------------------------------------
 //------------ Get/Set control parameters --------------------------------------
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Set
+ParU_Info ParU_Set              // set int32_t parameter in Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to set
-    int32_t c,                      // value to set it to
+    ParU_Control_enum field,    // field to set
+    int32_t c,                  // value to set it to
     // control:
     ParU_Control Control
 ) ;
 
-ParU_Info ParU_Set
+ParU_Info ParU_Set              // set int64_t parameter in Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to set
-    int64_t c,                      // value to set it to
+    ParU_Control_enum field,    // field to set
+    int64_t c,                  // value to set it to
     // control:
     ParU_Control Control
 ) ;
 
-ParU_Info ParU_Set
+ParU_Info ParU_Set              // set double parameter in Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to set
-    double c,                       // value to set it to
+    ParU_Control_enum field,    // field to set
+    double c,                   // value to set it to
     // control:
     ParU_Control Control
 ) ;
 
-ParU_Info ParU_Set
+ParU_Info ParU_Set              // set float parameter in Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to set
-    float c,                        // value to set it to
+    ParU_Control_enum field,    // field to set
+    float c,                    // value to set it to
     // control:
     ParU_Control Control
 ) ;
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get              // get int64_t parameter from Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to get
+    ParU_Control_enum field,    // field to get
     // output:
-    int64_t *c,                     // value of parameter
+    int64_t *c,                 // value of field
     // control:
     ParU_Control Control
 ) ;
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get              // get double parameter from Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to get
+    ParU_Control_enum field,    // field to get
     // output:
-    double *c,                      // value of parameter
+    double *c,                  // value of field
+    // control:
+    ParU_Control Control
+) ;
+
+ParU_Info ParU_Get              // get string from Control
+(
+    // input:
+    ParU_Control_enum field,    // field to get
+    // output:
+    const char **result,        // string result
     // control:
     ParU_Control Control
 ) ;
@@ -886,7 +892,7 @@ ParU_Info ParU_C_Residual_BAX
 //------------ ParU_C_Get_*-----------------------------------------------------
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_C_Get_INT64
+ParU_Info ParU_C_Get_INT64       // get int64_t contents of Sym_C and Num_C
 (
     // input:
     const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
@@ -898,7 +904,7 @@ ParU_Info ParU_C_Get_INT64
     ParU_C_Control Control_C
 ) ;
 
-ParU_Info ParU_C_Get_FP64
+ParU_Info ParU_C_Get_FP64        // get double contents of Sym_C and Num_C
 (
     // input:
     const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
@@ -910,17 +916,7 @@ ParU_Info ParU_C_Get_FP64
     ParU_C_Control Control_C
 ) ;
 
-ParU_Info ParU_C_Get_CONSTCHAR
-(
-    // input:
-    ParU_Get_enum field,          // field to get
-    // output:
-    const char **result,          // string result
-    // control:
-    ParU_C_Control Control_C
-) ;
-
-ParU_Info ParU_C_Get_Control_INT64
+ParU_Info ParU_C_Get_Control_INT64  // get int64_t contents of Control
 (
     // input:
     ParU_Control_enum field,      // field to get
@@ -930,7 +926,7 @@ ParU_Info ParU_C_Get_Control_INT64
     ParU_C_Control Control_C
 ) ;
 
-ParU_Info ParU_C_Get_Control_FP64
+ParU_Info ParU_C_Get_Control_FP64   // get double contents of Control
 (
     // input:
     ParU_Control_enum field,      // field to get
@@ -940,24 +936,34 @@ ParU_Info ParU_C_Get_Control_FP64
     ParU_C_Control Control_C
 ) ;
 
-//------------------------------------------------------------------------------
-//------------ ParU_C_Set_*-----------------------------------------------------
-//------------------------------------------------------------------------------
-
-ParU_Info ParU_C_Set_INT64
+ParU_Info ParU_C_Get_Control_CONSTCHAR   // get string from Control
 (
-    // input
-    ParU_Control_enum parameter,    // parameter to set
-    int64_t c,                      // value to set it to
+    // input:
+    ParU_Control_enum field,      // field to get
+    // output:
+    const char **result,          // string result
     // control:
     ParU_C_Control Control_C
 ) ;
 
-ParU_Info ParU_C_Set_FP64
+//------------------------------------------------------------------------------
+//------------ ParU_C_Set_*-----------------------------------------------------
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_C_Set_Control_INT64      // set int64_t parameter in Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to set
-    double c,                       // value to set it to
+    ParU_Control_enum field,    // field to set
+    int64_t c,                  // value to set it to
+    // control:
+    ParU_C_Control Control_C
+) ;
+
+ParU_Info ParU_C_Set_Control_FP64       // set double parameter in Control
+(
+    // input
+    ParU_Control_enum field,    // field to set
+    double c,                   // value to set it to
     // control:
     ParU_C_Control Control_C
 ) ;

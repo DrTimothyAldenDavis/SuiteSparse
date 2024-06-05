@@ -562,10 +562,10 @@ ParU_Info ParU_C_Get_FP64
     return (ParU_Get (Sym, Num, field, result, Control)) ;
 }
 
-ParU_Info ParU_C_Get_CONSTCHAR
+ParU_Info ParU_C_Get_Control_CONSTCHAR
 (
     // input:
-    ParU_Get_enum field,          // field to get
+    ParU_Control_enum field,      // field to get
     // output:
     const char **result,          // string result
     // control:
@@ -608,35 +608,35 @@ ParU_Info ParU_C_Get_Control_FP64
 }
 
 //------------------------------------------------------------------------------
-//------------ ParU_C_Set_*-----------------------------------------------------
+//------------ ParU_C_Set_Control_* --------------------------------------------
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_C_Set_INT64
+ParU_Info ParU_C_Set_Control_INT64      // set int64_t parameter in Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to set
-    int64_t c,                      // value to set it to
+    ParU_Control_enum field,    // field to set
+    int64_t c,                  // value to set it to
     // control:
     ParU_C_Control Control_C
 )
 {
     ParU_Control Control = (Control_C == NULL) ? NULL :
         static_cast<ParU_Control>(Control_C->control_handle) ;
-    return (ParU_Set (parameter, c, Control)) ;
+    return (ParU_Set (field, c, Control)) ;
 }
 
-ParU_Info ParU_C_Set_FP64
+ParU_Info ParU_C_Set_Control_FP64       // set double parameter in Control
 (
     // input
-    ParU_Control_enum parameter,    // parameter to set
-    double c,                       // value to set it to
+    ParU_Control_enum field,    // field to set
+    double c,                   // value to set it to
     // control:
     ParU_C_Control Control_C
 )
 {
     ParU_Control Control = (Control_C == NULL) ? NULL :
         static_cast<ParU_Control>(Control_C->control_handle) ;
-    return (ParU_Set (parameter, c, Control)) ;
+    return (ParU_Set (field, c, Control)) ;
 }
 
 //------------------------------------------------------------------------------

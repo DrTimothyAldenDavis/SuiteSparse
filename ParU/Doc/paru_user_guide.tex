@@ -314,10 +314,15 @@ int main(int argc, char **argv)
         ParU_Control *Control_handle    // Control object to free
     ) ; \end{verbatim}}
 
-    There are four variants of \verb'ParU_Set' for setting control parameters,
-    two for integers (\verb'int64_t' and \verb'int32_t') and two for
-    floating-point (\verb'double' and \verb'float') which are the valid options
-    for \verb'type' in the signature below.
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Set}: set parameters in the Control object}
+\label{set}
+%-------------------------------------------------------------------------------
+
+There are four variants of \verb'ParU_Set' for setting control parameters, two
+for integers (\verb'int64_t' and \verb'int32_t') and two for floating-point
+(\verb'double' and \verb'float') which are the valid options for \verb'type' in
+the signature below.
 
     {\footnotesize
     \begin{verbatim}
@@ -330,7 +335,44 @@ int main(int argc, char **argv)
         ParU_Control Control
     ) ; \end{verbatim}}
 
-    The \verb'ParU_Control_enum parameter' defines which parameter to set.
+The \verb'ParU_Control_enum parameter' defines which parameter to set,
+described below.
+
+    {\footnotesize
+    \begin{verbatim}
+    // enum for ParU_Set/ParU_Get for Control object
+    typedef enum
+    {
+
+        // int64_t parameters for ParU_Set and ParU_Get:
+        PARU_CONTROL_MAX_THREADS = 1001,          // max number of threads
+        PARU_CONTROL_STRATEGY = 1002,             // ParU strategy
+        PARU_CONTROL_UMFPACK_STRATEGY = 1003,     // UMFPACK strategy
+        PARU_CONTROL_ORDERING = 1004,             // UMFPACK ordering
+        PARU_CONTROL_RELAXED_AMALGAMATION = 1005, // goal for # pivots in fronts
+        PARU_CONTROL_PANEL_WIDTH = 1006,          // # of pivots in a panel
+        PARU_CONTROL_DGEMM_TINY = 1007,           // dimension of tiny dgemm's
+        PARU_CONTROL_DGEMM_TASKED = 1008,         // dimension of tasked dgemm's
+        PARU_CONTROL_DTRSM_TASKED = 1009,         // dimension of tasked dtrsm's
+        PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix
+        PARU_CONTROL_SINGLETONS = 1011,           // filter singletons, or not
+        PARU_CONTROL_MEM_CHUNK = 1012,            // chunk size of memset and memcpy
+
+        // int64_t parameter, for ParU_Get only:
+        PARU_CONTROL_OPENMP = 1013,               // if ParU compiled with OpenMP;
+                                                  // (for ParU_Get only, not set)
+
+        // double parameters for ParU_Set and ParU_Get:
+        PARU_CONTROL_PIVOT_TOLERANCE = 2001,      // pivot tolerance
+        PARU_CONTROL_DIAG_PIVOT_TOLERANCE = 2002, // diagonal pivot tolerance
+
+        // pointer to const string (const char **), for ParU_Get only:
+        PARU_CONTROL_BLAS_LIBRARY_NAME = 3001,    // BLAS library used
+        PARU_CONTROL_FRONT_TREE_TASKING = 3002,   // parallel or sequential
+
+    }
+    ParU_Control_enum ; \end{verbatim}}
+
     For integer parameters:
 
     \begin{itemize}
@@ -519,35 +561,13 @@ containing a numeric factorization.
 
 There are several signatures for \verb'ParU_Get' depending on which
 object is being queried.  To query the \verb'ParU_Control' object,
-the \verb'ParU_Control_enum' is used.  To query the other two objects
-(\verb'ParU_Symbolic' and  \verb'ParU_Numeric'), the
-\verb'ParU_Get_enum' is used.  Both enums are listed below:
+the \verb'ParU_Control_enum' is used (see Section~\ref{set}).  To query the
+other two objects (\verb'ParU_Symbolic' and  \verb'ParU_Numeric'), the
+\verb'ParU_Get_enum' is used, described below.
 
     {\footnotesize
     \begin{verbatim}
-    typedef enum
-    {
-        // int64_t parameters:
-        PARU_CONTROL_MAX_THREADS = 1001,          // max number of threads
-        PARU_CONTROL_STRATEGY = 1002,             // ParU strategy
-        PARU_CONTROL_UMFPACK_STRATEGY = 1003,     // UMFPACK strategy
-        PARU_CONTROL_ORDERING = 1004,             // UMFPACK ordering
-        PARU_CONTROL_RELAXED_AMALGAMATION = 1005, // goal for # pivots in fronts
-        PARU_CONTROL_PANEL_WIDTH = 1006,          // # of pivots in a panel
-        PARU_CONTROL_DGEMM_TINY = 1007,           // dimension of tiny dgemm's
-        PARU_CONTROL_DGEMM_TASKED = 1008,         // dimension of tasked dgemm's
-        PARU_CONTROL_DTRSM_TASKED = 1009,         // dimension of tasked dtrsm's
-        PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix
-        PARU_CONTROL_SINGLETONS = 1011,           // filter singletons, or not
-        PARU_CONTROL_MEM_CHUNK = 1012,            // chunk size of memset and memcpy
-        PARU_CONTROL_OPENMP = 1013,               // if ParU compiled with OpenMP;
-                                                  // (for ParU_Get only, not set)
-        // double parameters:
-        PARU_CONTROL_PIVOT_TOLERANCE = 2001,        // pivot tolerance
-        PARU_CONTROL_DIAG_PIVOT_TOLERANCE = 2002,   // diagonal pivot tolerance
-    }
-    ParU_Control_enum ;
-
+    // enum for ParU_Get for Symbolic/Numeric objects
     typedef enum
     {
         // int64_t scalars:
@@ -573,19 +593,14 @@ the \verb'ParU_Control_enum' is used.  To query the other two objects
 
         // double array of size n:
         PARU_GET_ROW_SCALE_FACTORS = 301,   // row scaling factors
-
-        // pointer to const string (const char **):
-        PARU_GET_BLAS_LIBRARY_NAME = 401,   // BLAS library used
-        PARU_GET_FRONT_TREE_TASKING = 402,  // frontal tree: parallel or sequential
     }
     ParU_Get_enum ; \end{verbatim}}
 
-Use the following signatures to query the symbolic or numeric factorization, or
-to query the library itself:
+Use the following signatures to query the symbolic or numeric factorization:
 
     {\footnotesize
     \begin{verbatim}
-    ParU_Info ParU_Get
+    ParU_Info ParU_Get              // get int64_t from the symbolic/numeric objects
     (
         // input:
         const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
@@ -597,7 +612,7 @@ to query the library itself:
         ParU_Control Control
     ) ;
 
-    ParU_Info ParU_Get
+    ParU_Info ParU_Get              // get double from the symbolic/numeric objects
     (
         // input:
         const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
@@ -607,19 +622,9 @@ to query the library itself:
         double *result,             // double result: a scalar or an array
         // control:
         ParU_Control Control
-    ) ;
-
-    ParU_Info ParU_Get
-    (
-        // input:
-        ParU_Get_enum field,        // field to get
-        // output:
-        const char **result,        // string result
-        // control:
-        ParU_Control Control
     ) ; \end{verbatim}}
 
-For example, to make a copy of the size-n column permutation vector from the
+For example, to get a copy of the size-n column permutation vector from the
 Symbolic object:
 
     {\footnotesize
@@ -634,47 +639,58 @@ of entries in the \verb'L' and \verb'U' factors.
 All of the \verb'double' results require both the \verb'Sym' and \verb'Num'
 objects to be valid.
 
-The two string results query the ParU library to report how it was compiled.
-This signature returns a pointer to a constant string that is owned by
-the library and must not be modified:
-
-    {\footnotesize
-    \begin{verbatim}
-    char *blas_libary_name, *front_tasking ;
-    ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, &blas_name, Control)) ;
-    ParU_Get (PARU_GET_FRONT_TREE_TASKING, &front_tasking, Control)) ; \end{verbatim}}
-
-The following two signatures are available for querying contents of the
+The following three signatures are available for querying contents of the
 Control object:
 
     {\footnotesize
     \begin{verbatim}
-    ParU_Info ParU_Get
+    ParU_Info ParU_Get              // get int64_t parameter from Control
     (
         // input
-        ParU_Control_enum parameter,    // parameter to get
+        ParU_Control_enum field,    // field to get
         // output:
-        int64_t *c,                     // value of parameter
+        int64_t *c,                 // value of field
         // control:
         ParU_Control Control
     ) ;
 
-    ParU_Info ParU_Get
+    ParU_Info ParU_Get              // get double parameter from Control
     (
         // input
-        ParU_Control_enum parameter,    // parameter to get
+        ParU_Control_enum field,    // field to get
         // output:
-        double *c,                      // value of parameter
+        double *c,                  // value of field
+        // control:
+        ParU_Control Control
+    ) ;
+
+    ParU_Info ParU_Get              // get string from Control
+    (
+        // input:
+        ParU_Control_enum field,    // field to get
+        // output:
+        const char **result,        // string result
         // control:
         ParU_Control Control
     ) ; \end{verbatim}}
 
-%-------------------------------------------------------------------------------
-\subsection{{\sf ParU\_Set}: set Control parameters}
-\label{set}
-%-------------------------------------------------------------------------------
+The parameters that can be returned are the same as those described in
+Section~\ref{set}, with three additional parameters that can be queried by
+\verb'ParU_Get' but not set with \verb'ParU_Set'.  Two cases return string that
+is owned by the library and must not be modified:
 
-Refer to Section~\ref{control} for the \verb'ParU_Set' method.
+    {\footnotesize
+    \begin{verbatim}
+    char *blas_libary_name, *front_tasking ;
+    ParU_Get (PARU_CONTROL_BLAS_LIBRARY_NAME, &blas_name, Control)) ;
+    ParU_Get (PARU_CONTROL_FRONT_TREE_TASKING, &front_tasking, Control)) ; \end{verbatim}}
+
+A final case returns true if ParU was compiled with OpenMP, or false otherwise:
+
+    {\footnotesize
+    \begin{verbatim}
+    int64_t openmp_used ;
+    ParU_Get (PARU_CONTROL_OPENMP , &openmp_used, Control)) ; \end{verbatim}}
 
 %-------------------------------------------------------------------------------
 \subsection{{\sf ParU\_Analyze}: symbolic analysis}
@@ -1105,9 +1121,9 @@ describe the user-callable C functions, their prototypes, and what they can do.
 
     The \verb'ParU_C_Control' structure contains parameters that control
     various ParU options.  The object is created by \verb'ParU_C_InitControl',
-    modified by \verb'ParU_C_Set', and deleted by \verb'ParU_C_FreeControl'.
-    Its contents can be queried with \verb'ParU_C_Get_Control_INT64'.
-    and \verb'ParU_C_Get_Control_FP64'.
+    modified by \verb'ParU_C_Set_Control_*', and deleted by
+    \verb'ParU_C_FreeControl'.  Its contents can be queried with
+    \verb'ParU_C_Get_Control_INT64'.  and \verb'ParU_C_Get_Control_FP64'.
 
     Any ParU function can be passed a NULL pointer for its \verb'Control'
     parameter.  In that case, defaults are used.  To use non-default
@@ -1137,7 +1153,8 @@ details.
 
     {\footnotesize
     \begin{verbatim}
-    ParU_Info ParU_C_Get_INT64
+
+    ParU_Info ParU_C_Get_INT64       // get int64_t contents of Sym_C and Num_C
     (
         // input:
         const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
@@ -1149,7 +1166,7 @@ details.
         ParU_C_Control Control_C
     ) ;
 
-    ParU_Info ParU_C_Get_FP64
+    ParU_Info ParU_C_Get_FP64        // get double contents of Sym_C and Num_C
     (
         // input:
         const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
@@ -1161,16 +1178,7 @@ details.
         ParU_C_Control Control_C
     ) ;
 
-    ParU_Info ParU_C_Get_CONSTCHAR
-    (
-        // input:
-        ParU_Get_enum field,          // field to get
-        // output:
-        const char **result,          // string result
-        // control:
-        ParU_C_Control Control_C
-
-    ParU_Info ParU_C_Get_Control_INT64
+    ParU_Info ParU_C_Get_Control_INT64  // get int64_t contents of Control
     (
         // input:
         ParU_Control_enum field,      // field to get
@@ -1180,7 +1188,7 @@ details.
         ParU_C_Control Control_C
     ) ;
 
-    ParU_Info ParU_C_Get_Control_FP64
+    ParU_Info ParU_C_Get_Control_FP64   // get double contents of Control
     (
         // input:
         ParU_Control_enum field,      // field to get
@@ -1188,31 +1196,43 @@ details.
         double *result,               // int64_t result: a scalar or an array
         // control:
         ParU_C_Control Control_C
+    ) ;
+
+    ParU_Info ParU_C_Get_Control_CONSTCHAR   // get string from Control
+    (
+        // input:
+        ParU_Control_enum field,      // field to get
+        // output:
+        const char **result,          // string result
+        // control:
+        ParU_C_Control Control_C
     ) ; \end{verbatim} }
 
+
 %-------------------------------------------------------------------------------
-\subsection{{\sf ParU\_C\_Set\_*}: set Control parameters}
+\subsection{{\sf ParU\_C\_Set\_Control\_*}: set Control parameters}
 %-------------------------------------------------------------------------------
 
-The \verb'ParU_C_Set_*' methods set parameters in the C version of the
+The \verb'ParU_C_Set_Control_*' methods set parameters in the C version of the
 Control object.  See Section~\ref{control} for details.
 
     {\footnotesize
     \begin{verbatim}
-    ParU_Info ParU_C_Set_INT64
+
+    ParU_Info ParU_C_Set_Control_INT64      // set int64_t parameter in Control
     (
         // input
-        ParU_Control_enum parameter,    // parameter to set
-        int64_t c,                      // value to set it to
+        ParU_Control_enum field,    // field to set
+        int64_t c,                  // value to set it to
         // control:
         ParU_C_Control Control_C
     ) ;
 
-    ParU_Info ParU_C_Set_FP64
+    ParU_Info ParU_C_Set_Control_FP64       // set double parameter in Control
     (
         // input
-        ParU_Control_enum parameter,    // parameter to set
-        double c,                       // value to set it to
+        ParU_Control_enum field,    // field to set
+        double c,                   // value to set it to
         // control:
         ParU_C_Control Control_C
     ) ; \end{verbatim} }
@@ -1525,7 +1545,7 @@ Control object.  See Section~\ref{control} for details.
     ) ; \end{verbatim} }
 
 %-------------------------------------------------------------------------------
-\subsection{{\sf ParU\_C\_FreeNumeric}: free the numeric factorization}
+\subsection{{\sf ParU\_C\_FreeNumeric}: free a numeric factorization}
 %-------------------------------------------------------------------------------
 
     {\footnotesize
@@ -1538,7 +1558,7 @@ Control object.  See Section~\ref{control} for details.
     ) ; \end{verbatim} }
 
 %-------------------------------------------------------------------------------
-\subsection{{\sf ParU\_C\_FreeSymbolic}: free the symbolic analysis structure}
+\subsection{{\sf ParU\_C\_FreeSymbolic}: free a symbolic analysis structure}
 %-------------------------------------------------------------------------------
 
     {\footnotesize
@@ -1548,6 +1568,17 @@ Control object.  See Section~\ref{control} for details.
         ParU_C_Symbolic *Sym_handle_C,   // symbolic object to free
         // control:
         ParU_C_Control *Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_FreeControl}: free a Control object}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_FreeControl
+    (
+        ParU_C_Control *Control_handle_C    // Control object to free
     ) ; \end{verbatim} }
 
 %-------------------------------------------------------------------------------
@@ -1588,10 +1619,11 @@ For best performance, paru relies on functions unique to the Intel MKL BLAS.
 An optional input, \verb'paru_make(try_intel)', is true by default.
 \verb'paru_make' detects the BLAS library used by MATLAB and then attempts to
 use functions unique to the Intel MKL BLAS library
-(\verb'mkl*set_num_threads_local').  This may fail when paru is compiled (in
-which case paru is compiled with \verb'try_intel' false).  If \verb'paru' fails
-when it runs, with a link error reporting that an an \verb'mkl_*' routine is
-not found, use \verb'paru_make(false)' to disable the Intel MKL functions.
+(\verb'mkl*set_num_threads_local').  This may fail when \verb'paru' is
+compiled, in which case compilation is reattempted with \verb'try_intel'
+false).  If \verb'paru' fails when it runs, with a link error reporting that an
+an \verb'mkl_*' routine is not found, use \verb'paru_make(false)' to disable
+the Intel MKL functions.
 
 {\bf Limitations:}
 The MATLAB interface to ParU

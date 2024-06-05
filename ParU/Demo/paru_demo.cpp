@@ -88,7 +88,7 @@ int main(int argc, char **argv)
     }
 
     const char *blas_name ;
-    info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, &blas_name, Control) ;
+    info = ParU_Get (PARU_CONTROL_BLAS_LIBRARY_NAME, &blas_name, Control) ;
     if (info != PARU_SUCCESS)
     {
         FREE_ALL_AND_RETURN (info) ;
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
     std::cout << "BLAS: " << blas_name << std::endl ;
 
     const char *tasking ;
-    info = ParU_Get (PARU_GET_FRONT_TREE_TASKING, &tasking, Control) ;
+    info = ParU_Get (PARU_CONTROL_FRONT_TREE_TASKING, &tasking, Control) ;
     if (info != PARU_SUCCESS)
     {
         FREE_ALL_AND_RETURN (info) ;
