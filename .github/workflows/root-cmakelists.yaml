@@ -351,7 +351,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: C:/Miniconda/envs/test
-          key: conda:msvc
+          key: conda:netlib:msvc
 
       - name: install packages with conda
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
@@ -359,8 +359,8 @@ jobs:
           echo ${{ steps.conda-cache.outputs.cache-hit }}
           conda info
           conda list
-          conda install -y -c intel mkl-devel
-          conda install -y -c conda-forge --override-channels ccache
+          conda install -y -c conda-forge --override-channels ccache m2w64-gcc-libs
+          conda install -y -c conda-forge/label/lapack_rc --override-channels liblapack=3.11
 
       - name: save conda cache
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
@@ -467,6 +467,7 @@ jobs:
                 -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                 -DSUITESPARSE_USE_FORTRAN=OFF \
+                -DSUITESPARSE_C_TO_FORTRAN="(name,NAME) name##_" \
                 -DPython_EXECUTABLE="C:/msys64/ucrt64/bin/python.exe" \
                 -DSUITESPARSE_DEMOS=OFF \
                 -DBUILD_TESTING=OFF \
