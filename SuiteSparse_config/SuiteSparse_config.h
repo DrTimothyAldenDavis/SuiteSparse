@@ -372,13 +372,17 @@ int SuiteSparse_divcomplex
     // but other packages can themselves use OpenMP.  In this case,
     // those packages should use omp_get_wtime() directly.  This can
     // be done via the SUITESPARSE_TIME macro, defined below:
+    #define SUITESPARSE_TIMER_ENABLED
     #define SUITESPARSE_HAVE_CLOCK_GETTIME
-    #if defined ( _OPENMP )
-        #define SUITESPARSE_TIMER_ENABLED
-        #define SUITESPARSE_TIME (omp_get_wtime ( ))
-    #elif defined ( SUITESPARSE_HAVE_CLOCK_GETTIME )
-        #define SUITESPARSE_TIMER_ENABLED
-        #define SUITESPARSE_TIME (SuiteSparse_time ( ))
+    #define SUITESPARSE_CONFIG_TIMER omp_get_wtime
+    #if defined ( SUITESPARSE_TIMER_ENABLED )
+        #if defined ( _OPENMP )
+            // Avoid indirection through the library if the compilation unit
+            // including this header happens to use OpenMP.
+            #define SUITESPARSE_TIME (omp_get_wtime ( ))
+        #else
+            #define SUITESPARSE_TIME (SuiteSparse_time ( ))
+        #endif
     #else
         // No timer is available
         #define SUITESPARSE_TIME (0)
