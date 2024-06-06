@@ -103,14 +103,32 @@ int main(int argc, char **argv)
     int ver[3];
     char date[128];
     ParU_C_Version(ver, date);
+    double tol ;
+    int64_t ordering ;
 
-    info = ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+    info = ParU_C_Get_Control_INT64 (PARU_CONTROL_ORDERING,
+        &ordering, Control) ;
+    TEST_ASSERT_INFO (ordering == PARU_DEFAULT_ORDERING, info) ;
+
+    info = ParU_C_Set_Control_INT64 (PARU_CONTROL_ORDERING,
         PARU_ORDERING_METIS_GUARD, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_C_Set_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
+    info = ParU_C_Get_Control_INT64 (PARU_CONTROL_ORDERING,
+        &ordering, Control) ;
+    TEST_ASSERT_INFO (ordering == PARU_ORDERING_METIS_GUARD, info) ;
+
+    info = ParU_C_Get_Control_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
+        &tol, Control) ;
+    TEST_ASSERT_INFO (tol == PARU_DEFAULT_PIVOT_TOLERANCE, info) ;
+
+    info = ParU_C_Set_Control_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
         0.2, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_C_Get_Control_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
+        &tol, Control) ;
+    TEST_ASSERT_INFO (tol == 0.2, info) ;
 
     // null pointer tests
     info = ParU_C_Analyze(NULL, &Sym, Control);
@@ -147,8 +165,8 @@ int main(int argc, char **argv)
 
     const char *blas_library ;
 
-    info = ParU_C_Get_CONSTCHAR (PARU_GET_BLAS_LIBRARY_NAME, &blas_library,
-        Control) ;
+    info = ParU_C_Get_Control_CONSTCHAR (PARU_CONTROL_BLAS_LIBRARY_NAME,
+        &blas_library, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     printf ("BLAS: [%s]\n", blas_library) ;
 

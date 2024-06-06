@@ -36,7 +36,7 @@ if (nargin < 1)
     try_intel = (~ismac && isunix) ;
 end
 if (try_intel)
-    v = version ('-blas')
+    v = version ('-blas') ;
     try_intel = contains (v, 'Intel') ;
 end
 if (try_intel)

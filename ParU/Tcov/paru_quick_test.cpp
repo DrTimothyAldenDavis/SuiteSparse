@@ -203,27 +203,31 @@ int main(int argc, char **argv)
     double resid = 0, anorm = 0 , xnorm = 0, rcond,
         min_udiag, max_udiag, flops ;
     int64_t anz, rs1, cs1, strategy, umfpack_strategy, umf_ordering, lnz,
-        unz, gunk ;
+        unz, gunk, openmp_used ;
 
-    info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, &blas_library, Control) ;
+    info = ParU_Get (PARU_CONTROL_BLAS_LIBRARY_NAME, &blas_library, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     printf ("blas_library: %s\n", blas_library) ;
 
-    info = ParU_Get (PARU_GET_FRONT_TREE_TASKING, &tasking, Control) ;
+    info = ParU_Get (PARU_CONTROL_FRONT_TREE_TASKING, &tasking, Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
     printf ("tasking: %s\n", tasking) ;
+
+    info = ParU_Get (PARU_CONTROL_OPENMP, &openmp_used, Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    TEST_ASSERT (openmp_used == 1) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_N, &resid, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (PARU_GET_BLAS_LIBRARY_NAME, (const char **) NULL,
+    info = ParU_Get (PARU_CONTROL_BLAS_LIBRARY_NAME, (const char **) NULL,
         Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_N, (int64_t *) NULL, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (PARU_GET_N, &tasking, Control) ;
+    info = ParU_Get ((ParU_Control_enum) PARU_GET_N, &tasking, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_N, &n, Control) ;
@@ -233,7 +237,8 @@ int main(int argc, char **argv)
     info = ParU_Get (NULL, Num, PARU_GET_N, &gunk, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Get (Sym, Num, PARU_GET_FRONT_TREE_TASKING, &gunk, Control) ;
+    info = ParU_Get (Sym, Num, (ParU_Get_enum) PARU_CONTROL_FRONT_TREE_TASKING,
+        &gunk, Control) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, Control) ;

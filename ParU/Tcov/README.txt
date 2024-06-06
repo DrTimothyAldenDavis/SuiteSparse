@@ -9,6 +9,14 @@ code they can.  ParU has some non-deterministic behavior when creating its
 parallel tasks for factorizing multiple fronts in parallel, and this can affect
 the test coverage.
 
+To run the test coverage, you must first compile and install all of SuiteSparse.
+Starting at the top-level of SuiteSparse, do:
+
+    make local
+    make install
+    cd ParU/Tcov
+    make
+
 Files in this folder:
 
     cov                     run gcov after the tests

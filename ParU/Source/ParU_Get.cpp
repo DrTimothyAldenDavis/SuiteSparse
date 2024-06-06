@@ -14,7 +14,7 @@
 // ParU_Get: get an int64_t scalar or array
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get              // get an int64_t scalar or array from Sym/Num
 (
     // input:
     const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
@@ -112,7 +112,7 @@ ParU_Info ParU_Get
 // ParU_Get: get a double scalar or array
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get              // get a double scalar or array from Sym/Num
 (
     // input:
     const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
@@ -179,13 +179,13 @@ ParU_Info ParU_Get
 }
 
 //------------------------------------------------------------------------------
-// ParU_Get: get a string
+// ParU_Get: get a string from the Control object
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get              // get a string from the Control object
 (
     // input:
-    ParU_Get_enum field,        // field to get
+    ParU_Control_enum field,    // field to get
     // output:
     const char **result,        // string result
     // control:
@@ -203,11 +203,11 @@ ParU_Info ParU_Get
     switch (field)
     {
 
-        case PARU_GET_BLAS_LIBRARY_NAME:
+        case PARU_CONTROL_BLAS_LIBRARY_NAME:
             (*result) = SuiteSparse_BLAS_library ( ) ;
             break ;
 
-        case PARU_GET_FRONT_TREE_TASKING:
+        case PARU_CONTROL_FRONT_TREE_TASKING:
             #ifdef PARU_1TASK
             (*result) = "sequential" ;
             #else
@@ -227,7 +227,7 @@ ParU_Info ParU_Get
 // ParU_Get: get an int64_t parameter from the Control object
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get          // get an int64_t parameter from the Control object
 (
     // input
     ParU_Control_enum parameter,    // parameter to get
@@ -328,7 +328,7 @@ ParU_Info ParU_Get
 // ParU_Get: get a double parameter from the Control object
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Get
+ParU_Info ParU_Get          // get a double parameter from the Control object
 (
     // input
     ParU_Control_enum parameter,    // parameter to get

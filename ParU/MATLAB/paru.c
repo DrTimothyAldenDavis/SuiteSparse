@@ -141,7 +141,7 @@ void mexFunction
     PARU_OK (ParU_C_InitControl (&Control), "initialization failed") ;
 
     // change the default ordering to AMD/COLAMD
-    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_ORDERING,
         PARU_ORDERING_AMD, Control), "opts failed") ;
 
     // get the opts
@@ -154,14 +154,14 @@ void mexFunction
         // tol: pivot tolerance
         if ((field = mxGetField (pargin [2], 0, "tol")) != NULL)
         {
-            PARU_OK (ParU_C_Set_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
+            PARU_OK (ParU_C_Set_Control_FP64 (PARU_CONTROL_PIVOT_TOLERANCE,
                 (double) mxGetScalar (field), Control), "opts failed") ;
         }
 
         // diagtol: pivot tolerance for diagonal entries
         if ((field = mxGetField (pargin [2], 0, "diagtol")) != NULL)
         {
-            PARU_OK (ParU_C_Set_FP64 (PARU_CONTROL_DIAG_PIVOT_TOLERANCE,
+            PARU_OK (ParU_C_Set_Control_FP64 (PARU_CONTROL_DIAG_PIVOT_TOLERANCE,
                 (double) mxGetScalar (field), Control), "opts failed") ;
         }
 
@@ -177,25 +177,25 @@ void mexFunction
                     // strategy, as determined by the properties of the matrix.
                     // ParU will then select the strategy that UMFPACK
                     // selected.
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_STRATEGY,
                         PARU_STRATEGY_AUTO, Control), "opts failed") ;
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
                         UMFPACK_STRATEGY_AUTO, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "unsymmetric", STRLEN) == 0)
                 {
                     // both UMFPACK and ParU will use the unsymmetric strategy
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_STRATEGY,
                         PARU_STRATEGY_UNSYMMETRIC, Control), "opts failed") ;
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
                         UMFPACK_STRATEGY_UNSYMMETRIC, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "symmetric", STRLEN) == 0)
                 {
                     // both UMFPACK and ParU will use the symmetric strategy
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_STRATEGY,
                         PARU_STRATEGY_SYMMETRIC, Control), "opts failed") ;
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
                         UMFPACK_STRATEGY_SYMMETRIC, Control), "opts failed") ;
                 }
                 else
@@ -218,27 +218,27 @@ void mexFunction
                 option [STRLEN] = '\0' ;
                 if (strncmp (option, "amd", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_ORDERING,
                         PARU_ORDERING_AMD, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "cholmod", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_ORDERING,
                         PARU_ORDERING_CHOLMOD, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "metis", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_ORDERING,
                         PARU_ORDERING_METIS, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "metis_guard", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_ORDERING,
                         PARU_ORDERING_METIS_GUARD, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "none", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_ORDERING,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_ORDERING,
                         PARU_ORDERING_NONE, Control), "opts failed") ;
                 }
                 else
@@ -261,17 +261,17 @@ void mexFunction
                 option [STRLEN] = '\0' ;
                 if (strncmp (option, "none", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_PRESCALE,
                         PARU_PRESCALE_NONE, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "sum", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_PRESCALE,
                         PARU_PRESCALE_SUM, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "max", STRLEN) == 0)
                 {
-                    PARU_OK (ParU_C_Set_INT64 (PARU_CONTROL_PRESCALE,
+                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_PRESCALE,
                         PARU_PRESCALE_MAX, Control), "opts failed") ;
                 }
                 else
@@ -344,9 +344,9 @@ void mexFunction
         &unz, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE,
         &rcond, Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_CONSTCHAR (PARU_GET_BLAS_LIBRARY_NAME,
+    PARU_OK (ParU_C_Get_Control_CONSTCHAR (PARU_CONTROL_BLAS_LIBRARY_NAME,
         &blas_name, Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_CONSTCHAR (PARU_GET_FRONT_TREE_TASKING,
+    PARU_OK (ParU_C_Get_Control_CONSTCHAR (PARU_CONTROL_FRONT_TREE_TASKING,
         &front_tree_tasking, Control), "stats failed") ;
 
     ParU_C_FreeNumeric (&Num, Control) ;
