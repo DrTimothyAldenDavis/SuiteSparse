@@ -19,11 +19,6 @@
 #ifndef SUITESPARSE_CONFIG_H
 #define SUITESPARSE_CONFIG_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 //------------------------------------------------------------------------------
 // SuiteSparse-wide ANSI C11 #include files
 //------------------------------------------------------------------------------
@@ -261,6 +256,11 @@ extern "C"
     // ANSI C95 and earlier: no restrict keyword
     #define SUITESPARSE_RESTRICT
 
+#endif
+
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
 //==============================================================================
