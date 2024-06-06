@@ -620,13 +620,13 @@ ParU_Info ParU_FreeControl
 
 // The following definitions are available in both C and C++:
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct ParU_C_Symbolic_struct *ParU_C_Symbolic ;
 typedef struct ParU_C_Numeric_struct  *ParU_C_Numeric ;

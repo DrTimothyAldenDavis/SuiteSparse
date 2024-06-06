@@ -45,10 +45,7 @@
 }
 
 #include "paru_cov.hpp"
-extern "C"
-{
 #include "ParU.h"
-}
 
 int main(int argc, char **argv)
 {

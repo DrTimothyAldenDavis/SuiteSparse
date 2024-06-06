@@ -18,12 +18,11 @@
 #include <cublas_v2.h>
 #endif
 #define SUITESPARSE_GPU_EXTERN_ON
-extern "C"
-{
-    #include "SuiteSparse_config.h"
-    #include "cholmod.h"
-    #include "SuiteSparseQR_definitions.h"
-}
+
+#include "SuiteSparse_config.h"
+#include "cholmod.h"
+#include "SuiteSparseQR_definitions.h"
+
 #undef SUITESPARSE_GPU_EXTERN_ON
 
 #include <complex>
