@@ -14,6 +14,9 @@
 
 #include "umf_internal.h"
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 void UMFPACK_report_control
 (
     const double Control [UMFPACK_CONTROL]
@@ -381,11 +384,7 @@ void UMFPACK_report_control
 
     PRINTF (("    CPU timer: ")) ;
 #ifdef SUITESPARSE_TIMER_ENABLED
-    #ifdef _OPENMP
-        PRINTF (("omp_get_wtime ( )\n")) ;
-    #else
-        PRINTF (("SuiteSparse_time ( )\n")) ;
-    #endif
+    PRINTF (( xstr( SUITESPARSE_CONFIG_TIMER ) "\n")) ;
 #else
     PRINTF (("no timer used.\n")) ;
 #endif

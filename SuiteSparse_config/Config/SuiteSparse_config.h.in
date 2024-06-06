@@ -19,11 +19,6 @@
 #ifndef SUITESPARSE_CONFIG_H
 #define SUITESPARSE_CONFIG_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 //------------------------------------------------------------------------------
 // SuiteSparse-wide ANSI C11 #include files
 //------------------------------------------------------------------------------
@@ -263,6 +258,11 @@ extern "C"
 
 #endif
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 //==============================================================================
 // SuiteSparse_config parameters and functions
 //==============================================================================
@@ -372,13 +372,17 @@ int SuiteSparse_divcomplex
     // but other packages can themselves use OpenMP.  In this case,
     // those packages should use omp_get_wtime() directly.  This can
     // be done via the SUITESPARSE_TIME macro, defined below:
+    #cmakedefine SUITESPARSE_TIMER_ENABLED
     #cmakedefine SUITESPARSE_HAVE_CLOCK_GETTIME
-    #if defined ( _OPENMP )
-        #define SUITESPARSE_TIMER_ENABLED
-        #define SUITESPARSE_TIME (omp_get_wtime ( ))
-    #elif defined ( SUITESPARSE_HAVE_CLOCK_GETTIME )
-        #define SUITESPARSE_TIMER_ENABLED
-        #define SUITESPARSE_TIME (SuiteSparse_time ( ))
+    #cmakedefine SUITESPARSE_CONFIG_TIMER @SUITESPARSE_CONFIG_TIMER@
+    #if defined ( SUITESPARSE_TIMER_ENABLED )
+        #if defined ( _OPENMP )
+            // Avoid indirection through the library if the compilation unit
+            // including this header happens to use OpenMP.
+            #define SUITESPARSE_TIME (omp_get_wtime ( ))
+        #else
+            #define SUITESPARSE_TIME (SuiteSparse_time ( ))
+        #endif
     #else
         // No timer is available
         #define SUITESPARSE_TIME (0)

@@ -455,6 +455,14 @@ jobs:
           if [ ${{ matrix.cuda }} = 'with' ]; then
             _extra_config+=(-DCUDAToolkit_ROOT="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")")
             _extra_config+=(-DCMAKE_CUDA_COMPILER="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")/bin/nvcc.exe")
+            # MSVC 19.40 is still Visual Studio 2022.
+            # Suppress erroneous version check.
+            _extra_config+=(-DCMAKE_CUDA_FLAGS=-allow-unsupported-compiler)
+          fi
+          if [ ${{ matrix.cc }} = 'clang-cl' ]; then
+            # Move away (old) clang-cl that would be in PATH to make sure that
+            # we use the one that matches the MSVC runtime.
+            mv C:/Program\ Files/LLVM C:/Program\ Files/LLVM_old
           fi
           mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
           cmake -G"Ninja Multi-Config" \
