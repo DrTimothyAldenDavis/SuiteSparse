@@ -585,7 +585,9 @@ bool iso ;              // true if all entries have the same value
         {
             j = k ;
             // operate on column A(:,j)
-            for (p = Ap [k] ; p < Ap [k+1] ; p++)
+            int64_t pA_start = Ap [k]
+            int64_t pA_end   = Ap [k+1] ;
+            for (p = pA_start ; p < pA_end ; p++)
             {
                 // entry A(i,j) with row index i and value aij
                 int64_t i = Ai [p] ;
@@ -594,13 +596,15 @@ bool iso ;              // true if all entries have the same value
         }
 
     //--------------------
-    // (4) hypersparse  // A->h is non-NULL, A->nvec <= A->dim
+    // (4) hypersparse  // A->h is non-NULL, A->nvec <= A->vdim
 
         for (k = 0 ; k < A->nvec ; k++)
         {
             j = A->h [k]
             // operate on column A(:,j)
-            for (p = Ap [k] ; p < Ap [k+1] ; p++)
+            int64_t pA_start = Ap [k]
+            int64_t pA_end   = Ap [k+1] ;
+            for (p = pA_start ; p < pA_end ; p++)
             {
                 // entry A(i,j) with row index i and value aij
                 int64_t i = Ai [p] ;

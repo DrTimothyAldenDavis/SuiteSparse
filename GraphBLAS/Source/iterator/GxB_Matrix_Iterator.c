@@ -161,9 +161,10 @@ GrB_Info GxB_Matrix_Iterator_next (GxB_Iterator iterator)
 GrB_Info GxB_Matrix_Iterator_seek
 (
     GxB_Iterator iterator,
-    GrB_Index p
+    GrB_Index p_input
 )
 {
+    int64_t p = (int64_t) p_input ;
     if (p >= iterator->pmax)
     { 
         // the iterator is exhausted
@@ -262,13 +263,13 @@ void GxB_Matrix_Iterator_getIndex
         {
             if (iterator->by_col)
             { 
-                (*row) = iterator->Ai [iterator->p] ;
-                (*col) = iterator->k ;
+                (*row) = (GrB_Index) (iterator->Ai [iterator->p]) ;
+                (*col) = (GrB_Index) (iterator->k) ;
             }
             else
             { 
-                (*row) = iterator->k ;
-                (*col) = iterator->Ai [iterator->p] ;
+                (*row) = (GrB_Index) (iterator->k) ;
+                (*col) = (GrB_Index) (iterator->Ai [iterator->p]) ;
             }
         }
         break ;
@@ -277,13 +278,13 @@ void GxB_Matrix_Iterator_getIndex
         {
             if (iterator->by_col)
             { 
-                (*row) = iterator->Ai [iterator->p] ;
-                (*col) = iterator->Ah [iterator->k] ;
+                (*row) = (GrB_Index) (iterator->Ai [iterator->p]) ;
+                (*col) = (GrB_Index) (iterator->Ah [iterator->k]) ;
             }
             else
             { 
-                (*row) = iterator->Ah [iterator->k] ;
-                (*col) = iterator->Ai [iterator->p] ;
+                (*row) = (GrB_Index) (iterator->Ah [iterator->k]) ;
+                (*col) = (GrB_Index) (iterator->Ai [iterator->p]) ;
             }
         }
         break ;
@@ -293,13 +294,13 @@ void GxB_Matrix_Iterator_getIndex
         {
             if (iterator->by_col)
             { 
-                (*row) = iterator->p - iterator->pstart ;
-                (*col) = iterator->k ;
+                (*row) = (GrB_Index) (iterator->p - iterator->pstart) ;
+                (*col) = (GrB_Index) (iterator->k) ;
             }
             else
             { 
-                (*row) = iterator->k ;
-                (*col) = iterator->p - iterator->pstart ;
+                (*row) = (GrB_Index) (iterator->k) ;
+                (*col) = (GrB_Index) (iterator->p - iterator->pstart) ;
             }
         }
         break ;
