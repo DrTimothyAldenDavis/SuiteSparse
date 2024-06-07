@@ -18,7 +18,7 @@
 GrB_Info GB_Iterator_rc_seek
 (
     GxB_Iterator iterator,
-    GrB_Index j,
+    GrB_Index j_input,
     bool jth_vector
 )
 {
@@ -27,6 +27,7 @@ GrB_Info GB_Iterator_rc_seek
     // check if the iterator is exhausted
     //--------------------------------------------------------------------------
 
+    int64_t j = (int64_t) j_input ;
     if (j >= ((jth_vector) ? iterator->anvec : iterator->avdim))
     { 
         iterator->pstart = 0 ;

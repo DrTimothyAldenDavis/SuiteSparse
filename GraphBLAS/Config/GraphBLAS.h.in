@@ -11856,7 +11856,7 @@ GrB_Info GxB_Vector_Iterator_seek (GxB_Iterator iterator, GrB_Index p) ;
 
 #define GB_Vector_Iterator_seek(iterator, q)                                \
 (                                                                           \
-    (q >= iterator->pmax) ?                                                 \
+    (((int64_t) q) >= iterator->pmax) ?                                     \
     (                                                                       \
         /* the iterator is exhausted */                                     \
         iterator->p = iterator->pmax,                                       \

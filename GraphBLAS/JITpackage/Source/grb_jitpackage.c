@@ -2,7 +2,7 @@
 // grb_jitpackage: package GraphBLAS source code for the JIT 
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 //------------------------------------------------------------------------------
 // zstd.h include file
@@ -113,13 +114,60 @@ int main (int argc, char **argv)
 {
 
     //--------------------------------------------------------------------------
+    // get list of files to be processed
+    //--------------------------------------------------------------------------
+
+    char **file_list = NULL;
+    size_t nfiles = 0;
+
+    if (argc == 2 && argv[1][0] == '@')
+    {
+        // input argument is a "response file" containing the file list
+
+        // open file
+        FILE *fr = fopen (argv[1]+1, "rb") ;
+        OK (fr != NULL) ;
+
+        // get number of lines in file
+        char ch;
+        do
+        {
+            ch = fgetc (fr);
+            if (ch == '\n')
+                nfiles++;
+        } while (ch != EOF);
+
+        // read file list from response file
+        rewind (fr);
+        file_list = malloc ( (nfiles+1) * sizeof (file_list) );
+        // prepend empty element for compatibility with argv
+        file_list[0] = malloc (1);
+        file_list[0][0] = '\0';
+        char temp[200];
+        size_t length;
+        for (size_t i = 1 ; i < nfiles+1 ; i++)
+        {
+            fscanf (fr, "%s\n", temp);
+            length = strlen (temp);
+            file_list[i] = malloc (length+1);
+            strncpy (file_list[i], temp, length);
+            file_list[i][length] = '\0';
+        }
+    }
+    else
+    {
+        // input argument list is the file list
+        nfiles = argc - 1 ;
+        file_list = argv;
+    }
+
+    //--------------------------------------------------------------------------
     // start the GB_JITpackage.c file
     //--------------------------------------------------------------------------
 
     FILE *fp = fopen ("GB_JITpackage.c", "wb") ;
     OK (fp != NULL) ;
-    int nfiles = argc - 1 ;
-    printf ("Processing %d input files ...\n", nfiles) ;
+    printf ("Processing %zu input files ...\n", nfiles) ;
 
     fprintf (fp,
         "//------------------------------------------------------------------------------\n"
@@ -139,7 +187,7 @@ int main (int argc, char **argv)
         "GB_JITpackage_index_struct GB_JITpackage_index [1] "
         "= {{0, 0, NULL, NULL}} ;\n"
         "#else\n"
-        "int GB_JITpackage_nfiles = %d ;\n\n", argc-1) ;
+        "int GB_JITpackage_nfiles = %zu ;\n\n", nfiles) ;
 
     //--------------------------------------------------------------------------
     // allocate the index
@@ -156,14 +204,14 @@ int main (int argc, char **argv)
     // compress each file
     //--------------------------------------------------------------------------
 
-    for (int k = 1 ; k < argc ; k++)
+    for (size_t k = 1 ; k < nfiles+1 ; k++)
     {
 
         //----------------------------------------------------------------------
         // read the input file
         //----------------------------------------------------------------------
 
-        FILE *ff = fopen (argv [k], "r") ;
+        FILE *ff = fopen (file_list [k], "r") ;
         OK (ff != NULL) ;
         fseek (ff, 0, SEEK_END) ;
         size_t inputsize = ftell (ff) ;
@@ -189,8 +237,8 @@ int main (int argc, char **argv)
         // append the bytes to the output file 
         //----------------------------------------------------------------------
 
-        fprintf (fp, "// %s:\n", argv [k]) ;
-        fprintf (fp, "uint8_t GB_JITpackage_%d [%zu] = {\n", k-1, dsize) ;
+        fprintf (fp, "// %s:\n", file_list [k]) ;
+        fprintf (fp, "uint8_t GB_JITpackage_%zu [%zu] = {\n", k-1, dsize) ;
         for (int64_t k = 0 ; k < dsize ; k++)
         {
             fprintf (fp, "%3d,", dst [k]) ;
@@ -219,15 +267,15 @@ int main (int argc, char **argv)
     printf ("Compression:        %g\n", 
         (double) total_compressed_size / (double) total_uncompressed_size) ;
 
-    fprintf (fp, "\nGB_JITpackage_index_struct GB_JITpackage_index [%d] =\n{\n",
+    fprintf (fp, "\nGB_JITpackage_index_struct GB_JITpackage_index [%zu] =\n{\n",
         nfiles) ;
-    for (int k = 1 ; k < argc ; k++)
+    for (int k = 1 ; k < nfiles+1 ; k++)
     {
         // get the filename
-        char *fullname = argv [k] ;
+        char *fullname = file_list [k] ;
         char *filename = fullname ;
         int len = (int) strlen (fullname) ;
-//      for (char *p = argv [k] ; *p != '\0' ; p++)
+//      for (char *p = file_list [k] ; *p != '\0' ; p++)
 
         for (int i = 0 ; i < len ; i++)
         {
@@ -249,5 +297,6 @@ int main (int argc, char **argv)
     fclose (fp) ;
     free (Uncompressed_size) ;
     free (Compressed_size) ;
+    return (0) ;
 }
 
