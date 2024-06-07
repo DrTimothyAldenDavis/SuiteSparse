@@ -410,7 +410,7 @@
     #define GB_ATOMIC_COMPARE_EXCHANGE_32(target, expected, desired)        \
     (                                                                       \
         GB_PUN (int32_t, expected) ==                                       \
-            _InterlockedCompareExchange ((int32_t volatile *) (target),     \
+            _InterlockedCompareExchange ((long volatile *) (target),        \
             GB_PUN (int32_t, desired), GB_PUN (int32_t, expected))          \
     )
 
