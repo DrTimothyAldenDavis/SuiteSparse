@@ -305,6 +305,7 @@ jobs:
         cuda: [without]
         link: [both]
         cc: [cl]
+        cxx: [cl]
         include:
           - openmp: without
             openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
@@ -315,6 +316,7 @@ jobs:
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             link: both
             cc: cl
+            cxx: cl
           - openmp: with
             cuda: with
             cuda-cmake-flags:
@@ -325,10 +327,17 @@ jobs:
               -DBUILD_SHARED_LIBS=OFF
               -DBUILD_STATIC_LIBS=ON
             cc: cl
+            cxx: cl
           - openmp: with
             cuda: without
             link: both
             cc: clang-cl
+            cxx: clang-cl
+          - openmp: with
+            cuda: without
+            link: both
+            cc: clang
+            cxx: clang++
 
     env:
       CHERE_INVOKING: 1
@@ -459,15 +468,15 @@ jobs:
             # Suppress erroneous version check.
             _extra_config+=(-DCMAKE_CUDA_FLAGS=-allow-unsupported-compiler)
           fi
-          if [ ${{ matrix.cc }} = 'clang-cl' ]; then
-            # Move away (old) clang-cl that would be in PATH to make sure that
-            # we use the one that matches the MSVC runtime.
+          if [[ ${{ matrix.cc }} == clang* ]]; then
+            # Move away (old) clang/clang++ and clang-cl that would be in PATH
+            # to make sure that we use the one that matches the MSVC runtime.
             mv C:/Program\ Files/LLVM C:/Program\ Files/LLVM_old
           fi
           mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
           cmake -G"Ninja Multi-Config" \
                 -DCMAKE_C_COMPILER=${{ matrix.cc }} \
-                -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
+                -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
                 -DCMAKE_BUILD_TYPE="Release" \
                 -DCMAKE_INSTALL_PREFIX=".." \
                 -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
@@ -532,7 +541,7 @@ jobs:
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake -G"Ninja Multi-Config" \
             -DCMAKE_C_COMPILER=${{ matrix.cc }} \
-            -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
             -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
             -DBLA_VENDOR="All" \
             ${{ matrix.openmp-cmake-flags }} \
@@ -570,7 +579,7 @@ jobs:
             cd build
             cmake -G"Ninja Multi-Config" \
               -DCMAKE_C_COMPILER=${{ matrix.cc }} \
-              -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
+              -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
               ..
             cmake --build . --config Release
