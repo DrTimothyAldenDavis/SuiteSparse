@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_backward_sub: Solve L' x = b for Cholesky
+// SPEX_Cholesky/spex_symmetric_backward_sub: Solve L' x = b for Cholesky
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -21,7 +21,7 @@
  * A. It is not modified on input/output
  */
  
-SPEX_info spex_cholesky_backward_sub
+SPEX_info spex_symmetric_backward_sub
 (
     // Output
     SPEX_matrix x,          // Solution vector to A x = det(A) * b

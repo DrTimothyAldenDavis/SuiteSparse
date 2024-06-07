@@ -21,6 +21,7 @@ void spex_demo_determine_error
     char *file
 )
 {
+    printf("\nError code: %d", info);
     if (info == SPEX_OUT_OF_MEMORY)
     {
         printf("\nSPEX: Out of memory\n");

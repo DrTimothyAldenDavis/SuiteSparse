@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_preorder: symbolic ordering/analysis for Cholesky
+// SPEX_Cholesky/spex_symmetric_preorder: symbolic ordering/analysis for Cholesky
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -33,7 +33,7 @@
 
 #include "spex_cholesky_internal.h"
 
-SPEX_info spex_cholesky_preorder
+SPEX_info spex_symmetric_preorder
 (
     // Output
     SPEX_symbolic_analysis *S_handle,   // Symbolic analysis data structure

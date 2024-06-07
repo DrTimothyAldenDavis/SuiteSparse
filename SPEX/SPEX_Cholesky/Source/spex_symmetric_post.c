@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_post: Postorder a forest
+// SPEX_Cholesky/spex_symmetric_post: Postorder a forest
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -24,7 +24,7 @@
 
 /* Purpose: post order a forest. */
 
-SPEX_info spex_cholesky_post
+SPEX_info spex_symmetric_post
 (
     // Output
     int64_t **post_handle, // On output: post-order of the forest
@@ -69,7 +69,7 @@ SPEX_info spex_cholesky_post
     for (j = 0 ; j < n ; j++)
     {
         if (parent [j] != -1) continue ;    // skip j if it is not a root
-        SPEX_CHECK(spex_cholesky_tdfs (&k, j, head, next, post, stack));
+        SPEX_CHECK(spex_symmetric_tdfs (&k, j, head, next, post, stack));
     }
     SPEX_FREE_WORKSPACE ;
     (*post_handle) = post;

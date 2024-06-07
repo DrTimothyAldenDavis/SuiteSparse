@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_symbolic_analysis: Symbolic analysis for Cholesky
+// SPEX_Cholesky/spex_symmetric_symbolic_analysis: Symbolic analysis for Cholesky
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -42,7 +42,7 @@
  * option:      Command options
  */
 
-SPEX_info spex_cholesky_symbolic_analysis
+SPEX_info spex_symmetric_symbolic_analysis
 (
     //Output
     SPEX_symbolic_analysis S,  // Symbolic analysis
@@ -69,13 +69,13 @@ SPEX_info spex_cholesky_symbolic_analysis
     int64_t *c = NULL;
 
     // Obtain elimination tree of A
-    SPEX_CHECK( spex_cholesky_etree(&S->parent, A) );
+    SPEX_CHECK( spex_symmetric_etree(&S->parent, A) );
 
     // Postorder the elimination tree of A
-    SPEX_CHECK( spex_cholesky_post(&post, S->parent, n) );
+    SPEX_CHECK( spex_symmetric_post(&post, S->parent, n) );
 
     // Get the column counts of A
-    SPEX_CHECK( spex_cholesky_counts(&c, A, S->parent, post) );
+    SPEX_CHECK( spex_symmetric_counts(&c, A, S->parent, post) );
 
     // Set the column pointers of L
     S->cp = (int64_t*) SPEX_malloc( (n+1)*sizeof(int64_t));

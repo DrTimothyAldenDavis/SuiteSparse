@@ -79,27 +79,27 @@ SPEX_info SPEX_cholesky_analyze
     if (!is_symmetric)
     {
         SPEX_FREE_WORKSPACE ;
-        return SPEX_NOTSPD ;
+        return SPEX_UNSYMMETRIC ;
     }
 
     //--------------------------------------------------------------------------
     // Preorder: obtain the row/column ordering of A (Default is AMD)
     //--------------------------------------------------------------------------
 
-    SPEX_CHECK( spex_cholesky_preorder(&S, A, option) );
+    SPEX_CHECK( spex_symmetric_preorder(&S, A, option) );
 
     //--------------------------------------------------------------------------
     // Permute matrix A, that is apply the row/column ordering from the
     // symbolic analysis step to get the permuted matrix PAP.
     //--------------------------------------------------------------------------
 
-    SPEX_CHECK( spex_cholesky_permute_A(&PAP, A, false, S) );
+    SPEX_CHECK( spex_symmetric_permute_A(&PAP, A, false, S) );
 
     //--------------------------------------------------------------------------
     // Symbolic Analysis: compute the elimination tree of PAP
     //--------------------------------------------------------------------------
 
-    SPEX_CHECK( spex_cholesky_symbolic_analysis(S, PAP, option) );
+    SPEX_CHECK( spex_symmetric_symbolic_analysis(S, PAP, option) );
 
     //--------------------------------------------------------------------------
     // Set output, free all workspace and return success

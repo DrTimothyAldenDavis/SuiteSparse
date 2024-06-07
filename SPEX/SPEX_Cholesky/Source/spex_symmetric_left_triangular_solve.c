@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_left_triangular_solve: sparse symmetric
+// SPEX_Cholesky/spex_symmetric_left_triangular_solve: sparse symmetric
 // left-looking triangular solve
 //------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ static inline int compar (const void * a, const void * b)
     return (x < y ? -1 : ((x == y) ? 0 : 1)) ;
 }
 
-SPEX_info spex_cholesky_left_triangular_solve
+SPEX_info spex_symmetric_left_triangular_solve
 (
     // Output
     int64_t *top_output,     // On output: the beginning of nonzero pattern of
@@ -146,7 +146,7 @@ SPEX_info spex_cholesky_left_triangular_solve
     // nonzero pattern of L(k,:) (To compute L(:,k) you need the prealocation
     // first).
 
-    SPEX_CHECK(spex_cholesky_ereach(&row_top, xi, A, k, parent, c));
+    SPEX_CHECK(spex_symmetric_ereach(&row_top, xi, A, k, parent, c));
 
     // After eReach, xi[rowtop..n-1] stores the location of the nonzeros
     // located in rows 1:k-1.  Note that the values of these nonzeros have

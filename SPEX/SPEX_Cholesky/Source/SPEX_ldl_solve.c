@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/SPEX_cholesky_solve: Solve the SPD linear system after
+// SPEX_Cholesky/SPEX_ldl_solve: Solve the linear system after ldl
 // factorization
 //------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
  *                  on output x_handle contains a pointer to the solution
  *                  vector(s)
  *
- * F:               The factorization struct containing the REF cholesky
+ * F:               The factorization struct containing the REF ldl
  *                  factorization of A, permutation, etc
  *
  * b:               Right hand side vector(s)
@@ -28,14 +28,14 @@
  * option:          Command options *
  */
 
-SPEX_info SPEX_cholesky_solve
+SPEX_info SPEX_ldl_solve
 (
     // Output
     SPEX_matrix *x_handle,      // On input: undefined.
                                 // On output: Rational solution (SPEX_MPQ)
                                 // to the system.
     // input/output:
-    SPEX_factorization F,       // The non-updatable Cholesky factorization.
+    SPEX_factorization F,       // The non-updatable LDL factorization.
                                 // Mathematically, F is unchanged.  However, if
                                 // F is updatable on input, it is converted to
                                 // non-updatable.  If F is already
@@ -45,8 +45,9 @@ SPEX_info SPEX_cholesky_solve
     const SPEX_options option   // command options
 )
 {
-    // Just need to call the symmetric solve with chol = true
+    // Just need to call the symmetric solve with chol = false
     SPEX_info info;
+    
         // Ensure SPEX is initialized
     if (!spex_initialized())
     {
@@ -58,13 +59,13 @@ SPEX_info SPEX_cholesky_solve
     {
         return SPEX_INCORRECT_INPUT;
     }
-    
-    if (F->kind != SPEX_CHOLESKY_FACTORIZATION)
+
+    if (F->kind != SPEX_LDL_FACTORIZATION)
     {
         return SPEX_INCORRECT_INPUT;
     }
 
-    info = spex_symmetric_solve(x_handle, F, b, true, option);
+    info = spex_symmetric_solve(x_handle, F, b, false, option);
     
     return info;
 }

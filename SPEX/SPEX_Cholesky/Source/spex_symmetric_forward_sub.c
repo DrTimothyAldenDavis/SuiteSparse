@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_forward_sub: Solve the system LDx = b
+// SPEX_Cholesky/spex_symmetric_forward_sub: Solve the system LDx = b
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -32,7 +32,7 @@
 
 #include "spex_cholesky_internal.h"
 
-SPEX_info spex_cholesky_forward_sub
+SPEX_info spex_symmetric_forward_sub
 (
     // Input/Output
     SPEX_matrix x,               // Right hand side matrix.

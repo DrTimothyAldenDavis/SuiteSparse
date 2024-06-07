@@ -4,8 +4,9 @@ function spex_mex_install(run_demo)
 % Usage: spex_mex_install
 %
 % Required Libraries: GMP, MPFR, AMD, COLAMD, SuiteSparse_config, SPEX.  If
-% -lamd, -lcolamd, and -lsuitesparseconfig are not available, install them with
-% 'make install' first, in the top-level SuiteSparse folder.
+% -lamd, -lcolamd, and -lsuitesparseconfig are not available, install them
+% first, with cmake, or 'make install', in the top-level SuiteSparse folder.
+% Use 'make local ; make install' if you do not have system admin privileges.
 %
 % You may need to add the top-level lib folder (SPEX/lib, or SuiteSparse/lib
 % if SPEX is inside SuiteSparse) to your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH
@@ -116,7 +117,8 @@ verbose = '' ;
 % having -R2018a here for function mxGetDoubles
 m1 = ['mex ', verbose, ' -R2018a ', includes, ' spex_lu_mex_soln.c ' , src, ' ', flags, ' ', libs] ;
 m2 = ['mex ', verbose, ' -R2018a ', includes, ' spex_cholesky_mex_soln.c ' , src, ' ', flags, ' ', libs];
-m3 = ['mex ', verbose, ' -R2018a ', includes, ' spex_backslash_mex_soln.c ' , src, ' ', flags, ' ', libs];
+m3 = ['mex ', verbose, ' -R2018a ', includes, ' spex_ldl_mex_soln.c ' , src, ' ', flags, ' ', libs];
+m4 = ['mex ', verbose, ' -R2018a ', includes, ' spex_backslash_mex_soln.c ' , src, ' ', flags, ' ', libs];
 
 % Now, we evaluate each one
 if (~isempty (verbose))
@@ -132,8 +134,13 @@ eval (m2) ;
 if (~isempty (verbose))
     fprintf ('%s\n', m3) ;
 end
-fprintf ('Compiling MATLAB interface to SPEX Backslash:\n') ;
+fprintf ('Compiling MATLAB interface to SPEX LDL:\n') ;
 eval (m3) ;
+if (~isempty (verbose))
+    fprintf ('%s\n', m4) ;
+end
+fprintf ('Compiling MATLAB interface to SPEX Backslash:\n') ;
+eval (m4) ;
 
 if (run_demo)
     % Test SPEX

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/SPEX_cholesky_backslash: solve Ax=b
+// SPEX_Cholesky/SPEX_ldl_backslash: solve Ax=b
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -9,7 +9,7 @@
 
 //------------------------------------------------------------------------------
 
-/* Purpose: This code utilizes the SPEX Cholesky factorization to exactly solve
+/* Purpose: This code utilizes the SPEX ldl factorization to exactly solve
  *          the linear system Ax = b.
  *
  * Input/Output arguments:
@@ -34,7 +34,7 @@
 
 #include "spex_cholesky_internal.h"
 
-SPEX_info SPEX_cholesky_backslash
+SPEX_info SPEX_ldl_backslash
 (
     // Output
     SPEX_matrix *x_handle,      // On input: undefined.
@@ -49,10 +49,10 @@ SPEX_info SPEX_cholesky_backslash
 )
 {
     // The work is done in the spex_symmetric_backslash code
-    // All we have to do is wrap it with chol = true
+    // All we have to do is wrap it with chol = false
     SPEX_info info;
     
-    info = spex_symmetric_backslash(x_handle, type, A, b, true, option);
+    info = spex_symmetric_backslash(x_handle, type, A, b, false, option);
     
     return info;
 }

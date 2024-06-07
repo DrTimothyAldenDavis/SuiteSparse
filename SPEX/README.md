@@ -52,12 +52,6 @@ Dependencies:
                         Library for arbitrary precision floating point
                         operations. v4.0.2 or later is required.
 
-Default installation locations:
-
-    include
-    lib
-    share
-
 Compilation options:
 
 * `SPEX_USE_PYTHON`:

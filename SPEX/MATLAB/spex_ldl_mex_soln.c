@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX/MATLAB/spex_lu_mex_soln: Use SPEX Left LU within MATLAB
+// SPEX/MATLAB/spex_ldl_mex_soln: Use SPEX ldl within MATLAB
 //------------------------------------------------------------------------------
 
 // SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
@@ -9,9 +9,10 @@
 
 //------------------------------------------------------------------------------
 
-/* Purpose: The .c file defining the SPEX Left LU MATLAB interfacee
- * This function defines: x = SPEX_mex_soln (A, b, option)
+/* Purpose: The .c file defining the SPEX ldl MATLAB interfacee
+ * This function defines: x = spex_ldl_mex_soln (A, b, option)
  */
+
 
 #include "SPEX_mex.h"
 
@@ -24,7 +25,7 @@ void mexFunction
 )
 {
     //--------------------------------------------------------------------------
-    // Initialize SPEX Left LU library environment
+    // Initialize SPEX Chol library environment
     //--------------------------------------------------------------------------
 
     SPEX_info status ;
@@ -39,7 +40,7 @@ void mexFunction
 
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
-        spex_mex_error (1, "Usage: x = SPEX_mex_soln (A,b,option)");
+        spex_mex_error (1, "Usage: x = SPEX_ldl_soln (A,b,option)");
     }
 
     //--------------------------------------------------------------------------
@@ -50,10 +51,12 @@ void mexFunction
     {
         spex_mex_error (1, "inputs must be real");
     }
+    /***/
     if (!mxIsSparse (pargin [0]))     // Is the matrix sparse?
     {
         spex_mex_error (1, "first input must be sparse");
     }
+    /**/
     if (mxIsSparse (pargin [1]))         // Is b sparse?
     {
         spex_mex_error (1, "second input must be full");
@@ -64,7 +67,11 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     SPEX_options option = NULL;
-    SPEX_MEX_OK(SPEX_create_default_options(&option));
+    SPEX_create_default_options(&option);
+    if (option == NULL)
+    {
+        spex_mex_error (SPEX_OUT_OF_MEMORY, "");
+    }
 
     spex_mex_options mexoptions ;
     if (nargin > 2) spex_mex_get_matlab_options (option, &mexoptions, pargin [2]);
@@ -76,7 +83,7 @@ void mexFunction
     SPEX_matrix A = NULL ;
     SPEX_matrix b = NULL ;
     spex_mex_get_A_and_b (&A, &b, pargin, option);
-
+/**/
     if (option->print_level > 0)
     {
         printf ("\nScaled integer input matrix A:\n");
@@ -90,11 +97,11 @@ void mexFunction
     }
 
     //--------------------------------------------------------------------------
-    // x = A\b via SPEX_LU, returning result as SPEX_MPQ
+    // x = A\b via SPEX_ldl, returning result as SPEX_MPQ
     //--------------------------------------------------------------------------
 
     SPEX_matrix x = NULL ;
-    SPEX_MEX_OK (SPEX_lu_backslash (&x, SPEX_MPQ, A, b, option));
+    SPEX_MEX_OK (SPEX_ldl_backslash (&x, SPEX_MPQ, A, b, option));
 
     //--------------------------------------------------------------------------
     // print the result, if requested

@@ -169,8 +169,8 @@
 // check versions of SuiteSparse packages
 //------------------------------------------------------------------------------
 
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0)
-#error "SPEX requires SuiteSparse_config 7.7.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0)
+#error "SPEX requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #if !defined (AMD__VERSION) || AMD__VERSION < SUITESPARSE__VERCODE(3,3,2)

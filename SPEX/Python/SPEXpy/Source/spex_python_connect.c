@@ -121,6 +121,9 @@ SPEX_info spex_python
         case 3:
             SPEX_CHECK( SPEX_cholesky_backslash(&x, SPEX_MPQ, A, b, option));
             break;
+        case 4:
+            SPEX_CHECK( SPEX_ldl_backslash(&x, SPEX_MPQ, A, b, option));
+            break;
         default:
             return SPEX_INCORRECT_INPUT;
     }

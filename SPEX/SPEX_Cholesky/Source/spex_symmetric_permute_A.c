@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_permute_A: Symmetric permutation of matrix A
+// SPEX_Cholesky/spex_symmetric_permute_A: Symmetric permutation of matrix A
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -26,7 +26,7 @@
  *               Contains row/column permutation of A
  */
 
-SPEX_info spex_cholesky_permute_A
+SPEX_info spex_symmetric_permute_A
 (
     //Output
     SPEX_matrix* PAP_handle,   // On input: undefined

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/spex_cholesky_pre_left_factor: Symbolic left-looking Cholesky
+// SPEX_Cholesky/spex_symmetric_pre_left_factor: Symbolic left-looking Cholesky
 //------------------------------------------------------------------------------
 
 // SPEX_Cholesky: (c) 2020-2024, Christopher Lourenco, Jinhao Chen,
@@ -45,7 +45,7 @@
  *               On output it contains the number of nonzeros in L.
  */
 
-SPEX_info spex_cholesky_pre_left_factor
+SPEX_info spex_symmetric_pre_left_factor
 (
     // Output
     SPEX_matrix *L_handle,        // On output: partial L matrix
@@ -102,7 +102,7 @@ SPEX_info spex_cholesky_pre_left_factor
     for (k = 1; k < n; k++)
     {
         // Obtain nonzero pattern in xi[top..n]
-        SPEX_CHECK(spex_cholesky_ereach(&top, xi, A, k, S->parent, c));
+        SPEX_CHECK(spex_symmetric_ereach(&top, xi, A, k, S->parent, c));
 
         //----------------------------------------------------------------------
         // Iterate accross the nonzeros in x

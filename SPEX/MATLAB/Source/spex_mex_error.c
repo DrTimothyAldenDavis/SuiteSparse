@@ -37,13 +37,29 @@ void spex_mex_error
                                         // incorrect
             SPEX_finalize ( );
             mexErrMsgTxt ("invalid inputs");
-
-
+            
+        case SPEX_NOTSPD :              // input matrix A is not SPD
+            SPEX_finalize ( );
+            mexErrMsgTxt ("input matrix is not symmetric positive definite");
+            
+        case SPEX_INCORRECT_ALGORITHM : // incorrect algorithm for function
+            SPEX_finalize ( );
+            mexErrMsgTxt ("incorrect algorithm");
+            
         case SPEX_PANIC :               // SPEX used without proper
                                         // initialization
             SPEX_finalize ( );
             mexErrMsgTxt ("panic");
-
+            
+       case SPEX_ZERODIAG :             // input matrix A has a zero in
+                                        // the diagonal
+            SPEX_finalize ( );
+            mexErrMsgTxt ("input matrix has a zero in diagonal");
+            
+        case SPEX_UNSYMMETRIC:          // input matrix A is unsymmetric
+            SPEX_finalize ( );
+            mexErrMsgTxt ("input matrix is unsymmetric");
+            
         default :
             SPEX_finalize ( );
             mexErrMsgTxt (message);

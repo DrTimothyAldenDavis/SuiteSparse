@@ -91,22 +91,23 @@ SPEX_info SPEX_backslash
     // Declare output
     SPEX_matrix x = NULL;
 
-    // Attempt a Cholesky factorization of A.
-    // If Cholesky is occuring, we update the option
+    // Attempt an LDL factorization of A
+    // In this case, we update the option
     // struct to do AMD and diagonal pivoting
     backslash_options->order = SPEX_AMD;
     backslash_options->pivot = SPEX_DIAGONAL;
 
-    // Try SPEX Cholesky. The output for this function
+    // Try SPEX ldl. The output for this function
     // is either:
-    // SPEX_OK:       Cholesky success, x is the exact solution
-    // SPEX_NOTSPD:   Cholesky failed. This means
-    //                A is not SPD. In this case, we try LU
+    // SPEX_OK:          LDL success, x is the exact solution
+    // SPEX_UNSYMMETRIC: Matrix is unsymmetric and not a canddiate for LDL
+    // SPEX_ZERODIAG:    A is symmetric but does not have a nonzero diagonal.
+    //                   not a candidate for LDL.
     // Other error code: Some error. Return the error code and exit
-    info = SPEX_cholesky_backslash(&x, type, A, b, backslash_options);
+    info = SPEX_ldl_backslash(&x, type, A, b, backslash_options);
     if (info == SPEX_OK)
     {
-        // Cholesky was successful. Set x_handle = x
+        // ldl was successful. Set x_handle = x
         (*x_handle) = x;
 
         // x_handle contains the exact solution of Ax = b and is
@@ -114,9 +115,9 @@ SPEX_info SPEX_backslash
         SPEX_FREE(backslash_options);
         return SPEX_OK;
     }
-    else if (info == SPEX_NOTSPD)
+    else if (info == SPEX_ZERODIAG || info == SPEX_UNSYMMETRIC)
     {
-        // Cholesky factorization failed. Must try
+        // ldl factorization failed. Must try
         // LU factorization now
 
         // Since LU is occuring, we update the option
@@ -141,7 +142,7 @@ SPEX_info SPEX_backslash
         }
         else
         {
-            // Both Cholesky and LU have failed, info contains
+            // Both ldl and LU have failed, info contains
             // the problem, most likely that A is singular
             // Note that, because LU failed, x_handle is still
             // NULL so there is no potential for a memory leak here
@@ -151,10 +152,10 @@ SPEX_info SPEX_backslash
     }
     else
     {
-        // Cholesky failed, but not due to a SPEX_NOTSPD
+        // ldl failed, but not due to an algorithmic issue
         // error code. Most likely invalid input or out of
         // memory condition.
-        // Note that since Cholesky failed, x_handle is still NULL
+        // Note that since ldl failed, x_handle is still NULL
         // so there is no potential for a memory leak here
         SPEX_FREE(backslash_options);
         return info;
