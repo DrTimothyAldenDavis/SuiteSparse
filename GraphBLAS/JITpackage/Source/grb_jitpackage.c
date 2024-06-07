@@ -125,7 +125,7 @@ int main (int argc, char **argv)
         // input argument is a "response file" containing the file list
 
         // open file
-        FILE *fr = fopen (argv[1]+1, "rb") ;
+        FILE *fr = fopen (argv[1]+1, "r") ;
         OK (fr != NULL) ;
 
         // get number of lines in file
@@ -143,15 +143,18 @@ int main (int argc, char **argv)
         // prepend empty element for compatibility with argv
         file_list[0] = malloc (1);
         file_list[0][0] = '\0';
-        char temp[200];
+        // glibc defines MAX_PATH to 4096.
+        // Use this as a buffer size on all platforms.
+        #define BUF_LENGTH 4096
+        char temp[BUF_LENGTH];
         size_t length;
         for (size_t i = 1 ; i < nfiles+1 ; i++)
         {
-            fscanf (fr, "%s\n", temp);
+            OK ( fgets (temp, BUF_LENGTH, fr) != NULL );
             length = strlen (temp);
             file_list[i] = malloc (length+1);
             strncpy (file_list[i], temp, length);
-            file_list[i][length] = '\0';
+            file_list[i][length-1] = '\0';
         }
     }
     else
