@@ -13,6 +13,11 @@
 #include <stdbool.h>
 #include <string.h>
 
+#if defined (__GNUC__)
+// ignore strlen warning
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+
 //------------------------------------------------------------------------------
 // zstd.h include file
 //------------------------------------------------------------------------------
@@ -140,8 +145,10 @@ int main (int argc, char **argv)
         // read file list from response file
         rewind (fr);
         file_list = malloc ( (nfiles+1) * sizeof (file_list) );
+        OK (file_list != NULL) ;
         // prepend empty element for compatibility with argv
         file_list[0] = malloc (1);
+        OK (file_list [0] != NULL) ;
         file_list[0][0] = '\0';
         // glibc defines MAX_PATH to 4096.
         // Use this as a buffer size on all platforms.
@@ -151,8 +158,9 @@ int main (int argc, char **argv)
         for (size_t i = 1 ; i < nfiles+1 ; i++)
         {
             OK ( fgets (temp, BUF_LENGTH, fr) != NULL );
-            length = strlen (temp);
+            length = strlen (temp); // this is safe; ignore -Wstringop-overflow
             file_list[i] = malloc (length+1);
+            OK (file_list [i] != NULL) ;
             strncpy (file_list[i], temp, length);
             file_list[i][length-1] = '\0';
         }
@@ -177,7 +185,7 @@ int main (int argc, char **argv)
         "// GB_JITpackage.c: packaged GraphBLAS source code for the JIT\n"
         "//------------------------------------------------------------------------------\n"
         "\n"
-        "// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.\n"
+        "// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.\n"
         "// SPDX-License-Identifier: Apache-2.0\n"
         "\n"
         "//------------------------------------------------------------------------------\n"
@@ -278,8 +286,6 @@ int main (int argc, char **argv)
         char *fullname = file_list [k] ;
         char *filename = fullname ;
         int len = (int) strlen (fullname) ;
-//      for (char *p = file_list [k] ; *p != '\0' ; p++)
-
         for (int i = 0 ; i < len ; i++)
         {
             if (fullname [i] == '/')
