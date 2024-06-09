@@ -8,6 +8,9 @@ June XX, 2024: version 7.8.0     FIXME NOW
     * SPQR 4.3.4: changes to reflect updates to CHOLMOD
     * SPEX 3.2.0: control Python interface, fix build issues on Mac,
         split SPEX Cholesky into LDL and Cholesky.
+    * SuiteSparse_config: changes to SuiteSparse timer, BLA_VENDOR.  Added
+        SUITESPARSE_USE_PYTHON option.  Split BLAS prototypes and macros.
+    * .github: new CI runner for riscv64, and other changes in CI workflows.
     * Package versions in this release: (* denotes a new version)
         SuiteSparse_config 7.8.0    *
         AMD 3.3.2

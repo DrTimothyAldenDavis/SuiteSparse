@@ -58,12 +58,12 @@ Compilation options:
 
   If `ON`, build Python interface for SPEX.
   If `OFF`: do not build the SPEX Python interface.
-  Default: `ON`.
+  Default: `SUITESPARSE_USE_PYTHON` (defaults to ON).
 
 * `SPEX_USE_OPENMP`:
 
   If `ON`, OpenMP is used in SPEX if it is available.
-  Default: `SUITESPARSE_USE_OPENMP`.
+  Default: `SUITESPARSE_USE_OPENMP` (defaults to ON).
 
 To compile SPEX and its dependencies, just type "make" in this folder.
 This will also run a few short demos
