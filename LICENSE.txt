@@ -2,15 +2,14 @@ This file lists all licenses for all packages in SuiteSparse, for your
 convenience.  Each package has its own separate license, which can be
 found in the lists below.
 
-==> SPEX/License/license.txt <==
+==> SPEX/LICENSE <==
 
-    SPEX: a Sparse Left-looking Integer-Preserving LU Factorization
+    SPEX: a SParse EXact Factorization Framework for solving SLEs
 
-    Copyright (c) 2019-2024, Christopher Lourenco, JinHao Chen, 
+    Copyright (c) 2019-2024, Christopher Lourenco, Jinhao Chen,
     Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 
     Available at:
-
         https://github.com/clouren/SPEX
         http://suitesparse.com
 
