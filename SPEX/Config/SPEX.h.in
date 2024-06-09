@@ -881,8 +881,6 @@ SPEX_info SPEX_determine_symmetry
 // returned to GMP.  Instead, all allocated blocks in the list are freed,
 // and the allocation routine passed to GMP returns directly to the wrapper.
 
-SPEX_info SPEX_mpfr_asprintf (char **str, const char *format, ... ) ;
-
 SPEX_info SPEX_gmp_fscanf (FILE *fp, const char *format, ... ) ;
 
 SPEX_info SPEX_mpz_init (mpz_t x) ;
@@ -895,6 +893,7 @@ SPEX_info SPEX_mpz_set_ui (mpz_t x, const uint64_t y) ;
 
 SPEX_info SPEX_mpz_set_si (mpz_t x, const int64_t y) ;
 
+// FIXME NOW: SPEX_mpz_swap not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_swap (mpz_t x, mpz_t y);
 
 SPEX_info SPEX_mpz_get_d (double *x, const mpz_t y) ;
@@ -905,16 +904,20 @@ SPEX_info SPEX_mpz_mul (mpz_t a, const mpz_t b, const mpz_t c) ;
 
 SPEX_info SPEX_mpz_mul_si (mpz_t a, const mpz_t b, const int64_t c) ;
 
-SPEX_info SPEX_mpz_sub (mpz_t a, const mpz_t b, const mpz_t c) ;
-
+// FIXME NOW: SPEX_mpz_add not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_add (mpz_t a, const mpz_t b, const mpz_t c) ;
 
+// FIXME NOW: SPEX_mpz_addmul not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_addmul (mpz_t x, const mpz_t y, const mpz_t z) ;
+
+SPEX_info SPEX_mpz_sub (mpz_t a, const mpz_t b, const mpz_t c) ;
 
 SPEX_info SPEX_mpz_submul (mpz_t x, const mpz_t y, const mpz_t z) ;
 
+// FIXME NOW: SPEX_mpz_fdiv_q not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_fdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
 
+// FIXME NOW: SPEX_mpz_cdiv_q not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_cdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
 
 SPEX_info SPEX_mpz_cdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d) ;
@@ -931,6 +934,7 @@ SPEX_info SPEX_mpz_abs (mpz_t x, const mpz_t y) ;
 
 SPEX_info SPEX_mpz_cmp (int *r, const mpz_t x, const mpz_t y) ;
 
+// FIXME NOW: SPEX_mpz_cmpabs not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_cmpabs (int *r, const mpz_t x, const mpz_t y) ;
 
 SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const uint64_t y) ;
@@ -940,6 +944,10 @@ SPEX_info SPEX_mpz_cmpabs_ui (int *r, const mpz_t x, const uint64_t y) ;
 SPEX_info SPEX_mpz_sgn (int *sgn, const mpz_t x) ;
 
 SPEX_info SPEX_mpz_sizeinbase (size_t *size, const mpz_t x, int64_t base) ;
+
+SPEX_info SPEX_mpz_set_null (mpz_t x) ;
+
+SPEX_info SPEX_mpz_clear (mpz_t x) ;
 
 SPEX_info SPEX_mpq_init (mpq_t x) ;
 
@@ -979,6 +987,12 @@ SPEX_info SPEX_mpq_cmp_ui (int *r, const mpq_t x,
 SPEX_info SPEX_mpq_sgn (int *sgn, const mpq_t x) ;
 
 SPEX_info SPEX_mpq_equal (int *r, const mpq_t x, const mpq_t y) ;
+
+SPEX_info SPEX_mpq_set_null (mpq_t x) ;
+
+SPEX_info SPEX_mpq_clear (mpq_t x) ;
+
+SPEX_info SPEX_mpfr_asprintf (char **str, const char *format, ... ) ;
 
 SPEX_info SPEX_mpfr_init2(mpfr_t x, const uint64_t size) ;
 
@@ -1020,11 +1034,8 @@ SPEX_info SPEX_mpfr_free_cache (void) ;
 
 SPEX_info SPEX_mpfr_free_str (char *str) ;
 
-SPEX_info SPEX_mpz_set_null (mpz_t x) ;
-SPEX_info SPEX_mpq_set_null (mpq_t x) ;
 SPEX_info SPEX_mpfr_set_null (mpfr_t x) ;
-SPEX_info SPEX_mpz_clear (mpz_t x) ;
-SPEX_info SPEX_mpq_clear (mpq_t x) ;
+
 SPEX_info SPEX_mpfr_clear (mpfr_t x) ;
 
 
