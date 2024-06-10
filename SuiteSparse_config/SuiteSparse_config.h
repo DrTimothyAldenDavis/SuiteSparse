@@ -389,6 +389,9 @@ int SuiteSparse_divcomplex
     #endif
 #else
     // The timer is explictly disabled
+    #undef SUITESPARSE_TIMER_ENABLED
+    #undef SUITESPARSE_HAVE_CLOCK_GETTIME
+    #define SUITESPARSE_CONFIG_TIMER none
     #define SUITESPARSE_TIME (0)
 #endif
 
