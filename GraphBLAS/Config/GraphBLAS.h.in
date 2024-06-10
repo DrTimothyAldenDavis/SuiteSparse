@@ -163,11 +163,32 @@
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
-// Compiler has support for C99 floating point number arithmetic
-#cmakedefine GxB_HAVE_COMPLEX_C99
-
-// Compiler has support for MSVC-style complex numbers
-#cmakedefine GxB_HAVE_COMPLEX_MSVC
+    #if defined ( GXB_CMAKE_BYPASS )
+        // Bypass the cmake configuration and let the user application decide
+        // itself which complex type to use.  This may differ from the compiled
+        // library so this approach may not work in general.
+        // To use C99 complex types, use:
+        //
+        //      -DGXB_CMAKE_BYPASS -DGXB_HAVE_COMPLEX_C99
+        //
+        // To use MS complex types for C:
+        //
+        //      -DGXB_CMAKE_BYPASS -DGXB_HAVE_COMPLEX_MSVC
+        //
+        // One of the above options is required.  To use the JIT, these two
+        // options must also be added at run time via
+        // GrB_set (GrB_Global, GxB_JIT_C_COMPILER_FLAGS, "...")
+        // where "..." would be all the flags required to compile a JIT kernel,
+        // including "-O3 -fopenmp" and so on, as well as one of the above
+        // two options.
+    #else
+        // Let the cmake configuration script determine the complex type
+        // that is available:
+        // Compiler has support for C99 floating point number arithmetic
+        #cmakedefine GxB_HAVE_COMPLEX_C99
+        // Compiler has support for MSVC-style complex numbers
+        #cmakedefine GxB_HAVE_COMPLEX_MSVC
+    #endif
 
     #if defined (GxB_HAVE_COMPLEX_MSVC)
 
