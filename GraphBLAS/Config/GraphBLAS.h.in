@@ -163,17 +163,17 @@
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
-    #if defined ( GXB_CMAKE_BYPASS )
+    #if defined ( GxB_CMAKE_BYPASS )
         // Bypass the cmake configuration and let the user application decide
         // itself which complex type to use.  This may differ from the compiled
         // library so this approach may not work in general.
         // To use C99 complex types, use:
         //
-        //      -DGXB_CMAKE_BYPASS -DGXB_HAVE_COMPLEX_C99
+        //      -DGxB_CMAKE_BYPASS -DGxB_HAVE_COMPLEX_C99
         //
         // To use MS complex types for C:
         //
-        //      -DGXB_CMAKE_BYPASS -DGXB_HAVE_COMPLEX_MSVC
+        //      -DGxB_CMAKE_BYPASS -DGxB_HAVE_COMPLEX_MSVC
         //
         // One of the above options is required.  To use the JIT, these two
         // options must also be added at run time via
