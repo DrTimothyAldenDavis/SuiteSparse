@@ -163,24 +163,24 @@
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
-    #if defined ( GxB_CMAKE_BYPASS )
+    #if defined ( GxB_HAVE_COMPLEX_C99 ) || defined ( GxB_HAVE_COMPLEX_MSVC )
         // Bypass the cmake configuration and let the user application decide
         // itself which complex type to use.  This may differ from the compiled
-        // library so this approach may not work in general.
+        // GraphBLAS library so this approach may not work in all cases.
         // To use C99 complex types, use:
         //
-        //      -DGxB_CMAKE_BYPASS -DGxB_HAVE_COMPLEX_C99
+        //      -DGxB_HAVE_COMPLEX_C99
         //
         // To use MS complex types for C:
         //
-        //      -DGxB_CMAKE_BYPASS -DGxB_HAVE_COMPLEX_MSVC
+        //      -DGxB_HAVE_COMPLEX_MSVC
         //
         // One of the above options is required.  To use the JIT, these two
         // options must also be added at run time via
         // GrB_set (GrB_Global, GxB_JIT_C_COMPILER_FLAGS, "...")
         // where "..." would be all the flags required to compile a JIT kernel,
-        // including "-O3 -fopenmp" and so on, as well as one of the above
-        // two options.
+        // including "-O3 -fopenmp" and so on, as well as one of the above two
+        // options.
     #else
         // Let the cmake configuration script determine the complex type
         // that is available:

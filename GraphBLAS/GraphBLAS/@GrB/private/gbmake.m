@@ -161,6 +161,27 @@ else
     libgraphblas = '-lgraphblas' ;
 end
 
+% determine if the compiler supports C99 or MSVC complex types
+try
+    % try C99 complex types
+    cflag = ' -DGxB_HAVE_COMPLEX_C99=1' ;
+    mexcmd = sprintf ('mex -silent %s %s complex/mex_complex.c', ...
+        flags, cflag) ;
+    eval (mexcmd) ;
+catch me
+    % try MSVC complex types
+    try
+        cflag = ' -DGxB_HAVE_COMPLEX_MSVC=1' ;
+        mexcmd = sprintf ('mex -silent %s %s complex/mex_complex.c', ...
+            flags, cflag) ;
+        eval (mexcmd) ;
+    catch me
+        error ('C99 or MSVC complex support required') ;
+    end
+end
+flags = [flags cflag] ;
+mex_complex
+
 Lflags = sprintf ('-L''%s''', library) ;
 
 fprintf ('compiler flags: %s\n', flags) ;
