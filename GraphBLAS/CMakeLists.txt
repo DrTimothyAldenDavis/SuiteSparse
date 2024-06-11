@@ -256,12 +256,20 @@ if ( NOT GRAPHBLAS_COMPACT )
 endif ( )
 
 if ( GRAPHBLAS_USE_JIT )
-    # generate compressed JIT sources
+    # generate compressed JIT sources to create GB_JITpackage.c
+    message ( STATUS "Creating the GraphBLAS/JITpackage:" )
     add_subdirectory ( JITpackage )
     # GLOB does not include files that do not yet exist, so prepend
     # the GB_JITpackage.c file here:
     list ( PREPEND GRAPHBLAS_SOURCES
         $<TARGET_PROPERTY:GB_JITpackage,GENERATED_FILE> )
+else ( )
+    # create an empty GB_JITpackage.c file:
+    message ( STATUS "Creating an empty GraphBLAS/JITpackage (JIT disabled):" )
+    configure_file ( "Config/GB_JITpackage_NJIT.c.in"
+        "${PROJECT_SOURCE_DIR}/JITpackage/GB_JITpackage.c"
+        NEWLINE_STYLE LF )
+    list ( PREPEND GRAPHBLAS_SOURCES "JITpackage/GB_JITpackage.c")
 endif ( )
 
 if ( BUILD_SHARED_LIBS )

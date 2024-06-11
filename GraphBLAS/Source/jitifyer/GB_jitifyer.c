@@ -2323,7 +2323,9 @@ void GB_jitifyer_table_free (bool freeall)
 
 static void GB_jitifyer_command (char *command)
 { 
+    #ifndef NJIT
     int result = system (command) ;
+    #endif
 }
 
 //------------------------------------------------------------------------------
