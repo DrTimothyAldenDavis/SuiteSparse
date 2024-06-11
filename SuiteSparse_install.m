@@ -43,15 +43,8 @@ function SuiteSparse_install (do_demo)
 % This script installs the full-featured CXSparse rather than CSparse.
 %
 % If you get errors building or using METIS, just remove the
-% CHOLMOD/SuiteSparse_metis folder.  This often occurs on Windows.
-%
-% Before using SuiteSparse_install, you must compile the GraphBLAS library for
-% use in MATLAB.  In the system shell while in the SuiteSparse folder, type
-% "make gbmatlab".  You must then either install the libgraphblas_matlab.so
-% library system-wide ( cd GraphBLAS/GraphBLAS ; make ; sudo make install), or
-% install your own copy ( make local ; make install ) and then add the
-% SuiteSparse/lib folder to your LD_LIBRARY_PATH.  Restart MATLAB after
-% compiling libgraphblas_matlab.so.
+% CHOLMOD/SuiteSparse_metis folder and try again (this will build CHOLMOD
+% without METIS).  This often occurs on Windows.
 %
 % Copyright (c) 1990-2023, Timothy A. Davis, http://suitesparse.com.
 %
