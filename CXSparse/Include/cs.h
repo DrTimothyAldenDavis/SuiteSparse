@@ -26,6 +26,7 @@
 #ifndef _CXS_H
 #define _CXS_H
 
+#ifndef NCOMPLEX
 #if 1
 #  ifdef __cplusplus
 #    include <complex>
@@ -33,6 +34,7 @@
 #    include <complex.h>
 #  endif
 #  define cs_complex_t double _Complex
+#endif
 #endif
 
 #define CS_VER 4  /* CXSparse Version */
