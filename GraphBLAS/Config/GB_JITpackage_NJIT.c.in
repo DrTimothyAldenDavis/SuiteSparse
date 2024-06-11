@@ -9,7 +9,7 @@
 
 #include "GB_JITpackage.h"
 
-// The JIT has disabled; GraphBLAS was compiled with GRAPHBLAS_USE_JIT=OFF.
+// The JIT is disabled; GraphBLAS was compiled with GRAPHBLAS_USE_JIT=OFF.
 // PreJIT kernels may still be used, but no JIT kernels can be compiled or
 // loaded at run time.  In this case, GrB_init will not copy the GraphBLAS
 // source files from this set of files into the ~/.SuiteSparse/GrBX.Y.Z/src
