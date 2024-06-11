@@ -321,20 +321,6 @@ catch me
     failed {end+1} = 'mongoose' ;
 end
 
-% compile and install GraphBLAS
-try
-    fprintf ('\nCompiling GraphBLAS\n') ;
-    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
-    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
-    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
-    cd ('@GrB/private') ;
-    gbmake ;
-catch me
-    disp (me.message) ;
-    fprintf ('GraphBLAS not installed\n') ;
-    failed {end+1} = 'GraphBLAS' ;
-end
-
 % compile and install SPEX
 try
     fprintf ('\nCompiling SPEX (requires GMP and MPFR)\n') ;
@@ -355,6 +341,21 @@ catch me
     disp (me.message) ;
     fprintf ('ParU not installed\n') ;
     failed {end+1} = 'ParU' ;
+end
+
+% compile and install GraphBLAS (this can take a while)
+try
+    fprintf ('\nCompiling GraphBLAS\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
+    % cd ('@GrB/private') ;
+    % gbmake ;
+    graphblas_install
+catch me
+    disp (me.message) ;
+    fprintf ('GraphBLAS not installed\n') ;
+    failed {end+1} = 'GraphBLAS' ;
 end
 
 %-------------------------------------------------------------------------------

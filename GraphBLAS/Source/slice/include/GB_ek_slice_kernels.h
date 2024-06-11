@@ -36,8 +36,8 @@ static inline void GB_ek_slice_ntasks
     {
         (*nthreads) = GB_nthreads (work, chunk, nthreads_max) ;
         (*ntasks) = (*nthreads == 1) ? 1 : ((ntasks_per_thread) * (*nthreads)) ;
-        (*ntasks) = GB_IMIN (*ntasks, anz_held) ;
-        (*ntasks) = GB_IMAX (*ntasks, 1) ;
+        (*ntasks) = (int) GB_IMIN (*ntasks, anz_held) ;
+        (*ntasks) = (int) GB_IMAX (*ntasks, 1) ;
     }
 }
 

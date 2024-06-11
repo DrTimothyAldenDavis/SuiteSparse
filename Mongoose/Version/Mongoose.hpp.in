@@ -25,8 +25,8 @@
 
 #define Mongoose__VERSION SUITESPARSE__VERCODE(@Mongoose_VERSION_MAJOR@,@Mongoose_VERSION_MINOR@,@Mongoose_VERSION_PATCH@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "Mongoose @Mongoose_VERSION_MAJOR@.@Mongoose_VERSION_MINOR@.@Mongoose_VERSION_PATCH@ requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "Mongoose @Mongoose_VERSION_MAJOR@.@Mongoose_VERSION_MINOR@.@Mongoose_VERSION_PATCH@ requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #if defined (_MSC_VER) && ! defined (__INTEL_COMPILER)

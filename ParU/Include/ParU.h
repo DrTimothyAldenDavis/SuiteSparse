@@ -65,8 +65,8 @@ typedef enum ParU_Info
 #endif
 
 #if !defined (UMFPACK__VERSION) || \
-    (UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,3))
-#error "ParU 1.0.0 requires UMFPACK 6.3.3 or later"
+    (UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,4))
+#error "ParU 1.0.0 requires UMFPACK 6.3.4 or later"
 #endif
 
 #if !defined (CHOLMOD__VERSION) || \

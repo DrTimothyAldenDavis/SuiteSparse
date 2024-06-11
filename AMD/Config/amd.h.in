@@ -392,8 +392,8 @@ void amd_version (int version [3]) ;
 
 #define AMD__VERSION SUITESPARSE__VERCODE(@AMD_VERSION_MAJOR@,@AMD_VERSION_MINOR@,@AMD_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@.@AMD_VERSION_SUB@ requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@.@AMD_VERSION_SUB@ requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #endif

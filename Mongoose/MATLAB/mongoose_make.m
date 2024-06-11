@@ -47,6 +47,11 @@ if (isunix)
     end
 end
 
+if (ispc)
+    % disable the SuiteSparse_config timer
+    flags = [' -DNTIMER ' flags] ;
+end
+
 % Fix the include & library path.
 include = strrep (include, '/', filesep) ;
 lib = strrep (lib, '/', filesep) ;

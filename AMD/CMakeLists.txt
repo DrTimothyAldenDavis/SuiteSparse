@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( AMD_DATE "Mar 22, 2024" )
+set ( AMD_DATE "June XX, 2024" )    # FIXME NOW
 set ( AMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( AMD_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( AMD_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( AMD_VERSION_SUB   3 CACHE STRING "" FORCE )
 
 message ( STATUS "Building AMD version: v"
     ${AMD_VERSION_MAJOR}.

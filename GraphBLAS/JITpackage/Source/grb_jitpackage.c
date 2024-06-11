@@ -113,7 +113,14 @@ bool match_prefix (char *string, char *prefix)
 // grb_prepackage main program
 //------------------------------------------------------------------------------
 
-#define OK(x) if (!(x)) { printf ("Error line %d\n", __LINE__) ; abort ( ) ; }
+#define OK(x)                                                               \
+{                                                                           \
+    if (!(x))                                                               \
+    {                                                                       \
+        fprintf (stderr, "grb_jitpackage.c: error line %d\n", __LINE__) ;   \
+        abort ( ) ;                                                         \
+    }                                                                       \
+}
 
 int main (int argc, char **argv)
 {
@@ -124,6 +131,7 @@ int main (int argc, char **argv)
 
     char **file_list = NULL;
     size_t nfiles = 0;
+    fprintf (stderr, "grb_jitpackage: building JITpackge\n") ;
 
     if (argc == 2 && argv[1][0] == '@')
     {
@@ -178,7 +186,7 @@ int main (int argc, char **argv)
 
     FILE *fp = fopen ("GB_JITpackage.c", "wb") ;
     OK (fp != NULL) ;
-    printf ("Processing %zu input files ...\n", nfiles) ;
+    fprintf (stderr, "Processing %zu input files ...\n", nfiles) ;
 
     fprintf (fp,
         "//------------------------------------------------------------------------------\n"
@@ -222,7 +230,8 @@ int main (int argc, char **argv)
         // read the input file
         //----------------------------------------------------------------------
 
-        FILE *ff = fopen (file_list [k], "r") ;
+//      fprintf (stderr, "k: %zu file: %s\n", k, file_list [k]) ;
+        FILE *ff = fopen (file_list [k], "rb") ; // open as binary, for Windows
         OK (ff != NULL) ;
         fseek (ff, 0, SEEK_END) ;
         size_t inputsize = ftell (ff) ;
@@ -231,6 +240,7 @@ int main (int argc, char **argv)
         char *input = malloc (inputsize+2) ;
         OK (input != NULL) ;
         size_t nread = fread (input, sizeof (char), inputsize, ff) ;
+//      fprintf (stderr, "inputsize %zu nread %zu\n", inputsize, nread) ;
         OK (nread == inputsize) ;
         input [inputsize] = '\0' ; 
         fclose (ff) ;
@@ -273,9 +283,9 @@ int main (int argc, char **argv)
     // print the index
     //--------------------------------------------------------------------------
 
-    printf ("Total uncompressed: %zu bytes\n", total_uncompressed_size) ;
-    printf ("Total compressed:   %zu bytes\n", total_compressed_size) ;
-    printf ("Compression:        %g\n", 
+    fprintf (stderr, "Total uncompressed: %zu bytes\n", total_uncompressed_size) ;
+    fprintf (stderr, "Total compressed:   %zu bytes\n", total_compressed_size) ;
+    fprintf (stderr, "Compression:        %g\n", 
         (double) total_compressed_size / (double) total_uncompressed_size) ;
 
     fprintf (fp, "\nGB_JITpackage_index_struct GB_JITpackage_index [%zu] =\n{\n",

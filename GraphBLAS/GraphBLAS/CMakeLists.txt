@@ -266,6 +266,18 @@ endif ( )
 get_target_property ( GB_CMAKE_LIBRARIES graphblas_matlab LINK_LIBRARIES )
 
 #-------------------------------------------------------------------------------
+# determine complex type
+#-------------------------------------------------------------------------------
+
+include ( GraphBLAS_complex )
+if ( GxB_HAVE_COMPLEX_C99 )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGxB_HAVE_COMPLEX_C99=1 " )
+endif ( )
+if ( GxB_HAVE_COMPLEX_MSVC )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGxB_HAVE_COMPLEX_MSVC=1 " )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # print final C flags
 #-------------------------------------------------------------------------------
 

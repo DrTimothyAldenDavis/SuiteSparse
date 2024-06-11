@@ -34,8 +34,8 @@
 #ifndef NCAMD
 
 #include "camd.h"
-#if !defined (CAMD__VERSION) || (CAMD__VERSION < SUITESPARSE__VERCODE(3,3,2))
-#error "CHOLMOD:Partition requires CAMD 3.3.2 or later"
+#if !defined (CAMD__VERSION) || (CAMD__VERSION < SUITESPARSE__VERCODE(3,3,3))
+#error "CHOLMOD:Partition requires CAMD 3.3.3 or later"
 #endif
 
 //------------------------------------------------------------------------------

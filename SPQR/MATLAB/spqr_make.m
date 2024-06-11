@@ -34,6 +34,8 @@ flags = '-O -largeArrayDims -silent ' ;
 if (ispc)
     % MSVC does not define ssize_t
     flags = [flags ' -DNO_SSIZE_T'] ;
+    % disable the SuiteSparse_config timer
+    flags = ['-DNTIMER ' flags] ;
 end
 
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;

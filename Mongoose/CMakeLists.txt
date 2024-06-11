@@ -35,11 +35,11 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( Mongoose_DATE "Mar 22, 2024" )
-set ( Mongoose_NUMERIC_DATE "2024-03-22" )
+set ( Mongoose_DATE "June XX, 2024" )   # FIXME NOW
+set ( Mongoose_NUMERIC_DATE "2024-03-22" )  # FIXME NOW
 set ( Mongoose_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( Mongoose_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( Mongoose_VERSION_PATCH 3 CACHE STRING "" FORCE )
+set ( Mongoose_VERSION_PATCH 4 CACHE STRING "" FORCE )
 
 message ( STATUS "Building Mongoose version: v"
     ${Mongoose_VERSION_MAJOR}.

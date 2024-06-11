@@ -49,12 +49,13 @@ void mexFunction
         printf ("%s\n", about) ;
         printf ("Version: %d.%d.%d (%s)\n",
                 version [0], version [1], version [2], date) ;
-        char *compiler ;
-        int cver [3] ;
-        bool have_openmp ;
-        OK (GxB_get (GxB_COMPILER_NAME, &compiler)) ;
-        OK (GxB_get (GxB_COMPILER_VERSION, cver)) ;
-        OK (GxB_get (GxB_LIBRARY_OPENMP, &have_openmp)) ;
+        char compiler [2048] ;
+        int32_t cver [3] ;
+        int32_t have_openmp ;
+//      OK (GrB_Global_get_SIZE (GrB_GLOBAL, &len, GxB_COMPILER_NAME)) ;
+        OK (GrB_Global_get_String (GrB_GLOBAL, compiler, GxB_COMPILER_NAME)) ;
+        OK (GrB_Global_get_VOID (GrB_GLOBAL, (void *) cver, GxB_COMPILER_VERSION)) ;
+        OK (GrB_Global_get_INT32 (GrB_GLOBAL, &have_openmp, GxB_LIBRARY_OPENMP)) ;
         printf ("GraphBLAS compiled with %s (v%d.%d.%d), %s OpenMP\n", compiler,
             cver [0], cver [1], cver [2],
             have_openmp ? "with" : "without") ;

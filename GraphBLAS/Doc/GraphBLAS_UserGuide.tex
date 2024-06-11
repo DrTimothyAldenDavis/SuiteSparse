@@ -14340,10 +14340,12 @@ Visual Studio 2019, but may work for earlier versions.
     patient; some files may take a while to compile and sometimes may appear to
     be stalled.  Just wait.
 
-    % Alternatively, type this command in the terminal window:
-    % {\small
-    % \begin{verbatim}
-    % devenv graphblas.sln /build "release|x64" /project graphblas \end{verbatim}}
+\item Alternatively, instead of opening Visual Studio,
+    type this command in the terminal window while in the \verb'build' folder:
+    {\small
+    \begin{verbatim}
+    cmake --build . --config Release
+    \end{verbatim}}
 
 \item Add the \verb'GraphBLAS/build/Release' folder to the Windows System path:
 

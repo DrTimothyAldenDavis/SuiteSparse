@@ -173,12 +173,12 @@
 #error "SPEX requires SuiteSparse_config 7.8.0 or later"
 #endif
 
-#if !defined (AMD__VERSION) || AMD__VERSION < SUITESPARSE__VERCODE(3,3,2)
-#error "SPEX requires AMD 3.3.2 or later"
+#if !defined (AMD__VERSION) || AMD__VERSION < SUITESPARSE__VERCODE(3,3,3)
+#error "SPEX requires AMD 3.3.3 or later"
 #endif
 
-#if !defined (COLAMD__VERSION) || COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,3)
-#error "SPEX requires COLAMD 3.3.3 or later"
+#if !defined (COLAMD__VERSION) || COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,4)
+#error "SPEX requires COLAMD 3.3.4 or later"
 #endif
 
 //------------------------------------------------------------------------------

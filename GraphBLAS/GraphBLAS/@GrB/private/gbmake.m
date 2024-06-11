@@ -54,7 +54,7 @@ if ispc
     % First do the following in GraphBLAS/build, in the Windows console:
     %
     %   cmake ..
-    %   devenv graphblas.sln /build "release|x64" /project graphblas
+    %   cmake --build . --config Release
     %
     % The above commands require MS Visual Studio.  The graphblas.lib is
     % compiled and placed in GraphBLAS/build/Release.  Then in the
@@ -63,9 +63,9 @@ if ispc
     %   gbmake
     %
     if (need_rename)
-        library = sprintf ('%s/../../build/Release', pwd) ;
+        library_path = sprintf ('%s/../../build/Release', pwd) ;
     else
-        library = sprintf ('%s/../../../build/Release', pwd) ;
+        library_path = sprintf ('%s/../../../build/Release', pwd) ;
     end
 else
     % First do one the following in GraphBLAS (use JOBS=n for a parallel
@@ -82,9 +82,9 @@ else
     %   gbmake
     %
     if (need_rename)
-        library = sprintf ('%s/../../build', pwd) ;
+        library_path = sprintf ('%s/../../build', pwd) ;
     else
-        library = sprintf ('%s/../../../build', pwd) ;
+        library_path = sprintf ('%s/../../../build', pwd) ;
     end
 end
 
@@ -125,7 +125,7 @@ else
         rpath = '-rpath=' ;
     end
     if (ismac || isunix)
-        rpath = sprintf (' -Wl,%s''''%s'''' ', rpath, library) ;
+        rpath = sprintf (' -Wl,%s''''%s'''' ', rpath, library_path) ;
         flags = [ flags ' CFLAGS=''$CFLAGS ' cflags ' -Wno-pragmas'' '] ;
         flags = [ flags ' CXXFLAGS=''$CXXFLAGS ' cflags ' -Wno-pragmas'' '] ;
         flags = [ flags ' LDFLAGS=''$LDFLAGS ' ldflags rpath ' '' '] ;
@@ -182,10 +182,11 @@ end
 flags = [flags cflag] ;
 mex_complex
 
-Lflags = sprintf ('-L''%s''', library) ;
+Lflags = sprintf ('-L''%s''', library_path) ;
 
 fprintf ('compiler flags: %s\n', flags) ;
 fprintf ('compiler incs:  %s\n', inc) ;
+fprintf ('linking flags:  %s\n', Lflags) ;
 fprintf ('library:        %s\n', libgraphblas) ;
 
 hfiles = [ dir('*.h') ; dir('util/*.h') ] ;
@@ -260,8 +261,8 @@ for k = 1:length (mexfunctions)
         % compile the mexFunction
         mexcmd = sprintf ('mex %s -silent %s %s ''%s'' %s %s', ...
             Lflags, flags, inc, mexfunction, objlist, libgraphblas) ;
-        % fprintf ('%s\n', mexcmd) ;
-        fprintf (':') ;
+        fprintf ('%s\n', mexcmd) ;
+        % fprintf (':') ;
         eval (mexcmd) ;
     end
 end

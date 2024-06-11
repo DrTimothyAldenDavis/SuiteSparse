@@ -25,6 +25,11 @@ catch
     mac = 0 ;
 end
 
+if (pc)
+    % disable the SuiteSparse_config timer
+    mexcmd = [mexcmd ' -DNTIMER '] ;
+end
+
 if (~(pc || mac))
     % for POSIX timing routine
     mexcmd = [mexcmd ' -lrt'] ;

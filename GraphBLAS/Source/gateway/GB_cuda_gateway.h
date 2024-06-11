@@ -61,7 +61,7 @@ static inline int GB_ngpus_to_use
     //  2: never use GPU
     //  1: always use GPU
     //  0: default
-    int gpu_hack = GB_Global_hack_get (2) ;
+    int gpu_hack = (int) GB_Global_hack_get (2) ;
 
     // get # of GPUs avaiable
     int gpu_count = GB_Global_gpu_count_get ( ) ;
