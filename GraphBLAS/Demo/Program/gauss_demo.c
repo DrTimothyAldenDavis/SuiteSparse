@@ -322,24 +322,32 @@ int main (void)
     TRY (GxB_Global_Option_set (GxB_JIT_C_CONTROL, GxB_JIT_OFF)) ;
     printf ("JIT: on\n") ;
     TRY (GxB_Global_Option_set (GxB_JIT_C_CONTROL, GxB_JIT_ON)) ;
+    TRY (GxB_Global_Option_get (GxB_JIT_C_CONTROL, &control)) ;
+    printf ("jit: status %d\n", control) ;
 
     // create the BadAddGauss operator; use a NULL function pointer to test the
     // JIT.  Like the BadGauss type, this will always require a JIT
     // compilation, because the type will not match the good 'addgauss'
-    // definition from a prior run of this demo.
+    // definition from a prior run of this demo.  Skip this if the JIT is
+    // disabled, to allow PreJIT kernels to be used instead.  Creating
+    // the invalid addgauss operator will disable the good PreJIT addgauss.
     GrB_BinaryOp BadAddGauss = NULL ; 
-    info = GxB_BinaryOp_new (&BadAddGauss, NULL,
-        Gauss, Gauss, Gauss, "addgauss", BAD_ADDGAUSS_DEFN) ;
-    if (info != GrB_SUCCESS)
+    if (control == GxB_JIT_ON)
     {
-        // JIT disabled
-        printf ("JIT: unable to compile the BadAddGauss kernel\n") ;
-        TRY (GrB_BinaryOp_new (&BadAddGauss, (void *) badaddgauss,
-            Gauss, Gauss, Gauss)) ;
+        info = GxB_BinaryOp_new (&BadAddGauss, NULL,
+            Gauss, Gauss, Gauss, "addgauss", BAD_ADDGAUSS_DEFN) ;
+        if (info != GrB_SUCCESS)
+        {
+            // JIT disabled
+            printf ("JIT: unable to compile the BadAddGauss kernel\n") ;
+            TRY (GrB_BinaryOp_new (&BadAddGauss, (void *) badaddgauss,
+                Gauss, Gauss, Gauss)) ;
+        }
+        TRY (GxB_BinaryOp_fprint (BadAddGauss, "BadAddGauss", GxB_COMPLETE,
+            stdout)) ;
+        GrB_BinaryOp_free (&BadAddGauss) ;
     }
-    TRY (GxB_BinaryOp_fprint (BadAddGauss, "BadAddGauss", GxB_COMPLETE,
-        stdout)) ;
-    GrB_BinaryOp_free (&BadAddGauss) ;
+
     OK_JIT
 
     // create the AddGauss operator; use a NULL function pointer to test the
