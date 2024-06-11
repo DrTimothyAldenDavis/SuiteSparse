@@ -694,6 +694,14 @@ GrB_Info GB_jitifyer_extract_JITpackage (GrB_Info error_condition)
     }
 
     //--------------------------------------------------------------------------
+    // get the JITpackage
+    //--------------------------------------------------------------------------
+
+    int GB_JITpackage_nfiles = GB_JITpackage_nfiles_get ( ) ;
+    GB_JITpackage_index_struct *GB_JITpackage_index =
+        GB_JITpackage_index_get ( ) ;
+
+    //--------------------------------------------------------------------------
     // allocate workspace for the largest uncompressed file
     //--------------------------------------------------------------------------
 

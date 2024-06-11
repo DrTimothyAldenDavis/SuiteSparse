@@ -194,9 +194,20 @@ if ( NOT GRAPHBLAS_COMPACT )
 endif ( )
 
 if ( GRAPHBLAS_USE_JIT )
-    # add the JITpackage source
-    file ( GLOB GRAPHBLAS_JITPACKAGE_SOURCE "../JITpackage/*.c" )
-    list ( PREPEND GRAPHBLAS_SOURCES ${GRAPHBLAS_JITPACKAGE_SOURCE} )
+    # generate compressed JIT sources to create GB_JITpackage.c
+    message ( STATUS "Creating the GraphBLAS/JITpackage:" )
+    add_subdirectory ( ../JITpackage build )
+    # GLOB does not include files that do not yet exist, so prepend
+    # the GB_JITpackage.c file here:
+    list ( PREPEND GRAPHBLAS_SOURCES
+        $<TARGET_PROPERTY:GB_JITpackage,GENERATED_FILE> )
+else ( )
+    # create an empty GB_JITpackage.c file:
+    message ( STATUS "Creating an empty GraphBLAS/JITpackage (JIT disabled):" )
+    configure_file ( "../Config/GB_JITpackage_NJIT.c.in"
+        "../JITpackage/GB_JITpackage.c"
+        NEWLINE_STYLE LF )
+    list ( PREPEND GRAPHBLAS_SOURCES "../JITpackage/GB_JITpackage.c")
 endif ( )
 
 add_library ( graphblas_matlab SHARED ${GRAPHBLAS_SOURCES} )
@@ -206,6 +217,11 @@ set_target_properties ( graphblas_matlab PROPERTIES
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
     PUBLIC_HEADER "../Include/GraphBLAS.h" )
+
+if ( GRAPHBLAS_USE_JIT )
+    # Make sure compressed sources are built before library
+    add_dependencies ( graphblas_matlab GB_JITpackage )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # select the math library (not required for Microsoft Visual Studio)
@@ -264,6 +280,9 @@ endif ( )
 
 # get the current library list
 get_target_property ( GB_CMAKE_LIBRARIES graphblas_matlab LINK_LIBRARIES )
+if ( NOT GB_CMAKE_LIBRARIES )
+    set ( GB_CMAKE_LIBRARIES "" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # determine complex type

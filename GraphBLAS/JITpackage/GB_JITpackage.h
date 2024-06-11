@@ -18,6 +18,6 @@ typedef struct
 }
 GB_JITpackage_index_struct ;
 
-GB_GLOBAL int GB_JITpackage_nfiles ;
-GB_GLOBAL GB_JITpackage_index_struct GB_JITpackage_index [ ] ;
+int GB_JITpackage_nfiles_get (void) ;
+void *GB_JITpackage_index_get (void) ;
 

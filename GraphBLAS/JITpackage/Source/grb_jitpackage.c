@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// grb_jitpackage: package GraphBLAS source code for the JIT 
+// grb_jitpackage: package GraphBLAS source code for the JIT
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
@@ -27,7 +27,7 @@
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #endif
 
-// disable ZSTD deprecation warnings and include all ZSTD definitions  
+// disable ZSTD deprecation warnings and include all ZSTD definitions
 
 // GraphBLAS does not use deprecated functions, but the warnings pop up anyway
 // when GraphBLAS is built, so silence them with this #define:
@@ -202,11 +202,11 @@ int main (int argc, char **argv)
         "\n"
         "#ifdef NJIT\n"
         "// JIT is disabled at compile time\n"
-        "int GB_JITpackage_nfiles = 0 ;\n"
-        "GB_JITpackage_index_struct GB_JITpackage_index [1] "
-        "= {{0, 0, NULL, NULL}} ;\n"
+        "int GB_JITpackage_nfiles_get (void) { return (0) ; }\n"
+        "static GB_JITpackage_index_struct GB_JITpackage_index [1] =\n"
+        "   {{0, 0, NULL, NULL}} ;\n"
         "#else\n"
-        "int GB_JITpackage_nfiles = %zu ;\n\n", nfiles) ;
+        "int GB_JITpackage_nfiles_get (void) { return (%zu) ; }\n\n", nfiles) ;
 
     //--------------------------------------------------------------------------
     // allocate the index
@@ -242,7 +242,7 @@ int main (int argc, char **argv)
         size_t nread = fread (input, sizeof (char), inputsize, ff) ;
 //      fprintf (stderr, "inputsize %zu nread %zu\n", inputsize, nread) ;
         OK (nread == inputsize) ;
-        input [inputsize] = '\0' ; 
+        input [inputsize] = '\0' ;
         fclose (ff) ;
 
         //----------------------------------------------------------------------
@@ -255,7 +255,7 @@ int main (int argc, char **argv)
         size_t dsize = ZSTD_compress (dst, dbound+2, input, inputsize, 19) ;
 
         //----------------------------------------------------------------------
-        // append the bytes to the output file 
+        // append the bytes to the output file
         //----------------------------------------------------------------------
 
         fprintf (fp, "// %s:\n", file_list [k]) ;
@@ -283,13 +283,14 @@ int main (int argc, char **argv)
     // print the index
     //--------------------------------------------------------------------------
 
-    fprintf (stderr, "Total uncompressed: %zu bytes\n", total_uncompressed_size) ;
+    fprintf (stderr, "Total uncompressed: %zu bytes\n",
+        total_uncompressed_size) ;
     fprintf (stderr, "Total compressed:   %zu bytes\n", total_compressed_size) ;
-    fprintf (stderr, "Compression:        %g\n", 
+    fprintf (stderr, "Compression:        %g\n",
         (double) total_compressed_size / (double) total_uncompressed_size) ;
 
-    fprintf (fp, "\nGB_JITpackage_index_struct GB_JITpackage_index [%zu] =\n{\n",
-        nfiles) ;
+    fprintf (fp, "\nstatic GB_JITpackage_index_struct "
+        "GB_JITpackage_index [%zu] =\n{\n", nfiles) ;
     for (int k = 1 ; k < nfiles+1 ; k++)
     {
         // get the filename
@@ -312,7 +313,12 @@ int main (int argc, char **argv)
         fprintf (fp, "    { %8zu, %8zu, GB_JITpackage_%-3d, \"%s\" },\n",
             Uncompressed_size [k], Compressed_size [k], k-1, filename) ;
     }
-    fprintf (fp, "} ;\n#endif\n\n") ;
+    fprintf (fp,
+        "} ;\n#endif\n\n"
+        "void *GB_JITpackage_index_get (void)\n"
+        "{\n"
+        "    return ((void *) GB_JITpackage_index) ;\n"
+        "}\n\n") ;
     fclose (fp) ;
     free (Uncompressed_size) ;
     free (Compressed_size) ;

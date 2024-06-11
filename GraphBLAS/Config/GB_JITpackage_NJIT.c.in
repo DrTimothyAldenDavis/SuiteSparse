@@ -15,6 +15,15 @@
 // source files from this set of files into the ~/.SuiteSparse/GrBX.Y.Z/src
 // folder anyway, so there is no need to build the JITpackage.
 
-int GB_JITpackage_nfiles = 0 ;
-GB_JITpackage_index_struct GB_JITpackage_index [1] = {{0, 0, NULL, NULL}} ;
+int GB_JIT_package_nfiles_get (void)
+{
+    return (0) ;
+}
 
+static GB_JITpackage_index_struct GB_JITpackage_index [1] =
+    {{0, 0, NULL, NULL}} ;
+
+void * GB_JITpackage_index_get (void)
+{
+    return ((void *) GB_JITpackage_index) ;
+}

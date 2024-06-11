@@ -97,6 +97,7 @@ try
     cmd2 = sprintf ('cmake --build . --config Release -j%d', threads) ;
 
     % execute cmd1: configure with cmake
+    clear mex
     fprintf ('\n================================\n%s\n', cmd1) ;
     [status, result] = system (cmd1, '-echo') ;
     if (status ~= 0)
