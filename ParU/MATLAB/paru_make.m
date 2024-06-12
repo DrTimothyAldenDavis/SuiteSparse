@@ -415,6 +415,7 @@ for k = 1:length (paru_src)
         fprintf ('\n') ;
     end
 end
+fprintf ('\n') ;
 
 % compile each SuiteSparse C file (SuiteSparse_config, AMD, COLAMD,
 % CAMD, CCOLAMD, UMFPACK, CHOLMOD):
