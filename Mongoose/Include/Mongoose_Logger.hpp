@@ -103,10 +103,10 @@ typedef enum TimingType
 class Logger
 {
 private:
-    /* MONGOOSE_API */ static int debugLevel;
-    /* MONGOOSE_API */ static bool timingOn;
-    /* MONGOOSE_API */ static double clocks[6];
-    /* MONGOOSE_API */ static float times[6];
+    MONGOOSE_API static int debugLevel;
+    MONGOOSE_API static bool timingOn;
+    MONGOOSE_API static double clocks[6];
+    MONGOOSE_API static float times[6];
 
 public:
     static inline void tic(TimingType timingType);
