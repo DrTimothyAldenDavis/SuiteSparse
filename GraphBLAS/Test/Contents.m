@@ -3,7 +3,7 @@
 
 % Primary functiuns
 
-%   make    - compiles the test interface to GraphBLAS
+%   testmake - compiles the test interface to GraphBLAS
 %   testall - run all GraphBLAS tests
 
 % mimics of GraphBLAS operations:

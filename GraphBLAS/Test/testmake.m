@@ -1,4 +1,4 @@
-function make (what)
+function testmake (what)
 %MAKE compiles the test interface to GraphBLAS
 % and dynamically links it with the libraries in ../build/libgraphblas.
 %
@@ -7,14 +7,14 @@ function make (what)
 %
 % Usage:
 %
-%   make            % just make what has changed (does not check any changes
-%                   % in -lgraphblas, use 'make all' if recompilation is needed
-%   make all        % make everything from scratch
+%   testmake        % just make what has changed (does not check any changes
+%                   % in -lgraphblas, use 'testmake all' if recompilation is
+%                   needed
+%   testmake all    % make everything from scratch
 %
-% GraphBLAS requires an C11 compliant compiler.  On the Mac, clang 8.0
-% suffices.  gcc should be version 4.9.3 or later
+% See also graphblas_install.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 here = pwd ;
@@ -23,7 +23,7 @@ if (ispc)
 end
 if (isempty (strfind (here, 'GraphBLAS/Test')))
     % this function should only be done in GraphBLAS/Test
-    error ('make should be used in Test directory only') ;
+    error ('testmake should be used in Test directory only') ;
 end
 
 fprintf ('\nCompiling GraphBLAS tests:\n') ;

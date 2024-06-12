@@ -261,8 +261,8 @@ for k = 1:length (mexfunctions)
         % compile the mexFunction
         mexcmd = sprintf ('mex %s -silent %s %s ''%s'' %s %s', ...
             Lflags, flags, inc, mexfunction, objlist, libgraphblas) ;
-        fprintf ('%s\n', mexcmd) ;
-        % fprintf (':') ;
+        % fprintf ('%s\n', mexcmd) ;
+        fprintf (':') ;
         eval (mexcmd) ;
     end
 end

@@ -100,6 +100,7 @@ malloc_debugging = stat ;
 % tests with high rates (over 100/sec)
 %----------------------------------------
 
+logstat ('test201'    ,t, j4  , f1  ) ; % test iso reduce to vector and scalar
 logstat ('test169'    ,t, j0  , f1  ) ; % C<M>=A+B with many formats
 logstat ('test250'    ,t, j44 , f10 ) ; % JIT tests, set/get, other tests
 logstat ('test279'    ,t, j0  , f1  ) ; % blob get/set
@@ -270,7 +271,6 @@ end
 % tests with good rates (30 to 100/sec)
 %----------------------------------------
 
-logstat ('test201'    ,t, j4  , f1  ) ; % test iso reduce to vector
 logstat ('test225'    ,t, j4  , f1  ) ; % test mask operations (GB_masker)
 logstat ('test176'    ,t, j4  , f1  ) ; % test GrB_assign, method 09, 11
 logstat ('test208'    ,t, j4  , f1  ) ; % test iso apply, bind 1st and 2nd
