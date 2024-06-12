@@ -152,7 +152,12 @@ for f = files
         slash = slash (end) + 1 ;
     end
     o = ff (slash:end) ;
-    obj_files = [obj_files ' ' o '.o'] ;        %#ok
+    if (ispc)
+        obj = '.obj' ;
+    else
+        obj = '.o' ;
+    end
+    obj_files = [obj_files ' ' o obj] ;        %#ok
     s = sprintf ('mex %s %s -c %s.%s', flags, include, ff, ext) ;
     kk = do_cmd (s, kk, details) ;
 end
@@ -172,8 +177,3 @@ else
 end
 eval (s) ;
 
-%-------------------------------------------------------------------------------
-% function v = getversion
-% determine the MATLAB version, and return it as a double.
-% v = sscanf (version, '%d.%d.%d') ;
-% v = 10.^(0:-1:-(length(v)-1)) * v ;
