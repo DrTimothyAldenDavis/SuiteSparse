@@ -65,7 +65,7 @@ flags = '-O -R2018a -silent ' ;
 
 if (ispc)
     % MSVC does not define ssize_t
-    flags = [flags ' -DNO_SSIZE_T -DNTIMER '] ;
+    flags = [flags ' -DNO_SSIZE_T -DNTIMER -DBLAS_NO_UNDERSCORE '] ;
 end
 
 if (ismac)
@@ -411,6 +411,9 @@ for k = 1:length (paru_src)
     o = src (slash:end) ;
     obj_files = [ obj_files ' ' o '.' obj ] ; %#ok<AGROW>
     objs {end+1} = [o '.' obj] ;
+    if (mod (k,60) == 0)
+        fprintf ('\n') ;
+    end
 end
 
 % compile each SuiteSparse C file (SuiteSparse_config, AMD, COLAMD,
@@ -426,6 +429,9 @@ for k = 1:length (suitesparse_src)
     o = src (slash:end) ;
     obj_files = [ obj_files ' ' o '.' obj ] ; %#ok<AGROW>
     objs {end+1} = [o '.' obj] ;
+    if (mod (k,60) == 0)
+        fprintf ('\n') ;
+    end
 end
 
 % compile the paru mexFunction
