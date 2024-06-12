@@ -294,14 +294,14 @@ void mexFunction
     double t [3], t0, t1 ;
     if (nargout > 1)
     {
-        t0 = SuiteSparse_time ( ) ;
+        t0 = SUITESPARSE_TIME ;
     }
 
     PARU_OK (ParU_C_Analyze (A, &Sym, Control), "symbolic analysis failed") ;
 
     if (nargout > 1)
     {
-        t1 = SuiteSparse_time ( ) ;
+        t1 = SUITESPARSE_TIME ;
         t [0] = t1 - t0 ;
         t0 = t1 ;
     }
@@ -311,7 +311,7 @@ void mexFunction
 
     if (nargout > 1)
     {
-        t1 = SuiteSparse_time ( ) ;
+        t1 = SUITESPARSE_TIME ;
         t [1] = t1 - t0 ;
         t0 = t1 ;
     }
@@ -321,7 +321,7 @@ void mexFunction
 
     if (nargout > 1)
     {
-        t1 = SuiteSparse_time ( ) ;
+        t1 = SUITESPARSE_TIME ;
         t [2] = t1 - t0 ;
         t0 = t1 ;
     }

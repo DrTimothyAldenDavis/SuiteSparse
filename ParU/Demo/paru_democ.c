@@ -78,7 +78,7 @@ int main(int argc, char **argv)
            ver[0], ver[1], ver[2]);
     printf(" %s\n", date);
 
-    double my_start_time = SuiteSparse_time ();
+    double my_start_time = SUITESPARSE_TIME;
 
     ParU_Info info;
     info = ParU_C_InitControl(&Control);  // initialize the Control in C
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
         Control) ;
     printf ("\n--------- ParU_C_Analyze:\n") ;
     info = ParU_C_Analyze(A, &Sym, Control);
-    double my_time_analyze = SuiteSparse_time () - my_start_time;
+    double my_time_analyze = SUITESPARSE_TIME - my_start_time;
     if (info != PARU_SUCCESS)
     {
         FREE_ALL_AND_RETURN (info) ;
@@ -99,9 +99,9 @@ int main(int argc, char **argv)
     printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", n, n, anz);
     printf("ParU: Symbolic factorization: %lf seconds\n", my_time_analyze);
     printf ("\n--------- ParU_C_Factorize:\n") ;
-    double my_start_time_fac = SuiteSparse_time ();
+    double my_start_time_fac = SUITESPARSE_TIME;
     info = ParU_C_Factorize(A, Sym, &Num, Control);
-    double my_time_fac = SuiteSparse_time () - my_start_time_fac;
+    double my_time_fac = SUITESPARSE_TIME - my_start_time_fac;
     if (info != PARU_SUCCESS)
     {
         printf("ParU: factorization was NOT successful in %lf seconds!",
@@ -122,15 +122,15 @@ int main(int argc, char **argv)
     xx = (double *)malloc(n * sizeof(double));
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
     printf ("\n--------- ParU_C_Solve_Axb:\n") ;
-    double my_solve_time_start = SuiteSparse_time ();
+    double my_solve_time_start = SUITESPARSE_TIME;
     info = ParU_C_Solve_Axb(Sym, Num, b, xx, Control);
     if (info != PARU_SUCCESS)
     {
         printf ("ParU: solve failed.\n");
         FREE_ALL_AND_RETURN (info) ;
     }
-    my_solve_time = SuiteSparse_time () - my_solve_time_start;
-    my_time = SuiteSparse_time () - my_start_time;
+    my_solve_time = SUITESPARSE_TIME - my_solve_time_start;
+    my_time = SUITESPARSE_TIME - my_start_time;
     printf("Solve time is %lf seconds.\n", my_solve_time);
 
     // printing out x
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 
     //~~~~~~~~~~~~~~~~~~~Calling umfpack~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     double umf_time = 0;
-    double umf_start_time = SuiteSparse_time ();
+    double umf_start_time = SUITESPARSE_TIME;
     double status,           // Info [UMFPACK_STATUS]
         Info[UMFPACK_INFO],  // statistics about the symbolic analysis
         umf_Control[UMFPACK_CONTROL];  // it is set in umfpack_dl_defaults and
@@ -217,8 +217,8 @@ int main(int argc, char **argv)
         printf("umfpack_dl_symbolic failed\n");
         FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
-    double umf_symbolic = SuiteSparse_time () - umf_start_time;
-    double umf_fac_start = SuiteSparse_time ();
+    double umf_symbolic = SUITESPARSE_TIME - umf_start_time;
+    double umf_fac_start = SUITESPARSE_TIME;
     status =
         umfpack_dl_numeric(Ap, Ai, Ax, Symbolic, &Numeric, umf_Control, Info);
     // umf_Control[UMFPACK_PRL] = 2;
@@ -232,16 +232,16 @@ int main(int argc, char **argv)
         FREE_ALL_AND_RETURN (PARU_INVALID) ;
     }
 
-    double umf_time_fac = SuiteSparse_time () - umf_fac_start;
+    double umf_time_fac = SUITESPARSE_TIME - umf_fac_start;
 
     x = (double *)malloc(n * sizeof(double));
     for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
 
-    double solve_start = SuiteSparse_time ();
+    double solve_start = SUITESPARSE_TIME;
     status = umfpack_dl_solve(UMFPACK_A, Ap, Ai, Ax, x, b, Numeric, umf_Control,
                               Info);
-    double umf_solve_time = SuiteSparse_time () - solve_start;
-    umf_time = SuiteSparse_time () - umf_start_time;
+    double umf_solve_time = SUITESPARSE_TIME - solve_start;
+    umf_time = SUITESPARSE_TIME - umf_start_time;
     double umf_resid, umf_anorm, umf_xnorm;
     info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm,
                                Control);

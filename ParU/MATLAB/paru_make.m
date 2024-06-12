@@ -65,7 +65,7 @@ flags = '-O -R2018a -silent ' ;
 
 if (ispc)
     % MSVC does not define ssize_t
-    flags = [flags ' -DNO_SSIZE_T'] ;
+    flags = [flags ' -DNO_SSIZE_T -DNTIMER '] ;
 end
 
 if (ismac)
