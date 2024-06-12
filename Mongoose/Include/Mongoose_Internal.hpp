@@ -27,6 +27,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
+#include <algorithm>
 
 /* Memory Management */
 #include "SuiteSparse_config.h"
