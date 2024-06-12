@@ -36,7 +36,7 @@ flags = [flags ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
 flags = [flags ' -DGP_MEX_FUNCTION'] ;
 
 % Append optimization
-flags = [flags ' -O -silent COPTIMFLAGS="-O3 -fwrapv"'];
+flags = [flags ' -O -silent COPTIMFLAGS="-O3 -fwrapv -std=c++11"'];
 
 cpp_flags = '' ;
 lib = '';
