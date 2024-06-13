@@ -103,10 +103,23 @@ typedef enum TimingType
 class Logger
 {
 private:
+    #ifdef MATLAB_MEX_FILE
+    // Compiling the Mongoose mexFunction inside MATLAB on Windows with the
+    // MSVC cl compiler (via the MATLAB mex command) causes an error, stating
+    // that private class members cannot be tagged with __declspec(...).
+    static int debugLevel;
+    static bool timingOn;
+    static double clocks[6];
+    static float times[6];
+    #else
+    // However, compiling the mongoose executable with the Windows cl compiler
+    // causes the mongoose.cpp executable to fail to link without the nasty
+    // __declspec(...) added below.
     MONGOOSE_API static int debugLevel;
     MONGOOSE_API static bool timingOn;
     MONGOOSE_API static double clocks[6];
     MONGOOSE_API static float times[6];
+    #endif
 
 public:
     static inline void tic(TimingType timingType);
