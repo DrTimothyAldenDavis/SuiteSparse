@@ -58,8 +58,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
 \label{intro}
 %-------------------------------------------------------------------------------
 
-The algorithms used in ParU are discussed in a companion paper.
-FIXME NOW: cite our ACM TOMS submission, and include it the Doc folder.
+The algorithms used in ParU are discussed in ...  FIXME:
+a copy of which is in the \verb'ParU/Doc' folder.
+% FUTURE: add the ACM TOMS submission to the Doc folder.
 This document gives detailed information on the installation and use of ParU.
 ParU is a parallel sparse direct solver that uses OpenMP tasking for
 parallelism. ParU calls UMFPACK for the symbolic analysis phase, after that,
@@ -441,6 +442,8 @@ described below.
 
     \item \verb'PARU_CONTROL_ORDERING': % UMFPACK ordering
 
+        FIXME: disuss when to use AMD or COLAMD instead of the default.
+
         \begin{itemize}
         \item \verb'PARU_ORDERING_AMD':
             use AMD on $A+A'$ (symmetric strategy) or COLAMD (unsymmetric
@@ -527,7 +530,6 @@ described below.
     \end{itemize}
 
 Default values of Control parameters are defined below:
-% FIXME NOW: what should the default ordering be?
 
     {\footnotesize
     \begin{verbatim}

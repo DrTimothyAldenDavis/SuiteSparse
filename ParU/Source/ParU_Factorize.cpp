@@ -186,9 +186,8 @@ ParU_Info ParU_Factorize
             PRLEVEL(1, ("%% doing Queue tasks <" LD "," LD ">\n", start, end));
             #pragma omp parallel proc_bind(spread) num_threads(nthreads)
             #pragma omp single nowait
-            #pragma omp task untied  // clang might seg fault on untied
+            #pragma omp task untied
             for (int64_t i = start; i < end; i++)
-            // for (int64_t i = 0; i < (int64_t)task_Q.size(); i++)
             {
                 int64_t t = task_Q[i];
                 int64_t d = task_depth[t];

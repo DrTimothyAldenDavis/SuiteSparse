@@ -1,9 +1,0 @@
-FIXME NOW: test performance results again, for ACM TOMS paper
-FIXME NOW: is Doc/Doxyfile needed?
-
-FIXME NOW: what should the default ordering be?  What if it is invalid?
-    In v0.1, if the ordering parameter was out of bounds, it was set to AMD
-    (not the default).  The default was METIS in the ParU.h definitions for the
-    Control struct.  Should the default be METIS_GUARD? or AMD?  METIS_GUARD is
-    better than METIS.
-

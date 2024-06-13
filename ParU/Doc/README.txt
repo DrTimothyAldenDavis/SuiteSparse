@@ -7,7 +7,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
 Files in this folder:
 
     ChangeLog               log of changes to ParU
-    Doxyfile                FIXME NOW: delete this?
     Makefile                "make" will create the user guide PDF
     paru_user_guide.bib     references for the user guide
     paru_user_guide.pdf     PDF version of the user guide
