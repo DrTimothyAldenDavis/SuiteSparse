@@ -134,7 +134,8 @@ GB_bucket_code ;    // FIXME: rename GB_dot3_bucket_code
     // a bitmap/sparse kernel
     // ...
 
-#include "GB_cuda_shfl_down.cuh"
+#include "GB_cuda_tile_sum_uint64.cuh"
+#include "GB_cuda_tile_reduce_ztype.cuh"
 
 //------------------------------------------------------------------------------
 // CUDA device kernels for each case

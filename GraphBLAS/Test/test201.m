@@ -22,15 +22,13 @@ c3 = sum (sum (A.matrix)) ;
 assert (abs (c2-c3) < 1e-12) ;
 
 % reduce a huge iso full matrix to a scalar
-GrB.init ;
 m = 2^40 ;
 n = 2^48 ;
-H = pi * GrB.ones (m, n) ;
-H
-s = sum (H, 'all') ;
-s
+% s = sum (pi * GrB.ones (m, n), 'all')
+s = GB_mex_test36 ;
+% expected result:
 t = pi * m * n ;
-relerr = (s - t) / t ;
+relerr = abs (s - t) / t ;
 relerr
 assert (relerr < 1e-14) ;
 bits = ceil (log2 (t))

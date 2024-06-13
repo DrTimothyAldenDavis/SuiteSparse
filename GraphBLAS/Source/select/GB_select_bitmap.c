@@ -96,61 +96,71 @@ GrB_Info GB_select_bitmap
 
     info = GrB_NO_VALUE ;
 
-    if (GB_IS_INDEXUNARYOP_CODE_POSITIONAL (opcode))
-    { 
-
-        //----------------------------------------------------------------------
-        // bitmap selector for positional ops
-        //----------------------------------------------------------------------
-
-        info = GB_select_positional_bitmap (C->b, &cnvals, A, ithunk, op,
-            nthreads) ;
+    #if defined ( GRAPHBLAS_HAS_CUDA )
+    if (GB_cuda_select_bitmap_branch (A, op))
+    {
+        info = GB_cuda_select_bitmap (C->b, &cnvals, C_iso, A, flipij, ythunk, op) ;
     }
-    else
-    { 
+    #endif
 
-        //----------------------------------------------------------------------
-        // bitmap selector for VALUE* and user-defined ops
-        //----------------------------------------------------------------------
-
-        #ifndef GBCOMPACT
-        GB_IF_FACTORY_KERNELS_ENABLED
+    if (info == GrB_NO_VALUE)
+    {
+        if (GB_IS_INDEXUNARYOP_CODE_POSITIONAL (opcode))
         { 
 
-            //------------------------------------------------------------------
-            // via the factory kernel 
-            //------------------------------------------------------------------
+            //----------------------------------------------------------------------
+            // bitmap selector for positional ops
+            //----------------------------------------------------------------------
 
-            #define GB_selbit(opname,aname) GB (_sel_bitmap_ ## opname ## aname)
-            #define GB_SEL_WORKER(opname,aname)                         \
-            {                                                           \
-                info = GB_selbit (opname, aname) (C->b, &cnvals, A,     \
-                    ythunk, nthreads) ;                                 \
-            }                                                           \
-            break ;
-
-            #include "select/factory/GB_select_entry_factory.c"
+            info = GB_select_positional_bitmap (C->b, &cnvals, A, ithunk, op,
+                nthreads) ;
         }
-        #endif
-
-        //----------------------------------------------------------------------
-        // via the JIT or PreJIT kernel
-        //----------------------------------------------------------------------
-
-        if (info == GrB_NO_VALUE)
+        else
         { 
-            info = GB_select_bitmap_jit (C->b, &cnvals, C_iso,
-                A, flipij, ythunk, op, nthreads) ;
-        }
 
-        //----------------------------------------------------------------------
-        // via the generic kernel 
-        //----------------------------------------------------------------------
+            //----------------------------------------------------------------------
+            // bitmap selector for VALUE* and user-defined ops
+            //----------------------------------------------------------------------
 
-        if (info == GrB_NO_VALUE)
-        { 
-            info = GB_select_generic_bitmap (C->b, &cnvals, A, flipij, ythunk,
-                op, nthreads) ;
+            #ifndef GBCOMPACT
+            GB_IF_FACTORY_KERNELS_ENABLED
+            { 
+
+                //------------------------------------------------------------------
+                // via the factory kernel 
+                //------------------------------------------------------------------
+
+                #define GB_selbit(opname,aname) GB (_sel_bitmap_ ## opname ## aname)
+                #define GB_SEL_WORKER(opname,aname)                         \
+                {                                                           \
+                    info = GB_selbit (opname, aname) (C->b, &cnvals, A,     \
+                        ythunk, nthreads) ;                                 \
+                }                                                           \
+                break ;
+
+                #include "select/factory/GB_select_entry_factory.c"
+            }
+            #endif
+
+            //----------------------------------------------------------------------
+            // via the JIT or PreJIT kernel
+            //----------------------------------------------------------------------
+
+            if (info == GrB_NO_VALUE)
+            { 
+                info = GB_select_bitmap_jit (C->b, &cnvals, C_iso,
+                    A, flipij, ythunk, op, nthreads) ;
+            }
+
+            //----------------------------------------------------------------------
+            // via the generic kernel 
+            //----------------------------------------------------------------------
+
+            if (info == GrB_NO_VALUE)
+            { 
+                info = GB_select_generic_bitmap (C->b, &cnvals, A, flipij, ythunk,
+                    op, nthreads) ;
+            }
         }
     }
 

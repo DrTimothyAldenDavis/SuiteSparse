@@ -627,6 +627,18 @@ GrB_Info GB_jit_kernel_apply_unop                                           \
     int32_t blocksz                                                         \
 )                                                                           \
 
+#define GB_JIT_CUDA_KERNEL_SELECT_BITMAP_PROTO(GB_jit_kernel_select_bitmap) \
+GrB_Info GB_jit_kernel_select_bitmap                                        \
+(                                                                           \
+    int8_t *Cb,                                                             \
+    uint64_t *cnvals,                                                       \
+    GrB_Matrix A,                                                           \
+    const GB_void *ythunk,                                                  \
+    cudaStream_t stream,                                                    \
+    int32_t gridsz,                                                         \
+    int32_t blocksz                                                         \
+)                                                                           \
+
 #define GB_JIT_CUDA_KERNEL_DOT3_PROTO(GB_jit_kernel_AxB_dot3)           \
 GrB_Info GB_jit_kernel_AxB_dot3                                         \
 (                                                                       \

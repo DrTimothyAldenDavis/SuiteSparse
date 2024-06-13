@@ -20,7 +20,7 @@ __global__ void GB_cuda_apply_bind1st_kernel
     int tid = blockDim.x * blockIdx.x + threadIdx.x;
     int nthreads = blockDim.x * gridDim.x ;
 
-    for (int p = tid ; p < nvals ; p += nthreads)
+    for (int64_t p = tid ; p < nvals ; p += nthreads)
     {
         if (!GBB_B (Bb, p)) { continue ; }
         GB_DECLAREB (bij) ;

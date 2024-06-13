@@ -189,8 +189,14 @@ typedef enum
     GB_JIT_CUDA_KERNEL_APPLYBIND1 = 1013,
     GB_JIT_CUDA_KERNEL_APPLYBIND2 = 1014,
     //... (up to 15 ewise methods?)
+
     // apply methods:
-    GB_JIT_CUDA_KERNEL_APPLYUNOP = 1026
+    GB_JIT_CUDA_KERNEL_APPLYUNOP = 1026,
+    //... (up to 9 apply methods?)
+
+    // select methods:
+    GB_JIT_CUDA_KERNEL_SELECT_BITMAP = 1035
+
 }
 GB_jit_kcode ;
 

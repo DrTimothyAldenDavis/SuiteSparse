@@ -12,15 +12,21 @@ __global__ void GB_cuda_apply_unop_kernel
     GrB_Matrix A
 )
 {
-
     GB_A_NHELD (anz) ;
 
+    #if ( GB_DEPENDS_ON_X )
     const GB_A_TYPE *__restrict__ Ax = (GB_A_TYPE *) A->x ;
+    #endif
 
     #if ( GB_A_IS_SPARSE || GB_A_IS_HYPER )
-    const int64_t *__restrict__ Ai = (int64_t *) A->i ;
-    const int64_t *__restrict__ Ah = (int64_t *) A->h ;
+        #if ( GB_DEPENDS_ON_I )
+        const int64_t *__restrict__ Ai = (int64_t *) A->i ;
+        #endif
+
         #if ( GB_DEPENDS_ON_J )
+            #if ( GB_A_IS_HYPER )
+            const int64_t *__restrict__ Ah = (int64_t *) A->h ;
+            #endif
         const int64_t *__restrict__ Ap = (int64_t *) A->p ;
         #endif
     #endif
@@ -39,9 +45,6 @@ __global__ void GB_cuda_apply_unop_kernel
     #if ( GB_DEPENDS_ON_Y )
         // get thunk value (of type GB_Y_TYPE)
         GB_Y_TYPE thunk_value = * ((GB_Y_TYPE *) thunk) ;
-    #else
-        // replace uses of thunk_value (not used)
-        #define thunk_value _
     #endif
 
     #if ( GB_A_IS_BITMAP || GB_A_IS_FULL )
@@ -79,7 +82,7 @@ __global__ void GB_cuda_apply_unop_kernel
                         int64_t p_final ;
                         int64_t k = GB_cuda_ek_slice_entry (&p_final, pdelta, pfirst, Ap, anvec_sub1, kfirst, slope) ;
                         int64_t col_idx = GBH_A (Ah, k) ;
-
+                        
                         #if ( GB_DEPENDS_ON_I )
                         int64_t row_idx = GBI_A (Ai, p_final, A->vlen) ;
                         #endif
@@ -93,7 +96,10 @@ __global__ void GB_cuda_apply_unop_kernel
             // can do normal method
             for (int64_t p = tid ; p < anz ; p += nthreads)
             {
+                #if ( GB_DEPENDS_ON_I )
                 int64_t row_idx = GBI_A (Ai, p, avlen) ;
+                #endif
+
                 GB_UNOP (Cx, p, Ax, p, A_iso, row_idx, /* col_idx */, thunk_value) ;  
             }
         #endif

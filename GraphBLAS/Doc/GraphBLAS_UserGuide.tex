@@ -14357,6 +14357,8 @@ Visual Studio 2019, but may work for earlier versions.
     \item From the top left side of the \verb'System' window, select
         \verb'Advanced System Settings'.  You may have to authenticate
         at this step.
+        If you cannot authenticate, try setting the User Environment Variables
+        instead.
     \item The \verb'Systems Properties' window should appear with the
         \verb'Advanced' tab selected;
         select \verb'Environment Variables'.
@@ -14368,6 +14370,9 @@ Visual Studio 2019, but may work for earlier versions.
     \item Add the full path of the \verb'GraphBLAS\build\Release' folder
         (typically starting with \verb'C:\Users\you\'..., where \verb'you' is
         your Windows username) to the \verb'Path'.
+        To use the MATLAB interface, add
+        the full path of the \verb'GraphBLAS\GraphBLAS\build\Release' folder
+        as well.
     \item If the above steps do not work, you can instead copy the
         \verb'graphblas.*' files from \verb'GraphBLAS\build\Release' into any
         existing folder listed in your \verb'Path'.
