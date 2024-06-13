@@ -38,6 +38,9 @@ flags = [flags ' -DGP_MEX_FUNCTION'] ;
 % Append optimization
 flags = [flags ' -O -silent COPTIMFLAGS="-O3 -fwrapv"'];
 
+% Append while building objects for shared library
+flags = [flags ' -DMONGOOSE_BUILDING'];
+
 cpp_flags = '' ;
 lib = '';
 if (isunix)
