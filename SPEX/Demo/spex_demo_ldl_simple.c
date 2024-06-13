@@ -129,16 +129,19 @@ int main (int argc, char **argv)
     // solve
     //--------------------------------------------------------------------------
 
-    double start_s = SuiteSparse_time ();
+    double start_s = SUITESPARSE_TIME;
+    // The LDL backslash function can utilize either a left-looking or up-looking
+    // ldl factorization. By default, it utilizes up-looking. This can be changed by
+    // setting option->algo = SPEX_LDL_LEFT
     option->algo=SPEX_LDL_LEFT;
 
     SPEX_TRY (SPEX_ldl_backslash( &x, SPEX_MPQ, A, b, option));
 
-    double end_s = SuiteSparse_time ();
+    double end_s = SUITESPARSE_TIME;
 
     double t_s = (end_s - start_s) ;
 
-    printf("\nSPEX Chol Factor & Solve time: %lf\n", t_s);
+    printf("\nSPEX LDL Factor & Solve time: %lf\n", t_s);
 
     // x2 is a copy of the solution. x2 is a dense matrix with mpfr entries
     SPEX_TRY  ( SPEX_matrix_copy(&x2, SPEX_DENSE, SPEX_FP64, x, option));

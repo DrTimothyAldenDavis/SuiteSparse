@@ -28,7 +28,7 @@
  *              On input it contains the elimination tree and
  *              the number of nonzeros in L.
  *
- * option:      Command options. Default if NULL. Notably, option->chol_type
+ * option:      Command options. Default if NULL. Notably, option->algo
  *              indicates whether it is performing the default up-looking
  *              factorization (SPEX_CHOL_UP) or the left-looking factorization
  *              (SPEX_CHOL_LEFT).
@@ -36,7 +36,7 @@
 
 #define SPEX_FREE_WORKSPACE             \
 {                                       \
-    SPEX_matrix_free (&PAP, option);   \
+    SPEX_matrix_free (&PAP, option);    \
 }
 
 #define SPEX_FREE_ALL                   \
@@ -58,8 +58,8 @@ SPEX_info SPEX_cholesky_factorize
                                     // pointers of L, and the exact number of
                                     // nonzeros of L.
     const SPEX_options option       // command options.
-                                    // Notably, option->chol_type indicates
-                                    // whether CHOL_UP (default) or CHOL_LEFT
+                                    // Notably, option->algo indicates whether
+                                    // SPEX_CHOL_UP (default) or SPEX_CHOL_LEFT
                                     // is used.
 )
 {
@@ -69,6 +69,14 @@ SPEX_info SPEX_cholesky_factorize
     if (!spex_initialized())
     {
         return SPEX_PANIC;
+    }
+
+    // get option->algo, or use SPEX_ALGORITHM_DEFAULT if option is NULL:
+    SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
+    if (algo != SPEX_ALGORITHM_DEFAULT && algo != SPEX_CHOL_LEFT
+        && algo != SPEX_CHOL_UP)
+    {
+        return SPEX_INCORRECT_ALGORITHM;
     }
 
     // Check inputs for NULL

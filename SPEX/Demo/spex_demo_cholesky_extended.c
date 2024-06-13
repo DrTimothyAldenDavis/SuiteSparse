@@ -99,7 +99,7 @@ int main( int argc, char *argv[] )
     // Perform Analysis of A
     //--------------------------------------------------------------------------
 
-    double start_col = SuiteSparse_time ();
+    double start_col = SUITESPARSE_TIME;
 
     // Symmetric ordering of A. Uncomment the desired one, AMD is recommended
     //option->order = SPEX_NO_ORDERING;  // No ordering
@@ -107,31 +107,28 @@ int main( int argc, char *argv[] )
     //option->order = SPEX_COLAMD; // COLAMD
     SPEX_TRY (SPEX_cholesky_analyze(&S, A, option));
 
-    double end_col = SuiteSparse_time ();
+    double end_col = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // Factorize PAP
     //--------------------------------------------------------------------------
 
-    //option->algo=SPEX_CHOL_LEFT;
-    double start_factor = SuiteSparse_time ();
+    double start_factor = SUITESPARSE_TIME;
 
     SPEX_TRY ( SPEX_cholesky_factorize(&F, A, S, option));
 
-    double end_factor = SuiteSparse_time ();
+    double end_factor = SUITESPARSE_TIME;
 
-    option->print_level=3;
-    //SPEX_TRY (SPEX_matrix_check(F->L,option));
 
     //--------------------------------------------------------------------------
     // Solve linear system
     //--------------------------------------------------------------------------
 
-    double start_solve = SuiteSparse_time ();
+    double start_solve = SUITESPARSE_TIME;
 
     SPEX_TRY ( SPEX_cholesky_solve(&x, F, b, option));
 
-    double end_solve = SuiteSparse_time ();
+    double end_solve = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // Output & Timing Stats
@@ -144,12 +141,12 @@ int main( int argc, char *argv[] )
     printf("\nNumber of L nonzeros: \t\t\t%g",
         (double) (F->L->p[F->L->n]) );
     printf("\nSymbolic Analysis Check time: \t\t%lf", t_col);
-    printf("\nIP Chol Factorization time: \t\t%lf", t_factor);
+    printf("\nSPEX Chol Factorization time: \t\t%lf", t_factor);
     printf("\nFB Substitution time: \t\t\t%lf\n\n", t_solve);
 
     // Check solution
     option->print_level=1;
-    // SPEX_TRY ( SPEX_check_solution(A,x,b,option));
+    SPEX_TRY ( spex_demo_check_solution(A,x,b,option));
 
     //--------------------------------------------------------------------------
     // Free Memory

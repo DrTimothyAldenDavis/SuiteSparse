@@ -263,11 +263,19 @@ SPEX_preorder ;
 //------------------------------------------------------------------------------
 
 // A code in SPEX_options to tell SPEX which factorization algorithm to use
+// By default, left-looking is used for LU and up-looking is utilized
+// for Cholesky/LDL. If desired, left-looking can be used for all 
+// Cholesky or LDL routines by setting option->algo to SPEX_CHOL_LEFT
+// or SPEX_LDL_LEFT, respectively. 
+// Witin SPEX Backslash, option->algo utilizes the specified algorithm
+// if option->algo is set. Otherwise, if option->algo is left as 
+// default, SPEX Backslash attempts an LDL factorization and, if that
+// fails, an LU factorization is done.
 
 typedef enum
 {
     SPEX_ALGORITHM_DEFAULT = SPEX_DEFAULT,    // Defaults: Left for LU,
-                         // Up for Chol
+                         // Up for Chol, UP for LDL
     SPEX_LU_LEFT = 1,    // Left looking LU factorization
     SPEX_CHOL_LEFT = 2,  // Left looking Cholesky factorization
     SPEX_CHOL_UP = 3,    // Up looking Cholesky factorization
@@ -893,8 +901,8 @@ SPEX_info SPEX_mpz_set_ui (mpz_t x, const uint64_t y) ;
 
 SPEX_info SPEX_mpz_set_si (mpz_t x, const int64_t y) ;
 
-// FIXME NOW: SPEX_mpz_swap not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_swap (mpz_t x, mpz_t y);
+
 
 SPEX_info SPEX_mpz_get_d (double *x, const mpz_t y) ;
 
@@ -904,20 +912,16 @@ SPEX_info SPEX_mpz_mul (mpz_t a, const mpz_t b, const mpz_t c) ;
 
 SPEX_info SPEX_mpz_mul_si (mpz_t a, const mpz_t b, const int64_t c) ;
 
-// FIXME NOW: SPEX_mpz_add not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_add (mpz_t a, const mpz_t b, const mpz_t c) ;
 
-// FIXME NOW: SPEX_mpz_addmul not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_addmul (mpz_t x, const mpz_t y, const mpz_t z) ;
 
 SPEX_info SPEX_mpz_sub (mpz_t a, const mpz_t b, const mpz_t c) ;
 
 SPEX_info SPEX_mpz_submul (mpz_t x, const mpz_t y, const mpz_t z) ;
 
-// FIXME NOW: SPEX_mpz_fdiv_q not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_fdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
 
-// FIXME NOW: SPEX_mpz_cdiv_q not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_cdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
 
 SPEX_info SPEX_mpz_cdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d) ;
@@ -934,7 +938,6 @@ SPEX_info SPEX_mpz_abs (mpz_t x, const mpz_t y) ;
 
 SPEX_info SPEX_mpz_cmp (int *r, const mpz_t x, const mpz_t y) ;
 
-// FIXME NOW: SPEX_mpz_cmpabs not in user guide; it was commented out; why?
 SPEX_info SPEX_mpz_cmpabs (int *r, const mpz_t x, const mpz_t y) ;
 
 SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const uint64_t y) ;
@@ -1037,6 +1040,7 @@ SPEX_info SPEX_mpfr_free_str (char *str) ;
 SPEX_info SPEX_mpfr_set_null (mpfr_t x) ;
 
 SPEX_info SPEX_mpfr_clear (mpfr_t x) ;
+
 
 
 //------------------------------------------------------------------------------
@@ -1317,8 +1321,8 @@ SPEX_info SPEX_cholesky_factorize
                                     // pointers of L, and the exact number of
                                     // nonzeros of L.
     const SPEX_options option       // command options.
-                                    // Notably, option->chol_type indicates
-                                    // whether CHOL_UP (default) or CHOL_LEFT
+                                    // Notably, option->algo indicates whether
+                                    // SPEX_CHOL_UP (default) or SPEX_CHOL_LEFT
                                     // is used.
 ) ;
 
@@ -1410,8 +1414,8 @@ SPEX_info SPEX_ldl_factorize
                                     // pointers of L, and the exact number of
                                     // nonzeros of L.
     const SPEX_options option       // command options.
-                                    // Notably, option->chol_type indicates
-                                    // whether CHOL_UP (default) or CHOL_LEFT
+                                    // Notably, option->algo indicates whether
+                                    // SPEX_LDL_UP (default) or SPEX_LDL_LEFT
                                     // is used.
 );
 
@@ -1466,9 +1470,16 @@ SPEX_info SPEX_ldl_backslash
 // may be returned in either this rational form, or in double precision or in
 // arbitrary precision floating point.
 //
-// A must be square. If A is symmetric with a nonzero diagonal, an exact up-looking
-// LDL factorization is applied.  Otherwise, an exact left-looking LU factorization
-// is applied. x and b be can be single vectors, or matrices.
+// A must be square. The bahavior of SPEX backslash depends on the value of
+// option->algo.
+// If option->algo is left as default:
+//      an up-looking LDL factorization is attempted if A is symmetric
+//      otherwise an exact left-looking LU factorization is applied.
+// If option->algo is specified:
+//      The exact algorithm requested is utilized with no substitutions.
+//      An appropriate error code is returned if the selected algorithm
+//      is not appopriate for the given matrix (e.g., if option->algo
+//      is SPEX_LDL_LEFT but the matrix is not symmetric).
 
 //------------------------------------------------------------------------------
 // Purpose: Solve Ax = b by analyzing the input matrix and applying the

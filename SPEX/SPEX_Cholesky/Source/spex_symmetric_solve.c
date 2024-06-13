@@ -22,7 +22,7 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: This function solves the linear system LDL' x = b.
+/* Purpose: solve the system A x = b using the Cholesky or LDL factorization.
  *
  * Input arguments:
  *
@@ -30,15 +30,12 @@
  *                  on output x_handle contains a pointer to the solution
  *                  vector(s)
  *
- * F:               The factorization struct containing the REF cholesky
- *                  factorization of A, permutation, etc
- * 
+ * F:               The factorization struct containing the REF Cholesky
+ *                  or LDL factorization of A, permutation, etc
+ *
  * b:               Right hand side vector
  *
- * chol:            true if a cholesky factorization was performed and false
- *                  if an LDL factorization
- *
- * option:          Command options *
+ * option:          Command options
  */
 
 SPEX_info spex_symmetric_solve
@@ -48,14 +45,9 @@ SPEX_info spex_symmetric_solve
                                 // On output: Rational solution (SPEX_MPQ)
                                 // to the system.
     // input/output:
-    SPEX_factorization F,       // The non-updatable Cholesky factorization.
-                                // Mathematically, F is unchanged.  However, if
-                                // F is updatable on input, it is converted to
-                                // non-updatable.  If F is already
-                                // non-updatable, it is not modified.
+    SPEX_factorization F,       // The Cholesky or LDL factorization of A
     // input:
     const SPEX_matrix b,        // Right hand side vector
-    bool chol,                  // true if chol, false if ldl
     const SPEX_options option   // command options
 )
 {

@@ -11,10 +11,8 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: consider A(i,j), node j in ith row subtree and return
- * the Least Common Ancestor (lca(jprev,j))
- * Used to determine Column counts of Cholesky factor
- */
+/* Purpose: consider A(i,j), node j in ith row subtree and return lca(jprev,j)
+   Used to determine Column counts of Cholesky or LDL factor */
 
 SPEX_info spex_symmetric_leaf
 (

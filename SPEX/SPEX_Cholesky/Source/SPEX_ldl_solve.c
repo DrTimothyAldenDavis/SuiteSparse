@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX_Cholesky/SPEX_ldl_solve: Solve the linear system after ldl
+// SPEX_Cholesky/SPEX_ldl_solve: Solve the linear system after LDL
 // factorization
 //------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
  *                  on output x_handle contains a pointer to the solution
  *                  vector(s)
  *
- * F:               The factorization struct containing the REF ldl
+ * F:               The factorization struct containing the REF LDL
  *                  factorization of A, permutation, etc
  *
  * b:               Right hand side vector(s)
@@ -45,10 +45,10 @@ SPEX_info SPEX_ldl_solve
     const SPEX_options option   // command options
 )
 {
-    // Just need to call the symmetric solve with chol = false
+    // Just need to call the symmetric solve
     SPEX_info info;
-    
-        // Ensure SPEX is initialized
+
+    // Ensure SPEX is initialized
     if (!spex_initialized())
     {
         return SPEX_PANIC;
@@ -65,7 +65,7 @@ SPEX_info SPEX_ldl_solve
         return SPEX_INCORRECT_INPUT;
     }
 
-    info = spex_symmetric_solve(x_handle, F, b, false, option);
-    
+    info = spex_symmetric_solve(x_handle, F, b, option);
+
     return info;
 }

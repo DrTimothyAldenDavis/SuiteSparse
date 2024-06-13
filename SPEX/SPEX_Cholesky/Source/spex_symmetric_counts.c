@@ -26,8 +26,8 @@
 #define NEXT(J)   (-1)
 
 /* Purpose: Obtain the column counts of an SPD matrix for Cholesky
- * factorization. This is a modified version of Csparse's cs_chol_counts
- * function
+ * factorization or a symmetrix matrix for LDL factorization.  This is a
+ * modified version of Csparse's cs_chol_counts function.
  */
 
 SPEX_info spex_symmetric_counts

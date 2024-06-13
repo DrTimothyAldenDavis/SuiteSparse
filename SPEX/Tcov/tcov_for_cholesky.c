@@ -303,7 +303,6 @@ int main (int argc, char *argv [])
     ERR (SPEX_cholesky_backslash (&x, SPEX_MPQ, A, b, option), SPEX_NOTSPD);
     option->algo = SPEX_CHOL_LEFT ;
     ERR (SPEX_cholesky_backslash (&x, SPEX_MPQ, A, b, option), SPEX_NOTSPD);
-    option->algo = SPEX_CHOL_UP ;
     OK (SPEX_matrix_free (&A, option));
     OK (SPEX_matrix_free (&b, option));
     
@@ -318,11 +317,14 @@ int main (int argc, char *argv [])
     OK (SPEX_matrix_free (&A, option));
     OK (SPEX_matrix_free (&b, option));
 
+    // reset option->algo
+    option->algo = SPEX_ALGORITHM_DEFAULT;
+
     //--------------------------------------------------------------------------
     // symetry check
     //--------------------------------------------------------------------------
     read_test_matrix (&A, "../ExampleMats/test5.mat.txt");
-    SPEX_cholesky_analyze( &S, A, option);
+    SPEX_ldl_analyze( &S, A, option);
     OK (SPEX_matrix_free (&A, option));
     OK (SPEX_matrix_free (&b, option));
     
@@ -540,17 +542,39 @@ int main (int argc, char *argv [])
     OK (SPEX_symbolic_analysis_free (&S, option));
     OK (SPEX_factorization_free (&F, option));
 
-    // invalid algorithm
+    // invalid algorithm for Chol/ldl backslash
     option->algo = 99 ;
     ERR (SPEX_cholesky_backslash (&x, SPEX_MPQ, A, b, option),
         SPEX_INCORRECT_ALGORITHM);
-    option->algo = SPEX_CHOL_UP ;
+    ERR (SPEX_ldl_backslash (&x, SPEX_MPQ, A, b, option),
+        SPEX_INCORRECT_ALGORITHM);
 
+    // invalid algorithm for Chol/ldl analyze
+    ERR (SPEX_cholesky_analyze( &S, A, option),
+         SPEX_INCORRECT_ALGORITHM);
+    ERR (SPEX_ldl_analyze( &S, A, option),
+         SPEX_INCORRECT_ALGORITHM);
+
+    // invalid algorithm for Chol/ldl factorize
+    option->algo = SPEX_ALGORITHM_DEFAULT;
+    OK (SPEX_cholesky_analyze (&S, A, option));
+    option->algo = 99;
+    ERR (SPEX_cholesky_factorize( &F, A, S, option),
+         SPEX_INCORRECT_ALGORITHM);
+    OK (SPEX_symbolic_analysis_free (&S, option));
+
+    option->algo = SPEX_ALGORITHM_DEFAULT;
+    OK (SPEX_ldl_analyze (&S, A, option));
+    option->algo = 99;
+    ERR (SPEX_ldl_factorize( &F, A, S, option),
+         SPEX_INCORRECT_ALGORITHM);
+    OK (SPEX_symbolic_analysis_free (&S, option));
 
     ERR (SPEX_ldl_factorize (NULL, NULL, NULL, NULL),
         SPEX_INCORRECT_INPUT);
 
     // valid analysis, but break the factorization
+    option->algo = SPEX_ALGORITHM_DEFAULT;
     OK (SPEX_ldl_analyze (&S, A, option));
     A->type = SPEX_INT64 ;
     ERR (SPEX_ldl_factorize (&F, A, S, option),
@@ -571,7 +595,6 @@ int main (int argc, char *argv [])
     F->kind = SPEX_LDL_FACTORIZATION;
     OK (SPEX_symbolic_analysis_free (&S, option));
     OK (SPEX_factorization_free (&F, option));
-
 
     //--------------------------------------------------------------------------
     // solve Ax=b with SPEX_cholesky_backslash and check the solution
@@ -654,7 +677,7 @@ int main (int argc, char *argv [])
     // solve Ax=b with SPEX_cholesky_[analyze,factorize,solve]; check solution
     //--------------------------------------------------------------------------
 
-    option->algo = SPEX_CHOL_UP ;
+    option->algo = SPEX_LDL_UP ;
 
     printf ("LDL analyze/factorize/solve, no malloc testing:\n");
     spex_set_gmp_ntrials (INT64_MAX) ;

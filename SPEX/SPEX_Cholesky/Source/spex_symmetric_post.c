@@ -22,7 +22,7 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: post order a forest. */
+/* Purpose: post order a forest */
 
 SPEX_info spex_symmetric_post
 (

@@ -20,12 +20,12 @@
  *                  on output x_handle contains a pointer to the solution
  *                  vector(s)
  *
- * F:               The factorization struct containing the REF cholesky
+ * F:               The factorization struct containing the REF Cholesky
  *                  factorization of A, permutation, etc
  *
  * b:               Right hand side vector(s)
  *
- * option:          Command options *
+ * option:          Command options
  */
 
 SPEX_info SPEX_cholesky_solve
@@ -45,9 +45,10 @@ SPEX_info SPEX_cholesky_solve
     const SPEX_options option   // command options
 )
 {
-    // Just need to call the symmetric solve with chol = true
+    // Just need to call the symmetric solve
     SPEX_info info;
-        // Ensure SPEX is initialized
+
+    // Ensure SPEX is initialized
     if (!spex_initialized())
     {
         return SPEX_PANIC;
@@ -58,13 +59,13 @@ SPEX_info SPEX_cholesky_solve
     {
         return SPEX_INCORRECT_INPUT;
     }
-    
+
     if (F->kind != SPEX_CHOLESKY_FACTORIZATION)
     {
         return SPEX_INCORRECT_INPUT;
     }
 
-    info = spex_symmetric_solve(x_handle, F, b, true, option);
-    
+    info = spex_symmetric_solve(x_handle, F, b, option);
+
     return info;
 }

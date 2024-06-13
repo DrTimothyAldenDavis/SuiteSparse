@@ -11,6 +11,10 @@
 
 /* Purpose: This function reads in the necessary information from the options
  * struct for MATLAB.
+ * 
+ * Note that default values for the SPEX_options struct are already set in the 
+ * caller and thus default values only need to be set for the MATLAB-specific
+ * options.
  */
 
 
@@ -43,7 +47,7 @@ void spex_mex_get_matlab_options
     // Get the column ordering
     //--------------------------------------------------------------------------
 
-    option->order = SPEX_COLAMD ;     // default: COLAMD ordering
+    // If the field is present, overwrite the default with the user input.
     field = present ? mxGetField (input, 0, "order") : NULL ;
     if (field != NULL)
     {
@@ -74,7 +78,7 @@ void spex_mex_get_matlab_options
     // Get the row pivoting scheme
     //--------------------------------------------------------------------------
 
-    option->pivot = SPEX_TOL_SMALLEST ;     // default: diag pivoting with tol
+    // If the field is present, overwrite the default with the user input.
     field = present ? mxGetField (input, 0, "pivot") : NULL ;
     if (field != NULL)
     {
@@ -119,7 +123,8 @@ void spex_mex_get_matlab_options
     // tolerance for row partial pivoting
     //--------------------------------------------------------------------------
 
-    option->tol = 0.1 ;     // default tolerance is 0.1
+    // If we are utilizing tolerance based pivoting and the field is present
+    // overwrite the default with the user input.
     if (option->pivot == SPEX_TOL_SMALLEST || option->pivot == SPEX_TOL_LARGEST)
     {
         field = present ? mxGetField (input, 0, "tol") : NULL ;
@@ -138,7 +143,8 @@ void spex_mex_get_matlab_options
     // Get the solution option
     //--------------------------------------------------------------------------
 
-    mexoptions->solution = SPEX_SOLUTION_DOUBLE ;     // default x is double
+    // By default, matlab will return a double solution unless specified otherwise
+    mexoptions->solution = SPEX_SOLUTION_DOUBLE ;
     field = present ? mxGetField (input, 0, "solution") : NULL ;
     if (field != NULL)
     {
@@ -165,7 +171,8 @@ void spex_mex_get_matlab_options
     // Get the digits option
     //--------------------------------------------------------------------------
 
-    mexoptions->digits = 100 ;     // same as the MATLAB vpa default
+    // MATLAB default for vpa
+    mexoptions->digits = 100 ;
     field = present ? mxGetField (input, 0, "digits") : NULL ;
     if (field != NULL)
     {
@@ -183,7 +190,7 @@ void spex_mex_get_matlab_options
     // Get the print level
     //--------------------------------------------------------------------------
 
-    option->print_level = 0 ;       // default is no printing
+    // If the field is present, overwrite the default with the user input.
     field = present ? mxGetField (input, 0, "print") : NULL ;
     if (field != NULL)
     {

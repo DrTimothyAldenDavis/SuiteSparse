@@ -23,8 +23,8 @@ function x = spex_cholesky_backslash (A,b,option)
 %
 %   option.order: Column ordering used.
 %       'none': no column ordering; factorize the matrix A as-is
-%       'colamd': COLAMD (the default ordering)
-%       'amd': AMD
+%       'colamd': COLAMD
+%       'amd': AMD (default for cholesky)
 %
 %   option.print: display the inputs and outputs
 %       0: nothing (default), 1: just errors, 2: terse, 3: all

@@ -12,16 +12,17 @@
 /* Purpose: perform the symbolic analysis of A for the ldl factorization,
  * that is, preordering A, computing the elimination tree, getting the column
  * counts of A, setting the column pointers and exact number of non zeros of L.
- * 
- * Note that symbolic analysis for LDL and Cholesky are identical. For simplicity,
- * the LDL analyze function just calls the Cholesky analyze
+ *
+ * Note that symbolic analysis for LDL and Cholesky are identical. For
+ * simplicity, the LDL analyze function just calls the Cholesky analyze.
+
  *
  * Input arguments of the function:
  *
  * S:           Symbolic analysis struct for ldl factorization.
- *              On input it's NULL
- *              On output it contains the row/column permutation, the elimination
- *              tree, and the number of nonzeros in L.
+ *              On input it's NULL.
+ *              On output it contains the row/column permutation, the
+ *              elimination tree, and the number of nonzeros in L.
  *
  * A:           User's input matrix (Must be SPEX_MPZ and SPEX_CSC)
  *
@@ -41,11 +42,17 @@ SPEX_info SPEX_ldl_analyze
     const SPEX_options option   // Command options (Default if NULL)
 )
 {
+    // get option->algo, or use SPEX_ALGORITHM_DEFAULT if option is NULL:
+    SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
+    if (algo != SPEX_ALGORITHM_DEFAULT && algo != SPEX_LDL_LEFT
+        && algo != SPEX_LDL_UP)
+    {
+        return SPEX_INCORRECT_ALGORITHM;
+    }
     SPEX_info info;
-    // SPEX_ldl_analyze is identical to SPEX_chol_analyze
-    // For simplicity, we just call the chol function
-    info = SPEX_cholesky_analyze( S_handle, A, option);
-    (*S_handle)->kind = SPEX_LDL_FACTORIZATION;
+    // SPEX LDL analyze just calls symmetric analyze
+    info = spex_symmetric_analyze( S_handle, A, option);
+    if (info == SPEX_OK) (*S_handle)->kind = SPEX_LDL_FACTORIZATION;
     return info;
 }
 

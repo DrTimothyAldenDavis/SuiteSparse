@@ -13,10 +13,12 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: This function performs the symmetric sparse REF triangular solve
- * for the up-looking Cholesky factorization. i,e, LD x = A(1:k-1, k). At the
- * end of this function, the vector x contains the values of the kth row of the
- * integer- preserving matrix L.
+/* Purpose: This function performs the symmetric sparse REF triangular solve.
+ * for uplooking Cholesky or LDL factorization. i.e., (LD) x = A(1:k-1,k).
+ * At the given iteration k it computes the k-th column of L' (k-th row of L).
+ *
+ * At the end of this function, the vector x contains the values of the kth row
+ * of the integer-preserving matrix L.
  *
  * Input arguments of the function:
  *

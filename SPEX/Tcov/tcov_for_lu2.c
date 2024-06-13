@@ -175,6 +175,25 @@ int main (int argc, char *argv [])
 
     read_test_matrix (&A, "../ExampleMats/test5.mat.txt");
     SPEX_lu_analyze( &S, A, option);
+    OK (SPEX_symbolic_analysis_free (&S, option));
+    OK (SPEX_matrix_free (&A, option));
+    
+    // Give an incorrect algorithm to SPEX Backslash
+    read_test_matrix (&A, "../ExampleMats/10teams.mat.txt");
+    create_test_rhs (&b, A->n);
+    option->algo = 99;
+    ERR( SPEX_lu_backslash(&x, SPEX_MPQ, A, b, option), SPEX_INCORRECT_ALGORITHM);
+    
+    // Give an incorrect algorithm to SPEX_lu_analyze
+    ERR( SPEX_lu_analyze( &S, A, option), SPEX_INCORRECT_ALGORITHM);
+    
+    // Give an incorrect algorithm to spex lu factorize
+    SPEX_factorization F;
+    option->algo = SPEX_ALGORITHM_DEFAULT;
+    OK( SPEX_lu_analyze( &S, A, option));
+    option->algo = 99;
+    ERR( SPEX_lu_factorize( &F, A, S, option), SPEX_INCORRECT_ALGORITHM);
+    OK (SPEX_symbolic_analysis_free (&S, option));
 
     SPEX_FREE_ALL;
     OK (SPEX_finalize ( )) ;

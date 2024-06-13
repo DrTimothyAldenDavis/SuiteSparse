@@ -26,7 +26,7 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: This function performs the up-looking REF Cholesky factorization.
+/* Purpose: Perform the up-looking Cholesky or LDL factorization.
  * In order to compute the L matrix, it performs n iterations of a sparse REF
  * symmetric triangular solve function which, at each iteration, computes the
  * kth row of L.
@@ -48,8 +48,8 @@
  *              the number of nonzeros in L.
  *
  * A:           The user's permuted input matrix
- * 
- * chol:        True if we are performing a cholesky factorization
+ *
+ * chol:        True if we are performing a Cholesky factorization
  *              and false if we are performing an LDL factorization
  *
  * option:      Command options
@@ -66,10 +66,11 @@ SPEX_info spex_symmetric_up_factor
                                // elimination tree of A, the column pointers of
                                // L, and the exact number of nonzeros of L.
     const SPEX_matrix A,       // Matrix to be factored
-    bool chol,                 // If true we are attempting a cholesky factorization
-                               // only and thus the pivot elements must be >0
-                               // If false, we try a general LDL factorization with 
-                               // the pivot element strictly != 0
+    bool chol,                 // If true we are attempting a Cholesky
+                               // factorization only and thus the pivot
+                               // elements must be >0 If false, we try a
+                               // general LDL factorization with the pivot
+                               // element strictly != 0.
     const SPEX_options option  // command options
 )
 {
@@ -206,11 +207,11 @@ SPEX_info spex_symmetric_up_factor
             S->parent, c, rhos, h));
 
         // Check if the diagonal is nonzero. If it is nonzero and > 0
-        // we can proceed with cholesky factorization. If it is nonzero
-        // we can proceed with an LDL factorization. If it is zero 
+        // we can proceed with Cholesky factorization. If it is nonzero
+        // we can proceed with an LDL factorization. If it is zero
         // we must stop
         SPEX_MPZ_SGN(&sgn, x->x.mpz[k]);
-        // If we're attempting a cholesky factorization the diagonal must be 
+        // If we're attempting a Cholesky factorization the diagonal must be
         // > 0
         if (chol)
         {
@@ -225,8 +226,7 @@ SPEX_info spex_symmetric_up_factor
                 return SPEX_NOTSPD;
             }
         }
-        // If we're attempting an LDL factorization the diagonal must be 
-        // != 0
+        // If we're attempting an LDL factorization the diagonal must be != 0
         else
         {
             if (sgn != 0)
@@ -240,7 +240,7 @@ SPEX_info spex_symmetric_up_factor
                 return SPEX_ZERODIAG;
             }
         }
-        
+
         //----------------------------------------------------------------------
         // Add the nonzeros (i.e. x) to L
         //----------------------------------------------------------------------

@@ -22,10 +22,11 @@
 
 #include "spex_cholesky_internal.h"
 
-
 /* Purpose: This function performs a symbolic left-looking factorization.
- * It allocates the memory for the L matrix and determines the full nonzero
- * pattern of L
+ * On input, A is the matrix to be factored, parent contains the elimination
+ * tree and S contains the row/column permutations and number of nonzeros in L.
+ * On output, L_handle is allocated to contain the nonzero pattern of L and
+ * memory for the values.
  *
  * Importantly, this function assumes that A has already been permuted.
  *
@@ -39,7 +40,7 @@
  *
  * A:           The user's permuted input matrix
  *
- * S:            Symbolic analysis struct for Cholesky factorization.
+ * S:            Symbolic analysis struct for Cholesky or LDL factorization.
  *               On input it contains information that is not used in this
  *               function such as the row/column permutation
  *               On output it contains the number of nonzeros in L.

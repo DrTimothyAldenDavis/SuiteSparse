@@ -9,13 +9,12 @@
 
 //------------------------------------------------------------------------------
 
-/* Purpose: This function performs the integer preserving ldl factorization.
+/* Purpose: This function performs the integer preserving LDL factorization.
  * First it permutes the input matrix according to the symbolic analysis.
- * Then it performs the left-looking or up-looking integer-preserving ldl
+ * Then it performs the left-looking or up-looking integer-preserving LDL
  * factorization. In order to compute the L matrix, it performs n iterations of
  * a sparse REF symmetric triangular solve function. The overall factorization
  * is PAP' = LDL'
- *
  *
  * Input arguments of the function:
  *
@@ -28,7 +27,7 @@
  *              On input it contains the elimination tree and
  *              the number of nonzeros in L.
  *
- * option:      Command options. Default if NULL. Notably, option->chol_type
+ * option:      Command options. Default if NULL. Notably, option->algo
  *              indicates whether it is performing the default up-looking
  *              factorization (SPEX_LDL_UP) or the left-looking factorization
  *              (SPEX_LDL_LEFT).
@@ -49,7 +48,7 @@
 SPEX_info SPEX_ldl_factorize
 (
     // Output
-    SPEX_factorization *F_handle,   // LDL factorization struct
+    SPEX_factorization *F_handle,   // Cholesky factorization struct
     //Input
     const SPEX_matrix A,            // Matrix to be factored. Must be SPEX_MPZ
                                     // and SPEX_CSC
@@ -58,6 +57,9 @@ SPEX_info SPEX_ldl_factorize
                                     // pointers of L, and the exact number of
                                     // nonzeros of L.
     const SPEX_options option       // command options.
+                                    // Notably, option->algo indicates whether
+                                    // SPEX_LDL_UP (default) or SPEX_LDL_LEFT
+                                    // is used.
 )
 {
 
@@ -66,6 +68,14 @@ SPEX_info SPEX_ldl_factorize
     if (!spex_initialized())
     {
         return SPEX_PANIC;
+    }
+
+    // get option->algo, or use SPEX_ALGORITHM_DEFAULT if option is NULL:
+    SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
+    if (algo != SPEX_ALGORITHM_DEFAULT && algo != SPEX_LDL_LEFT
+        && algo != SPEX_LDL_UP)
+    {
+        return SPEX_INCORRECT_ALGORITHM;
     }
 
     // Check inputs for NULL

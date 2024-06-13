@@ -9,8 +9,11 @@
 
 //------------------------------------------------------------------------------
 
-/* Purpose: This code utilizes either the SPEX Cholesky or SPEX_ldl factorization to exactly solve
- *          the linear system Ax = b.
+/* Purpose: wrapper for the backslash functions, solve Ax = b using
+ * either Cholesky or LDL factorization.
+ *
+ * This code utilizes either the SPEX Cholesky or SPEX_ldl factorization to
+ * exactly solve the linear system Ax = b.
  *
  * Input/Output arguments:
  *
@@ -58,8 +61,8 @@ SPEX_info spex_symmetric_backslash
     const SPEX_matrix A,        // Input matrix. Must be SPEX_MPZ and SPEX_CSC
     const SPEX_matrix b,        // Right hand side vector(s). Must be
                                 // SPEX_MPZ and SPEX_DENSE
-    bool chol,                  // True if we are doing a cholesky and
-                                // false if we are doing an ldl
+    bool chol,                  // True if we are doing a Cholesky and
+                                // false if we are doing an LDL.
     const SPEX_options option   // Command options (Default if NULL)
 )
 {
@@ -154,7 +157,7 @@ SPEX_info spex_symmetric_backslash
     // Ax = b stored as a set of numerators and denominators (mpq_t)
     //--------------------------------------------------------------------------
 
-    SPEX_CHECK( spex_symmetric_solve(&x, F, b, chol, option) );
+    SPEX_CHECK( spex_symmetric_solve(&x, F, b, option) );
 
     //--------------------------------------------------------------------------
     // At this point x is stored as mpq_t. If the user desires the output

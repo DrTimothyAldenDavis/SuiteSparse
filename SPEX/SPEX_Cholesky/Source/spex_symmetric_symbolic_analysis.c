@@ -22,10 +22,10 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: perform the symbolic analysis for the SPEX Cholesky factorization,
- * that is, computing and postordering the elimination tree, getting the column
- * counts of the SPD matrix A, setting the column pointers and exact number of
- * non zeros of L.
+/* Purpose: perform the symbolic analysis for the SPEX Cholesky or LDL
+ * factorization, that is, computing and postordering the elimination tree,
+ * getting the column counts of the symmetric matrix A, setting the column
+ * pointers and exact number of non zeros of L.
  *
  * IMPORTANT: This function assumes that A has already been permuted.
  *

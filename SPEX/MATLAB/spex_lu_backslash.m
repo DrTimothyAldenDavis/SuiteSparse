@@ -27,15 +27,15 @@ function x = SPEX_lu_backslash (A,b,option)
 %       'amd': AMD
 %
 %   option.pivot: Row pivoting scheme used.
-%       'smallest': Smallest pivot
+%       'smallest': Smallest pivot (default)
 %       'diagonal': Diagonal pivoting
 %       'first': First nonzero per column chosen as pivot
-%       'tol smallest': Diagonal pivoting with tol for smallest pivot (default)
+%       'tol smallest': Diagonal pivoting with tol for smallest pivot
 %       'tol largest': Diagonal pivoting with tol for largest pivot
 %       'largest': Largest pivot
 %
 %   option.tol: tolerance (0,1] for 'tol smallest' or 'tol largest' pivoting.
-%       default is 0.1.
+%       default is 1.
 %
 %   option.print: display the inputs and outputs
 %       0: nothing (default), 1: just errors, 2: terse, 3: all

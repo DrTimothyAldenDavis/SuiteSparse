@@ -175,6 +175,7 @@ DEMO_SRC = \
 OBJ_Cholesky = \
     SPEX_cholesky_analyze.o \
     SPEX_cholesky_backslash.o \
+    spex_symmetric_analyze.o \
     spex_symmetric_backward_sub.o \
     spex_symmetric_counts.o \
     spex_symmetric_ereach.o \

@@ -101,13 +101,13 @@ int main( int argc, char *argv[] )
     printf("solving Ax=b ...\n");
     fflush (stdout);
     fflush (stderr);
-    double start = SuiteSparse_time ();
+    double start = SUITESPARSE_TIME;
 
     option->print_level = 0;
 
     SPEX_TRY ( SPEX_backslash(&x, SPEX_MPQ, A, b, option));
 
-    double end = SuiteSparse_time ();
+    double end = SUITESPARSE_TIME;
 
     double t_tot = (end - start) ;
 

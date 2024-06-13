@@ -99,7 +99,7 @@ int main( int argc, char *argv[] )
     // Perform Analysis of A
     //--------------------------------------------------------------------------
 
-    double start_col = SuiteSparse_time ();
+    double start_col = SUITESPARSE_TIME;
 
     // Symmetric ordering of A. Uncomment the desired one, AMD is recommended
     //option->order = SPEX_NO_ORDERING;  // No ordering
@@ -107,30 +107,27 @@ int main( int argc, char *argv[] )
     //option->order = SPEX_COLAMD; // COLAMD
     SPEX_TRY (SPEX_ldl_analyze(&S, A, option));
 
-    double end_col = SuiteSparse_time ();
+    double end_col = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // Factorize PAP
     //--------------------------------------------------------------------------
 
-    double start_factor = SuiteSparse_time ();
+    double start_factor = SUITESPARSE_TIME;
 
     SPEX_TRY ( SPEX_ldl_factorize(&F, A, S, option));
 
-    double end_factor = SuiteSparse_time ();
-
-    option->print_level=3;
-    //SPEX_TRY (SPEX_matrix_check(F->L,option));
+    double end_factor = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // Solve linear system
     //--------------------------------------------------------------------------
 
-    double start_solve = SuiteSparse_time ();
+    double start_solve = SUITESPARSE_TIME;
 
     SPEX_TRY ( SPEX_ldl_solve(&x, F, b, option));
 
-    double end_solve = SuiteSparse_time ();
+    double end_solve = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // Output & Timing Stats
@@ -148,7 +145,7 @@ int main( int argc, char *argv[] )
 
     // Check solution
     option->print_level=1;
-    // SPEX_TRY ( SPEX_check_solution(A,x,b,option));
+    SPEX_TRY ( spex_demo_check_solution(A,x,b,option));
 
     //--------------------------------------------------------------------------
     // Free Memory

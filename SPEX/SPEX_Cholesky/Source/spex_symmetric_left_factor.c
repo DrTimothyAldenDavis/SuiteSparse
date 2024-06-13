@@ -26,7 +26,7 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: This function performs the left-looking REF Cholesky factorization.
+/* Purpose: Perform the left-looking Cholesky or LDL factorization.
  * In order to compute the L matrix, it performs n iterations of a sparse REF
  * symmetric triangular solve function which, at each iteration, computes the
  * kth column of L.
@@ -41,20 +41,21 @@
  * rhos_handle: A handle to the sequence of pivots. NULL on input.
  *              On output it contains a pointer to the pivots matrix.
  *
- * S:           Symbolic analysis struct for Cholesky factorization.
+ * S:           Symbolic analysis struct for Cholesky or LDL factorization.
  *              On input it contains information that is not used in this
  *              function such as the row/column permutation
  *              On output it contains the elimination tree and
  *              the number of nonzeros in L.
  *
  * A:           The user's permuted input matrix
- * 
- * chol:        True if we are performing a cholesky factorization and
+ *
+ * chol:        True if we are performing a Cholesky factorization and
  *              false if we are performing an LDL factorization
  *
  * option:      Command options
  *
  */
+
 
 SPEX_info spex_symmetric_left_factor
 (
@@ -66,10 +67,11 @@ SPEX_info spex_symmetric_left_factor
                                // elimination tree of A, the column pointers of
                                // L, and the exact number of nonzeros of L.
     const SPEX_matrix A,       // Matrix to be factored
-    bool chol,                 // If true we are attempting a cholesky factorization
-                               // only and thus the pivot elements must be >0
-                               // If false, we try a general LDL factorization with 
-                               // the pivot element strictly != 0
+    bool chol,                 // If true we are attempting a Cholesky
+                               // factorization only and thus the pivot
+                               // elements must be >0 If false, we try a
+                               // general LDL factorization with the pivot
+                               // element strictly != 0.
     const SPEX_options option  // command options
 )
 {
@@ -202,10 +204,10 @@ SPEX_info spex_symmetric_left_factor
         SPEX_CHECK(spex_symmetric_left_triangular_solve(&top, x, xi, L, A, k,
             rhos, h, S->parent, c));
 
-        // Set the pivot element If this element is less than or equal to zero, 
+        // Set the pivot element If this element is less than or equal to zero,
         // either no pivot element exists or the matrix is not SPD.
         SPEX_MPZ_SGN(&sgn, x->x.mpz[k]);
-        // If we're attempting a cholesky factorization the diagonal must be 
+        // If we're attempting a Cholesky factorization the diagonal must be
         // > 0
         if (chol)
         {
@@ -220,8 +222,7 @@ SPEX_info spex_symmetric_left_factor
                 return SPEX_NOTSPD;
             }
         }
-        // If we're attempting an LDL factorization the diagonal must be 
-        // != 0
+        // If we're attempting an LDL factorization the diagonal must be != 0
         else
         {
             if (sgn != 0)

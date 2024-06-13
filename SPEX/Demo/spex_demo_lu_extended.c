@@ -39,9 +39,8 @@
 // indicates SPEX_LU will use COLAMD for column ordering. Other available
 // options are:
 //
-//        0: Default: COLAMD
 //        1: None: Not recommended for sparse matrices
-//        2: COLAMD
+//        2: Default: COLAMD
 //        3: AMD
 //
 // t (or tol) tolerance_param. e.g., spex_demo_lu_extended t 1e-10, which
@@ -61,7 +60,7 @@
 // If none of the above args is given, they are set to the following default:
 //
 //  p = 0, i.e., using smallest pivot
-//  q = 1, i.e., using COLAMD
+//  q = 2, i.e., using COLAMD
 //  t = 0.1, not being using since p != 3 or 4
 
 #include "spex_demos.h"
@@ -210,12 +209,12 @@ int main (int argc, char *argv[])
     // function.
     //--------------------------------------------------------------------------
 
-    double start_col = SuiteSparse_time ();
+    double start_col = SUITESPARSE_TIME;
 
     // Column ordering using either AMD, COLAMD or nothing
     SPEX_TRY (SPEX_lu_analyze(&S, A, option));
 
-    double end_col = SuiteSparse_time ();
+    double end_col = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // Now we perform the SPEX Left LU factorization to obtain matrices L and U
@@ -223,37 +222,22 @@ int main (int argc, char *argv[])
     // never explicitly constructed or used.
     //--------------------------------------------------------------------------
 
-    double start_factor = SuiteSparse_time ();
+    double start_factor = SUITESPARSE_TIME;
 
     SPEX_TRY (SPEX_lu_factorize(&F, A, S, option));
 
-    double end_factor = SuiteSparse_time ();
+    double end_factor = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // We now solve the system Ax=b using the L and U factors computed above.
     //--------------------------------------------------------------------------
 
-    double start_solve = SuiteSparse_time ();
-
-    // SPEX Left LU has an optional check step which can verify that the
-    // solution vector x satisfies Ax=b in perfect precision intended for
-    // debugging.
-    //
-    // Note that this is entirely optional and not necessary. The solution
-    // returned is guaranteed to be exact.   It appears here just as a
-    // verification that SPEX Left LU is computing its expected result.  This
-    // test can fail only if it runs out of memory, or if there is a bug in the
-    // code.  Also, note that this function can be quite time consuming; thus
-    // it is not recommended to be used in general.
-    //
-    // To enable said check, the following bool is set to true
-
-    //option->check = true;
+    double start_solve = SUITESPARSE_TIME;
 
     // Solve LDU x = b
     SPEX_TRY (SPEX_lu_solve(&x, F, b, option));
 
-    double end_solve = SuiteSparse_time ();
+    double end_solve = SUITESPARSE_TIME;
 
     // Done, x now contains the exact solution of the linear system Ax=b in
     // dense rational form. There is an optional final step here where the user

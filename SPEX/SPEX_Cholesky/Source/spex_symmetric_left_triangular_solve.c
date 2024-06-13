@@ -14,10 +14,11 @@
 
 #include "spex_cholesky_internal.h"
 
-/* Purpose: This function performs the REF triangular solve for left-looking
- * REF Cholesky factorization. At iteration k, it solves the linear system
- * LD x = A(:,k). Upon completion of this function, x contains the kth column of
- * L
+/* Purpose: This function performs the symmetric sparse REF triangular solve.
+ * i.e.,(LD) x = A(:,k).
+ *
+ * At iteration k, it solves the linear system LD x = A(:,k). Upon completion
+ * of this function, x contains the kth column of L.
  *
  * Input arguments of the function:
  *
@@ -49,7 +50,6 @@
  *                  grabbed, since at iteration k we need to grab the kth of L
  *                  in order to not recompute those values.
  */
-
 
 // Comparison function used for the quicksort in the factorization
 // Each iteration of the triangular solve requires that the nonzero pattern
