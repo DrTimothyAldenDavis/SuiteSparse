@@ -409,13 +409,13 @@ if ( NOT NO_LIBM )
 endif ( )
 
 # libdl
-if ( NOT WIN32 )
+if ( NOT "${CMAKE_DL_LIBS}" STREQUAL "" )
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( GraphBLAS PRIVATE dl )
+        target_link_libraries ( GraphBLAS PRIVATE ${CMAKE_DL_LIBS} )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        list ( APPEND GRAPHBLAS_STATIC_LIBS "dl" )
-        target_link_libraries ( GraphBLAS_static PUBLIC dl )
+        list ( APPEND GRAPHBLAS_STATIC_LIBS ${CMAKE_DL_LIBS} )
+        target_link_libraries ( GraphBLAS_static PUBLIC ${CMAKE_DL_LIBS} )
     endif ( )
 endif ( )
 
