@@ -3933,7 +3933,8 @@ any duplicates are ignored.  If duplicates appear, the last one in the
 list of tuples is taken and the prior ones ignored.  This is not an error.
 
 \begin{alert}
-{\bf SPEC:} Results are defined even if \verb'dup' is non-associative.
+{\bf SPEC:} Results are defined even if \verb'dup' is non-associative and/or
+non-commutative.
 \end{alert}
 
 %-------------------------------------------------------------------------------
@@ -4539,8 +4540,9 @@ any duplicates are ignored.  If duplicates appear, the last one in the
 list of tuples is taken and the prior ones ignored.  This is not an error.
 
 \begin{alert}
-{\bf SPEC:} As an extension to the specification, results are defined even if \verb'dup'
-is non-associative.
+{\bf SPEC:} As an extension to the specification,
+results are defined even if \verb'dup'
+is non-associative and/or non-commutative.
 \end{alert}
 
 The GraphBLAS API requires \verb'dup' to be associative so
