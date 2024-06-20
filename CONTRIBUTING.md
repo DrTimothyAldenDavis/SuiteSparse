@@ -6,13 +6,13 @@ you can use the issue tracker on github.com, at
 (https://github.com/DrTimothyAldenDavis/SuiteSparse/issues).
 
 To contribute code, you can submit a pull request.  To do so,
-you must first agree to the Contributor License Agreement
-[`CONTRIBUTOR-LICENSE.txt`](CONTRIBUTOR-LICENSE.txt).
-Print a copy of the txt file (as a PDF), sign and date it,
-and email it to me at DrTimothyAldenDavis@gmail.com.  Pull
-requests will only be included into SuiteSparse after I receive
-your email with the signed PDF.
+you must first agree to the Contributor License
+in the [`Contributor_License`](Contributor_License) folder.
+Sign and date it the PDF, and email it to me at
+DrTimothyAldenDavis@gmail.com.  Pull requests will only be
+included into SuiteSparse after I receive your email with
+the signed PDF.
 
 Do not submit a pull request to the default branch.
-Instead, use the dev or dev2 branches.
+Instead, use the dev2 branch.
 
