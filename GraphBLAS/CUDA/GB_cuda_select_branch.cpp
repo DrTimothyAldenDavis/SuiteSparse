@@ -1,6 +1,6 @@
 #include "GB_cuda.hpp"
 
-bool GB_cuda_select_bitmap_branch
+bool GB_cuda_select_branch
 (
     const GrB_Matrix A,
     const GrB_IndexUnaryOp op
@@ -13,6 +13,7 @@ bool GB_cuda_select_bitmap_branch
 
     if (A->static_header)
     {
+        // FIXME: explain this
         return false ;
     }
     

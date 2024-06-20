@@ -22,10 +22,11 @@ GrB_Info GB_Scalar_reduce
 { 
 
     //--------------------------------------------------------------------------
-    // check inputs (accum and monoid are checked in GB_reduce_to_scalar)
+    // check inputs (accum and monoid are fully checked in GB_reduce_to_scalar)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
+    GB_RETURN_IF_FAULTY_OR_POSITIONAL (accum) ;
     ASSERT_SCALAR_OK (S, "S for reduce to GrB_Scalar", GB0) ;
     ASSERT_MATRIX_OK (A, "A for reduce to GrB_Scalar", GB0) ;
     GBURBLE ("(to GrB_Scalar) ") ;

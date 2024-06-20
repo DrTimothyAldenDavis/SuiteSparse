@@ -202,7 +202,7 @@ GrB_Info GB_cuda_apply_binop
     const bool bind1st
 ) ;
 
-bool GB_cuda_select_bitmap_branch
+bool GB_cuda_select_branch
 (
     const GrB_Matrix A,
     const GrB_IndexUnaryOp op
@@ -217,6 +217,16 @@ GrB_Info GB_cuda_select_bitmap
     const bool flipij,
     const GB_void *ythunk,
     const GrB_IndexUnaryOp op
+) ;
+
+GrB_Info GB_cuda_select_sparse
+(
+    GrB_Matrix C,
+    const bool C_iso,
+    const GrB_IndexUnaryOp op,
+    const bool flipij,
+    const GrB_Matrix A,
+    const GB_void *ythunk
 ) ;
 
 bool GB_cuda_type_branch            // return true if the type is OK on GPU

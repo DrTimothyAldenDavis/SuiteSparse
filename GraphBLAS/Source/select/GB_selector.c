@@ -104,8 +104,6 @@ GrB_Info GB_selector
         return (GB_select_value_iso (C, op, A, ithunk, athunk, ythunk, Werk)) ;
     }
 
-    // The CUDA select kernel would be called here.
-
     //--------------------------------------------------------------------------
     // bitmap/as-if-full case
     //--------------------------------------------------------------------------
@@ -159,7 +157,21 @@ GrB_Info GB_selector
     // sparse/hypersparse general case
     //--------------------------------------------------------------------------
 
-    return (GB_select_sparse (C, C_iso, op, flipij, A, ithunk, athunk, ythunk,
-        Werk)) ;
+    info = GrB_NO_VALUE ;
+
+    #if defined ( GRAPHBLAS_HAS_CUDA )
+    if (GB_cuda_select_branch (A, op))
+    {
+        info = GB_cuda_select_sparse (C, C_iso, op, flipij, A, ythunk) ;
+    }
+    #endif
+
+    if (info == GrB_NO_VALUE)
+    {
+        info = GB_select_sparse (C, C_iso, op, flipij, A, ithunk, athunk,
+            ythunk, Werk) ;
+    }
+
+    return (info) ;
 }
 

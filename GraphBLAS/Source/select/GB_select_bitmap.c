@@ -87,6 +87,7 @@ GrB_Info GB_select_bitmap
     else
     { 
         // Cx [0:anz-1] = Ax [0:anz-1]
+        // FIXME: do this on the GPU if appropriate
         GB_memcpy (C->x, A->x, anz * asize, nthreads) ;
     }
 
@@ -97,7 +98,7 @@ GrB_Info GB_select_bitmap
     info = GrB_NO_VALUE ;
 
     #if defined ( GRAPHBLAS_HAS_CUDA )
-    if (GB_cuda_select_bitmap_branch (A, op))
+    if (GB_cuda_select_branch (A, op))
     {
         info = GB_cuda_select_bitmap (C->b, &cnvals, C_iso, A, flipij, ythunk, op) ;
     }

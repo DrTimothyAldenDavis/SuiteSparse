@@ -24,6 +24,12 @@ void GB_memcpy                  // parallel memcpy
 )
 {
 
+    // FIXME for CUDA: do:
+    //  cpu <- cpu (already done below)
+    //  cpu <- gpu (effectively done below but could be better)
+    //  gpu <- cpu (need this)
+    //  gpu <- gpu (need this)
+
     if (nthreads <= 1 || n <= GB_MEM_CHUNK)
     { 
 

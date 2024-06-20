@@ -28,4 +28,14 @@ GrB_Info GB_cuda_select_bitmap_jit
     int32_t blocksz
 ) ;
 
+GrB_Info GB_cuda_select_sparse
+(
+    GrB_Matrix C,
+    const bool C_iso,
+    const GrB_IndexUnaryOp op,
+    const bool flipij,
+    const GrB_Matrix A,
+    const GB_void *ythunk
+) ;
+
 #endif

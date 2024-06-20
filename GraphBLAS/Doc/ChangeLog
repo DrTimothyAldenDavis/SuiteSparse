@@ -1,4 +1,4 @@
-June XX, 2024: version 9.3.0    FIXME NOW
+June 20, 2024: version 9.3.0
 
     * code restructuring:  Source folder split into many subfolders, and
         some files and internal functions renamed.  No visible external change.
