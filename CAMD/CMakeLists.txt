@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CAMD_DATE "June XX, 2024" )       # FIXME NOW
+set ( CAMD_DATE "June 20, 2024" )
 set ( CAMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( CAMD_VERSION_MINOR 3 CACHE STRING "" FORCE )
 set ( CAMD_VERSION_SUB   3 CACHE STRING "" FORCE )

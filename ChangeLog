@@ -1,4 +1,4 @@
-June XX, 2024: version 7.8.0     FIXME NOW
+June 20, 2024: version 7.8.0
 
     * ParU 1.0.0: first stable release
     * CHOLMOD 5.3.0: added cholmod_query, and #define's in cholmod.h,
