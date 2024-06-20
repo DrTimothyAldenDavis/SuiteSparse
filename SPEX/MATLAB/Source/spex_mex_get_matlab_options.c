@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SPEX/MATLAB/SPEX_mex_get_matlab_optons.c: Get command options from user
+// SPEX/MATLAB/spex_mex_get_matlab_options.c: Get command options from user
 //------------------------------------------------------------------------------
 
 // SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
@@ -21,8 +21,8 @@
 #include "SPEX_mex.h"
 
 #define MATCH(s,t) (strcmp (s,t) == 0)
-#define SPEX_MIN(a,b) ( a < b ? a : b)
-#define SPEX_MAX(a,b) (a > b ? a : b)
+#define SPEX_MIN(a,b) ((a) < (b) ? (a) : (b))
+#define SPEX_MAX(a,b) ((a) > (b) ? (a) : (b))
 
 void spex_mex_get_matlab_options
 (
@@ -62,11 +62,16 @@ void spex_mex_get_matlab_options
         }
         else if (MATCH (string, "colamd"))
         {
-            option->order = SPEX_COLAMD ;       // COLAMD: Default
+            option->order = SPEX_COLAMD ;       // COLAMD
         }
         else if (MATCH (string, "amd"))
         {
             option->order = SPEX_AMD ;          // AMD
+        }
+        else if (MATCH (string, "default"))
+        {
+            // COLAMD for LU; AMD otherwise
+            option->order = SPEX_DEFAULT_ORDERING ;
         }
         else
         {
@@ -143,7 +148,8 @@ void spex_mex_get_matlab_options
     // Get the solution option
     //--------------------------------------------------------------------------
 
-    // By default, matlab will return a double solution unless specified otherwise
+    // By default, matlab will return a double solution unless specified
+    // otherwise
     mexoptions->solution = SPEX_SOLUTION_DOUBLE ;
     field = present ? mxGetField (input, 0, "solution") : NULL ;
     if (field != NULL)

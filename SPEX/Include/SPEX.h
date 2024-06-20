@@ -889,157 +889,87 @@ SPEX_info SPEX_determine_symmetry
 // returned to GMP.  Instead, all allocated blocks in the list are freed,
 // and the allocation routine passed to GMP returns directly to the wrapper.
 
-SPEX_info SPEX_gmp_fscanf (FILE *fp, const char *format, ... ) ;
-
-SPEX_info SPEX_mpz_init (mpz_t x) ;
-
-SPEX_info SPEX_mpz_init2(mpz_t x, const uint64_t size) ;
-
-SPEX_info SPEX_mpz_set (mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_set_ui (mpz_t x, const uint64_t y) ;
-
-SPEX_info SPEX_mpz_set_si (mpz_t x, const int64_t y) ;
-
-SPEX_info SPEX_mpz_swap (mpz_t x, mpz_t y);
-
-
-SPEX_info SPEX_mpz_get_d (double *x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_get_si (int64_t *x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_mul (mpz_t a, const mpz_t b, const mpz_t c) ;
-
-SPEX_info SPEX_mpz_mul_si (mpz_t a, const mpz_t b, const int64_t c) ;
-
-SPEX_info SPEX_mpz_add (mpz_t a, const mpz_t b, const mpz_t c) ;
-
-SPEX_info SPEX_mpz_addmul (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_sub (mpz_t a, const mpz_t b, const mpz_t c) ;
-
-SPEX_info SPEX_mpz_submul (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_fdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
-
-SPEX_info SPEX_mpz_cdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
-
-SPEX_info SPEX_mpz_cdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d) ;
-
-SPEX_info SPEX_mpz_divexact (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_gcd (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_lcm (mpz_t lcm, const mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_neg (mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_abs (mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_cmp (int *r, const mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_cmpabs (int *r, const mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const uint64_t y) ;
-
-SPEX_info SPEX_mpz_cmpabs_ui (int *r, const mpz_t x, const uint64_t y) ;
-
-SPEX_info SPEX_mpz_sgn (int *sgn, const mpz_t x) ;
-
-SPEX_info SPEX_mpz_sizeinbase (size_t *size, const mpz_t x, int64_t base) ;
-
-SPEX_info SPEX_mpz_set_null (mpz_t x) ;
-
-SPEX_info SPEX_mpz_clear (mpz_t x) ;
-
-SPEX_info SPEX_mpq_init (mpq_t x) ;
-
-SPEX_info SPEX_mpq_set (mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_set_z (mpq_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpq_canonicalize (mpq_t x);
-
-SPEX_info SPEX_mpq_set_d (mpq_t x, const double y) ;
-
-SPEX_info SPEX_mpq_set_ui (mpq_t x, const uint64_t y, const uint64_t z) ;
-
-SPEX_info SPEX_mpq_set_si (mpq_t x, const int64_t y, const uint64_t z) ;
-
-SPEX_info SPEX_mpq_set_num (mpq_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpq_set_den (mpq_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpq_get_d (double *x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_neg (mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_abs (mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_add (mpq_t x, const mpq_t y, const mpq_t z) ;
-
-SPEX_info SPEX_mpq_mul (mpq_t x, const mpq_t y, const mpq_t z) ;
-
-SPEX_info SPEX_mpq_div (mpq_t x, const mpq_t y, const mpq_t z) ;
-
-SPEX_info SPEX_mpq_cmp (int *r, const mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_cmp_ui (int *r, const mpq_t x,
-                    const uint64_t num, const uint64_t den) ;
-
-SPEX_info SPEX_mpq_sgn (int *sgn, const mpq_t x) ;
-
-SPEX_info SPEX_mpq_equal (int *r, const mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_set_null (mpq_t x) ;
-
-SPEX_info SPEX_mpq_clear (mpq_t x) ;
-
 SPEX_info SPEX_mpfr_asprintf (char **str, const char *format, ... ) ;
-
-SPEX_info SPEX_mpfr_init2(mpfr_t x, const uint64_t size) ;
-
-SPEX_info SPEX_mpfr_set_prec(mpfr_t x, const uint64_t size) ;
-
-SPEX_info SPEX_mpfr_set (mpfr_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_d (mpfr_t x, const double y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_si (mpfr_t x, int64_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_q (mpfr_t x, const mpq_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_z (mpfr_t x, const mpz_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_z (mpz_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_q (mpq_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_d (double *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_si (int64_t *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_mul (mpfr_t x, const mpfr_t y, const mpfr_t z,
-                    const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_mul_d (mpfr_t x, const mpfr_t y, const double z,
-                    const mpfr_rnd_t rnd) ;
-
+SPEX_info SPEX_mpfr_clear (mpfr_t x) ;
 SPEX_info SPEX_mpfr_div_d (mpfr_t x, const mpfr_t y, const double z,
                     const mpfr_rnd_t rnd) ;
-
+SPEX_info SPEX_mpfr_free_cache (void) ;
+SPEX_info SPEX_mpfr_free_str (char *str) ;
+SPEX_info SPEX_mpfr_get_d (double *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_get_si (int64_t *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_get_q (mpq_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_get_z (mpz_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_init2(mpfr_t x, const uint64_t size) ;
+SPEX_info SPEX_mpfr_mul (mpfr_t x, const mpfr_t y, const mpfr_t z,
+                    const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_mul_d (mpfr_t x, const mpfr_t y, const double z,
+                    const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set (mpfr_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_d (mpfr_t x, const double y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_null (mpfr_t x) ;
+SPEX_info SPEX_mpfr_set_prec(mpfr_t x, const uint64_t size) ;
+SPEX_info SPEX_mpfr_set_q (mpfr_t x, const mpq_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_si (mpfr_t x, int64_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_z (mpfr_t x, const mpz_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_sgn (int *sgn, const mpfr_t x) ;
 SPEX_info SPEX_mpfr_ui_pow_ui (mpfr_t x, const uint64_t y, const uint64_t z,
                     const mpfr_rnd_t rnd) ;
 
-SPEX_info SPEX_mpfr_sgn (int *sgn, const mpfr_t x) ;
+SPEX_info SPEX_gmp_fscanf (FILE *fp, const char *format, ... ) ;
 
-SPEX_info SPEX_mpfr_free_cache (void) ;
+SPEX_info SPEX_mpq_abs (mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_add (mpq_t x, const mpq_t y, const mpq_t z) ;
+SPEX_info SPEX_mpq_canonicalize (mpq_t x);
+SPEX_info SPEX_mpq_clear (mpq_t x) ;
+SPEX_info SPEX_mpq_cmp (int *r, const mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_cmp_ui (int *r, const mpq_t x,
+                    const uint64_t num, const uint64_t den) ;
+SPEX_info SPEX_mpq_div (mpq_t x, const mpq_t y, const mpq_t z) ;
+SPEX_info SPEX_mpq_equal (int *r, const mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_get_d (double *x, const mpq_t y) ;
+SPEX_info SPEX_mpq_init (mpq_t x) ;
+SPEX_info SPEX_mpq_mul (mpq_t x, const mpq_t y, const mpq_t z) ;
+SPEX_info SPEX_mpq_neg (mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_set (mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_set_d (mpq_t x, const double y) ;
+SPEX_info SPEX_mpq_set_den (mpq_t x, const mpz_t y) ;
+SPEX_info SPEX_mpq_set_null (mpq_t x) ;
+SPEX_info SPEX_mpq_set_num (mpq_t x, const mpz_t y) ;
+SPEX_info SPEX_mpq_set_si (mpq_t x, const int64_t y, const uint64_t z) ;
+SPEX_info SPEX_mpq_set_ui (mpq_t x, const uint64_t y, const uint64_t z) ;
+SPEX_info SPEX_mpq_set_z (mpq_t x, const mpz_t y) ;
+SPEX_info SPEX_mpq_sgn (int *sgn, const mpq_t x) ;
 
-SPEX_info SPEX_mpfr_free_str (char *str) ;
-
-SPEX_info SPEX_mpfr_set_null (mpfr_t x) ;
-
-SPEX_info SPEX_mpfr_clear (mpfr_t x) ;
+SPEX_info SPEX_mpz_abs (mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_add (mpz_t a, const mpz_t b, const mpz_t c) ;
+SPEX_info SPEX_mpz_addmul (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_cdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
+SPEX_info SPEX_mpz_cdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d) ;
+SPEX_info SPEX_mpz_clear (mpz_t x) ;
+SPEX_info SPEX_mpz_cmp (int *r, const mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_cmpabs (int *r, const mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_cmpabs_ui (int *r, const mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_divexact (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_fdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
+SPEX_info SPEX_mpz_gcd (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_get_d (double *x, const mpz_t y) ;
+SPEX_info SPEX_mpz_get_si (int64_t *x, const mpz_t y) ;
+SPEX_info SPEX_mpz_init (mpz_t x) ;
+SPEX_info SPEX_mpz_init2(mpz_t x, const uint64_t size) ;
+SPEX_info SPEX_mpz_lcm (mpz_t lcm, const mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_mul (mpz_t a, const mpz_t b, const mpz_t c) ;
+SPEX_info SPEX_mpz_mul_si (mpz_t a, const mpz_t b, const int64_t c) ;
+SPEX_info SPEX_mpz_neg (mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_set (mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_set_null (mpz_t x) ;
+SPEX_info SPEX_mpz_set_si (mpz_t x, const int64_t y) ;
+SPEX_info SPEX_mpz_set_ui (mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_sgn (int *sgn, const mpz_t x) ;
+SPEX_info SPEX_mpz_sizeinbase (size_t *size, const mpz_t x, int64_t base) ;
+SPEX_info SPEX_mpz_sub (mpz_t a, const mpz_t b, const mpz_t c) ;
+SPEX_info SPEX_mpz_submul (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_swap (mpz_t x, mpz_t y);
 
 
 
@@ -1156,7 +1086,7 @@ SPEX_info SPEX_lu_backslash
 SPEX_info SPEX_lu_analyze
 (
     SPEX_symbolic_analysis *S_handle,   // symbolic analysis including
-                                 // column perm. and nnz of L and U
+                                 // column permutation and nnz of L and U
     const SPEX_matrix A,         // Input matrix
     const SPEX_options option    // Control parameters, if NULL, use default
 ) ;
