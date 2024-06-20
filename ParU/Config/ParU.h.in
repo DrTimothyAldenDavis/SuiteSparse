@@ -94,8 +94,8 @@ typedef enum
     // int64_t scalars:
     PARU_GET_N = 0,                 // # of rows/columns of A and its factors
     PARU_GET_ANZ = 1,               // # of entries in input matrix
-    PARU_GET_LNZ = 2,               // # of entries in L
-    PARU_GET_UNZ = 3,               // # of entries in U
+    PARU_GET_LNZ_BOUND = 2,         // # of entries held in L
+    PARU_GET_UNZ_BOUND = 3,         // # of entries held in U
     PARU_GET_NROW_SINGLETONS = 4,   // # of row singletons
     PARU_GET_NCOL_SINGLETONS = 5,   // # of column singletons
     PARU_GET_STRATEGY = 6,          // strategy used by ParU
@@ -107,7 +107,7 @@ typedef enum
     PARU_GET_Q = 102,               // fill-reducing column ordering
 
     // double scalars:
-    PARU_GET_FLOP_COUNT = 201,      // flop count for factorization
+    PARU_GET_FLOPS_BOUND = 201,     // flop count for factorization (bound)
     PARU_GET_RCOND_ESTIMATE = 202,  // rcond estimate
     PARU_GET_MIN_UDIAG = 203,       // min (abs (diag (U)))
     PARU_GET_MAX_UDIAG = 204,       // max (abs (diag (U)))

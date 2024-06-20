@@ -12,6 +12,11 @@
 //      x = paru (A, b)
 //      [x,stats] = paru (A, b, opts)
 
+// With additional outputs for P (row permutations), Q (column permutations),
+// and R (row scaling vector), for experimental testing only, compiled with
+// -DDEVELOPER.  P and Q are returned as 0-based int64 vectors.
+//      [x,stats,P,Q,R] = paru (A, b, opts)
+
 #include "sputil2.h"
 #include "ParU.h"
 
@@ -78,9 +83,14 @@ void mexFunction
     // get inputs
     //--------------------------------------------------------------------------
 
-    if (nargout > 2 || nargin < 2 || nargin > 3)
+    #ifdef DEVELOPER
+    #define MAX_NARGOUT 5
+    #else
+    #define MAX_NARGOUT 2
+    #endif
+    if (nargout > MAX_NARGOUT || nargin < 2 || nargin > 3)
     {
-	mexErrMsgTxt ("usage: [x,stats] = part (A,b,opts)") ;
+        mexErrMsgTxt ("usage: [x,stats] = paru (A,b,opts)") ;
     }
     n = mxGetM (pargin [0]) ;
     if (!mxIsSparse (pargin [0]) || (n != mxGetN (pargin [0])))
@@ -117,6 +127,33 @@ void mexFunction
     X = cholmod_l_allocate_dense (n, nrhs, n, CHOLMOD_DOUBLE + CHOLMOD_REAL,
         cm) ;
     OK (X != NULL, "error creating X matrix") ;
+
+    //--------------------------------------------------------------------------
+    // allocate result for P, Q, and R (developer only)
+    //--------------------------------------------------------------------------
+
+    #ifdef DEVELOPER
+    mwSize dims [2] ;
+    dims [0] = n ;
+    dims [1] = 1 ;
+    int64_t *P = NULL, *Q = NULL ;
+    double *R = NULL ;
+    if (nargout > 2)
+    {
+        pargout [2] = mxCreateNumericArray (2, dims, mxINT64_CLASS, mxREAL) ;
+        P = mxGetInt64s (pargout [2]) ;
+    }
+    if (nargout > 3)
+    {
+        pargout [3] = mxCreateNumericArray (2, dims, mxINT64_CLASS, mxREAL) ;
+        Q = mxGetInt64s (pargout [3]) ;
+    }
+    if (nargout > 4)
+    {
+        pargout [4] = mxCreateNumericArray (2, dims, mxDOUBLE_CLASS, mxREAL) ;
+        R = mxGetDoubles (pargout [4]) ;
+    }
+    #endif
 
     //--------------------------------------------------------------------------
     // change the memory manager to the ANSI C malloc/calloc/realloc/free
@@ -179,7 +216,8 @@ void mexFunction
                     // selected.
                     PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_STRATEGY,
                         PARU_STRATEGY_AUTO, Control), "opts failed") ;
-                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (
+                        PARU_CONTROL_UMFPACK_STRATEGY,
                         UMFPACK_STRATEGY_AUTO, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "unsymmetric", STRLEN) == 0)
@@ -187,7 +225,8 @@ void mexFunction
                     // both UMFPACK and ParU will use the unsymmetric strategy
                     PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_STRATEGY,
                         PARU_STRATEGY_UNSYMMETRIC, Control), "opts failed") ;
-                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (
+                        PARU_CONTROL_UMFPACK_STRATEGY,
                         UMFPACK_STRATEGY_UNSYMMETRIC, Control), "opts failed") ;
                 }
                 else if (strncmp (option, "symmetric", STRLEN) == 0)
@@ -195,7 +234,8 @@ void mexFunction
                     // both UMFPACK and ParU will use the symmetric strategy
                     PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_STRATEGY,
                         PARU_STRATEGY_SYMMETRIC, Control), "opts failed") ;
-                    PARU_OK (ParU_C_Set_Control_INT64 (PARU_CONTROL_UMFPACK_STRATEGY,
+                    PARU_OK (ParU_C_Set_Control_INT64 (
+                        PARU_CONTROL_UMFPACK_STRATEGY,
                         UMFPACK_STRATEGY_SYMMETRIC, Control), "opts failed") ;
                 }
                 else
@@ -336,11 +376,11 @@ void mexFunction
         &strategy_used, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_ORDERING,
         &ordering_used, Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_FLOP_COUNT,
+    PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_FLOPS_BOUND,
         &flops, Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_LNZ,
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_LNZ_BOUND,
         &lnz, Control), "stats failed") ;
-    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_UNZ,
+    PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_UNZ_BOUND,
         &unz, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_RCOND_ESTIMATE,
         &rcond, Control), "stats failed") ;
@@ -348,6 +388,30 @@ void mexFunction
         &blas_name, Control), "stats failed") ;
     PARU_OK (ParU_C_Get_Control_CONSTCHAR (PARU_CONTROL_FRONT_TREE_TASKING,
         &front_tree_tasking, Control), "stats failed") ;
+
+    //--------------------------------------------------------------------------
+    // get P, Q, and R (developer only)
+    //--------------------------------------------------------------------------
+
+    #ifdef DEVELOPER
+    if (nargout > 2)
+    {
+        PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_P, P, Control), "fail") ;
+    }
+    if (nargout > 3)
+    {
+        PARU_OK (ParU_C_Get_INT64 (Sym, Num, PARU_GET_Q, Q, Control), "fail") ;
+    }
+    if (nargout > 4)
+    {
+        PARU_OK (ParU_C_Get_FP64 (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R,
+            Control), "fail") ;
+    }
+    #endif
+
+    //--------------------------------------------------------------------------
+    // free the ParU factorization and Control object
+    //--------------------------------------------------------------------------
 
     ParU_C_FreeNumeric (&Num, Control) ;
     ParU_C_FreeSymbolic (&Sym, Control) ;

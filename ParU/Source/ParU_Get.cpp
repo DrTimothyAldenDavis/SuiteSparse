@@ -79,12 +79,12 @@ ParU_Info ParU_Get              // get an int64_t scalar or array from Sym/Num
             (*result) = (int64_t) Sym->ordering_used ;
             break ;
 
-        case PARU_GET_LNZ:
+        case PARU_GET_LNZ_BOUND:
             if (!Num || Num->sym_m != n) return (PARU_INVALID) ;
             (*result) = (int64_t) Num->nnzL ;
             break ;
 
-        case PARU_GET_UNZ:
+        case PARU_GET_UNZ_BOUND:
             if (!Num || Num->sym_m != n) return (PARU_INVALID) ;
             (*result) = (int64_t) Num->nnzU ;
             break ;
@@ -149,7 +149,7 @@ ParU_Info ParU_Get              // get a double scalar or array from Sym/Num
 
     switch (field)
     {
-        case PARU_GET_FLOP_COUNT:
+        case PARU_GET_FLOPS_BOUND:
             (*result) = (double) Num->sfc ;     
             break ;
 

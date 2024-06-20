@@ -58,7 +58,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 \label{intro}
 %-------------------------------------------------------------------------------
 
-The algorithms used in ParU are discussed in ...  FIXME:
+The algorithms used in ParU are discussed in \cite{AznavehThesis},
 a copy of which is in the \verb'ParU/Doc' folder.
 % FUTURE: add the ACM TOMS submission to the Doc folder.
 This document gives detailed information on the installation and use of ParU.
@@ -442,7 +442,19 @@ described below.
 
     \item \verb'PARU_CONTROL_ORDERING': % UMFPACK ordering
 
-        FIXME: disuss when to use AMD or COLAMD instead of the default.
+        The default ordering is \verb'PARU_ORDERING_METIS_GUARD', which provides
+        low fill-in.  However, this ordering can be costly to compute.  It is
+        best suited to the case when multiple matrices with the same nonzero
+        pattern are being factorized, where the symbolic analysis is just
+        performed once, and reused for each of the subsequent numerical
+        factorizations.
+
+        For a one-off factorization of a single matrix,
+        \verb'PARU_ORDERING_AMD' can be faster; the ordering is much faster to
+        compute than METIS, and the quality of the ordering (which determines
+        the fill-in and flop count in the numerical factorization) can often be
+        acceptable.  This ordering option uses AMD when using the symmetric
+        strategy, or COLAMD when using the unsymmetric strateg.
 
         \begin{itemize}
         \item \verb'PARU_ORDERING_AMD':
@@ -452,7 +464,8 @@ described below.
             strategy) or $A'A$ (unsymmetric strategy), where $A'A$ is
             explicitly formed.
         \item \verb'PARU_ORDERING_METIS_GUARD':
-            use METIS, AMD, or COLAMD.  Symmetric strategy: always use METIS on
+            use METIS, AMD, or COLAMD.  This is the default.
+            Symmetric strategy: always use METIS on
             $A+A'$.  Unsymmetric strategy: use METIS on $A'A$, unless $A$ has
             one or more rows with $3.2\sqrt{n}$ or more entries.  In that case,
             $A'A$ is very costly to form, and COLAMD is used instead of METIS.
@@ -575,8 +588,8 @@ other two objects (\verb'ParU_Symbolic' and  \verb'ParU_Numeric'), the
         // int64_t scalars:
         PARU_GET_N = 0,                 // # of rows/columns of A and its factors
         PARU_GET_ANZ = 1,               // # of entries in input matrix
-        PARU_GET_LNZ = 2,               // # of entries in L
-        PARU_GET_UNZ = 3,               // # of entries in U
+        PARU_GET_LNZ_BOUND = 2,         // # of entries held in L
+        PARU_GET_UNZ_BOUND = 3,         // # of entries held in U
         PARU_GET_NROW_SINGLETONS = 4,   // # of row singletons
         PARU_GET_NCOL_SINGLETONS = 5,   // # of column singletons
         PARU_GET_STRATEGY = 6,          // strategy used by ParU
@@ -588,7 +601,7 @@ other two objects (\verb'ParU_Symbolic' and  \verb'ParU_Numeric'), the
         PARU_GET_Q = 102,               // fill-reducing column ordering
 
         // double scalars:
-        PARU_GET_FLOP_COUNT = 201,      // flop count for factorization
+        PARU_GET_FLOPS_BOUND = 201,     // flop count for factorization (bound)
         PARU_GET_RCOND_ESTIMATE = 202,  // rcond estimate
         PARU_GET_MIN_UDIAG = 203,       // min (abs (diag (U)))
         PARU_GET_MAX_UDIAG = 204,       // max (abs (diag (U)))
@@ -626,6 +639,80 @@ Use the following signatures to query the symbolic or numeric factorization:
         ParU_Control Control
     ) ; \end{verbatim}}
 
+These fields are described below.
+
+\begin{itemize}
+
+\item \verb'PARU_GET_N': the number of rows and columns of the
+    matrices $A$, $L$, and $U$.
+
+\item \verb'PARU_GET_ANZ': the number of entries in the input matrix $A$.
+
+\item \verb'PARU_GET_LNZ_BOUND': the number of entries held in the data
+    structure for $L$.  This is an upper bound on the number of nonzeros
+    in $L$, because it includes extra zeros due to amalgamation.
+
+\item \verb'PARU_GET_UNZ_BOUND': the number of entries held in the data
+    structure for $U$.  This is an upper bound on the number of nonzeros
+    in $U$, because it includes extra zeros due to amalgamation.
+
+\item \verb'PARU_GET_NROW_SINGLETONS': number of row singletons, which
+    are rows of $A$ with just a single entry (or become so when other
+    singletons are removed).  These become diagonal pivot entries,
+    where the corresponding row of $U$ has just a single entry.
+
+\item \verb'PARU_GET_NCOL_SINGLETONS': number of column singletons, which
+    are columns of $A$ with just a single entry (or become so when other
+    singletons are removed).  These become diagonal pivot entries,
+    where the corresponding column of $L$ has just a single entry.
+
+\item \verb'PARU_GET_STRATEGY': the strategy selected by ParU, either
+    \verb'PARU_STRATEGY_UNSYMMETRIC' or
+    \verb'PARU_STRATEGY_SYMMETRIC'.
+
+\item \verb'PARU_GET_UMFPACK_STRATEGY': the strategy selected by
+    UMFPACK for the symbolic analysis phase of ParU, either
+    \verb'UMFPACK_STRATEGY_UNSYMMETRIC' or \newline
+    \verb'UMFPACK_STRATEGY_SYMMETRIC'.
+
+\item \verb'PARU_GET_ORDERING':
+    The ordering used during the symbolic analysis phase of ParU.
+    See the list in Section~\ref{set} under the description of
+    \verb'PARU_CONTROL_ORDERING'.
+
+% // int64_t arrays of size n:
+\item \verb'PARU_GET_P': partial pivoting row ordering,
+    an \verb'int64_t' array of size \verb'n' where $A$ is
+    \verb'n'-by-\verb'n'.
+
+\item \verb'PARU_GET_Q': fill-reducing column ordering,
+    an \verb'int64_t' array of size \verb'n' where $A$ is
+    \verb'n'-by-\verb'n'.
+
+% // double scalars:
+\item \verb'PARU_GET_FLOPS_BOUND':
+    an upper bound on the number of floating-operations
+    performed to compute the LU factorization.  This includes
+    extra flops due to amalgamation of frontal matrices.
+    It does not include the prescaling of $A$, which takes
+    an additional \verb'anz' flops (see \verb'PARU_GET_ANZ').
+
+\item \verb'PARU_GET_RCOND_ESTIMATE': a rough estimate of the
+    reciprical of the condition number of $A$, equal to the
+    minimum absolute value on the diagonal of $U$,
+    divided by the
+    maximum absolute value on the diagonal of $U$.
+\item \verb'PARU_GET_MIN_UDIAG':
+    the minimum absolute value on the diagonal of $U$.
+\item \verb'PARU_GET_MAX_UDIAG':
+    the maximum absolute value on the diagonal of $U$.
+
+% // double array of size n:
+\item \verb'PARU_GET_ROW_SCALE_FACTORS':
+    The row scaling factors, a \verb'double' array of size \verb'n'.
+\end{itemize}
+
+
 For example, to get a copy of the size-n column permutation vector from the
 Symbolic object:
 
@@ -637,7 +724,6 @@ Symbolic object:
 Most of the \verb'int64_t' results can be obtained with a NULL numeric object,
 with the exception of the row permutation \verb'P', and the count of the number
 of entries in the \verb'L' and \verb'U' factors.
-
 All of the \verb'double' results require both the \verb'Sym' and \verb'Num'
 objects to be valid.
 
@@ -1592,8 +1678,9 @@ ParU is a C++ library but uses the C memory manager for all of its memory
 allocations, for compatibility with the other packages in SuiteSparse.  It
 makes limited use of the C++ \verb'new' and \verb'delete', but overrides those
 functions to use \verb'SuiteSparse_malloc' and \verb'SuiteSparse_free'.  ParU
-relies on the memory manager routines defined by the \verb'SuiteSparse_config'
-library (\verb'SuiteSparse_malloc', \verb'SuiteSparse_calloc',
+relies on the memory manager routines defined by the \newline
+\verb'SuiteSparse_config'
+library (\verb'SuiteSparse_malloc', \verb'SuiteSparse_calloc', \newline
 \verb'SuiteSparse_realloc', and \verb'SuiteSparse_free').  By default, those
 routines relies on the C \verb'malloc', \verb'calloc', \verb'realloc', and
 \verb'free' methods, respectively.  They can be redefined; refer to the
@@ -1752,9 +1839,9 @@ while ParU uses nested parallelism heavily the right options for the BLAS
 library must be chosen to get a good performance.
 
 For best performance, the Intel MKL BLAS is required.  ParU relies on the
-\verb'mkl_set_num_threads_local' to select the number of threads to use
-for the BLAS calls from each of its own threads, which required nested
-parallelism.
+\newline \verb'mkl_set_num_threads_local' function to select the number of
+threads to use for the BLAS calls from each of its own threads, which required
+nested parallelism.
 
 ParU also relies heavily on OpenMP tasking to factorize multiple frontal
 matrices at the same time, where each frontal matrix can also be factorized by

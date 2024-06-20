@@ -71,8 +71,8 @@ int main(int argc, char **argv)
         " nnz = " << anz << std::endl;
     OK (ParU_Factorize(A, Sym, &Num, Control), "numeric factorization") ;
     int64_t unz, lnz ;
-    OK (ParU_Get (Sym, Num, PARU_GET_LNZ, &lnz, Control), "lnz") ;
-    OK (ParU_Get (Sym, Num, PARU_GET_UNZ, &unz, Control), "unz") ;
+    OK (ParU_Get (Sym, Num, PARU_GET_LNZ_BOUND, &lnz, Control), "lnz") ;
+    OK (ParU_Get (Sym, Num, PARU_GET_UNZ_BOUND, &unz, Control), "unz") ;
     std::cout << "ParU: factorization was successful." << std::endl;
     std::cout << "nnz(L) = " << lnz << ", nnz(U) = " << unz << std::endl;
 
