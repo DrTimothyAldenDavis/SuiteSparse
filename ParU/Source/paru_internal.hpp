@@ -241,6 +241,9 @@ struct ParU_Numeric_struct
     double rcond;       // rough estimate of the reciprocal condition number
     double min_udiag;   // min (abs (diag (U)))
     double max_udiag;   // max (abs (diag (U)))
+    int64_t nnzL;       //nnz of L
+    int64_t nnzU;       //nnz of U
+    double sfc; //simple flop count
     ParU_Info res;  // returning value of numeric phase
 } ;
 

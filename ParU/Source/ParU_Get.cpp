@@ -81,12 +81,12 @@ ParU_Info ParU_Get              // get an int64_t scalar or array from Sym/Num
 
         case PARU_GET_LNZ:
             if (!Num || Num->sym_m != n) return (PARU_INVALID) ;
-            (*result) = 0 ;     // FIXME NOW: get nnz(L)
+            (*result) = (int64_t) Num->nnzL ;
             break ;
 
         case PARU_GET_UNZ:
             if (!Num || Num->sym_m != n) return (PARU_INVALID) ;
-            (*result) = 0 ;     // FIXME NOW: get nnz(U)
+            (*result) = (int64_t) Num->nnzU ;
             break ;
 
         case PARU_GET_P:
@@ -150,7 +150,7 @@ ParU_Info ParU_Get              // get a double scalar or array from Sym/Num
     switch (field)
     {
         case PARU_GET_FLOP_COUNT:
-            (*result) = 0 ;     // FIXME NOW: get flop count
+            (*result) = (double) Num->sfc ;     
             break ;
 
         case PARU_GET_RCOND_ESTIMATE:

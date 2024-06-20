@@ -70,7 +70,11 @@ int main(int argc, char **argv)
     std::cout << "Input matrix is " << n << "x" << n <<
         " nnz = " << anz << std::endl;
     OK (ParU_Factorize(A, Sym, &Num, Control), "numeric factorization") ;
+    int64_t unz, lnz ;
+    OK (ParU_Get (Sym, Num, PARU_GET_LNZ, &lnz, Control), "lnz") ;
+    OK (ParU_Get (Sym, Num, PARU_GET_UNZ, &unz, Control), "unz") ;
     std::cout << "ParU: factorization was successful." << std::endl;
+    std::cout << "nnz(L) = " << lnz << ", nnz(U) = " << unz << std::endl;
 
     //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
     b = (double *)malloc(n * sizeof(double));

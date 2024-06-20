@@ -282,6 +282,9 @@ ParU_Info ParU_Factorize
 #endif
     int64_t max_rc = 0, max_cc = 0;
     double min_udiag = 1, max_udiag = -1;  // not to fail for nf ==0
+    int64_t nnzL=0;
+    int64_t nnzU=0;
+    double sfc = 0.0; //simple flop count
 
     // using the first value of the first front just to initialize
     if (nf > 0)
@@ -307,6 +310,12 @@ ParU_Info ParU_Factorize
                 max_rc = std::max(max_rc, rowCount);
                 max_cc = std::max(max_cc, colCount + fp);
                 double *X = LUs[f].p;
+                nnzL += fp*rowCount - fp*(fp-1)/2;
+                nnzU += fp*colCount + fp*(fp+1)/2;
+                sfc+= (4*fp*fp*fp-3*fp*fp-fp)/6;
+                sfc+= (fp*(fp-1)/2+fp)*(rowCount-fp);
+                sfc+= (fp*(fp-1)/2)*(colCount);
+                sfc+= (rowCount-fp)*(colCount);
                 for (int64_t i = 0; i < fp; i++)
                 {
                     double udiag = fabs(X[rowCount * i + i]);
@@ -332,13 +341,19 @@ ParU_Info ParU_Factorize
                 max_rc = std::max(max_rc, rowCount);
                 max_cc = std::max(max_cc, colCount + fp);
             }
-
             for (int64_t f = 0; f < nf; f++)
             {
                 int64_t rowCount = Num->frowCount[f];
+                int64_t colCount = Num->fcolCount[f];
                 int64_t col1 = Super[f];
                 int64_t col2 = Super[f + 1];
                 int64_t fp = col2 - col1;
+                nnzL += fp*rowCount - fp*(fp-1)/2;
+                nnzU += fp*colCount + fp*(fp+1)/2;
+                sfc+= (4*fp*fp*fp-3*fp*fp-fp)/6;
+                sfc+= (fp*(fp-1)/2+fp)*(rowCount-fp);
+                sfc+= (fp*(fp-1)/2)*(colCount);
+                sfc+= (rowCount-fp)*(colCount);
                 double *X = LUs[f].p;
                 #pragma omp parallel for reduction(min:min_udiag)   \
                     reduction(max: max_udiag)                       \
@@ -361,6 +376,9 @@ ParU_Info ParU_Factorize
     Num->min_udiag = min_udiag;
     Num->max_udiag = max_udiag;
     Num->rcond = min_udiag / max_udiag;
+    Num->nnzL = nnzL;
+    Num->nnzU = nnzU;
+    Num->sfc= sfc;
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= my_start_time;
