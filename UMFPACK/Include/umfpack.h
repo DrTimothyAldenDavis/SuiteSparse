@@ -246,7 +246,7 @@
 /* used in UMFPACK_*solve only: */
 #define UMFPACK_IRSTEP 7                /* max # of iterative refinements */
 
-/* compile-time settings - Control [8..11] cannot be changed at run time: */
+/* compile-time settings - Control [8] cannot be changed at run time: */
 #define UMFPACK_COMPILED_WITH_BLAS 8        /* uses the BLAS */
 
 // strategy control (added for v6.0.0)
