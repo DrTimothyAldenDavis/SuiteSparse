@@ -18,6 +18,66 @@
 #include "paru_internal.hpp"
 
 //------------------------------------------------------------------------------
+// paru_frontal_flops
+//------------------------------------------------------------------------------
+
+// flop count for a single frontal matrix, size (m+k)-by-(n+k) with k pivots:
+//
+//       F = F1 F2
+//           F3 F4
+//
+//   F1 is k-by-k and becomes [L1, U1] with unit diagonal of L1
+//   F2 is k-by-n and because U2
+//   F3 is m-by-k and becomes L2
+//   F4 is m-by-n and becomes the Schur complement S, to be
+//       assembled into the next frontal matrix
+//
+//   Factorization is:
+//
+//       [L1,U1] U2
+//       L2      S
+
+static void paru_frontal_flops
+(
+    // frontal matrix is (m+k)-by-(n+k) with k pivots
+    int64_t k,                  // number of pivots
+    int64_t m,                  // # of rows in Schur complement
+    int64_t n,                  // # of cols in Schur complement
+    // input/output:
+    double *fl,                 // add the flops for this frontal matrix
+    int64_t *lnz,               // add the # of entries in L for this front
+    int64_t *unz                // add the # of entries in U for this front
+)
+{
+    double K = (double) k ;
+    double M = (double) m ;
+    double N = (double) n ;
+    double K_squared = K*K ;
+    double K_cubed = K_squared*K ;
+
+    // (1) LU factorization of the k-by-k leading submatrix:
+    double f = (4*K_cubed - 3*K_squared - K) / 6 ;
+    // (2) triangular solve to compute L2 the block lower part of L,
+    // using a triangular solve with U1 (so count the diagonal):
+    f += K_squared * M ;            // (K*(K-1) + K) * M ;
+    // (3) triangular solve with L1 to compute U2 (do not count diagonal
+    // terms since L1 has unit diagonal):
+    f += (K_squared - K) * N ;      // (K*(K-1)    ) * N ;
+    // (4) apply the k pivots to S (S -= L2*U2 as a single dgemm)
+    f += 2 * K * M * N ;
+
+    // # of entries in L for this front, including diagonal
+    int64_t tril = (k*(k-1))/2 + k ;
+    int64_t nzl = tril + k*m ;
+    // # of entries in U for this front, including diagonal
+    int64_t nzu = tril + k*n ;
+
+    (*fl) += f ;
+    (*lnz) += nzl ;
+    (*unz) += nzu ;
+}
+
+//------------------------------------------------------------------------------
 // ParU_Factorize: factorize a sparse matrix A
 //------------------------------------------------------------------------------
 
@@ -282,8 +342,8 @@ ParU_Info ParU_Factorize
 #endif
     int64_t max_rc = 0, max_cc = 0;
     double min_udiag = 1, max_udiag = -1;  // not to fail for nf ==0
-    int64_t nnzL=0;
-    int64_t nnzU=0;
+    int64_t nnzL = Sym->lstons.nnz + Sym->cs1 ; // includes diagonal
+    int64_t nnzU = Sym->ustons.nnz + Sym->rs1 ; // includes diagonal
     double sfc = 0.0; //simple flop count
 
     // using the first value of the first front just to initialize
@@ -296,7 +356,7 @@ ParU_Info ParU_Factorize
         #else
         #define M1 65536
         #endif
-        if (Num-> m < M1)
+        if (Num->m < M1)
         {
             //Serial
             for (int64_t f = 0; f < nf; f++)
@@ -310,12 +370,10 @@ ParU_Info ParU_Factorize
                 max_rc = std::max(max_rc, rowCount);
                 max_cc = std::max(max_cc, colCount + fp);
                 double *X = LUs[f].p;
-                nnzL += fp*rowCount - fp*(fp-1)/2;
-                nnzU += fp*colCount + fp*(fp+1)/2;
-                sfc+= (4*fp*fp*fp-3*fp*fp-fp)/6;
-                sfc+= (fp*(fp-1)/2+fp)*(rowCount-fp);
-                sfc+= (fp*(fp-1)/2)*(colCount);
-                sfc+= (rowCount-fp)*(colCount);
+
+                paru_frontal_flops (fp, rowCount - fp, colCount,
+                    &sfc, &nnzL, &nnzU) ;
+
                 for (int64_t i = 0; i < fp; i++)
                 {
                     double udiag = fabs(X[rowCount * i + i]);
@@ -341,6 +399,7 @@ ParU_Info ParU_Factorize
                 max_rc = std::max(max_rc, rowCount);
                 max_cc = std::max(max_cc, colCount + fp);
             }
+
             for (int64_t f = 0; f < nf; f++)
             {
                 int64_t rowCount = Num->frowCount[f];
@@ -348,12 +407,10 @@ ParU_Info ParU_Factorize
                 int64_t col1 = Super[f];
                 int64_t col2 = Super[f + 1];
                 int64_t fp = col2 - col1;
-                nnzL += fp*rowCount - fp*(fp-1)/2;
-                nnzU += fp*colCount + fp*(fp+1)/2;
-                sfc+= (4*fp*fp*fp-3*fp*fp-fp)/6;
-                sfc+= (fp*(fp-1)/2+fp)*(rowCount-fp);
-                sfc+= (fp*(fp-1)/2)*(colCount);
-                sfc+= (rowCount-fp)*(colCount);
+
+                paru_frontal_flops (fp, rowCount - fp, colCount,
+                    &sfc, &nnzL, &nnzU) ;
+
                 double *X = LUs[f].p;
                 #pragma omp parallel for reduction(min:min_udiag)   \
                     reduction(max: max_udiag)                       \

@@ -498,6 +498,9 @@ skip = [too_large ; singular_matrices] ;
 
 test_matrices = setdiff (test_matrices, skip, 'stable') ;
 
+% just one matrix:
+% test_matrices = 2279 ;
+
 % sort matrices by nnz(A)
 nz = index.nnz (test_matrices) ;
 [~,p] = sort (nz) ;
@@ -543,6 +546,8 @@ umfpack_stats.analysis_time = inf (nmat,1) ;
 umfpack_stats.solve_time = inf (nmat,1) ;
 umfpack_stats.flops = zeros (nmat,1) ;  % in factorization
 umfpack_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+umfpack_stats.flops_exact = zeros (nmat,1) ;  % in factorization
+umfpack_stats.nnzLU_exact = zeros (nmat,1) ;  % nnz (L+U), including singletons
 umfpack_stats.strategy_used = char (nmat,3) ; % sym, uns
 umfpack_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
 umfpack_stats.scaling = char (nmat,3) ; % sum, max, non
@@ -554,6 +559,8 @@ umfpack_maxscale_stats.analysis_time = inf (nmat,1) ;
 umfpack_maxscale_stats.solve_time = inf (nmat,1) ;
 umfpack_maxscale_stats.flops = zeros (nmat,1) ;  % in factorization
 umfpack_maxscale_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), incl singletons
+umfpack_maxscale_stats.flops_exact = zeros (nmat,1) ;  % in factorization
+umfpack_maxscale_stats.nnzLU_exact = zeros (nmat,1) ;  % nnz (L+U), incl singletons
 umfpack_maxscale_stats.strategy_used = char (nmat,3) ; % sym, uns
 umfpack_maxscale_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
 umfpack_maxscale_stats.scaling = char (nmat,3) ; % sum, max, non
@@ -565,6 +572,8 @@ paru_amd_stats.analysis_time = inf (nmat,1) ;
 paru_amd_stats.solve_time = inf (nmat,1) ;
 paru_amd_stats.flops = zeros (nmat,1) ;  % in factorization
 paru_amd_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+paru_amd_stats.flops_exact = zeros (nmat,1) ;  % in factorization
+paru_amd_stats.nnzLU_exact = zeros (nmat,1) ;  % nnz (L+U), including singletons
 paru_amd_stats.strategy_used = char (nmat,3) ; % sym, uns
 paru_amd_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
 paru_amd_stats.scaling = char (nmat,3) ; % sum, max, non
@@ -576,6 +585,8 @@ paru_meg_stats.analysis_time = inf (nmat,1) ;
 paru_meg_stats.solve_time = inf (nmat,1) ;
 paru_meg_stats.flops = zeros (nmat,1) ;  % in factorization
 paru_meg_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+paru_meg_stats.flops_exact = zeros (nmat,1) ;  % in factorization
+paru_meg_stats.nnzLU_exact = zeros (nmat,1) ;  % nnz (L+U), including singletons
 paru_meg_stats.strategy_used = char (nmat,3) ; % sym, uns
 paru_meg_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
 paru_meg_stats.scaling = char (nmat,3) ; % sum, max, non
@@ -587,13 +598,24 @@ paru_met_stats.analysis_time = inf (nmat,1) ;
 paru_met_stats.solve_time = inf (nmat,1) ;
 paru_met_stats.flops = zeros (nmat,1) ;  % in factorization
 paru_met_stats.nnzLU = zeros (nmat,1) ;  % nnz (L+U), including singletons
+paru_met_stats.flops_exact = zeros (nmat,1) ;  % in factorization
+paru_met_stats.nnzLU_exact = zeros (nmat,1) ;  % nnz (L+U), including singletons
 paru_met_stats.strategy_used = char (nmat,3) ; % sym, uns
 paru_met_stats.ordering_used = char (nmat,3) ; % amd, met, col, non
 paru_met_stats.scaling = char (nmat,3) ; % sum, max, non
 
+% see if ParU is compiled with -DDEVELOPER
+try
+    [x,stats,P,Q,R] = paru (sparse (1), 1) ;
+    dev = true ;
+catch me
+    dev = false ;
+end
+
 % solve each matrix
 for k = first:nmat
     id = test_matrices (k) ;
+    fprintf ('\n--------------------------------------------------------------------------------\n') ;
     fprintf ('%4d %4d: %s/%s nz %d\n', k, id, ...
         index.Group {id}, index.Name {id}, index.nnz (id)) ;
 
@@ -654,6 +676,19 @@ for k = first:nmat
         umfpack_stats.strategy_used (k,1:3) = strat ;
         umfpack_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
 
+        if (dev)
+            % get the exact flop count and nnz(L+U) for UMFPACK with SUM scale
+            [L,U,P,Q,R] = umfpack (A) ;
+            umfpack_stats.flops_exact (k) = luflop (L, U) ;
+            umfpack_stats.nnzLU_exact (k) = nnz (L) + nnz (U) - n ;
+            clear L U P Q R
+            fprintf ('    flops %g %g nnzLU %g %g\n', ...
+                umfpack_stats.flops (k), ...
+                umfpack_stats.flops_exact (k), ...
+                umfpack_stats.nnzLU (k), ...
+                umfpack_stats.nnzLU_exact (k)) ;
+        end
+
         % try the UMFPACK mexFunction with MAX scaling
         t1 = tic ;
         [x, stats] = umfpack (A, '\', b, umf_scale_max) ;
@@ -684,6 +719,19 @@ for k = first:nmat
         umfpack_maxscale_stats.ordering_used (k,1:3) = ...
             stats.ordering_used (1:3) ;
 
+        if (dev)
+            % get the exact flop count and nnz(L+U) for UMFPACK with MAX scale
+            [L,U,P,Q,R] = umfpack (A, umf_scale_max) ;
+            umfpack_maxscale_stats.flops_exact (k) = luflop (L, U) ;
+            umfpack_maxscale_stats.nnzLU_exact (k) = nnz (L) + nnz (U) - n ;
+            clear L U P Q R
+            fprintf ('    flops %g %g nnzLU %g %g\n', ...
+                umfpack_maxscale_stats.flops (k), ...
+                umfpack_maxscale_stats.flops_exact (k), ...
+                umfpack_maxscale_stats.nnzLU (k), ...
+                umfpack_maxscale_stats.nnzLU_exact (k)) ;
+        end
+
         % try the ParU mexFunction with default options:
         % ordering: AMD for symmetric strategy, COLAMD for unsymmetric
         t2 = tic ;
@@ -713,6 +761,22 @@ for k = first:nmat
         paru_amd_stats.strategy_used (k,1:3) = strat ;
         paru_amd_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
 
+        if (dev)
+            % get the exact flop count and nnz(L+U) for ParU with AMD
+            [x, stats, P, Q, R] = paru (A,b) ;
+            S = spdiags (R, 0, n, n) \ A ;
+            [L,U] = lu (S (P+1,Q+1), 0) ;
+            assert (nnz (triu (L, 1)) == 0) ;
+            paru_amd_stats.flops_exact (k) = luflop (L, U) ;
+            paru_amd_stats.nnzLU_exact (k) = nnz (L) + nnz (U) - n ;
+            clear L U P Q R S
+            fprintf ('    flops %g %g nnzLU %g %g\n', ...
+                paru_amd_stats.flops (k), ...
+                paru_amd_stats.flops_exact (k), ...
+                paru_amd_stats.nnzLU (k), ...
+                paru_amd_stats.nnzLU_exact (k)) ;
+        end
+
         % try the ParU mexFunction with ordering: METIS_guard
         t2 = tic ;
         [x, stats] = paru (A,b,opts_metis_guard) ;
@@ -740,6 +804,22 @@ for k = first:nmat
         paru_meg_stats.nnzLU (k) = stats.lnz + stats.unz - n ;
         paru_meg_stats.strategy_used (k,1:3) = strat ;
         paru_meg_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
+
+        if (dev)
+            % get the exact flop count and nnz(L+U) for ParU with METIS_GUARD
+            [x, stats, P, Q, R] = paru (A,b,opts_metis_guard) ;
+            S = spdiags (R, 0, n, n) \ A ;
+            [L,U] = lu (S (P+1,Q+1), 0) ;
+            assert (nnz (triu (L, 1)) == 0) ;
+            paru_meg_stats.flops_exact (k) = luflop (L, U) ;
+            paru_meg_stats.nnzLU_exact (k) = nnz (L) + nnz (U) - n ;
+            clear L U P Q R S
+            fprintf ('    flops %g %g nnzLU %g %g\n', ...
+                paru_meg_stats.flops (k), ...
+                paru_meg_stats.flops_exact (k), ...
+                paru_meg_stats.nnzLU (k), ...
+                paru_meg_stats.nnzLU_exact (k)) ;
+        end
 
         % try the ParU mexFunction with ordering: METIS
         % ordering: METIS; usually slower overall when considering x=A\b, but
@@ -773,6 +853,22 @@ for k = first:nmat
             paru_met_stats.nnzLU (k) = stats.lnz + stats.unz - n ;
             paru_met_stats.strategy_used (k,1:3) = strat ;
             paru_met_stats.ordering_used (k,1:3) = stats.ordering_used (1:3) ;
+
+            if (dev)
+                % get the exact flop count and nnz(L+U) for ParU with METIS
+                [x, stats, P, Q, R] = paru (A,b,opts_metis) ;
+                S = spdiags (R, 0, n, n) \ A ;
+                [L,U] = lu (S (P+1,Q+1), 0) ;
+                assert (nnz (triu (L, 1)) == 0) ;
+                paru_met_stats.flops_exact (k) = luflop (L, U) ;
+                paru_met_stats.nnzLU_exact (k) = nnz (L) + nnz (U) - n ;
+                % clear L U P Q R S
+                fprintf ('    flops %g %g nnzLU %g %g\n', ...
+                    paru_met_stats.flops (k), ...
+                    paru_met_stats.flops_exact (k), ...
+                    paru_met_stats.nnzLU (k), ...
+                    paru_met_stats.nnzLU_exact (k)) ;
+            end
 
         else
             fprintf ('ParU (METIS) skipped\n') ;

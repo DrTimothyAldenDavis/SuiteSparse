@@ -64,7 +64,7 @@ end
 flags = '-O -R2018a -silent ' ;
 
 % developer-only flag, for testing only, not intended for end users:
-% flags = [flags ' -DDEVELOPER=1 ' ] ;
+flags = [flags ' -DDEVELOPER=1 ' ] ;
 
 if (ispc)
     % MSVC does not define ssize_t
