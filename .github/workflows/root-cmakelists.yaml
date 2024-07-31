@@ -393,12 +393,12 @@ jobs:
 
           msystem: UCRT64
 
-      - uses: Jimver/cuda-toolkit@v0.2.15
+      - uses: Jimver/cuda-toolkit@v0.2.16
         name: install CUDA toolkit
         if: matrix.cuda == 'with'
         id: cuda-toolkit
         with:
-          cuda: '12.2.0'
+          cuda: '12.5.0'
           #See https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html#install-the-cuda-software
           method: 'local'
           # Do not cache the installer (~3 GiB). It doesn't speed up the
