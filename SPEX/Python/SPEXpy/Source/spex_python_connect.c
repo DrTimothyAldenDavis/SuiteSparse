@@ -109,7 +109,7 @@ SPEX_info spex_python
 
     //--------------------------------------------------------------------------
     // solve Ax=b
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     switch(algorithm)
     {
         case 1:
@@ -130,7 +130,7 @@ SPEX_info spex_python
 
     //--------------------------------------------------------------------------
     // Return output as desired type
-    //--------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     if(charOut)
     {
         //solution as string
@@ -143,12 +143,12 @@ SPEX_info spex_python
                 printf("error converting x to string");
             }
             //check string size
-            size_t sizeStr;
-            sizeStr = strlen(s);
+            int sizeStr;
+            sizeStr=strlen(s);
             //allocate sol_char[i]
-            sol_void[i] = malloc (sizeStr + 1);  // +1 for NULL terminator
+             sol_void[i] = malloc (sizeStr + 1);  // +1 for NULL terminator
             //copy s into sol_char[i]
-            strcpy(sol_void[i], s);
+            strcpy(sol_void[i],s);
         }
     }
     else
