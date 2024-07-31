@@ -170,7 +170,7 @@
 #  define UMFPACK_IVDEP _Pragma("ivdep")
 #elif defined (HAVE_PRAGMA_LOOP_IVDEP)
 #if defined ( _MSC_VER )
-#  define UMFPACK_IVDEP __pragma(loop( ivdep ))
+#  define UMFPACK_IVDEP __pragma(loop(ivdep))
 #else 
 #  define UMFPACK_IVDEP _Pragma("loop( ivdep )")
 #endif 
@@ -186,7 +186,7 @@
 #  define UMFPACK_NOVECTOR _Pragma("novector")
 #elif defined (HAVE_PRAGMA_LOOP_NO_VECTOR)
 #if defined ( _MSC_VER )
-#  define UMFPACK_NOVECTOR __pragma(loop( no_vector ))
+#  define UMFPACK_NOVECTOR __pragma(loop(no_vector))
 #else 
 #  define UMFPACK_NOVECTOR _Pragma("loop( no_vector )")
 #endif 
