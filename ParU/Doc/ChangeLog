@@ -1,7 +1,8 @@
-June 20, 2024: version 1.0.0
+Aug 1, 2024: version 0.2.0
 
     * major changes to the API: as compared to the draft 0.1 version.
-    * first stable release
+    * nearly stable release: the API should be unchanged when v1.0.0
+        is released.
 
 Mar 22, 2024: version 0.1.3
 
