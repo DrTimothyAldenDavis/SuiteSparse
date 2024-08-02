@@ -123,7 +123,7 @@ GrB_Info GB_subassign_26
 
     int64_t anvec_nonempty = 0 ;
     #define COMPUTE_CP_AND_CH                   \
-        for (int64_t k = 0 ; k < nJ ; k++)      \
+        for (k = 0 ; k < nJ ; k++)              \
         {                                       \
             int64_t apk = Ap [k] ;              \
             int64_t anzk = Ap [k+1] - apk ;     \
@@ -134,6 +134,7 @@ GrB_Info GB_subassign_26
 
     int nthreads = (phase1_parallel) ?
         GB_nthreads (nJ, chunk, nthreads_max) : 1 ;
+    int64_t k ;
     if (nthreads > 1)
     { 
         // compute Cp and Ch in parallel
