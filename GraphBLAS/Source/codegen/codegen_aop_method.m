@@ -6,20 +6,6 @@ function codegen_aop_method (binop, op, xtype)
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
-f = fopen ('control.m4', 'w') ;
-fprintf (f, 'm4_divert(-1)\n') ;
-
-% no code is generated for the ANY operator (SECOND is used in its place)
-assert (~isequal (binop, 'any')) ;
-
-[fname, unsigned, bits] = codegen_type (xtype) ;
-
-name = sprintf ('%s_%s', binop, fname) ;
-
-% function names
-fprintf (f, 'm4_define(`_subassign_23'', `_subassign_23__%s'')\n', name) ;
-fprintf (f, 'm4_define(`_subassign_22'', `_subassign_22__%s'')\n', name) ;
-
 % determine type of z, x, and y from xtype and binop
 switch (binop)
     case { 'eq', 'ne', 'gt', 'lt', 'ge', 'le' }
@@ -44,6 +30,25 @@ switch (binop)
         ytype = xtype ;
 end
 
+if (~isequal (xtype, ztype) || isequal (binop, 'first'))
+    % the type of x and z must match, and the operator must not be 'first'
+    return
+end
+
+f = fopen ('control.m4', 'w') ;
+fprintf (f, 'm4_divert(-1)\n') ;
+
+% no code is generated for the ANY operator (SECOND is used in its place)
+assert (~isequal (binop, 'any')) ;
+
+[fname, unsigned, bits] = codegen_type (xtype) ;
+
+name = sprintf ('%s_%s', binop, fname) ;
+
+% function names
+fprintf (f, 'm4_define(`_subassign_23'', `_subassign_23__%s'')\n', name) ;
+fprintf (f, 'm4_define(`_subassign_22'', `_subassign_22__%s'')\n', name) ;
+
 fprintf (f, 'm4_define(`GB_ztype'',  `#define GB_Z_TYPE %s'')\n', ztype) ;
 fprintf (f, 'm4_define(`GB_xtype'',  `#define GB_X_TYPE %s'')\n', xtype) ;
 fprintf (f, 'm4_define(`GB_ytype'',  `#define GB_Y_TYPE %s'')\n', ytype) ;
@@ -51,6 +56,7 @@ fprintf (f, 'm4_define(`GB_ctype'',  `#define GB_C_TYPE %s'')\n', ztype) ;
 fprintf (f, 'm4_define(`GB_atype'',  `#define GB_A_TYPE %s'')\n', ytype) ;
 fprintf (f, 'm4_define(`GB_declarec'', `#define GB_DECLAREC(cwork) %s cwork'')\n', ztype) ;
 
+%{
 % C_dense_update: operators z=f(x,y) where ztype and xtype match, and binop is not 'first'
 if (isequal (xtype, ztype) && ~isequal (binop, 'first'))
     % enable C dense update
@@ -59,6 +65,7 @@ else
     % disable C dense update
     fprintf (f, 'm4_define(`if_C_dense_update'', `-1'')\n') ;
 end
+%}
 
 % to get an entry from A and cast to ywork (but no typecasting here)
 if (isequal (binop, 'first') || isequal (binop, 'pair'))

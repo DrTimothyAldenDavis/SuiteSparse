@@ -378,22 +378,6 @@ else
     fprintf (f, 'm4_define(`GB_is_plus_pair_big_semiring'', `'')\n') ;
 end
 
-% if (is_plus && is_pair && isequal (ztype, 'GxB_FC32_t'))
-%     % plus_pair_fc32
-%     fprintf (f, 'm4_define(`GB_is_plus_pair_fc32_semiring'', `%s'')\n', ...
-%         '#define GB_IS_PLUS_PAIR_FC32_SEMIRING 1') ;
-% else
-      fprintf (f, 'm4_define(`GB_is_plus_pair_fc32_semiring'', `'')\n') ;
-% end
-
-% if (is_plus && is_pair && isequal (ztype, 'GxB_FC64_t'))
-%     % plus_pair_fc64
-%     fprintf (f, 'm4_define(`GB_is_plus_pair_fc64_semiring'', `%s'')\n', ...
-%         '#define GB_IS_PLUS_PAIR_FC64_SEMIRING 1') ;
-% else
-      fprintf (f, 'm4_define(`GB_is_plus_pair_fc64_semiring'', `'')\n') ;
-% end
-
 if (codegen_contains (ztype, 'GxB_FC'))
     fprintf (f, 'm4_define(`GB_ztype_is_complex'', `#define GB_Z_IS_COMPLEX 1'')\n') ;
 else

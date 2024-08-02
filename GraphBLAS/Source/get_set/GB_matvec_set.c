@@ -39,6 +39,11 @@ GrB_Info GB_matvec_set
             A->hyper_switch = (float) dvalue ;
             break ;
 
+        case GxB_HYPER_HASH : 
+
+            A->no_hyper_hash = !((bool) ivalue) ;
+            break ;
+
         case GxB_BITMAP_SWITCH : 
 
             A->bitmap_switch = (float) dvalue ;

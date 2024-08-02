@@ -70,6 +70,7 @@ GrB_Info GB_subassign_22      // C += scalar where C is full
     }
 
     // C = accum (C,scalar) will be computed
+    // TODO: the types of C, Z, and X need not match for the JIT kernel
     ASSERT (C->type == accum->ztype) ;
     ASSERT (C->type == accum->xtype) ;
     ASSERT (GB_Type_compatible (scalar_type, accum->ytype)) ;
@@ -128,6 +129,8 @@ GrB_Info GB_subassign_22      // C += scalar where C is full
             accum, false, &opcode, &xcode, &ycode, &zcode))
         { 
             // accumulate sparse matrix into full matrix with built-in operator
+            #define GB_NO_FIRST
+            #define GB_XTYPE_AND_ZTYPE_MUST_MATCH
             #include "binaryop/factory/GB_binop_factory.c"
         }
     }

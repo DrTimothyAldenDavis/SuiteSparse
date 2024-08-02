@@ -62,10 +62,11 @@ hack = GB_mex_hack ;
 j404 = {4,0,4} ;    % JIT     on, off, on
 f110 = {1,1,0} ;    % factory on, on , off
 
-% just one run, both JIT and factory on
+% run once, both on
 j4 = {4} ;          % JIT     on
 f1 = {1} ;          % factory on
 
+% run once, both off
 j0 = {0} ;          % JIT off
 f0 = {0} ;          % factory off
 
@@ -79,11 +80,8 @@ j04 = {0,4} ;       % JIT     off, off
 j40 = {4,0} ;       % JIT     on, off
 f11 = {1,1} ;       % factory on, on
 
-j4040 = {4,0,4,0} ;    % JIT     on, off, on , off
-f1100 = {1,1,0,0} ;    % factory on, on , off, off
-
+% 3 runs
 j040 = {0,4,0} ;    % JIT     off, on , off
-
 j440 = {4,4,0} ;    % JIT     on, on , off
 f100 = {1,0,0} ;    % factory on, off, off
 
@@ -100,6 +98,7 @@ malloc_debugging = stat ;
 % tests with high rates (over 100/sec)
 %----------------------------------------
 
+logstat ('test281'    ,t, j4  , f1  ) ; % test user-defined idx unop, no JIT
 logstat ('test201'    ,t, j4  , f1  ) ; % test iso reduce to vector and scalar
 logstat ('test169'    ,t, j0  , f1  ) ; % C<M>=A+B with many formats
 logstat ('test250'    ,t, j44 , f10 ) ; % JIT tests, set/get, other tests
@@ -142,6 +141,7 @@ logstat ('test255'    ,t, j4  , f1  ) ; % flip binop
 logstat ('test254'    ,t, j440, f100) ; %% mask types
 logstat ('test253'    ,t, j4  , f1  ) ; % basic JIT tests
 logstat ('test252'    ,t, j4  , f1  ) ; % basic tests
+logstat ('test280'    ,t, j4  , f1  ) ; % subassign method 26
 logstat ('test251'    ,t, j44 , f10 ) ; % dot4, dot2, with plus_pair
 logstat ('test249'    ,t, j4  , f1  ) ; % GxB_Context object
 logstat ('test247'    ,t, j4  , f1  ) ; % GrB_mxm: fine Hash method

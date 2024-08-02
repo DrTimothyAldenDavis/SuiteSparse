@@ -149,6 +149,8 @@ __global__ void GB_jit_AxB_dot3_phase1_kernel
         // assign entries in C(i,j) to the buckets
         //----------------------------------------------------------------------
 
+        // block-stride loop for all threads in a threadblock, to do the whole
+        // chunk assigned to this threadblock.
         for (int64_t pdelta = threadIdx.x ;
                      pdelta < my_chunk_size ;
                      pdelta += blockDim.x)

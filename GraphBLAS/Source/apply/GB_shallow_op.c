@@ -125,6 +125,7 @@ GrB_Info GB_shallow_op      // create shallow matrix and apply operator
 
     C->Y = A->Y ;
     C->Y_shallow = (A->Y != NULL) ;
+    C->no_hyper_hash = A->no_hyper_hash ;
 
     //--------------------------------------------------------------------------
     // check for empty matrix

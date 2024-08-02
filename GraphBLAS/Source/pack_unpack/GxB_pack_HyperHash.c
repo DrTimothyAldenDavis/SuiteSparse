@@ -105,6 +105,7 @@ GrB_Info GxB_pack_HyperHash         // move Y into A->Y
     A->Y = (*Y) ;
     (*Y) = NULL ;
     A->Y_shallow = false ;
+    A->no_hyper_hash = false ;  // A now has a hyper_hash matrix A->Y
 
     GB_BURBLE_END ;
     return (GrB_SUCCESS) ;

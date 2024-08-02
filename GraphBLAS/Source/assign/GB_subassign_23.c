@@ -128,6 +128,8 @@ GrB_Info GB_subassign_23      // C += A; C is full
             accum, false, &opcode, &xcode, &ycode, &zcode))
         { 
             // accumulate sparse matrix into full matrix with built-in operator
+            #define GB_NO_FIRST
+            #define GB_XTYPE_AND_ZTYPE_MUST_MATCH
             #include "binaryop/factory/GB_binop_factory.c"
         }
     }

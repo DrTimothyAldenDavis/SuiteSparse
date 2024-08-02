@@ -53,6 +53,14 @@
 // Otherwise, the set of k values can be computed in a shared array ks, using
 // the single method GB_cuda_ek_slice.
 
+// FIXME: discuss grid-stride loops, the pdelta loop, and the max chunk size
+// here
+
+// question: why chunks are necessary? why not just do ek_slice_setup across all entries in one go?
+// answer: the slope method is only useful for a small range of entries; non-uniform entry distributions
+//         can distort the usefulness of the slope (will require an exhaustive linear search)
+//         for a large range of entries
+
 //------------------------------------------------------------------------------
 // GB_cuda_ek_slice_setup
 //------------------------------------------------------------------------------

@@ -2509,7 +2509,7 @@ void GB_jitifyer_nvcc_compile (char *kernel_name, uint32_t bucket)
     " -arch=sm_60 "
     " -fPIC " 
     // FIXME: add GB_CUDA_FLAGS here:
-    " -G "   // HACK FIXME (for CUDA)
+    " -O3 "   // HACK FIXME (for CUDA)
     "-I'%s/src' "                       // include source directory
     "-I'%s/src/template' "
     "-I'%s/src/include' "

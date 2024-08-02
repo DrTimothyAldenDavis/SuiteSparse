@@ -347,9 +347,14 @@
         case GB_EQ_binop_code      :    // z = (x == y)
         //----------------------------------------------------------------------
 
+            // For eq, ge, gt, le, lt, ne: z is bool, while the type of
+            // x and y can be non-boolean.  Some factory kernels require the
+            // types of x and z to match (subassign_22 and subassign_23).
+
             switch (xcode)
             {
                 case GB_BOOL_code   : GB_BINOP_WORKER (_eq, _bool  )
+                #ifndef GB_XTYPE_AND_ZTYPE_MUST_MATCH
                 case GB_INT8_code   : GB_BINOP_WORKER (_eq, _int8  )
                 case GB_INT16_code  : GB_BINOP_WORKER (_eq, _int16 )
                 case GB_INT32_code  : GB_BINOP_WORKER (_eq, _int32 )
@@ -365,9 +370,12 @@
                 case GB_FC32_code   : GB_BINOP_WORKER (_eq, _fc32  )
                 case GB_FC64_code   : GB_BINOP_WORKER (_eq, _fc64  )
                 #endif
+                #endif
                 default: ;
             }
             break ;
+
+#ifndef GB_XTYPE_AND_ZTYPE_MUST_MATCH
 
         //----------------------------------------------------------------------
         case GB_NE_binop_code      :    // z = (x != y)
@@ -394,6 +402,8 @@
                 default: ;
             }
             break ;
+
+#endif
 
         //----------------------------------------------------------------------
         case GB_LOR_binop_code     :    // z = x || y
@@ -555,6 +565,7 @@
             switch (xcode)
             {
                 case GB_BOOL_code   : GB_BINOP_WORKER (_gt, _bool  )
+                #ifndef GB_XTYPE_AND_ZTYPE_MUST_MATCH
                 case GB_INT8_code   : GB_BINOP_WORKER (_gt, _int8  )
                 case GB_INT16_code  : GB_BINOP_WORKER (_gt, _int16 )
                 case GB_INT32_code  : GB_BINOP_WORKER (_gt, _int32 )
@@ -565,6 +576,7 @@
                 case GB_UINT64_code : GB_BINOP_WORKER (_gt, _uint64)
                 case GB_FP32_code   : GB_BINOP_WORKER (_gt, _fp32  )
                 case GB_FP64_code   : GB_BINOP_WORKER (_gt, _fp64  )
+                #endif
                 default: ;
             }
             break ;
@@ -577,6 +589,7 @@
             switch (xcode)
             {
                 case GB_BOOL_code   : GB_BINOP_WORKER (_lt, _bool  )
+                #ifndef GB_XTYPE_AND_ZTYPE_MUST_MATCH
                 case GB_INT8_code   : GB_BINOP_WORKER (_lt, _int8  )
                 case GB_INT16_code  : GB_BINOP_WORKER (_lt, _int16 )
                 case GB_INT32_code  : GB_BINOP_WORKER (_lt, _int32 )
@@ -587,6 +600,7 @@
                 case GB_UINT64_code : GB_BINOP_WORKER (_lt, _uint64)
                 case GB_FP32_code   : GB_BINOP_WORKER (_lt, _fp32  )
                 case GB_FP64_code   : GB_BINOP_WORKER (_lt, _fp64  )
+                #endif
                 default: ;
             }
             break ;
@@ -599,6 +613,7 @@
             switch (xcode)
             {
                 case GB_BOOL_code   : GB_BINOP_WORKER (_ge, _bool  )
+                #ifndef GB_XTYPE_AND_ZTYPE_MUST_MATCH
                 case GB_INT8_code   : GB_BINOP_WORKER (_ge, _int8  )
                 case GB_INT16_code  : GB_BINOP_WORKER (_ge, _int16 )
                 case GB_INT32_code  : GB_BINOP_WORKER (_ge, _int32 )
@@ -609,6 +624,7 @@
                 case GB_UINT64_code : GB_BINOP_WORKER (_ge, _uint64)
                 case GB_FP32_code   : GB_BINOP_WORKER (_ge, _fp32  )
                 case GB_FP64_code   : GB_BINOP_WORKER (_ge, _fp64  )
+                #endif
                 default: ;
             }
             break ;
@@ -621,6 +637,7 @@
             switch (xcode)
             {
                 case GB_BOOL_code   : GB_BINOP_WORKER (_le, _bool  )
+                #ifndef GB_XTYPE_AND_ZTYPE_MUST_MATCH
                 case GB_INT8_code   : GB_BINOP_WORKER (_le, _int8  )
                 case GB_INT16_code  : GB_BINOP_WORKER (_le, _int16 )
                 case GB_INT32_code  : GB_BINOP_WORKER (_le, _int32 )
@@ -631,6 +648,7 @@
                 case GB_UINT64_code : GB_BINOP_WORKER (_le, _uint64)
                 case GB_FP32_code   : GB_BINOP_WORKER (_le, _fp32  )
                 case GB_FP64_code   : GB_BINOP_WORKER (_le, _fp64  )
+                #endif
                 default: ;
             }
             break ;
@@ -739,6 +757,8 @@
             }
             break ;
 
+#ifndef GB_XTYPE_AND_ZTYPE_MUST_MATCH
+
         //----------------------------------------------------------------------
         case GB_CMPLX_binop_code    :    // z = cmplx (x,y)
         //----------------------------------------------------------------------
@@ -750,6 +770,8 @@
                 default: ;
             }
             break ;
+
+#endif
 
         //----------------------------------------------------------------------
         case GB_BGET_binop_code :   // z = bitget (x,y)
@@ -922,4 +944,5 @@
 #undef GB_NO_FIRST
 #undef GB_NO_SECOND
 #undef GB_NO_PAIR
+#undef GB_XTYPE_AND_ZTYPE_MUST_MATCH
 

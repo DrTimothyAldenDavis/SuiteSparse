@@ -48,6 +48,7 @@ GrB_Info GB_subassign_scalar        // C(Rows,Cols)<M> += x
     GB_Werk Werk
 ) ;
 
+#if 0
 int GB_subassigner_method           // return method to use in GB_subassigner
 (
     // outputs
@@ -66,6 +67,29 @@ int GB_subassigner_method           // return method to use in GB_subassigner
     const bool scalar_expansion,    // if true, expand scalar to A
     const void *scalar,
     const GrB_Type scalar_type      // type of the scalar
+) ;
+#endif
+
+int GB_subassigner_method           // return method to use in GB_subassigner
+(
+    // outputs
+    bool *C_iso_out,                // true if C is iso on output
+    GB_void *cout,                  // iso value of C on output
+    // inputs
+    const GrB_Matrix C,             // input/output matrix for results
+    const bool C_replace,           // C matrix descriptor
+    const GrB_Matrix M,             // optional mask for C(I,J), unused if NULL
+    const bool Mask_comp,           // mask descriptor
+    const bool Mask_struct,         // if true, use the only structure of M
+    const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),A)
+    const GrB_Matrix A,             // input matrix (NULL for scalar expansion)
+    const int Ikind,                // I: just the kind
+    const int Jkind,                // J: kind, length, and colon
+    const int64_t nJ,
+    const int64_t Jcolon [3],
+    const bool scalar_expansion,    // if true, expand scalar to A
+    const void *scalar,
+    const GrB_Type scalar_type      // type of the scalar, or NULL
 ) ;
 
 GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
@@ -193,6 +217,7 @@ GrB_Info GB_assign_prep
 #define GB_SUBASSIGN_METHOD_23  23     // C += A ; C is dense
 #define GB_SUBASSIGN_METHOD_24  24     // C = A
 #define GB_SUBASSIGN_METHOD_25  25     // C(:,:)<M,struct> = A ; C empty
+#define GB_SUBASSIGN_METHOD_26  26     // C(:,j) = A ; append column to C
 #define GB_SUBASSIGN_METHOD_BITMAP 999 // bitmap assignment
 
 #endif

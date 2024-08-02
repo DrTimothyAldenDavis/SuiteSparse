@@ -82,8 +82,8 @@ __global__ void GB_cuda_reduce_kernel
             const int64_t *__restrict__ Ai = A->i ;
             // grid-stride loop:
             for (int64_t p = blockIdx.x * blockDim.x + threadIdx.x ;
-                p < anz ;
-                p += blockDim.x * gridDim.x)
+                         p < anz ;
+                         p += blockDim.x * gridDim.x)
             {
                 if (Ai [p] < 0) continue ;          // skip zombies
                 GB_GETA_AND_UPDATE (zmine, Ax, p) ; // zmine += (ztype) Ax [p]

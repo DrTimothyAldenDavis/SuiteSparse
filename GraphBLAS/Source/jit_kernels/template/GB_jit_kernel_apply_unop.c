@@ -10,16 +10,16 @@
 #if GB_DEPENDS_ON_I
 
     // cij = op (aij)
-    #define GB_APPLY_OP(p)                          \
+    #define GB_APPLY_OP(pC,pA)                      \
     {                                               \
-        int64_t i = GBI_A (Ai, p, avlen) ;          \
-        GB_UNOP (Cx, p, Ax, p, A_iso, i, j, y) ;    \
+        int64_t i = GBI_A (Ai, pA, avlen) ;         \
+        GB_UNOP (Cx, pC, Ax, pA, A_iso, i, j, y) ;  \
     }
 
 #else
 
     // cij = op (aij)
-    #define GB_APPLY_OP(p) GB_UNOP (Cx, p, Ax, p, A_iso, i, j, y)
+    #define GB_APPLY_OP(pC,pA) GB_UNOP (Cx, pC, Ax, pC, A_iso, i, j, y)
 
 #endif
 

@@ -113,7 +113,12 @@ GrB_Info GB_transplant          // transplant one matrix into another
 
     if (C_is_hyper && A->Y != NULL)
     {
-        if (A->Y_shallow || GB_is_shallow (A->Y))
+        if (C->no_hyper_hash)
+        { 
+            // A has a hyper_hash matrix A->Y but C does not want it
+            GB_hyper_hash_free (A) ;
+        }
+        else if (A->Y_shallow || GB_is_shallow (A->Y))
         { 
             // A->Y is shallow, so create a deep copy for C
             GB_OK (GB_dup (&(C->Y), A->Y, Werk)) ;

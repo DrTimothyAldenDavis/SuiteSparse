@@ -22,10 +22,12 @@ __inline__ __device__ GB_Z_TYPE GB_cuda_threadblock_reduce_ztype
     // The thread_block g that calls this method has a number of threads
     // defined by the kernel launch geometry (dim3 block (blocksz)).
     thread_block g = this_thread_block ( ) ;
+    // here, g.sync() is not needed
 
     // The threads in this thread block are partitioned into tiles, each with
     // tile_sz threads.
     thread_block_tile<tile_sz> tile = tiled_partition<tile_sz> (g) ;
+    // here, tile.sync() is implicit
 
     // lane: a local thread id, for all threads in a single tile, ranging from
     // 0 to the size of the tile minus one.  Normally the tile has size 32, but
@@ -44,11 +46,12 @@ __inline__ __device__ GB_Z_TYPE GB_cuda_threadblock_reduce_ztype
     {
         shared [tile_id] = val ;    // Write reduced value to shared memory
     }
+
+    // This g.sync() is required:
     g.sync() ;                      // Wait for all partial reductions
 
-    // FIXME: doesn't this assume that the # of threads in the threadblock
-    // is <= tile_sz squared?  For tile_sz = 32, the # of threads in the 
-    // threadblock must be <= 1024.
+    // This method requires blockDim.x <= tile_sz^2 = 1024, but this is always
+    // enforced in the CUDA standard since the our geometry is 1D.
 
     // Final reduce within first tile
     if (tile_id == 0)
@@ -59,7 +62,8 @@ __inline__ __device__ GB_Z_TYPE GB_cuda_threadblock_reduce_ztype
         val = GB_cuda_tile_reduce_ztype (tile, val) ;
     }
 
-    g.sync() ;
+    // Not needed:
+    // g.sync() ;
     return (val) ;
 }
 

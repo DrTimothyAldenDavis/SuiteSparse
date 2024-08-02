@@ -52,6 +52,7 @@ GrB_Info GB_cast_array              // typecast an array
     ASSERT (GB_code_compatible (code1, code2)) ;
     ASSERT (code1 != code2) ;
     ASSERT (code1 != GB_UDT_code) ;
+    ASSERT (!A->iso) ;
 
     //--------------------------------------------------------------------------
     // via the factory kernel
@@ -109,8 +110,8 @@ GrB_Info GB_cast_array              // typecast an array
         int64_t csize = GB_code_size (code1, 0) ;
         int64_t asize = GB_code_size (code2, 0) ;
         GB_cast_function cast_A_to_C = GB_cast_factory (code1, code2) ;
-        #define GB_APPLY_OP(p) \
-            cast_A_to_C (Cx +(p*csize), Ax +(p*asize), asize)
+        #define GB_APPLY_OP(pC,pA) \
+            cast_A_to_C (Cx +((pC)*csize), Ax +((pA)*asize), asize)
         #include "apply/template/GB_apply_unop_ip.c"
         info = GrB_SUCCESS ;
     }

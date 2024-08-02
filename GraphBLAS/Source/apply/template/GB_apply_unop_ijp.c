@@ -52,7 +52,7 @@
             { 
                 if (!GBB_A (Ab, p)) continue ;
                 // Cx [p] = op (A (i,j))
-                GB_APPLY_OP (p) ;
+                GB_APPLY_OP (p, p) ;
             }
         }
     }

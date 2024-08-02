@@ -252,8 +252,8 @@ GrB_Info GB_assign                  // C<M>(Rows,Cols) += A or A'
             // of C on output.
 
             subassign_method = GB_subassigner_method (NULL, NULL, C,
-                C_replace, SubMask, Mask_comp, Mask_struct, accum, A,
-                Ikind, Jkind, scalar_expansion, scalar, scalar_type) ;
+                C_replace, SubMask, Mask_comp, Mask_struct, accum, A, Ikind,
+                Jkind, nJ, Jcolon, scalar_expansion, scalar, scalar_type) ;
 
             GB_OK (GB_subassigner (C, subassign_method, C_replace,
                 SubMask, Mask_comp, Mask_struct, accum, A,

@@ -220,7 +220,7 @@ static inline bool GB_as_if_full
     if (GB_ANY_PENDING_WORK (A))
     { 
         // A has pending work and so cannot be treated as if full.
-        // The existence of the hyperhash is not considered in this test.
+        // The existence of the hyper_hash is not considered in this test.
         return (false) ;
     }
     // A is sparse, hyper, or bitmap: check if all entries present

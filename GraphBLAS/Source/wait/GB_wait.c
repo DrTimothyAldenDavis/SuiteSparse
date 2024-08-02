@@ -560,6 +560,13 @@ GrB_Info GB_wait                // finish all pending computations
         GB_Matrix_free (&T) ;
         ASSERT_MATRIX_OK (S, "S after GB_wait:add", GB0) ;
 
+        if (A->no_hyper_hash)
+        { 
+            // A does not want the hyper_hash, so free A->Y and S->Y if present
+            GB_hyper_hash_free (A) ;
+            GB_hyper_hash_free (S) ;
+        }
+
         if (GB_IS_HYPERSPARSE (A) && GB_IS_HYPERSPARSE (S) && A->Y != NULL
             && !A->Y_shallow && !GB_is_shallow (A->Y))
         {

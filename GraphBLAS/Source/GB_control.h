@@ -79,10 +79,9 @@
 
 // In this version of SuiteSparse:GraphBLAS, some of the fast hard-coded
 // semirings have been disabled below.  They still work, but are now slower
-// since the work is now done by the generic semiring instead.  These semirings
-// are likely not needed by any application, and disabling them here saves
-// compile time and reduces the size of the compiled library.  Hard-coded
-// semirings removed:
+// unless the JIT is used. These semirings are likely not needed by any
+// application, and disabling them here saves compile time and reduces the size
+// of the compiled library.  Hard-coded semirings removed:
 
 //  (1) *_IS* semirings are removed.
 //  (2) semirings with DIV, RDIV, MINUS, RMINUS and ANY multiplicative
@@ -99,6 +98,7 @@
 //      (GE, GT, LE, LT)
 //  (7) positional semirings with PLUS and TIMES monoid removed.
 //  (8) some complex semirings removed.
+//  (9) All INT16 and UINT16 types and operators are removed.
 
 // With the above semirings removed, the remaining 398 semirings are:
 
@@ -170,18 +170,18 @@
 // GrB_reduce, GrB_*_build, GrB_apply, and GrB_transpose for this type.
 
 // If disabled, the types still work just fine, but operations on them will be
-// slower.
+// slower unless the JIT is used (which is on by default).
 
 // #define GxB_NO_BOOL      1
 // #define GxB_NO_FP32      1
 // #define GxB_NO_FP64      1
 // #define GxB_NO_FC32      1
 // #define GxB_NO_FC64      1
-// #define GxB_NO_INT16     1
+   #define GxB_NO_INT16     1
 // #define GxB_NO_INT32     1
 // #define GxB_NO_INT64     1
 // #define GxB_NO_INT8      1
-// #define GxB_NO_UINT16    1
+   #define GxB_NO_UINT16    1
 // #define GxB_NO_UINT32    1
 // #define GxB_NO_UINT64    1
 // #define GxB_NO_UINT8     1

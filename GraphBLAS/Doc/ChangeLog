@@ -1,9 +1,15 @@
-June 20, 2024: version 9.3.0
+Aug 2, 2024: version 9.3.0
 
     * code restructuring:  Source folder split into many subfolders, and
         some files and internal functions renamed.  No visible external change.
+    * (55) bug fix: GrB_apply with user-defined index-unary op would fail if
+        A was iso and the JIT was disabled (failure in generic case).
+        Caught by Christina Koutsou.
     * (54) bug fix: reducing a huge iso full matrix to a scalar resulted in
         integer overflow if nrows*ncols was larger than about 2^60.
+    * reduced size of compiled library: int16 and uint16 types and operators
+        for FactoryKernels are disabled in GB_control.h.  The JIT will always
+        be used instead.
 
 May 22, 2024: version 9.2.0
 

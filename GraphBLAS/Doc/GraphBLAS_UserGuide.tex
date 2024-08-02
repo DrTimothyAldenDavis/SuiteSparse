@@ -14492,11 +14492,18 @@ GraphBLAS folder.
 
 \begin{itemize}
 
-\item June 1, 2024: version 9.3.0
+\item Aug 2, 2024: version 9.3.0
 
     \begin{itemize}
     \item code restructuring:  Source folder split into many subfolders, and
         some files and internal functions renamed.  No visible external change.
+    \item (55) bug fix: \verb'GrB_apply' with user-defined index-unary op and
+        generic kernel.
+    \item (54) bug fix: reducing a huge iso full matrix to a scalar resulted in
+        integer overflow if nrows*ncols was larger than about $2^{60}$.
+    \item reduced size of compiled library: \verb'int16' and \verb'uint16'
+        types and operators for FactoryKernels are disabled in
+        \verb'GB_control.h'.  The JIT will always be used instead.
     \end{itemize}
 
 \item May 22, 2024: version 9.2.0

@@ -163,9 +163,6 @@ __global__ void GB_cuda_AxB_dot3_phase3_vsvs_kernel
         }
     }
 
-    // FIXME: use this in spdn and vsdn:
-    this_thread_block().sync(); 
-
     my_nzombies = GB_cuda_threadblock_sum_uint64 (my_nzombies) ;
 
     if( threadIdx.x == 0 && my_nzombies > 0)

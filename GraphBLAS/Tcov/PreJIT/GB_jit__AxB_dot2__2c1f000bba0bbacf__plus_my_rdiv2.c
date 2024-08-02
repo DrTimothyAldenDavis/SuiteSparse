@@ -129,7 +129,6 @@ GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query)
     v [0] = GxB_IMPLEMENTATION_MAJOR ;      // keep at current version
     v [1] = GxB_IMPLEMENTATION_MINOR ;
     v [2] = GxB_IMPLEMENTATION_SUB ;
-    v [0] = 9 ; v [1] = 3 ; v [2] = 0 ;
     defn [0] = NULL ;
     defn [1] = GB_my_rdiv2_USER_DEFN ;
     defn [2] = NULL ;

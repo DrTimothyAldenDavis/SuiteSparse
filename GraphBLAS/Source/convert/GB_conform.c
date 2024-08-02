@@ -140,6 +140,11 @@ GrB_Info GB_conform     // conform a matrix to its desired sparsity structure
     { 
         A->nvec_nonempty = GB_nvec_nonempty (A) ;
     }
+    if (A->no_hyper_hash)
+    { 
+        // A does not want the hyper_hash, so free A->Y if present
+        GB_hyper_hash_free (A) ;
+    }
 
     //--------------------------------------------------------------------------
     // select the sparsity structure

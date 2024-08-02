@@ -57,6 +57,7 @@ GrB_Scalar GB_Scalar_wrap   // create a new GrB_Scalar with one entry
 
     s->Y = NULL ;
     s->Y_shallow = false ;
+    s->no_hyper_hash = true ;
 
     s->nvals = 0 ;
 

@@ -22,8 +22,10 @@ int GB_subassigner_method           // return method to use in GB_subassigner
     const bool Mask_struct,         // if true, use the only structure of M
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),A)
     const GrB_Matrix A,             // input matrix (NULL for scalar expansion)
-    const int Ikind,
-    const int Jkind,
+    const int Ikind,                // I: just the kind
+    const int Jkind,                // J: kind, length, and colon
+    const int64_t nJ,
+    const int64_t Jcolon [3],
     const bool scalar_expansion,    // if true, expand scalar to A
     const void *scalar,
     const GrB_Type scalar_type      // type of the scalar, or NULL
@@ -48,6 +50,7 @@ int GB_subassigner_method           // return method to use in GB_subassigner
 
     bool A_is_bitmap = GB_IS_BITMAP (A) ;
     bool A_is_full = GB_IS_FULL (A) ;
+    bool A_is_sparse = GB_IS_SPARSE (A) ;
     int64_t anz = GB_nnz (A) ;
 
     // these properties of C are not affected by wait(C):
@@ -108,91 +111,20 @@ int GB_subassigner_method           // return method to use in GB_subassigner
     // C_Mask_matrix:  C(I,J)<M> = A or += A
     bool C_Mask_matrix = (!scalar_expansion && simple_mask) ;
 
-    bool S_Extraction ;
-    bool method_06d = false ;
-    bool method_25 = false ;
-
-    if (C_splat_scalar)
-    { 
-        // Method 21: C(:,:) = x where x is a scalar; C becomes full
-        S_Extraction = false ;
-    }
-    else if (C_splat_matrix)
-    { 
-        // Method 24: C(:,:) = A
-        S_Extraction = false ;
-    }
-    else if (C_dense_update)
-    { 
-        // Methods 22 and 23: C(:,:) += x or A where C is full
-        S_Extraction = false ;
-    }
-    else if (C_Mask_scalar)
-    { 
-        // Method 05*, or 07: C(I,J)<M> = or += scalar; C_replace false
-        S_Extraction = false ;
-    }
-    else if (C_Mask_matrix)
-    {
-        // C(I,J)<M> = A or += A
-        if (accum != NULL)
-        { 
-            // Method 08n: C(I,J)<M> += A, no S.  Cannot use M or A as bitmap.
-            // Method 08s: C(I,J)<M> += A, with S.  Can use M or A as bitmap.
-            // if S_Extraction is true, Method 08s is used (with S).
-            // Method 08n is not used if any matrix is bitmap.
-            // If C is bitmap, GB_bitmap_assign_M_accum is used instead.
-            S_Extraction = M_is_bitmap || A_is_bitmap ;
-        }
-        else
-        {
-            // C(I,J)<M> = A ;  use 06s (with S) or 06n (without S)
-            // method 06s (with S) is faster when nnz (A) < nnz (M).
-            if ((C_is_full || C_is_bitmap) && whole_C_matrix && M_is_A)
-            { 
-                // Method 06d: C<A> = A
-                method_06d = true ;
-                S_Extraction = false ;
-            }
-            else if (C_is_empty && whole_C_matrix && Mask_struct &&
-                (A_is_full || A_is_bitmap))
-            { 
-                // Method 25: C<M,s> = A, where M is structural, A is
-                // full, and C starts out empty.  The pattern of C will be the
-                // same as M, and the subassign method is extremely simple.
-                method_25 = true ;
-                S_Extraction = false ;
-            }
-            else
-            { 
-                // Method 06n (no S) or Method 06s (with S):
-                // Method 06n is not used if M or A are bitmap.  If M and A are
-                // aliased and Method 06d is not used, then 06s is used instead
-                // of 06n since M==A implies nnz(A) == nnz(M).
-                S_Extraction = anz < GB_nnz (M) || M_is_bitmap || A_is_bitmap ;
-            }
-        }
-    }
-    else
-    { 
-        // all other methods require S
-        S_Extraction = true ;
-    }
-
     //==========================================================================
     // submatrix assignment C(I,J)<M> = accum (C(I,J),A): meta-algorithm
     //==========================================================================
 
-    // There are up to 128 combinations of options, but not all must be
-    // implemented, because they are either identical to another method
-    // (C_replace is effectively false if M=NULL and Mask_comp=false), or they
-    // are not used (the last option, whether or not S is constructed, is
-    // determined here; it is not a user input).  The first 5 options are
-    // determined by the input.  The table below has been pruned to remove
+    // There are many combinations of options, but not all must be implemented,
+    // because they are either identical to another method (C_replace is
+    // effectively false if M=NULL and Mask_comp=false), or they are not used.
+    // The last option, whether or not S is constructed, is determined here; it
+    // is not a user input.  The table below has been pruned to remove
     // combinations that are not used, or equivalent to other entries in the
-    // table.  Only 22 unique combinations of the 128 combinations are needed,
-    // with additional special cases when C(:,:) is full.
+    // table.
 
+    // Primary options:
+    //
     //      M           present or NULL
     //      Mask_comp   true or false
     //      Mask_struct structural or valued mask
@@ -201,8 +133,11 @@ int GB_subassigner_method           // return method to use in GB_subassigner
     //      A           scalar (x) or matrix (A)
     //      S           constructed or not 
 
+    // Other options handle special cases such as aliasing of input matrices
+    // (methods 06d and 05f), or other properties (methods 21 to 26).
+
     // C(I,J)<(M,comp,repl)> ( = , += ) (A, scalar), (with or without S);
-    // I and J can be anything for any of these methods (":", colon, or list).
+    // I and J can be anything for most of these methods (":", colon, or list).
 
     // See the "No work to do..." comment above:
     // If M is not present, Mask_comp true, C_replace false: no work to do.
@@ -220,6 +155,7 @@ int GB_subassigner_method           // return method to use in GB_subassigner
 
         //  -   -   -   -   -   S       01:  C(I,J) = x, with S
         //  -   -   -   -   A   S       02:  C(I,J) = A, with S
+        //  -   -   -   -   A   -       26:  C(:,j1:j2) = A, append cols, no S
         //  -   -   -   +   -   S       03:  C(I,J) += x, with S
         //  -   -   -   +   A   S       04:  C(I,J) += A, with S
         //  -   -   r                        uses methods 01, 02, 03, 04
@@ -272,6 +208,7 @@ int GB_subassigner_method           // return method to use in GB_subassigner
     // For the single case C(I,J)<M>=A, two methods can be used: 06n and 06s.
 
     int subassign_method = -1 ;
+    bool S_Extraction ;
 
     if (C_splat_scalar)
     { 
@@ -290,10 +227,10 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         ASSERT (M == NULL) ;                // no mask present
         ASSERT (accum == NULL) ;            // accum is not present
         ASSERT (!C_replace) ;               // C_replace is effectively false
-        ASSERT (!S_Extraction) ;            // S is not used
         ASSERT (scalar_expansion) ;         // x is a scalar
 
         // Method 21: C = x where x is a scalar; C becomes full
+        S_Extraction = false ;              // S is not used
         subassign_method = GB_SUBASSIGN_METHOD_21 ;
 
     }
@@ -314,10 +251,10 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         ASSERT (M == NULL) ;                // no mask present
         ASSERT (accum == NULL) ;            // accum is not present
         ASSERT (!C_replace) ;               // C_replace is effectively false
-        ASSERT (!S_Extraction) ;            // S is not used
         ASSERT (!scalar_expansion) ;        // A is a matrix
 
         // Method 24: C = A
+        S_Extraction = false ;              // S is not used
         subassign_method = GB_SUBASSIGN_METHOD_24 ;
 
     }
@@ -339,8 +276,8 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         ASSERT (M == NULL) ;                // no mask present
         ASSERT (accum != NULL) ;            // accum is present
         ASSERT (!C_replace) ;               // C_replace is false
-        ASSERT (!S_Extraction) ;            // S is not used
 
+        S_Extraction = false ;              // S is not used
         if (scalar_expansion)
         { 
             // Method 22: C(:,:) += x where C is full
@@ -372,8 +309,8 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         ASSERT (scalar_expansion) ;         // A is a scalar
         ASSERT (M != NULL && !Mask_comp) ;  // mask M present, not compl.
         ASSERT (!C_replace) ;               // C_replace is false
-        ASSERT (!S_Extraction) ;            // S is not used
 
+        S_Extraction = false ;              // S is not used
         if (accum == NULL)
         {
             if (C_is_M && whole_C_matrix && Mask_struct)
@@ -428,6 +365,12 @@ int GB_subassigner_method           // return method to use in GB_subassigner
 
         if (accum != NULL)
         {
+            // Method 08n: C(I,J)<M> += A, no S.  Cannot use M or A as bitmap.
+            // Method 08s: C(I,J)<M> += A, with S.  Can use M or A as bitmap.
+            // if S_Extraction is true, Method 08s is used (with S).
+            // Method 08n is not used if any matrix is bitmap.
+            // If C is bitmap, GB_bitmap_assign_M_accum is used instead.
+            S_Extraction = M_is_bitmap || A_is_bitmap ;
             if (S_Extraction)
             { 
                 // Method 08s: C(I,J)<M> += A ; with S
@@ -440,28 +383,48 @@ int GB_subassigner_method           // return method to use in GB_subassigner
                 subassign_method = GB_SUBASSIGN_METHOD_08n ;
             }
         }
-        else if (method_06d)
-        { 
-            // Method 06d: C(:,:)<A> = A ; no S, C full
-            subassign_method = GB_SUBASSIGN_METHOD_06d ;
-            ASSERT ((C_is_full || C_is_bitmap) && whole_C_matrix && M_is_A) ;
-        }
-        else if (method_25)
-        { 
-            // Method 25: C<M,struct> = A, C empty; A is full or bitmap
-            subassign_method = GB_SUBASSIGN_METHOD_25 ;
-        }
-        else if (!S_Extraction)
-        { 
-            // Method 06n: C(I,J)<M> = A ; no S
-            // If M or A are bitmap, this method is not used;
-            // 06s is used instead.
-            subassign_method = GB_SUBASSIGN_METHOD_06n ;
-        }
         else
-        { 
-            // Method 06s: C(I,J)<M> = A ; using S
-            subassign_method = GB_SUBASSIGN_METHOD_06s ;
+        {
+            // Methods 06d, 25, 06s, or 06n: no accumulator
+            if ((C_is_full || C_is_bitmap) && whole_C_matrix && M_is_A)
+            { 
+                // Method 06d: C(:,:)<A> = A ; no S, C full or bitmap
+                S_Extraction = false ;
+                subassign_method = GB_SUBASSIGN_METHOD_06d ;
+                ASSERT ((C_is_full || C_is_bitmap) && whole_C_matrix && M_is_A);
+            }
+            else if (C_is_empty && whole_C_matrix && Mask_struct &&
+                (A_is_full || A_is_bitmap))
+            { 
+                // Method 25: C<M,s> = A, where M is structural, A is full or
+                // bitmap, and C starts out empty.  The pattern of C will be
+                // the same as M, and the subassign method is extremely simple.
+                // S is not used.
+                S_Extraction = false ;
+                subassign_method = GB_SUBASSIGN_METHOD_25 ;
+            }
+            else
+            { 
+                // C(I,J)<M> = A ;  use 06s (with S) or 06n (without S)
+                // method 06s (with S) is faster when nnz (A) < nnz (M).
+                // Method 06n (no S) or Method 06s (with S):
+                // Method 06n is not used if M or A are bitmap.  If M and A are
+                // aliased and Method 06d is not used, then 06s is used instead
+                // of 06n since M==A implies nnz(A) == nnz(M).
+                S_Extraction = anz < GB_nnz (M) || M_is_bitmap || A_is_bitmap ;
+                if (!S_Extraction)
+                { 
+                    // Method 06n: C(I,J)<M> = A ; no S
+                    // If M or A are bitmap, this method is not used;
+                    // 06s is used instead.
+                    subassign_method = GB_SUBASSIGN_METHOD_06n ;
+                }
+                else
+                { 
+                    // Method 06s: C(I,J)<M> = A ; using S
+                    subassign_method = GB_SUBASSIGN_METHOD_06s ;
+                }
+            }
         }
 
     }
@@ -469,7 +432,7 @@ int GB_subassigner_method           // return method to use in GB_subassigner
     {
 
         //----------------------------------------------------------------------
-        // assignment using S_Extraction method, no mask M
+        // assignment primarily using S_Extraction method, no mask M
         //----------------------------------------------------------------------
 
         //  =====================       ==============
@@ -477,15 +440,16 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         //  =====================       ==============
         //  -   -   -   -   -   S       01:  C(I,J) = x, with S
         //  -   -   -   -   A   S       02:  C(I,J) = A, with S
+        //  -   -   -   -   A   -       26:  C(:,j1:j2) = A, append cols, no S
         //  -   -   -   +   -   S       03:  C(I,J) += x, with S
         //  -   -   -   +   A   S       04:  C(I,J) += A, with S
 
         ASSERT (!Mask_comp) ;
         ASSERT (!C_replace) ;
-        ASSERT (S_Extraction) ;            // S is used
 
         if (scalar_expansion)
         {
+            S_Extraction = true ;               // S is used
             if (accum == NULL)
             { 
                 // Method 01: C(I,J) = scalar ; using S
@@ -500,13 +464,34 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         else
         {
             if (accum == NULL)
-            { 
-                // Method 02: C(I,J) = A ; using S
-                subassign_method = GB_SUBASSIGN_METHOD_02 ;
+            {
+                if (Ikind == GB_ALL && GB_IS_HYPERSPARSE (C) && GB_IS_SPARSE (A)
+                    && (Jkind == GB_RANGE) && (nJ >= 1)
+                    && (Jcolon [0] ==
+                        ((C->nvec == 0) ? 0 : (C->h [C->nvec-1] + 1)))
+                    && (C->type == A->type)
+                    && !(A->iso)        // FUTURE: allow A to be iso
+                    && !(C->iso))       // FUTURE: allow C to be iso
+                { 
+                    // Method 26: C(:,j1:j2) = A ; append columns.  No S.
+                    // C must be hypersparse, and the last column currently in
+                    // the hyperlist of C must be j1-1.  A must be sparse.  No
+                    // typecasting.  Method 26 is a special case of Method 02.
+                    // FUTURE: extend to iso cases
+                    S_Extraction = false ;      // S not used
+                    subassign_method = GB_SUBASSIGN_METHOD_26 ;
+                }
+                else
+                { 
+                    // Method 02: C(I,J) = A ; using S
+                    S_Extraction = true ;       // S is used
+                    subassign_method = GB_SUBASSIGN_METHOD_02 ;
+                }
             }
             else
             { 
                 // Method 04: C(I,J) += A ; using S
+                S_Extraction = true ;           // S is used
                 subassign_method = GB_SUBASSIGN_METHOD_04 ;
             }
         }
@@ -531,8 +516,8 @@ int GB_subassigner_method           // return method to use in GB_subassigner
 
         ASSERT (!C_Mask_scalar) ;
         ASSERT (C_replace || Mask_comp) ;
-        ASSERT (S_Extraction) ;            // S is used
 
+        S_Extraction = true ;               // S is used
         if (accum == NULL)
         {
             if (Mask_comp && C_replace)
@@ -591,8 +576,8 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         //  M   c   r   +   A   S       20:  C(I,J)<!M,repl> += A, with S
 
         ASSERT (Mask_comp || C_replace) ;
-        ASSERT (S_Extraction) ;            // S is used
 
+        S_Extraction = true ;               // S is used
         if (accum == NULL)
         {
             if (Mask_comp && C_replace)
@@ -647,7 +632,8 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         bool A_iso = scalar_expansion           // all scalars are iso
             || (A != NULL && A->iso)            // or A is iso
             || (anz == 1 && !A_is_bitmap) ;     // or A is effectively iso
-        if (A_iso)
+        if (A_iso &&
+            subassign_method != GB_SUBASSIGN_METHOD_26  /* FUTURE */)
         {
 
             //------------------------------------------------------------------
@@ -744,6 +730,8 @@ int GB_subassigner_method           // return method to use in GB_subassigner
                 //--------------------------------------------------------------
 
                 case GB_SUBASSIGN_METHOD_02 :   // C(I,J) = A
+//              FUTURE: handle iso case for method 26
+//              case GB_SUBASSIGN_METHOD_26:    // C(:,j) = A, append column
                 case GB_SUBASSIGN_METHOD_06s :  // C(I,J)<M> = A ; with S
                 case GB_SUBASSIGN_METHOD_14 :   // C(I,J)<!M> = A
                 case GB_SUBASSIGN_METHOD_10 :   // C(I,J)<M,replace> = A
@@ -897,6 +885,12 @@ int GB_subassigner_method           // return method to use in GB_subassigner
             // Method 08s is used instead of 08n if M or A are bitmap.
             GB_USE_BITMAP_IF (C_is_bitmap) ;
             ASSERT (!M_is_bitmap) ;
+            ASSERT (!A_is_bitmap) ;
+            break ;
+
+        case GB_SUBASSIGN_METHOD_26 :   // C(:,j) = A, append column, no S
+            // Method 26, C is hypersparse, A is sparse: no bitmap method used
+            ASSERT (!C_is_bitmap) ;
             ASSERT (!A_is_bitmap) ;
             break ;
 

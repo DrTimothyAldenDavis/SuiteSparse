@@ -11,7 +11,7 @@
 #define GB_HASH_H
 
 //------------------------------------------------------------------------------
-// functions for the Hash method for C=A*B, and for the A->Y hyperhash
+// functions for the Hash method for C=A*B, and for the A->Y hyper_hash
 //------------------------------------------------------------------------------
 
 // initial hash function, for where to place the integer i in the hash table.
@@ -19,7 +19,7 @@
 // which is always a power of 2.  The function is (i*257) & (hash_bits).
 #define GB_HASHF(i,hash_bits) ((((i) << 8) + (i)) & (hash_bits))
 
-// hash function for the A->Y hyperhash:
+// hash function for the A->Y hyper_hash:
 // lots of intentional collisions: but blocks are scattered
 #define GB_HASHF2(i,hash_bits) ((((i) >> 2) + 17L*((i) >> 8)) & (hash_bits))
 

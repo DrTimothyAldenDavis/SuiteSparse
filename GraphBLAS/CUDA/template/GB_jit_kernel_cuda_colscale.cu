@@ -34,25 +34,22 @@ __global__ void GB_cuda_colscale_kernel
     #if (GB_A_IS_BITMAP || GB_A_IS_FULL)
         const int64_t avlen = A->vlen ;
         // bitmap/full case
-        int ntasks = blockDim.x * gridDim.x ;
+        int nthreads_in_entire_grid = blockDim.x * gridDim.x ;
         int tid = blockIdx.x * blockDim.x + threadIdx.x ;
-        for (int64_t p = tid ; p < anz ; p += ntasks)
+        for (int64_t p = tid ; p < anz ; p += nthreads_in_entire_grid)
         {
-            // ask Joe:
-            #if ( GB_A_IS_BITMAP )
-            if (!GBB_A (Ab, p)) { continue ; }
-            #endif
-
+            if (!GBB_A (Ab, p)) continue ;
             // the pth entry in A is A(i,j) where i = p%avlen and j = p/avlen
             int64_t col_idx = p / avlen ;
     //      int64_t row_idx = p % avlen ;
-            GB_DECLAREB (dii) ;
-            GB_GETB (dii, Dx, col_idx, ) ;
+            GB_DECLAREB (djj) ;
+            GB_GETB (djj, Dx, col_idx, ) ;
             GB_DECLAREA (aij) ;
             GB_GETA (aij, Ax, p, ) ;
             // C has same sparsity as A; ewise op code does not change
-            GB_EWISEOP (Cx, p, aij, dii, 0, 0) ;
+            GB_EWISEOP (Cx, p, aij, djj, 0, 0) ;
         }
+
     #else
         const int64_t anvec = A->nvec ;
         // sparse/hypersparse case (cuda_ek_slice only works for sparse/hypersparse)
@@ -64,31 +61,24 @@ __global__ void GB_cuda_colscale_kernel
                 float slope ;
                 int64_t kfirst = GB_cuda_ek_slice_setup (Ap, anvec, anz, pfirst,
                     chunk_size, &my_chunk_size, &anvec_sub1, &slope) ;
-                
-                // alternate:
-                // why not just do ek_slice_setup for one thread per block then this_thread_block.sync()?
-                // answer:
-                // better than having a syncrhonization barrier
-                
-                // question: why chunks are necessary? why not just do ek_slice_setup across all entries in one go?
-                // answer: the slope method is only useful for a small range of entries; non-uniform entry distributions
-                //         can distort the usefulness of the slope (will require an exhaustive linear search)
-                //         for a large range of entries
 
                 for (int64_t pdelta = threadIdx.x ; pdelta < my_chunk_size ; pdelta += blockDim.x)
                 {
                     int64_t p_final ;
                     int64_t k = GB_cuda_ek_slice_entry (&p_final, pdelta, pfirst, Ap, anvec_sub1, kfirst, slope) ;
-                    k = GBH_A (Ah, k) ;
+                    int64_t j = GBH_A (Ah, k) ;
 
-                    GB_DECLAREB (dii) ;
-                    GB_GETB (dii, Dx, k, ) ;
+                    GB_DECLAREB (djj) ;
+                    GB_GETB (djj, Dx, j, ) ;
                     GB_DECLAREA (aij) ;
                     GB_GETA (aij, Ax, p_final, ) ;
-                    GB_EWISEOP (Cx, p_final, aij, dii, 0, 0) ;
+                    GB_EWISEOP (Cx, p_final, aij, djj, 0, 0) ;
                 }
             }
     #endif
+
+    // not needed because threads do entirely independent work:
+    // this_thread_block ( ).sync( ) ;
 }
 
 extern "C" {

@@ -1,25 +1,25 @@
 My demo
-Date from #include 'my.h':  Mar 22, 2024
-Date from compiled library: Mar 22, 2024
-version from #include 'my.h.': 1.7.0
-version from compiled library: 1.7.0
+Date from #include 'my.h':  Aug 2, 2024
+Date from compiled library: Aug 2, 2024
+version from #include 'my.h.': 1.8.0
+version from compiled library: 1.8.0
 
 ------------------------------------------------------------
-MY: v1.7.0 (Mar 22, 2024)
-MY: v1.7.0 (in library)
-MY version code: 1007000
-MY date: Mar 22, 2024
+MY: v1.8.0 (Aug 2, 2024)
+MY: v1.8.0 (in library)
+MY version code: 1008000
+MY date: Aug 2, 2024
 
 ------------------------------------------------------------
-SuiteSparse_config: v7.7.0 (Mar 22, 2024)
-SuiteSparse_config: v7.7.0 (in library)
-SuiteSparse_config version code: 7007000
+SuiteSparse_config: v7.8.0 (Aug 2, 2024)
+SuiteSparse_config: v7.8.0 (in library)
+SuiteSparse_config version code: 7008000
 
 ------------------------------------------------------------
-CXSparse: v4.4.0 (Mar 22, 2024)
-CXSparse: v4.4.0 (in library)
-CXSparse version code: 4004000
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse: v4.4.1 (June 20, 2024)
+CXSparse: v4.4.1 (in library)
+CXSparse version code: 4004001
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 2-by-2, nzmax: 4 nnz: 4, 1-norm: 34
     col 0 : locations 0 to 1
       0 : 11
@@ -29,9 +29,9 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 22
 
 ------------------------------------------------------------
-AMD: v3.3.2 (Mar 22, 2024)
-AMD: v3.3.2 (in library)
-AMD version code: 3003002
+AMD: v3.3.3 (June 20, 2024)
+AMD: v3.3.3 (in library)
+AMD version code: 3003003
 P [0] = 0
 P [1] = 1
 
@@ -46,35 +46,35 @@ Q [1] = 1
 nblocks 1
 
 ------------------------------------------------------------
-CAMD: v3.3.2 (Mar 22, 2024)
-CAMD: v3.3.2 (in library)
-CAMD version code: 3003002
+CAMD: v3.3.3 (June 20, 2024)
+CAMD: v3.3.3 (in library)
+CAMD version code: 3003003
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
-CCOLAMD: v3.3.3 (Mar 22, 2024)
-CCOLAMD: v3.3.3 (in library)
-CCOLAMD version code: 3003003
+CCOLAMD: v3.3.4 (June 20, 2024)
+CCOLAMD: v3.3.4 (in library)
+CCOLAMD version code: 3003004
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
-COLAMD: v3.3.3 (Mar 22, 2024)
-COLAMD: v3.3.3 (in library)
-COLAMD version code: 3003003
+COLAMD: v3.3.4 (June 20, 2024)
+COLAMD: v3.3.4 (in library)
+COLAMD version code: 3003004
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
-CHOLMOD: v5.2.1 (Mar 22, 2024)
-CHOLMOD: v5.2.1 (in library)
-CHOLMOD version code: 5002001
+CHOLMOD: v5.3.0 (June 20, 2024)
+CHOLMOD: v5.3.0 (in library)
+CHOLMOD version code: 5003000
 
 ------------------------------------------------------------
-GraphBLAS: v9.1.0 (Mar 22, 2024)
-GraphBLAS: v9.1.0 (in library)
-GraphBLAS version code: 9001000
+GraphBLAS: v9.3.0 (Aug 2, 2024)
+GraphBLAS: v9.3.0 (in library)
+GraphBLAS version code: 9003000
 
 ------------------------------------------------------------
 LAGraph: v1.1.3 (Mar 22, 2024)
@@ -82,9 +82,9 @@ LAGraph: v1.1.3 (in library)
 LAGraph version code: 1001003
 
 ------------------------------------------------------------
-KLU: v2.3.3 (Mar 22, 2024)
-KLU: v2.3.3 (in library)
-KLU version code: 2003003
+KLU: v2.3.4 (June 20, 2024)
+KLU: v2.3.4 (in library)
+KLU version code: 2003004
 x [0] = 36.4
 x [1] = -32.7
 error: 7.10543e-14
@@ -98,9 +98,9 @@ x2 [1] = -32.7
 error: 0
 
 ------------------------------------------------------------
-RBio: v4.3.2 (Mar 22, 2024)
-RBio: v4.3.2 (in library)
-RBio version code: 4003002
+RBio: v4.3.3 (June 20, 2024)
+RBio: v4.3.3 (in library)
+RBio version code: 4003003
 njumbled 0, nzeros 0
 result 0
 mtype: iua
@@ -113,14 +113,14 @@ iua                        2             2             4             0
  11 21 12 22
 
 ------------------------------------------------------------
-SPEX: v3.1.0 (Mar 22, 2024)
-SPEX: v3.1.0 (in library)
-SPEX version code: 3001000
+SPEX: v3.2.0 (July 2, 2024)
+SPEX: v3.2.0 (in library)
+SPEX version code: 3002000
 
 ------------------------------------------------------------
-SuiteSparseQR: v4.3.3 (Mar 22, 2024)
-SuiteSparseQR: v4.3.3 (in library)
-SuiteSparseQR version code: 4003003
+SuiteSparseQR: v4.3.4 (June 20, 2024)
+SuiteSparseQR: v4.3.4 (in library)
+SuiteSparseQR version code: 4003004
 
 CHOLMOD dense:   X from QR:  2-by-1, 
   leading dimension 2, nzmax 2, real, double
@@ -131,10 +131,10 @@ CHOLMOD dense:   X from QR:  2-by-1,
 
 
 ------------------------------------------------------------
-UMFPACK: v6.3.3 (Mar 22, 2024)
-UMFPACK: v6.3.3 (in library)
-UMFPACK version code: 6003003
-UMFPACK V6.3.3 (Mar 22, 2024)
+UMFPACK: v6.3.4 (June 20, 2024)
+UMFPACK: v6.3.4 (in library)
+UMFPACK version code: 6003004
+UMFPACK V6.3.4 (June 20, 2024)
 UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.
 
 UMFPACK License: SPDX-License-Identifier: GPL-2.0+
@@ -155,14 +155,14 @@ UMFPACK License: SPDX-License-Identifier: GPL-2.0+
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V6.3.3 (Mar 22, 2024): OK
+UMFPACK V6.3.4 (June 20, 2024): OK
 
-UMFPACK V6.3.3 (Mar 22, 2024), Info:
+UMFPACK V6.3.4 (June 20, 2024), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB: no.
-    CPU timer: SuiteSparse_time ( )
+    CPU timer: omp_get_wtime
     number of rows in matrix A:       2
     number of columns in matrix A:    2
     entries in matrix A:              4

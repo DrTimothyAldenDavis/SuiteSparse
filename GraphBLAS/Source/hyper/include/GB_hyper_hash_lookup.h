@@ -25,6 +25,7 @@ GB_STATIC_INLINE int64_t GB_hyper_hash_lookup  // k if j==Ah[k]; -1 if not found
     const int64_t *restrict Yx,     // A->Y->x
     const int64_t hash_bits,        // A->Y->vdim-1, which is hash table size-1
     const int64_t j,                // find j in Ah [0..anvec-1], using A->Y
+//  const bool no_hyper_hash,       // A->no_hyper_hash
     // output
     int64_t *restrict pstart,       // start of vector: Ap [k]
     int64_t *restrict pend          // end of vector: Ap [k+1]
@@ -41,10 +42,24 @@ GB_STATIC_INLINE int64_t GB_hyper_hash_lookup  // k if j==Ah[k]; -1 if not found
         // no hyper_hash constructed
         //----------------------------------------------------------------------
 
+//      if (no_hyper_hash)
+        {
+            // the hyper_hash is disabled.  Quick lookup for j == Ah [j].
+            if (j < anvec && Ah [j] == j)
+            { 
+                // found j == Ah [j], so return k = j
+                k = j ;
+                found = true ;
+            }
+        }
+
         // binary search of Ah [0...A->nvec-1] for the value j
-        k = 0 ;
-        int64_t pright = anvec - 1 ;
-        GB_BINARY_SEARCH (j, Ah, k, pright, found) ;
+        if (!found)
+        {
+            k = 0 ;
+            int64_t pright = anvec - 1 ;
+            GB_BINARY_SEARCH (j, Ah, k, pright, found) ;
+        }
 
     }
     else

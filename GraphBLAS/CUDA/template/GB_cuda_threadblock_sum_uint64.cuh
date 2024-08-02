@@ -13,6 +13,11 @@
 // Compare with template/GB_cuda_threadblock_reduce_ztype.
 // The #include'ing file must define tile_sz and log2_tile_sz.
 
+// On input, there is no need for this_thread_block().sync(), because the
+// first reduction is across a single tile.  The creation of the tile with
+// tiled_partition<tile_sz>(g) ensures each tile is synchronized, which is
+// sufficient for the following call to GB_cuda_tile_sum_uint64.
+
 __inline__ __device__ uint64_t GB_cuda_threadblock_sum_uint64
 (
     uint64_t val
@@ -21,10 +26,12 @@ __inline__ __device__ uint64_t GB_cuda_threadblock_sum_uint64
     // The thread_block g that calls this method has a number of threads
     // defined by the kernel launch geometry (dim3 block (blocksz)).
     thread_block g = this_thread_block ( ) ;
+    // here, g.sync() is not needed (see comments above).
 
     // The threads in this thread block are partitioned into tiles, each with
     // tile_sz threads.
     thread_block_tile<tile_sz> tile = tiled_partition<tile_sz> (g) ;
+    // here, tile.sync() is implicit (see comments above)
 
     // lane: a local thread id, for all threads in a single tile, ranging from
     // 0 to the size of the tile minus one.  Normally the tile has size 32, but
@@ -43,7 +50,13 @@ __inline__ __device__ uint64_t GB_cuda_threadblock_sum_uint64
     {
         shared [tile_id] = val ;    // Write reduced value to shared memory
     }
+
+    // This g.sync() is essential:  All tiles must finish their work so that
+    // the first tile can reduce the shared array down to the scalar val.
     g.sync() ;                      // Wait for all partial reductions
+
+    // This method requires blockDim.x <= tile_sz^2 = 1024, but this is always
+    // enforced in the CUDA standard since the our geometry is 1D.
 
     // Final reduce within first tile
     if (tile_id == 0)
@@ -53,7 +66,10 @@ __inline__ __device__ uint64_t GB_cuda_threadblock_sum_uint64
         val = GB_cuda_tile_sum_uint64 (tile, val) ;
     }
 
-    g.sync() ;
+    // The following sync is not necessary because only tile zero will have the
+    // final result in val anyway.  Other tiles (aka warps) will have garbage
+    // in val, even with the g.sync().
+    // g.sync() ;
     return (val) ;
 }
 

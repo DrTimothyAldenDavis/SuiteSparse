@@ -33,6 +33,11 @@ GrB_Info GB_matvec_enum_get (GrB_Matrix A, int32_t *value, int field)
             (*value) = GB_sparsity (A) ;
             break ;
 
+        case GxB_HYPER_HASH : 
+
+            (*value) = !(A->no_hyper_hash) ;
+            break ;
+
         case GxB_FORMAT : 
 
             (*value) = (A->is_csc) ? GxB_BY_COL : GxB_BY_ROW ;

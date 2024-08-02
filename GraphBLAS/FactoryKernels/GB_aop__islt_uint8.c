@@ -68,17 +68,13 @@ GrB_Info GB (_subassign_23__islt_uint8)
     const GrB_Matrix A,
     GB_Werk Werk
 )
-{
+{ 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    
-    { 
-        int nthreads_max = GB_Context_nthreads_max ( ) ;
-        double chunk = GB_Context_chunk ( ) ;
-        #include "assign/template/GB_subassign_23_template.c"
-    }
-    
+    int nthreads_max = GB_Context_nthreads_max ( ) ;
+    double chunk = GB_Context_chunk ( ) ;
+    #include "assign/template/GB_subassign_23_template.c"
     return (GrB_SUCCESS) ;
     #endif
 }
@@ -92,20 +88,15 @@ GrB_Info GB (_subassign_22__islt_uint8)
     GrB_Matrix C,
     const GB_void *ywork_handle
 )
-{
+{ 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    
-    { 
-        // get the scalar ywork for C += ywork, of type GB_Y_TYPE
-        GB_Y_TYPE ywork = (*((GB_Y_TYPE *) ywork_handle)) ;
-        int nthreads_max = GB_Context_nthreads_max ( ) ;
-        double chunk = GB_Context_chunk ( ) ;
-        #include "assign/template/GB_subassign_22_template.c"
-        return (GrB_SUCCESS) ;
-    }
-    
+    // get the scalar ywork for C += ywork, of type GB_Y_TYPE
+    GB_Y_TYPE ywork = (*((GB_Y_TYPE *) ywork_handle)) ;
+    int nthreads_max = GB_Context_nthreads_max ( ) ;
+    double chunk = GB_Context_chunk ( ) ;
+    #include "assign/template/GB_subassign_22_template.c"
     return (GrB_SUCCESS) ;
     #endif
 }

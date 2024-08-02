@@ -478,6 +478,7 @@ bool b_shallow ;        // true if b is a shallow copy
 bool i_shallow ;        // true if i is a shallow copy
 bool x_shallow ;        // true if x is a shallow copy
 bool Y_shallow ;        // true if Y is a shallow matrix
+bool no_hyper_hash ;    // if true, disable the Y hyper_hash matrix
 bool static_header ;    // true if this struct is statically allocated
 
 //------------------------------------------------------------------------------
@@ -487,6 +488,7 @@ bool static_header ;    // true if this struct is statically allocated
 bool is_csc ;           // true if stored by column, false if by row
 bool jumbled ;          // true if the matrix may be jumbled.  bitmap and full
                         // matrices are never jumbled.
+
 
 //------------------------------------------------------------------------------
 // iso matrices

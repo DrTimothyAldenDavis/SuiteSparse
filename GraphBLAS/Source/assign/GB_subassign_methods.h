@@ -2,7 +2,7 @@
 // GB_subassign_methods.h: definitions for GB_subassign methods
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -565,6 +565,19 @@ GrB_Info GB_subassign_08n_slice
     const int64_t Jcolon [3],
     const GrB_Matrix A,             // matrix to slice
     const GrB_Matrix M,             // matrix to slice
+    GB_Werk Werk
+) ;
+
+//------------------------------------------------------------------------------
+// GB_subassign_26: C(:,j) = A, append column, no S
+//------------------------------------------------------------------------------
+
+GrB_Info GB_subassign_26
+(
+    GrB_Matrix C,
+    // input:
+    const int64_t Jcolon [3],       // j1:j2, with an increment of 1
+    const GrB_Matrix A,
     GB_Werk Werk
 ) ;
 

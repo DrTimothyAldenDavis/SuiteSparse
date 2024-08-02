@@ -438,7 +438,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         break ;
 
         //----------------------------------------------------------------------
-        // assignment using S_Extraction method, no mask M
+        // assignment using S_Extraction method (except method 26), no mask M
         //----------------------------------------------------------------------
 
         //  =====================       ==============
@@ -446,6 +446,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         //  =====================       ==============
         //  -   -   -   -   -   S       01:  C(I,J) = x, with S
         //  -   -   -   -   A   S       02:  C(I,J) = A, with S
+        //  -   -   -   -   A   -       26:  C(:,j1:j2) = A, append cols, no S
         //  -   -   -   +   -   S       03:  C(I,J) += x, with S
         //  -   -   -   +   A   S       04:  C(I,J) += A, with S
 
@@ -468,6 +469,17 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
             GB_OK (GB_subassign_03 (C,
                 I, ni, nI, Ikind, Icolon, J, nj, nJ, Jkind, Jcolon,
                 accum, scalar, scalar_type, Werk)) ;
+        }
+        break ;
+
+        case GB_SUBASSIGN_METHOD_26 : 
+        {
+            // Method 26: C(:,j1:j2) = A ; append column(s), no S.
+            GBURBLE ("Method 26: C(:,j1:j2) = Z ; append") ;
+            ASSERT (Ikind == GB_ALL) ;
+            ASSERT (Jkind == GB_RANGE) ;
+            ASSERT (nJ >= 1) ;
+            GB_OK (GB_subassign_26 (C, Jcolon, A, Werk)) ;
         }
         break ;
 

@@ -11,7 +11,7 @@
 // B (or both NULL), or if all components A and B are aliased to each other.
 // In the latter case, that component of A and B will always be shallow, in
 // either A or B, or both.  NULL pointers are considered aliased.  The A->Y and
-// B->Y hyperhashes are ignored.
+// B->Y hyper_hash matrices are ignored.
 
 #include "GB.h"
 

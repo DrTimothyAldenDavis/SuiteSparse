@@ -53,7 +53,7 @@ typedef enum ParU_Info
     PARU_TOO_LARGE = -4         // problem too large for the BLAS
 } ParU_Info ;
 
-#define PARU_DATE "Aug 1, 2024"
+#define PARU_DATE "Aug 2, 2024"
 #define PARU_VERSION_MAJOR  0
 #define PARU_VERSION_MINOR  2
 #define PARU_VERSION_UPDATE 0

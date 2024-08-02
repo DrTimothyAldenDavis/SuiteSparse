@@ -158,7 +158,7 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     // no content yet
     A->p = NULL ; A->p_shallow = false ; A->p_size = 0 ;
     A->h = NULL ; A->h_shallow = false ; A->h_size = 0 ;
-    A->Y = NULL ; A->Y_shallow = false ;
+    A->Y = NULL ; A->Y_shallow = false ; A->no_hyper_hash = false ;
     A->b = NULL ; A->b_shallow = false ; A->b_size = 0 ;
     A->i = NULL ; A->i_shallow = false ; A->i_size = 0 ;
     A->x = NULL ; A->x_shallow = false ; A->x_size = 0 ;

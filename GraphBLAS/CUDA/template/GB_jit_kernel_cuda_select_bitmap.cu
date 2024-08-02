@@ -57,15 +57,10 @@ __global__ void GB_cuda_select_bitmap_kernel
         } 
     }
     
-    // can make this a warp-level synchronization?
-    this_thread_block().sync() ;
     // compute cnvals for this block
     // IMPORTANT: every thread in the threadblock must participate in the warp reduction
     // for thread 0 to obtain the right result
     uint64_t block_keep = GB_cuda_threadblock_sum_uint64 (my_keep) ;
-    // this can also be a warp-level synchronization?
-    // (we only care about the result in warp 0, since that is where thread 0 is)
-    this_thread_block().sync() ;
 
     if (threadIdx.x == 0)
     {

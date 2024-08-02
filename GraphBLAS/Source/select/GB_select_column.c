@@ -93,7 +93,7 @@ GrB_Info GB_select_column
     else if (A_is_hyper)
     { 
         // find the column j in the hyperlist of A
-        // future:: use hyperhash if present
+        // future:: use hyper_hash if present
         int64_t kright = anvec-1 ;
         GB_SPLIT_BINARY_SEARCH (j, Ah, k, kright, found) ;
         // if found is true the Ah [k] == j

@@ -347,7 +347,8 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             A->b, A->b_shallow, (uint64_t) A->b_size) ;
         GBPR ("  ->x: %p shallow: %d size: " GBu "\n",
             A->x, A->x_shallow, (uint64_t) A->x_size) ;
-        GBPR ("  ->Y: %p shallow: %d\n", A->Y, A->Y_shallow) ;
+        GBPR ("  ->Y: %p shallow: %d no_hyper_hash: %d\n",
+            A->Y, A->Y_shallow, A->no_hyper_hash) ;
     }
     #endif
 
