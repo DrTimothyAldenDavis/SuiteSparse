@@ -90,7 +90,8 @@ if ( BUILD_SHARED_LIBS )
         OUTPUT_NAME amd
         SOVERSION ${AMD_VERSION_MAJOR}
         PUBLIC_HEADER "Include/amd.h"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+        LINKER_LANGUAGE C )
 
     if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
         set_target_properties ( AMD PROPERTIES EXPORT_NO_SYSTEM ON )
@@ -111,7 +112,8 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME amd
-        PUBLIC_HEADER "Include/amd.h" )
+        PUBLIC_HEADER "Include/amd.h"
+        LINKER_LANGUAGE C )
 
     if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( AMD_static PROPERTIES
