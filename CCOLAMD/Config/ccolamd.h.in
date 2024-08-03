@@ -46,8 +46,8 @@
 
 #define CCOLAMD__VERSION SUITESPARSE__VERCODE(@CCOLAMD_VERSION_MAJOR@,@CCOLAMD_VERSION_MINOR@,@CCOLAMD_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "CCOLAMD @CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@.@CCOLAMD_VERSION_SUB@ requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "CCOLAMD @CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@.@CCOLAMD_VERSION_SUB@ requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 /* ========================================================================== */

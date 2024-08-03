@@ -305,6 +305,7 @@ jobs:
         cuda: [without]
         link: [both]
         cc: [cl]
+        cxx: [cl]
         include:
           - openmp: without
             openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
@@ -315,6 +316,7 @@ jobs:
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             link: both
             cc: cl
+            cxx: cl
           - openmp: with
             cuda: with
             cuda-cmake-flags:
@@ -325,10 +327,17 @@ jobs:
               -DBUILD_SHARED_LIBS=OFF
               -DBUILD_STATIC_LIBS=ON
             cc: cl
+            cxx: cl
           - openmp: with
             cuda: without
             link: both
             cc: clang-cl
+            cxx: clang-cl
+          - openmp: with
+            cuda: without
+            link: both
+            cc: clang
+            cxx: clang++
 
     env:
       CHERE_INVOKING: 1
@@ -351,7 +360,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: C:/Miniconda/envs/test
-          key: conda:msvc
+          key: conda:netlib:msvc
 
       - name: install packages with conda
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
@@ -359,8 +368,8 @@ jobs:
           echo ${{ steps.conda-cache.outputs.cache-hit }}
           conda info
           conda list
-          conda install -y -c intel mkl-devel
-          conda install -y -c conda-forge --override-channels ccache
+          conda install -y -c conda-forge --override-channels ccache m2w64-gcc-libs
+          conda install -y -c conda-forge/label/lapack_rc --override-channels liblapack=3.11
 
       - name: save conda cache
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
@@ -384,12 +393,12 @@ jobs:
 
           msystem: UCRT64
 
-      - uses: Jimver/cuda-toolkit@v0.2.15
+      - uses: Jimver/cuda-toolkit@v0.2.16
         name: install CUDA toolkit
         if: matrix.cuda == 'with'
         id: cuda-toolkit
         with:
-          cuda: '12.2.0'
+          cuda: '12.5.0'
           #See https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html#install-the-cuda-software
           method: 'local'
           # Do not cache the installer (~3 GiB). It doesn't speed up the
@@ -455,11 +464,19 @@ jobs:
           if [ ${{ matrix.cuda }} = 'with' ]; then
             _extra_config+=(-DCUDAToolkit_ROOT="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")")
             _extra_config+=(-DCMAKE_CUDA_COMPILER="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")/bin/nvcc.exe")
+            # MSVC 19.40 is still Visual Studio 2022.
+            # Suppress erroneous version check.
+            _extra_config+=(-DCMAKE_CUDA_FLAGS=-allow-unsupported-compiler)
+          fi
+          if [[ ${{ matrix.cc }} == clang* ]]; then
+            # Move away (old) clang/clang++ and clang-cl that would be in PATH
+            # to make sure that we use the one that matches the MSVC runtime.
+            mv C:/Program\ Files/LLVM C:/Program\ Files/LLVM_old
           fi
           mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
           cmake -G"Ninja Multi-Config" \
                 -DCMAKE_C_COMPILER=${{ matrix.cc }} \
-                -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
+                -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
                 -DCMAKE_BUILD_TYPE="Release" \
                 -DCMAKE_INSTALL_PREFIX=".." \
                 -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
@@ -467,7 +484,7 @@ jobs:
                 -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                 -DSUITESPARSE_USE_FORTRAN=OFF \
-                -DBLA_VENDOR="All" \
+                -DSUITESPARSE_C_TO_FORTRAN="(name,NAME) name##_" \
                 -DPython_EXECUTABLE="C:/msys64/ucrt64/bin/python.exe" \
                 -DSUITESPARSE_DEMOS=OFF \
                 -DBUILD_TESTING=OFF \
@@ -524,7 +541,7 @@ jobs:
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake -G"Ninja Multi-Config" \
             -DCMAKE_C_COMPILER=${{ matrix.cc }} \
-            -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
             -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
             -DBLA_VENDOR="All" \
             ${{ matrix.openmp-cmake-flags }} \
@@ -562,7 +579,7 @@ jobs:
             cd build
             cmake -G"Ninja Multi-Config" \
               -DCMAKE_C_COMPILER=${{ matrix.cc }} \
-              -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
+              -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
               ..
             cmake --build . --config Release

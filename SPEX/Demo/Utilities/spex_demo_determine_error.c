@@ -21,13 +21,14 @@ void spex_demo_determine_error
     char *file
 )
 {
+    printf("\nError code: %d", info);
     if (info == SPEX_OUT_OF_MEMORY)
     {
         printf("\nSPEX: Out of memory\n");
     }
     else if (info == SPEX_SINGULAR)
     {
-        printf("\nSPEX: Input matrix is singular OR no diagonal pivot. Please ensure input is SPD\n");
+        printf("\nSPEX: Input matrix is singular OR no diagonal pivot. Please ensure input is Correct\n");
     }
     else if (info == SPEX_INCORRECT_INPUT)
     {

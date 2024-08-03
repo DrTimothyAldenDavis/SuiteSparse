@@ -1,12 +1,12 @@
-function x = SPEX_lu_backslash (A,b,option)
-% SPEX_LU_BACKSLASH: solve Ax=b via sparse left-looking integer-preserving LU
-% spex_lu_backslash: computes the exact solution to the sparse linear system Ax =
-% b where A and b are stored as doubles. A must be stored as a sparse matrix. b
-% must be stored as a dense set of right hand side vectors. b can be either 1
-% or multiple vector(s).  The result x is computed exactly, represented in
-% arbitrary-precision rational values, and then returned to MATLAB as a
-% floating-poing double result.  This final conversion means that x may no
-% longer exactly solve A*x=b, unless this final conversion is able to be
+function x = spex_lu_backslash (A,b,option)
+%SPEX_LU_BACKSLASH solve Ax=b via sparse left-looking integer-preserving LU
+% spex_lu_backslash computes the exact solution to the sparse linear system
+% Ax = b where A and b are stored as doubles. A must be stored as a sparse
+% matrix.  b must be stored as a dense set of right hand side vectors. b can be
+% either 1 or multiple vector(s).  The result x is computed exactly,
+% represented in arbitrary-precision rational values, and then returned to
+% MATLAB as a floating-poing double result.  This final conversion means that x
+% may no longer exactly solve A*x=b, unless this final conversion is able to be
 % done without modification.
 %
 % x may also be returned as a vpa matrix, or a cell array of strings, with
@@ -15,27 +15,29 @@ function x = SPEX_lu_backslash (A,b,option)
 %
 % Usage:
 %
-% x = spex_lu_backslash (A,b) returns the solution to Ax=b using default settings.
+% x = spex_lu_backslash (A,b) returns the solution to Ax=b using default
+%   settings.
 %
 % x = spex_lu_backslash (A,b,options) returns the solution to Ax=b with user
-%   defined settings in an options struct.  Entries not present are treated as
-%   defaults.
+%   defined settings in an options struct.  Entries not present in the options
+%   struct are treated as defaults.
 %
 %   option.order: Column ordering used.
+%       'default' (or if not present): COLAMD
 %       'none': no column ordering; factorize the matrix A as-is
-%       'colamd': COLAMD (the default ordering)
+%       'colamd': COLAMD
 %       'amd': AMD
 %
 %   option.pivot: Row pivoting scheme used.
-%       'smallest': Smallest pivot
+%       'smallest': Smallest pivot (default)
 %       'diagonal': Diagonal pivoting
 %       'first': First nonzero per column chosen as pivot
-%       'tol smallest': Diagonal pivoting with tol for smallest pivot (default)
+%       'tol smallest': Diagonal pivoting with tol for smallest pivot
 %       'tol largest': Diagonal pivoting with tol for largest pivot
 %       'largest': Largest pivot
 %
 %   option.tol: tolerance (0,1] for 'tol smallest' or 'tol largest' pivoting.
-%       default is 0.1.
+%       default is 1.
 %
 %   option.print: display the inputs and outputs
 %       0: nothing (default), 1: just errors, 2: terse, 3: all
@@ -92,13 +94,13 @@ function x = SPEX_lu_backslash (A,b,option)
 %   err = norm (x-xtrue)
 %   resid = norm (A*x-b)
 %
-% See also vpa, SPEX_install, SPEX_test, SPEX_demo.
+% See also vpa, spex_backslash, spex_cholesky_backslash, spex_ldl_backslash,
+%   spex_mex_install, spex_mex_test, spex_mex_demo.
 
-% SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
+% Copyright (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
 % Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
-
 
 if (nargin < 3)
     option = [ ] ;   % use default options
@@ -128,4 +130,5 @@ if (isfield (option, 'solution') && isequal (option.solution, 'vpa'))
         x = vpa (x) ;
     end
 end
+
 

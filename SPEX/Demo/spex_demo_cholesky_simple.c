@@ -129,12 +129,12 @@ int main (int argc, char **argv)
     // solve
     //--------------------------------------------------------------------------
 
-    double start_s = SuiteSparse_time ();
+    double start_s = SUITESPARSE_TIME;
     option->algo=SPEX_CHOL_LEFT;
 
     SPEX_TRY (SPEX_cholesky_backslash( &x, SPEX_MPQ, A, b, option));
 
-    double end_s = SuiteSparse_time ();
+    double end_s = SUITESPARSE_TIME;
 
     double t_s = (end_s - start_s) ;
 

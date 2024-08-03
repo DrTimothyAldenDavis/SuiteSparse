@@ -1,3 +1,10 @@
+June 20, 2024: version 5.3.0
+
+    * added cholmod_query: to deterimine at run time which modules
+        of CHOLMOD have been compiled into the libcholmod.so.
+        Also added CHOLMOD_HAS_* #defines in cholmod.h, configured
+        by cmake when CHOLMOD is compiled.
+
 Mar 22, 2024: version 5.2.1
 
     * minor updates to build system

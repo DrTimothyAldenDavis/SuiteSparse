@@ -1,3 +1,11 @@
+June 20, 2024: version 3.2.0
+
+    * added SPEX_ldl_* methods: allowing D to have negative diagonal entries;
+        SPEX_cholesky_* methods revised to require D to have positive entries.
+    * SPEX_USE_PYTHON: cmake option added
+    * minor update to MATLAB interface: for Mac, with MATLAB R2024a
+        on Apple Silicon (native app)
+
 Mar 22, 2024: version 3.1.0
 
     * major update to build system

@@ -2,9 +2,9 @@
 # SuiteSparse/ParU/CMakeLists.txt:  cmake for ParU
 #-------------------------------------------------------------------------------
 
-# ParU, Copyright (c) 2022-2023, Mohsen Aznaveh and Timothy A. Davis,
+# ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 # All Rights Reserved.
-# SPDX-License-Identifier: GNU GPL 3.0
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 #-------------------------------------------------------------------------------
 # get the version
@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Mar 22, 2024" )
+set ( PARU_DATE "Aug 2, 2024" )
 set ( PARU_VERSION_MAJOR  0 CACHE STRING "" FORCE )
-set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
-set ( PARU_VERSION_UPDATE 3 CACHE STRING "" FORCE )
+set ( PARU_VERSION_MINOR  2 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.
@@ -97,21 +97,21 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.7.0
+    find_package ( SuiteSparse_config 7.8.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.2.1
+    find_package ( CHOLMOD 5.3.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT CHOLMOD_FOUND )
-        find_package ( CHOLMOD 5.2.1 REQUIRED )
+        find_package ( CHOLMOD 5.3.0 REQUIRED )
     endif ( )
 
     find_package ( UMFPACK 6.3.3
         PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
-    if ( NOT CAMD_FOUND )
+    if ( NOT UMFPACK_FOUND )
         find_package ( UMFPACK 6.3.3 REQUIRED )
     endif ( )
 endif ( )
@@ -122,23 +122,14 @@ include ( SuiteSparseBLAS )     # requires cmake 3.22
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/ParU_definitions.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/ParU_definitions.h"
+configure_file ( "Config/ParU.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/ParU.h"
     NEWLINE_STYLE LF )
 configure_file ( "Config/paru_version.tex.in"
     "${PROJECT_SOURCE_DIR}/Doc/paru_version.tex"
     NEWLINE_STYLE LF )
 
-#-------------------------------------------------------------------------------
-# include directories
-#-------------------------------------------------------------------------------
-
-# FIXME: "paru_internal.hpp" includes "umf_internal.h" which is not installed.
-#        That means the two libraries are interdependent and ParU cannot be
-#        built as a stand-alone project outside a common build tree.
-include_directories ( Source Include
-    ${PROJECT_SOURCE_DIR}/../UMFPACK/Source
-    )
+include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic paru library properties
@@ -155,7 +146,7 @@ if ( BUILD_SHARED_LIBS )
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME paru
         SOVERSION ${PARU_VERSION_MAJOR}
-        PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
+        PUBLIC_HEADER "Include/ParU.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
     if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
@@ -178,7 +169,7 @@ if ( BUILD_STATIC_LIBS )
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME paru
-        PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
+        PUBLIC_HEADER "Include/ParU.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
     if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
@@ -199,15 +190,19 @@ endif ( )
 # additional definitions
 #-------------------------------------------------------------------------------
 
-if ( (APPLE OR WIN32) AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
+if (( NOT PARU_HAS_OPENMP ) OR
+   ((APPLE OR WIN32) AND CMAKE_C_COMPILER_ID STREQUAL "GNU" ))
     # Some parallelization levels don't work correctly with GCC on Windows or
-    # Mac (because of emuTLS?). Omit them.
+    # Mac (because of emuTLS?). Omit them.  See the user guide for details.
+    message ( STATUS "ParU frontal tree tasking: sequential")
     if ( BUILD_SHARED_LIBS )
         target_compile_definitions (ParU PRIVATE PARU_1TASK )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         target_compile_definitions (ParU_static PRIVATE PARU_1TASK )
     endif ( )
+else ( )
+    message ( STATUS "ParU frontal tree tasking: parallel")
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -434,7 +429,8 @@ if ( SUITESPARSE_DEMOS )
             target_link_libraries ( paru_demo PUBLIC ParU_static )
         endif ( )
         target_link_libraries ( paru_demo
-            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_CXX )
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK
+            SuiteSparse::SuiteSparseConfig OpenMP::OpenMP_CXX )
 
         add_executable ( paru_democ "Demo/paru_democ.c" )
         if ( BUILD_SHARED_LIBS )
@@ -443,7 +439,8 @@ if ( SUITESPARSE_DEMOS )
             target_link_libraries ( paru_democ PUBLIC ParU_static )
         endif ( )
         target_link_libraries ( paru_democ
-            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_C )
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK
+            SuiteSparse::SuiteSparseConfig OpenMP::OpenMP_C )
     endif ( )
 
     add_executable ( paru_simple  "Demo/paru_simple.cpp" )

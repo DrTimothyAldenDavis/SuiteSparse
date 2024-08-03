@@ -38,6 +38,9 @@ flags = [flags ' -DGP_MEX_FUNCTION'] ;
 % Append optimization
 flags = [flags ' -O -silent COPTIMFLAGS="-O3 -fwrapv"'];
 
+% Append while building objects for shared library
+flags = [flags ' -DMONGOOSE_BUILDING'];
+
 cpp_flags = '' ;
 lib = '';
 if (isunix)
@@ -45,6 +48,11 @@ if (isunix)
         % Mac doesn't need librt
         lib = [lib ' -lrt'];
     end
+end
+
+if (ispc)
+    % disable the SuiteSparse_config timer
+    flags = [' -DNTIMER ' flags] ;
 end
 
 % Fix the include & library path.
@@ -147,7 +155,12 @@ for f = files
         slash = slash (end) + 1 ;
     end
     o = ff (slash:end) ;
-    obj_files = [obj_files ' ' o '.o'] ;        %#ok
+    if (ispc)
+        obj = '.obj' ;
+    else
+        obj = '.o' ;
+    end
+    obj_files = [obj_files ' ' o obj] ;        %#ok
     s = sprintf ('mex %s %s -c %s.%s', flags, include, ff, ext) ;
     kk = do_cmd (s, kk, details) ;
 end
@@ -167,8 +180,3 @@ else
 end
 eval (s) ;
 
-%-------------------------------------------------------------------------------
-% function v = getversion
-% determine the MATLAB version, and return it as a double.
-% v = sscanf (version, '%d.%d.%d') ;
-% v = 10.^(0:-1:-(length(v)-1)) * v ;

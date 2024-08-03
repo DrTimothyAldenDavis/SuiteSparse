@@ -16,6 +16,8 @@ from .spex_connect import spex_connect
 import scipy
 from scipy.sparse import isspmatrix, isspmatrix_csc, linalg
 
+import numpy as np
+
 def cholesky_backslash( A, b, options=Options('double', 'amd')):
     ## A is a scipy.sparse(data must be float64) #technically it only needs to be numerical
     ## b is a numpy.array (data must be float64)
@@ -31,7 +33,7 @@ def cholesky_backslash( A, b, options=Options('double', 'amd')):
         A.tocsc()
     ## Check symmetry
     tol=1e-8
-    if linalg.norm(A-A.T, scipy.Inf) > tol:
+    if linalg.norm(A-A.T, np.Inf) > tol:
         raise SPEX_error(determine_error(-4))
     # Check input shape
     if A.shape[1]!=b.shape[0]:

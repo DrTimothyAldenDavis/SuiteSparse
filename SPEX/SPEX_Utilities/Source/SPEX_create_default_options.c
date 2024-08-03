@@ -24,7 +24,7 @@ SPEX_info SPEX_create_default_options (SPEX_options *option_handle)
     // allocate the option struct
     //--------------------------------------------------------------------------
 
-    (*option_handle) = SPEX_malloc(sizeof(SPEX_options_struct));
+    (*option_handle) = SPEX_calloc(1, sizeof(SPEX_options_struct));
     if (!(*option_handle))
     {
         // out of memory

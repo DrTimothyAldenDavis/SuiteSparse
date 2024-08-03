@@ -30,7 +30,7 @@ INC = tmp_include/*
 SRC2 = $(notdir $(wildcard $(SRC)))
 OBJ = $(SRC2:.c=.o)
 LIBS = 
-I = -Itmp_include -I../Test -I../rmm_wrap -I../zstd -I../zstd/zstd_subset -I../lz4 -I../xxHash -I../Source/JitKernels
+I = -Itmp_include -I../Test -I../rmm_wrap -I../zstd -I../zstd/zstd_subset -I../lz4 -I../xxHash
 CPPFLAGS = $(I) -DGBNCPUFEAT -DGBCOVER $(MATLAB)
 SO_OPTS = $(LDFLAGS)
 
@@ -41,7 +41,7 @@ ifeq ($(UNAME),Darwin)
 else
     # Linux
     SO_NAME = libgraphblas_tcov.so
-    SO_OPTS += -shared -Wl,-soname -Wl,$(SO_NAME) -Wl,--no-undefined
+    SO_OPTS += -shared -Wl,-soname -Wl,$(SO_NAME) -Wl,--no-undefined -Wl,-rpath=.
 endif
 
 default: $(SO_NAME)

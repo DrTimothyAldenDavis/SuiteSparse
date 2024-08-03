@@ -2,9 +2,9 @@
 //////////////////////////  paru_hash  /////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief functions to deal with the hash, insert and find
  *
@@ -40,7 +40,8 @@ void paru_insert_hash(int64_t key, int64_t value, std::vector<int64_t> &colHash)
 
     int64_t loop_cnt = 0;
     while (colHash[index] != -1)
-    {  // finding an empty spot
+    {
+        // finding an empty spot
         index = (index + 1) & hash_bits;
         PRLEVEL(PR, ("index =" LD " colHash=" LD "\n", index, colHash[index]));
         loop_cnt++;
@@ -82,7 +83,8 @@ int64_t paru_find_hash(int64_t key, std::vector<int64_t> &colHash, int64_t *fcol
         PRLEVEL(PR, ("%% index =" LD " \n", index));
         value = colHash[index];
         if (loop_cnt++ > log2(hash_bits))
-        {  // take a long time in the hash;
+        {
+            // take a long time in the hash;
             //  guarantees that find takes at most log time
             PRLEVEL(PR, ("%% binary search for hash\n"));
             value = paru_bin_srch(fcolList, 0, size - 1, key);

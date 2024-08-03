@@ -246,13 +246,13 @@
 // version control
 //------------------------------------------------------------------------------
 
-#define CHOLMOD_DATE "Mar 22, 2024"
+#define CHOLMOD_DATE "June 20, 2024"
 #define CHOLMOD_MAIN_VERSION   5
-#define CHOLMOD_SUB_VERSION    2
-#define CHOLMOD_SUBSUB_VERSION 1
+#define CHOLMOD_SUB_VERSION    3
+#define CHOLMOD_SUBSUB_VERSION 0
 
 #define CHOLMOD_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define CHOLMOD_VERSION CHOLMOD_VER_CODE(5,2)
+#define CHOLMOD_VERSION CHOLMOD_VER_CODE(5,3)
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
 #ifdef __cplusplus
@@ -307,10 +307,10 @@ int cholmod_l_version (int version [3]) ;
 
 #include "SuiteSparse_config.h"
 
-#define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,2,1)
+#define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,3,0)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "CHOLMOD 5.2.1 requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "CHOLMOD 5.3.0 requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 //------------------------------------------------------------------------------
@@ -320,6 +320,7 @@ int cholmod_l_version (int version [3]) ;
 // You do not have to edit any CHOLMOD files to compile and install CHOLMOD.
 // However, if you do not use all of CHOLMOD's modules, you need to compile
 // with the appropriate flag, or edit this file to add the appropriate #define.
+// cmake configures these options for you.
 //
 // Compiler flags for CHOLMOD
 //
@@ -349,6 +350,66 @@ int cholmod_l_version (int version [3]) ;
 //      #define NPRINT
 //      #define NGPL
 
+// These flags are configured by cmake when CHOLMOD is compiled:
+#define CHOLMOD_HAS_GPL
+#define CHOLMOD_HAS_CHECK
+#define CHOLMOD_HAS_CHOLESKY
+#define CHOLMOD_HAS_CAMD
+#define CHOLMOD_HAS_PARTITION
+#define CHOLMOD_HAS_MATRIXOPS
+#define CHOLMOD_HAS_MODIFY
+#define CHOLMOD_HAS_SUPERNODAL
+#define CHOLMOD_HAS_CUDA
+#define CHOLMOD_HAS_OPENMP
+
+#if defined(MATLAB_MEX_FILE) || defined(MATHWORKS)
+// CHOLMOD MATLAB interface does not use CUDA
+#undef CHOLMOD_HAS_CUDA
+#endif
+
+// The cmake flags defined above also ensure CHOLMOD knows which modules
+// are available when it was compiled:
+
+#ifndef CHOLMOD_HAS_GPL
+    #undef  NGPL
+    #define NGPL
+#endif
+
+#ifndef CHOLMOD_HAS_CHECK
+    #undef  NCHECK
+    #define NCHECK
+#endif
+
+#ifndef CHOLMOD_HAS_CHOLESKY
+    #undef  NCHOLESKY
+    #define NCHOLESKY
+#endif
+
+#ifndef CHOLMOD_HAS_CAMD
+    #undef  NCAMD
+    #define NCAMD
+#endif
+
+#ifndef CHOLMOD_HAS_PARTITION
+    #undef  NPARTITION
+    #define NPARTITION
+#endif
+
+#ifndef CHOLMOD_HAS_MATRIXOPS
+    #undef  NMATRIXOPS
+    #define NMATRIXOPS
+#endif
+
+#ifndef CHOLMOD_HAS_MODIFY
+    #undef  NMODIFY
+    #define NMODIFY
+#endif
+
+#ifndef CHOLMOD_HAS_SUPERNODAL
+    #undef  NSUPERNODAL
+    #define NSUPERNODAL
+#endif
+
 // The NGPL option disables the MatrixOps, Modify, and Supernodal modules.  The
 //  existence of this #define here, and its use in these 3 modules, does not
 //  affect the license itself; see CHOLMOD/Doc/License.txt for your actual
@@ -369,6 +430,39 @@ int cholmod_l_version (int version [3]) ;
 
 // the CHOLMOD:Utility Module is always required
 #if 1
+
+//------------------------------------------------------------------------------
+// CHOLMOD query: check for CHOLMOD configuration
+//------------------------------------------------------------------------------
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef enum
+{
+    CHOLMOD_QUERY_HAS_GPL         = 0,  // has GPL licensed modules
+    CHOLMOD_QUERY_HAS_CHECK       = 1,  // has Check Module
+    CHOLMOD_QUERY_HAS_CHOLESKY    = 2,  // has Cholesky Module
+    CHOLMOD_QUERY_HAS_CAMD        = 3,  // has CAMD and CCOLAMD
+    CHOLMOD_QUERY_HAS_PARTITION   = 4,  // has Partition Module
+    CHOLMOD_QUERY_HAS_MATRIXOPS   = 5,  // has MatrixOps Module
+    CHOLMOD_QUERY_HAS_MODIFY      = 6,  // has Modify Module
+    CHOLMOD_QUERY_HAS_SUPERNODAL  = 7,  // has Supernodal Module
+    CHOLMOD_QUERY_HAS_CUDA        = 8,  // has GPU Module
+    CHOLMOD_QUERY_HAS_OPENMP      = 9   // has OpenMP
+}
+cholmod_query_t ;
+
+bool cholmod_query      // true if CHOLMOD has a specific feature
+(
+    cholmod_query_t feature
+) ;
+bool cholmod_l_query (cholmod_query_t feature) ;
+
+#ifdef __cplusplus
+}
+#endif
 
 //------------------------------------------------------------------------------
 // CUDA BLAS

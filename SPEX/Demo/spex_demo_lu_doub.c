@@ -31,9 +31,9 @@
 //        5: Largest pivot
 //
 // q (or col) Column_order_param. e.g., spex_lu_demo_doub q 1, which indicates
-// SPEX_LU will use COLAMD for column ordering. Other available options are:
+// SPEX_LU will use no column ordering. Other available options are:
 //
-//        0: None: Not recommended for sparse matrices 1: COLAMD: Default 2:
+//        1: None: Not recommended for sparse matrices 2: COLAMD: Default 3:
 //        AMD
 //
 // t (or tol) tolerance_param. e.g., spex_lu_demo_doub t 1e-10, which indicates
@@ -115,12 +115,12 @@ int main (int argc, char *argv[])
     // and an estimate of the number of nonzeros in L and U.
     //--------------------------------------------------------------------------
 
-    double start_col = SuiteSparse_time ();
+    double start_col = SUITESPARSE_TIME;
 
     // Column ordering using either AMD, COLAMD or nothing
     SPEX_TRY (SPEX_lu_analyze(&S, A, option));
 
-    double end_col = SuiteSparse_time ();
+    double end_col = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // Now we perform the SPEX Left LU factorization to obtain matrices L and U
@@ -128,11 +128,11 @@ int main (int argc, char *argv[])
     // never explicitly constructed or used.
     //--------------------------------------------------------------------------
 
-    double start_factor = SuiteSparse_time ();
+    double start_factor = SUITESPARSE_TIME;
 
     SPEX_TRY (SPEX_lu_factorize(&F, A, S, option));
 
-    double end_factor = SuiteSparse_time ();
+    double end_factor = SUITESPARSE_TIME;
 
     //--------------------------------------------------------------------------
     // print results

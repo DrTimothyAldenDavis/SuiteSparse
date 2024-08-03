@@ -28,8 +28,8 @@
 #ifndef NCHOLESKY
 
 #include "colamd.h"
-#if (!defined (COLAMD_VERSION) || (COLAMD_VERSION < COLAMD_VERSION_CODE (3,3)))
-#error "CHOLMOD:Cholesky requires COLAMD 3.3.1 or later"
+#if (!defined (COLAMD__VERSION) || (COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,4)))
+#error "CHOLMOD:Cholesky requires COLAMD 3.3.4 or later"
 #endif
 
 //------------------------------------------------------------------------------

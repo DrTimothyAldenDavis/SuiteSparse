@@ -99,12 +99,13 @@ int main (void)
     // Solve
     //--------------------------------------------------------------------------
 
-    double start_s = SuiteSparse_time ();
+    double start_s = SUITESPARSE_TIME;
 
     // Solve the system and give double solution
+    // It will utilize the default COLAMD and smallest pivoting
     SPEX_TRY (SPEX_lu_backslash( &x, SPEX_FP64, A, b, option));
 
-    double end_s = SuiteSparse_time ();
+    double end_s = SUITESPARSE_TIME;
 
     double t_s = (end_s - start_s) ;
 

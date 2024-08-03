@@ -169,16 +169,16 @@
 // check versions of SuiteSparse packages
 //------------------------------------------------------------------------------
 
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0)
-#error "SPEX requires SuiteSparse_config 7.7.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0)
+#error "SPEX requires SuiteSparse_config 7.8.0 or later"
 #endif
 
-#if !defined (AMD__VERSION) || AMD__VERSION < SUITESPARSE__VERCODE(3,3,2)
-#error "SPEX requires AMD 3.3.2 or later"
+#if !defined (AMD__VERSION) || AMD__VERSION < SUITESPARSE__VERCODE(3,3,3)
+#error "SPEX requires AMD 3.3.3 or later"
 #endif
 
-#if !defined (COLAMD__VERSION) || COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,3)
-#error "SPEX requires COLAMD 3.3.3 or later"
+#if !defined (COLAMD__VERSION) || COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,4)
+#error "SPEX requires COLAMD 3.3.4 or later"
 #endif
 
 //------------------------------------------------------------------------------
@@ -215,7 +215,7 @@
 
 
 // Pivoting scheme used for SPEX Left LU.
-//  SPEX_SMALLEST = 0,              Smallest pivot
+//  SPEX_SMALLEST = 0,              Smallest pivot (default)
 //  SPEX_DIAGONAL = 1,              Diagonal pivoting
 //  SPEX_FIRST_NONZERO = 2,         First nonzero per column chosen as pivot
 //  SPEX_TOL_SMALLEST = 3,          Diagonal pivoting with tolerance for small
@@ -231,18 +231,21 @@
 #define SPEX_DEFAULT_ORDER SPEX_DEFAULT
 
 // Defines printing to be done
+// 0 none, 1: errors, 2: terse, 3: full
 #define SPEX_DEFAULT_PRINT_LEVEL 0
 
 // MPFR precision used (quad is default)
 #define SPEX_DEFAULT_PRECISION 128
 
 // Defines the algorithm used
-// SPEX_DEFAULT = 0,    Defaults: Left for LU, Up for Chol, Gram for QR looking
-//                      LU factorization
+// SPEX_DEFAULT = 0,    Defaults: Left for LU, Up for Chol, Up for LDL 
+//                      Gram for QR looking factorization
 // SPEX_LU_LEFT = 1,              Left looking LU factorization
 // SPEX_CHOL_LEFT = 2,            Left looking Cholesky factorization
 // SPEX_CHOL_UP = 3,              Up looking Cholesky factorization
-// SPEX_QR_GRAM = 4               Default factorization for QR
+// SPEX_LDL_LEFT = 4,             Left looking LDL factorization
+// SPEX_LDL_UP = 5,               Up looking LDL factorization
+// SPEX_QR_GRAM = 6               Default factorization for QR
 #define SPEX_DEFAULT_ALGORITHM SPEX_DEFAULT
 
 //------------------------------------------------------------------------------

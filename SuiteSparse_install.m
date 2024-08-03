@@ -43,15 +43,8 @@ function SuiteSparse_install (do_demo)
 % This script installs the full-featured CXSparse rather than CSparse.
 %
 % If you get errors building or using METIS, just remove the
-% CHOLMOD/SuiteSparse_metis folder.  This often occurs on Windows.
-%
-% Before using SuiteSparse_install, you must compile the GraphBLAS library for
-% use in MATLAB.  In the system shell while in the SuiteSparse folder, type
-% "make gbmatlab".  You must then either install the libgraphblas_matlab.so
-% library system-wide ( cd GraphBLAS/GraphBLAS ; make ; sudo make install), or
-% install your own copy ( make local ; make install ) and then add the
-% SuiteSparse/lib folder to your LD_LIBRARY_PATH.  Restart MATLAB after
-% compiling libgraphblas_matlab.so.
+% CHOLMOD/SuiteSparse_metis folder and try again (this will build CHOLMOD
+% without METIS).  This often occurs on Windows.
 %
 % Copyright (c) 1990-2023, Timothy A. Davis, http://suitesparse.com.
 %
@@ -321,28 +314,41 @@ catch me
     failed {end+1} = 'mongoose' ;
 end
 
-% compile and install GraphBLAS
+% compile and install SPEX
+try
+    fprintf ('\nCompiling SPEX (requires GMP and MPFR)\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/SPEX/MATLAB']) ;
+    spex_mex_install (0) ;
+catch me
+    disp (me.message) ;
+    fprintf ('SPEX not installed\n') ;
+    failed {end+1} = 'SPEX' ;
+end
+
+% compile and install ParU
+try
+    fprintf ('\nCompiling ParU\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/ParU/MATLAB']) ;
+    paru_make ;
+catch me
+    disp (me.message) ;
+    fprintf ('ParU not installed\n') ;
+    failed {end+1} = 'ParU' ;
+end
+
+% compile and install GraphBLAS (this can take a while)
 try
     fprintf ('\nCompiling GraphBLAS\n') ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
-    cd ('@GrB/private') ;
-    gbmake ;
+    % cd ('@GrB/private') ;
+    % gbmake ;
+    graphblas_install
 catch me
     disp (me.message) ;
     fprintf ('GraphBLAS not installed\n') ;
     failed {end+1} = 'GraphBLAS' ;
-end
-
-try
-    fprintf ('try to install SPEX (requires GMP and MPFR)\n') ;
-    paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX_Left_LU/MATLAB']) ;
-    SPEX_Left_LU_install (0) ;
-catch me
-    disp (me.message) ;
-    fprintf ('SPEX not installed\n') ;
-    failed {end+1} = 'SPEX' ;
 end
 
 %-------------------------------------------------------------------------------

@@ -26,7 +26,7 @@ jobs:
         language: ['c-cpp']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
-        group: [other]
+#       group: [other]
 #       GraphBLAS and LAGraph disabled (the runners run out of memory or
 #       disk space)
 #       group: [other, graph]

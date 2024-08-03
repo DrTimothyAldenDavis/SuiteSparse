@@ -67,6 +67,22 @@ for k = 1:nfiles
             % empty line: as-is
             fprintf (f_output, '\n') ;
 
+        elseif (contains (cline, '#include "'))
+
+            if (contains (cline, '/GB_'))
+                % convert '#include "mxm/template/GB_AxB_whatever.h'
+                % to just '#include "GB_AxB_whatever.h'
+                quote = strfind (cline, '"') ;
+                quote = quote (1) ;
+                gb = strfind (cline, '/GB_') ;
+                gb = gb (1) ;
+                fprintf (f_output, '%s%s\n', ...
+                    cline (1:quote), cline (gb+1:end)) ;
+            else
+                % no change to this line
+                fprintf (f_output, '%s\n', cline) ;
+            end
+
         elseif (len > 1 && all (cline (1:len-2) == ' ') ...
                 && (cline (len-1) == '{') && (cline (len) == ' '))
 

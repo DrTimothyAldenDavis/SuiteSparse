@@ -121,7 +121,24 @@ static void gb_argminmax
     // For both cases, use the SECONDI1 operator since built-in indexing is
     // 1-based.  The ANY monoid would be faster, but this uses MIN so that the
     // result for the user is repeatable.
-    OK (GrB_mxm (*p, NULL, NULL, GxB_MIN_SECONDI1_INT64, G, y, desc)) ;
+
+    #if 1
+        // p = G*y or G'*y using the MIN_SECONDI semiring
+        // this is faster than the method below
+        OK (GrB_mxm (*p, NULL, NULL, GxB_MIN_SECONDI1_INT64, G, y, desc)) ;
+    #else
+        printf ("without 2ndi\n") ;
+        // H = rowindex1 (G) if dim is 1, or colindex1 (G) if dim is 2.
+        GrB_Matrix H = NULL ;
+        OK (GrB_Matrix_new (&H, GrB_INT64, nrows, ncols)) ;
+        OK (GrB_apply (H, NULL, NULL,
+            (dim == 1) ? GrB_ROWINDEX_INT64 : GrB_COLINDEX_INT64, G,
+            (int64_t) 1, NULL)) ;
+        // p = H*y or H'*y using the MIN_FIRST semiring
+        OK (GrB_mxm (*p, NULL, NULL, GrB_MIN_FIRST_SEMIRING_INT64, H, y,
+            desc)) ;
+        OK (GrB_Matrix_free (&H)) ;
+    #endif
 
     //--------------------------------------------------------------------------
     // free workspace

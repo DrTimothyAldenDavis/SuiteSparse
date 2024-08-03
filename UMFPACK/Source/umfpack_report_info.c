@@ -22,6 +22,9 @@
     } \
 }
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 /* RATIO macro uses a double relop, but ignore NaN case: */
 #define RATIO(a,b,c) (((b) == 0) ? (c) : (((double) a)/((double) b)))
 
@@ -160,11 +163,7 @@ void UMFPACK_report_info
 
     PRINTF (("    CPU timer: ")) ;
 #ifdef SUITESPARSE_TIMER_ENABLED
-    #ifdef _OPENMP
-        PRINTF (("omp_get_wtime ( )\n")) ;
-    #else
-        PRINTF (("SuiteSparse_time ( )\n")) ;
-    #endif
+    PRINTF (( xstr( SUITESPARSE_CONFIG_TIMER ) "\n")) ;
 #else
     PRINTF (("no timer used.\n")) ;
 #endif

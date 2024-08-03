@@ -1,5 +1,5 @@
 \documentclass[12pt]{article}
-\batchmode
+%\batchmode
 \usepackage{hyperref}
 \usepackage{minted}
 
@@ -24,11 +24,9 @@
 
 \title{User's Guide for ParU, an unsymmetric multifrontal multithreaded sparse
 LU factorization package}
-\author{Mohsen Aznaveh\thanks{
-email: aznaveh@tamu.edu.
-http://www.suitesparse.com.
-},
-Timothy A. Davis}
+\author{Mohsen Aznaveh\thanks{email: aznaveh@tamu.edu.},
+Timothy A. Davis\thanks{email: DrTimothyAldenDavis@gmail.com,
+http://www.suitesparse.com.}}
 
 \input{paru_version.tex}
 
@@ -39,405 +37,1850 @@ Timothy A. Davis}
 
 \begin{abstract}
 
-ParU is an implementation of the multifrontal sparse LU factorization
-method.  Parallelism is exploited both in the BLAS and across different frontal
-matrices using OpenMP tasking, a shared-memory programming model for modern 
-multicore architectures. The package is written in C++ and real sparse matrices 
-are supported.
+ParU is an implementation of the multifrontal sparse LU factorization method.
+Parallelism is exploited both in the BLAS and across different frontal matrices
+using OpenMP tasking, a shared-memory programming model for modern multicore
+architectures. The package is written in C++ and real sparse matrices are
+supported.
 
-ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 All Rights Reserved.
-SPDX-License-Identifier: GNU GPL 3.0
+SPDX-License-Identifier: GPL-3.0-or-later
 \end{abstract}
 
-\maketitle
+\newpage
+{\small
+\tableofcontents
+}
 
 %-------------------------------------------------------------------------------
 \section{Introduction}
 \label{intro}
 %-------------------------------------------------------------------------------
 
-The algorithms used in ParU will be discussed in a companion paper,
-?. This document gives detailed information on the installation
-and use of ParU.
-ParU is a parallel sparse direct solver. This package uses OpenMP
-tasking for parallelism. ParU calls UMFPACK for the symbolic analysis phase,
-after that, some symbolic analysis is done by ParU itself, and  then the numeric
-phase starts. The numeric computation is a task parallel phase using OpenMP, 
-and each task calls parallel BLAS; i.e. nested parallelism. 
-The performance of BLAS has a heavy impact on the performance of ParU. Moreover,
-the way parallel BLAS can be called in a nested environment can also be very
-important for ParU's performance.
-
-
-%-------------------------------------------------------------------------------
-\subsubsection{Instructions on using METIS}
-%-------------------------------------------------------------------------------
-
-SuiteSparse is now on METIS 5.1.0, distributed along with SuiteSparse itself.
-Its use is optional, however. ParU is using AMD as the default ordering. METIS
-tends to give orderings that are good for parallelism. However, the METIS itself
-can be slow. As a result, the symbolic analysis using METIS can be slow, but
-usually, the factorization is faster. Therefore, depending on your use case,
-either use METIS, or you can compile and run your code without using METIS.
-If you are using METIS on an unsymmetric case, UMFPACK has to form the Matrix
-$A^{T}A$. This matrix can be a dense matrix and takes a lot of resources to form
-it. To avoid such conditions, you can use the ordering strategy
-\verb'UMFPACK_ORDERING_METIS_GUARD' that is introduced in UMFPACK version 6.0.
-This ordering strategy use COLAMD instead of METIS in those cases.
-
-Note that METIS is not bug-free; it can occasionally cause segmentation 
-faults, particularly if used when finding basic solutions to underdetermined 
-systems with many more columns than rows. ParU does not solve such 
-systems anyway but you might see some problems with other SuiteSparse packages.
+The algorithms used in ParU are discussed in \cite{AznavehThesis},
+a copy of which is in the \verb'ParU/Doc' folder.
+% FUTURE: add the ACM TOMS submission to the Doc folder.
+This document gives detailed information on the installation and use of ParU.
+ParU is a parallel sparse direct solver that uses OpenMP tasking for
+parallelism. ParU calls UMFPACK for the symbolic analysis phase, after that,
+some symbolic analysis is done by ParU itself, and then the numeric phase
+starts. The numeric computation is a task parallel phase using OpenMP, and each
+task calls parallel BLAS; i.e. nested parallelism.  The performance of BLAS has
+a heavy impact on the performance of ParU. Moreover, the way parallel BLAS can
+be called in a nested environment can also be very important for ParU's
+performance.
 
 %-------------------------------------------------------------------------------
 \section{Using ParU in C and C++}
 %-------------------------------------------------------------------------------
 
-ParU relies on CHOLMOD for its basic sparse matrix data structure, a compressed 
-sparse column format.  CHOLMOD provides interfaces to the AMD, COLAMD, and METIS
-ordering methods and many other functions. ParU also relies on UMFPACK Version 
-6.0 or higher for symbolic analysis. 
+ParU relies on CHOLMOD for its basic sparse matrix data structure, a compressed
+sparse column format.  CHOLMOD provides interfaces to the AMD, COLAMD, and
+METIS ordering methods and many other functions. ParU also relies on UMFPACK
+for its symbolic analysis.
 
+%-------------------------------------------------------------------------------
+\subsection{Installing the C/C++ library on any system}
+%-------------------------------------------------------------------------------
+
+All of SuiteSparse can be built by \verb'cmake' with a single top-level
+\verb'CMakeLists.txt' file.  In addition, each package (including ParU) has its
+own \verb'CMakeLists.txt' file to build that package individually.  This is the
+simplest method for building ParU and its dependent pacakges on all systems.
 
 %-------------------------------------------------------------------------------
 \subsection{Installing the C/C++ library on Linux/Unix}
 %-------------------------------------------------------------------------------
-In Linux/MacOs, type \verb'make' at the command line in either the 
-\verb'SuiteSparse' directory (which compiles all of SuiteSparse) or in the 
-\verb'SuiteSparse/ParU' directory (which just compiles ParU and the libraries 
-it requires).  ParU will be compiled; you can type \verb'make demos' to run a
-set of simple demos.
+
+In Linux/MacOs, type \verb'make' at the command line in either the
+\verb'SuiteSparse' directory (which compiles all of SuiteSparse) or in the
+\verb'SuiteSparse/ParU' directory (which just compiles ParU).  ParU will be
+compiled; you can type \verb'make demos' to run a set of simple demos.
 
 The use of \verb'make' is optional.  The top-level \verb'ParU/Makefile' is
 a simple wrapper that uses \verb'cmake' to do the actual build.
 
 To fully test the coverage of the lines ParU, go to the \verb'Tcov'
-directory and type \verb'make'.  This will work for Linux only.
+directory and type \verb'make'.  This test requires Linux.
 
-To install the shared library
-into /usr/local/lib and /usr/local/include, do {\tt make install}.
-To uninstall, do {\tt make uninstall}.
-For more options, see the {\tt ParU/README.md} file.
-
-
+To install the shared library (by default, into \verb'/usr/local/lib' and
+\verb'/usr/local/include'), do {\tt make install}.  To uninstall, do
+{\tt make uninstall}.  For more options, see the {\tt ParU/README.md} file.
 
 %-------------------------------------------------------------------------------
 \subsection{C/C++ Example}
 %-------------------------------------------------------------------------------
 
-The C++ interface is written using only real matrices.  
-The simplest function computes the MATLAB equivalent of
-\verb'x=A\b' and is almost as simple:
-Below is a simple C++ program that illustrates the use of ParU.  The
-program reads in a problem from \verb'stdin' in MatrixMarket
-format \cite{BoisvertPozoRemingtonBarrettDongarra97}, solves it, and prints the
-norm of \verb'A' and the residual. 
-Some error testing code is omited to simplify showing how the program works. 
-The full program can be found in 
-\verb'ParU/Demo/paru_demo.cpp'
+Below is a simple C++ program that illustrates the use of ParU.  The program
+reads in a problem from \verb'stdin' in MatrixMarket format
+\cite{BoisvertPozoRemingtonBarrettDongarra97}, solves it, and prints the norm
+of \verb'A' and the residual.  Some error testing code is omited to simplify
+the program, but a robust user application should check the return values from
+ParU.  The full program can be found in \verb'ParU/Demo/paru_simple.cpp'.  Note
+that ParU supports only real double-precision matrices.
+
+Refer to the CHOLMOD User guide for the CHOLMOD methods used below.
+
 \begin{minted}{cpp}
-#include "ParU.hpp"
+#include <iostream>
+#include <iomanip>
+#include <ios>
+#include <cmath>
+#include "ParU.h"
+
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
-    cholmod_sparse *A;
-    ParU_Symbolic *Sym = NULL;
+    cholmod_sparse *A = NULL;
+    ParU_Symbolic Sym = NULL;
+    ParU_Numeric Num = NULL;
+    ParU_Control Control = NULL;
+    double *b = NULL, *x = NULL;
 
-    //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
+    //~~~~~~~~~Reading the input matrix ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // start CHOLMOD
     cc = &Common;
     int mtype;
     cholmod_l_start(cc);
-
-    // A = mread (stdin) ; read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
+
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_Control Control;
-    ParU_Ret info;
-    info = ParU_Analyze(A, &Sym, &Control);
-    ParU_Numeric *Num;
-    info = ParU_Factorize(A, Sym, &Num, &Control);
-    double my_time = omp_get_wtime() - my_start_time;
-    //~~~~~~~~~~~~~~~~~~~Test the results ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int64_t m = Sym->m;
-    if (info == PARU_SUCCESS)
-    {
-        double *b = (double *)malloc(m * sizeof(double));
-        double *xx = (double *)malloc(m * sizeof(double));
-        for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-        info = ParU_Solve(Sym, Num, b, xx, &Control);
-        printf("Solve time is %lf seconds.\n", my_solve_time);
-        double resid, anorm, xnorm;
-        info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
-        printf("Residual is |%.2e|, anorm is %.2e, xnorm is %.2e  and rcond is"
-                " %.2e.\n", resid, anorm, xnorm, Num->rcond);
-        free(b);
-        free(xx);
-    }
-    //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int max_threads = omp_get_max_threads();
-    BLAS_set_num_threads(max_threads);
+    std::cout << "================= ParU, a simple demo: ===================\n";
+    ParU_Info info;
+    ParU_Analyze(A, &Sym, Control);
+    int64_t n, anz;
+    ParU_Get (Sym, Num, PARU_GET_N, &n, Control));
+    ParU_Get (Sym, Num, PARU_GET_ANZ, &anz, Control));
+    std::cout << "Input matrix is " << n << "x" << n <<
+        " nnz = " << anz << std::endl;
+    ParU_Factorize(A, Sym, &Num, Control);
+    std::cout << "ParU: factorization was successful." << std::endl;
 
-    //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_Freenum(&Num, &Control);
-    ParU_Freesym(&Sym, &Control);
+    //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
+    b = (double *)malloc(n * sizeof(double));
+    x = (double *)malloc(n * sizeof(double));
+    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
+    ParU_Solve(Sym, Num, b, x, Control));
+    double resid, anorm, xnorm, rcond;
+    ParU_Residual(A, x, b, resid, anorm, xnorm, Control));
+    ParU_Get (Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, Control);
+    double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
+    std::cout << std::scientific << std::setprecision(2)
+        << "Relative residual is |" << rresid << "| anorm is " << anorm
+        << ", xnorm is " << xnorm << " and rcond is " << rcond << "."
+        << std::endl;
 
+    //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    free(b);
+    free(x);
+    ParU_FreeNumeric(&Num, Control);
+    ParU_FreeSymbolic(&Sym, Control);
+    ParU_FreeControl(&Control);
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);
+    return (info);
 }
 \end{minted}
 
 A simple demo for the C interface is shown next. You can see the complete demo
-in \verb'ParU/Demo/paru_simple.c'
+in \verb'ParU/Demo/paru_simplec.c'.
+
 \begin{minted}{c}
-#include "ParU_C.h"
+#include "ParU.h"
 int main(int argc, char **argv)
 {
-    cholmod_common Common, *cc;
-    cholmod_sparse *A;
-    ParU_C_Symbolic *Sym;
-    //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
+    cholmod_common Common, *cc = NULL;
+    cholmod_sparse *A = NULL;
+    ParU_C_Symbolic Sym = NULL;
+    ParU_C_Numeric Num = NULL;
+    ParU_C_Control Control = NULL;
+    double *b = NULL, *x = NULL;
+
+    //~~~~~~~~~Reading the input matrix ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // start CHOLMOD
     cc = &Common;
     int mtype;
     cholmod_l_start(cc);
-    // A = mread (stdin) ; read in the sparse matrix A
+    // read in the sparse matrix A from stdin
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
+
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    printf("================= ParU, a simple demo, using C interface : ====\n");
-    ParU_C_Control Control;
-    ParU_C_Init_Control(&Control);
-    ParU_Ret info;
-    info = ParU_C_Analyze(A, &Sym, &Control);
-    printf("Input matrix is %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
-    ParU_C_Numeric *Num;
-    info = ParU_C_Factorize(A, Sym, &Num, &Control);
+    ParU_C_Analyze(A, &Sym, Control);
+    int64_t n, anz;
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_N, &n, Control);
+    ParU_C_Get_INT64 (Sym, Num, PARU_GET_ANZ, &anz, Control);
+    printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
+        n, n, anz);
+    ParU_C_Factorize(A, Sym, &Num, Control);
 
-    if (info != PARU_SUCCESS)
-    {
-        printf("ParU: factorization was NOT successfull.");
-        if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
-        if (info == PARU_INVALID) printf("\nInvalid!\n");
-        if (info == PARU_SINGULAR) printf("\nSingular!\n");
-    }
-    else
-    {
-        printf("ParU: factorization was successfull.\n");
-    }
+    //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
+    b = (double *)malloc(n * sizeof(double));
+    x = (double *)malloc(n * sizeof(double));
+    for (int64_t i = 0; i < n; ++i) b[i] = i + 1;
+    ParU_C_Solve_Axb(Sym, Num, b, x, Control);
+    double resid, anorm, xnorm;
+    ParU_C_Residual_bAx(A, x, b, &resid, &anorm, &xnorm, Control);
+    double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
+    double rcond;
+    ParU_C_Get_FP64(Sym, Num, PARU_GET_RCOND_ESTIMATE, &rcond, Control);
+    printf("Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e, "
+        " and rcond is %.2e.\n",
+        rresid, anorm, xnorm, rcond);
 
-    //~~~~~~~~~~~~~~~~~~~ Computing Ax = b ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if (info == PARU_SUCCESS)
-    {
-        int64_t m = Sym->m;
-        double *b = (double *)malloc(m * sizeof(double));
-        double *xx = (double *)malloc(m * sizeof(double));
-        for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-        info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
-        double resid, anorm, xnorm;
-        info = ParU_C_Residual_bAx(A, xx, b, m, &resid, &anorm, &Control);
-        printf("Residual is |%.2e|, anorm is %.2e, xnorm is %.2e  and rcond is"
-                " %.2e.\n", resid, anorm, xnorm, Num->rcond);
-        free(b);
-        free(xx);
-    }
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_C_Freenum(&Num, &Control);
-    ParU_C_Freesym(&Sym, &Control);
-
+    if (b != NULL) free(b);
+    if (x != NULL) free(x);
+    ParU_C_FreeNumeric(&Num, Control);
+    ParU_C_FreeSymbolic(&Sym, Control);
+    ParU_C_FreeControl(&Control);
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);
+    return (info);
 }
 \end{minted}
 
 %-------------------------------------------------------------------------------
-\subsection{C/C++ Syntax}
-%-------------------------------------------------------------------------------
-\verb'ParU_Ret' is the output structure of all ParU routines in C and C++.  The 
-user must check the output before continuing and computing further the result of
-prior routine. You can see the user callable routines in 
-\verb'ParU/Include/ParU.hpp'.
-The following is a list of user-callable C++ functions and what they
-can do:
-
-\begin{enumerate}
-
-    \item \verb'ParU_Version': return the version of the ParU package 
-        you are using.
-
-    \item \verb'ParU_Analyze': Symbolic analysis is done in this routine. 
-        UMFPACK is called here and after that, some more specialized symbolic
-        computation is done for ParU. 
-        \verb'ParU_Analyze' is called once and can be used for different 
-        \verb'ParU_Factorize' calls for the matrices that have the same pattern.
-    \item \verb'ParU_Factorize': 
-        Numeric factorization is done in this routine. Scaling and
-        making $Sx$ (scaled and staircase structure) matrix, computing factors,
-        and permutations are here. \verb'ParU_Symbolic' structure which is 
-        computed in \verb'ParU_Analyze' is an input in this routine.
-
-    \item \verb'ParU_Solve':  
-        Using symbolic analysis and factorization phase output to solve $Ax=b$.
-        In all the solve routines Num structure must come with the same 
-        Sym struct that comes from \verb'ParU_Factorize'. 
-        This routine is overloaded and can solve different systems. It has 
-        versions that keep a copy of x or overwrite it. Also, it can solve 
-        multiple right-hand side problems.
-
-    % FIXME: also for C
-    \item \verb'ParU_Lsolve'
-    \item \verb'ParU_Usolve'
-    \item \verb'ParU_perm' FIXME name
-    \item \verb'ParU_inv_perm' FIXME name
-
-    \item \verb'ParU_Residual':  
-        This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
-        $x$ (or $X$ for multiple right handside).
-
-    \item \verb'ParU_Freenum':  frees the numerical part of factorization.
-
-    \item \verb'ParU_Freesym':  frees the symbolic part of factorization.
-
-\end{enumerate}
-
-The C interface is quite similar to the C++ interface, and you can see the C user 
-callable routines in 
-\verb'ParU/Include/ParU_C.h'.
-The following is a list of user-callable C functions and what they
-can do:
-
-\begin{enumerate}
-
-    \item \verb'ParU_C_Version': return the version of the ParU package 
-        you are using.
-
-    \item \verb'ParU_C_Init_Control': Initialize C Control object before using 
-        it.
-
-    \item \verb'ParU_C_Analyze': Symbolic analysis is done in this routine. 
-        UMFPACK is called here; after that, some more specialized symbolic
-        computation is done for ParU. 
-        \verb'ParU_C_Analyze' is called once and can be used for different 
-        \verb'ParU_C_Factorize' calls for the matrices that have the same pattern.
-    \item \verb'ParU_C_Factorize': 
-        Numeric factorization is done in this routine. Scaling and
-        making $Sx$ (scaled and staircase structure) matrix, computing factors,  
-        and permutations are here. \verb'ParU_C_Symbolic' structure which is 
-        computed in \verb'ParU_C_Analyze' is an input in this routine.
-
-    \item \verb'ParU_C_Solve_Axx',  \verb'ParU_C_Solve_Axb', 
-        \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB',  
-        Using symbolic analysis and factorization phase output to solve $Ax=b$.
-        In all the solve routines Num structure must come with the same 
-        Sym struct that comes from \verb'ParU_C_Factorize'. 
-
-    \item \verb'ParU_C_Residual_bAx':  
-        This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
-        $x$ 
-
-    \item \verb'ParU_C_Residual_BAX':  
-        This function computes $|AX-B|$ one norm of matrix $A$ and one norme of
-        $X$
-
-
-    \item \verb'ParU_C_Freenum':  frees the numerical part of factorization.
-
-
-    \item \verb'ParU_C_Freesym':  frees the symbolic part of factorization.
-
-\end{enumerate}
-
-%-------------------------------------------------------------------------------
-\subsection{Details of the C/C++ Syntax}
+\subsection{{\sf ParU\_Info}: return values of each ParU method}
 %-------------------------------------------------------------------------------
 
-For further details on how to use the C/C++ syntax, please refer to the
-definitions and descriptions in the following files:
+    All ParU C and C++ routines return an enum of type \verb'ParU_Info'.  The
+    user application should check this return value before continuing.
 
-\begin{enumerate}
-\item \verb'SuiteSparse/ParU/Include/ParU.hpp' describes each
-C++ function.  Only \verb'double' and square matrices are supported.
+    {\footnotesize
+    \begin{verbatim}
+    typedef enum ParU_Info
+    {
+        PARU_SUCCESS = 0,           // everying is fine
+        PARU_OUT_OF_MEMORY = -1,    // ParU ran out of memory
+        PARU_INVALID = -2,          // inputs are invalid (NULL, for example)
+        PARU_SINGULAR = -3,         // matrix is numerically singular
+        PARU_TOO_LARGE = -4         // problem too large for the BLAS
+    } ParU_Info ; \end{verbatim}}
+
+%-------------------------------------------------------------------------------
+\section{C++ Syntax}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Version}: version of the ParU package}
+%-------------------------------------------------------------------------------
+
+    ParU has two mechanisms for informing the user application of its date and
+    version: macros that are \verb'#define'd in \verb'ParU.h', and a
+    \verb'ParU_Version' function.  Both methods are provided since it's
+    possible that the \verb'ParU.h' header found when a user application was
+    compiled might not match the same version found when the same user
+    application was linked with the compiled ParU library.
+
+    {\footnotesize
+    \begin{verbatim}
+    #define PARU_DATE "June 20, 2024"
+    #define PARU_VERSION_MAJOR  1
+    #define PARU_VERSION_MINOR  0
+    #define PARU_VERSION_UPDATE 0
+    ParU_Info ParU_Version (int ver [3], char date [128]) ; \end{verbatim}}
+
+    \verb'ParU_Version' returns the version in \verb'ver' array (major, minor,
+    and update, in that order), and the date in the \verb'date' array provided
+    by the user application.
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Control}: parameters that control ParU}
+\label{control}
+%-------------------------------------------------------------------------------
+
+    The \verb'ParU_Control' structure contains parameters that control various
+    ParU options.  The object is created by \verb'ParU_InitControl',
+    modified by \verb'ParU_Set', and deleted by \verb'ParU_FreeControl'.
+    Its contents can be queried with \verb'ParU_Get'.
+
+    Any ParU function can be passed a NULL pointer for its \verb'Control'
+    parameter.  In that case, defaults are used.  To use non-default
+    parameters, create a \verb'Control' object and then set its parameters.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_InitControl
+    (
+        // output:
+        ParU_Control *Control_handle    // Control object to create
+    ) ; \end{verbatim}}
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_FreeControl
+    (
+        // input/output:
+        ParU_Control *Control_handle    // Control object to free
+    ) ; \end{verbatim}}
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Set}: set parameters in the Control object}
+\label{set}
+%-------------------------------------------------------------------------------
+
+There are four variants of \verb'ParU_Set' for setting control parameters, two
+for integers (\verb'int64_t' and \verb'int32_t') and two for floating-point
+(\verb'double' and \verb'float') which are the valid options for \verb'type' in
+the signature below.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Set
+    (
+        // input
+        ParU_Control_enum parameter,    // parameter to set
+        type c,                         // value to set it to
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim}}
+
+The \verb'ParU_Control_enum parameter' defines which parameter to set,
+described below.
+
+    {\footnotesize
+    \begin{verbatim}
+    // enum for ParU_Set/ParU_Get for Control object
+    typedef enum
+    {
+
+        // int64_t parameters for ParU_Set and ParU_Get:
+        PARU_CONTROL_MAX_THREADS = 1001,          // max number of threads
+        PARU_CONTROL_STRATEGY = 1002,             // ParU strategy
+        PARU_CONTROL_UMFPACK_STRATEGY = 1003,     // UMFPACK strategy
+        PARU_CONTROL_ORDERING = 1004,             // UMFPACK ordering
+        PARU_CONTROL_RELAXED_AMALGAMATION = 1005, // goal for # pivots in fronts
+        PARU_CONTROL_PANEL_WIDTH = 1006,          // # of pivots in a panel
+        PARU_CONTROL_DGEMM_TINY = 1007,           // dimension of tiny dgemm's
+        PARU_CONTROL_DGEMM_TASKED = 1008,         // dimension of tasked dgemm's
+        PARU_CONTROL_DTRSM_TASKED = 1009,         // dimension of tasked dtrsm's
+        PARU_CONTROL_PRESCALE = 1010,             // prescale input matrix
+        PARU_CONTROL_SINGLETONS = 1011,           // filter singletons, or not
+        PARU_CONTROL_MEM_CHUNK = 1012,            // chunk size of memset and memcpy
+
+        // int64_t parameter, for ParU_Get only:
+        PARU_CONTROL_OPENMP = 1013,               // if ParU compiled with OpenMP;
+                                                  // (for ParU_Get only, not set)
+
+        // double parameters for ParU_Set and ParU_Get:
+        PARU_CONTROL_PIVOT_TOLERANCE = 2001,      // pivot tolerance
+        PARU_CONTROL_DIAG_PIVOT_TOLERANCE = 2002, // diagonal pivot tolerance
+
+        // pointer to const string (const char **), for ParU_Get only:
+        PARU_CONTROL_BLAS_LIBRARY_NAME = 3001,    // BLAS library used
+        PARU_CONTROL_FRONT_TREE_TASKING = 3002,   // parallel or sequential
+
+    }
+    ParU_Control_enum ; \end{verbatim}}
+
+    For integer parameters:
+
+    \begin{itemize}
+    \item \verb'PARU_CONTROL_MAX_THREADS': % max number of threads
+        number of OpenMP threads to use.  If zero or negative, the value is
+        obtained from \verb'omp_get_max_threads'.
+
+    \item \verb'PARU_CONTROL_STRATEGY': % ParU strategy
+        Ordering and factorization strategy to use.
+
+        \begin{itemize}
+        \item \verb'PARU_STRATEGY_AUTO':  ParU selects its strategy
+            automatically, based on the symbolic analysis of the input matrix,
+            by selecting whichever strategy that UMFPACK selects.
+
+        \item \verb'PARU_STRATEGY_UNSYMMETRIC':
+            % ParU will order columns of the matrix $A'A$ via COLAMD or METIS.
+            During numerical factorization, no preference is
+            given for diagonal entries when looking for pivots.
+        \item \verb'PARU_STRATEGY_SYMMETRIC':
+            % ParU will order the columns of the matrix $A+A'$ via AMD or METIS.
+            During numerical factorization, diagonal entries are given
+            preference when looking for pivots.  This strategy works well when
+            the nonzero pattern of the matrix is mostly symmetric, and when the
+            diagonal of the matrix is mostly zero-free.
+
+        \end{itemize}
+
+    \item \verb'PARU_CONTROL_UMFPACK_STRATEGY': % UMFPACK strategy
+        The ordering strategy used by UMFPACK.  ParU uses UMFPACK for its
+        ordering and symbolic analysis phases.  The ParU and UMFPACK strategies
+        are normally the same, but there are cases where best performance is
+        obtained with different strategies.
+
+        \begin{itemize}
+        \item \verb'UMFPACK_STRATEGY_AUTO':  UMFPACK selects its strategy
+            automatically, based on the symbolic analysis of the input matrix.
+            Let $S$ be the matrix found by UMFPACK after it removes the row and
+            column {\em singletons} (defined below).  If the singleton removal
+            preserves the diagonal of $A$, the nonzero pattern of $S$ has a
+            {\em symmetry} $\sigma \ge 0.3$, and the diagonal of $S$ is at
+            least 90\% nonzero, then the symmetric strategy is chosen.
+            Otherwise, the unsymmetric strategy is chosen.
+
+            The {\em symmetry} $\sigma$ of ${S}$ is defined as the number of
+            {\em matched} off-diagonal entries, divided by the total number of
+            off-diagonal entries.  An entry $s_{ij}$ is matched if $s_{ji}$ is
+            also an entry.  They need not be numerically equal.  An {\em entry}
+            is a value in $A$ which is present in the input data structure.
+            All nonzeros are entries, but some entries may be numerically zero.
+
+            A {\em row singleton} is an entry $a_{ij}$ with a single entry in
+            the $i$th row of the matrix $A$.  A {\em column singleton} is an
+            entry $a_{ij}$ with a single entry in the $j$th column of the
+            matrix $A$.  When a singleton $a_{ij}$ is found, row $i$ and column
+            $j$ are removed and the process repeats.  In the final pruned
+            matrix, all rows and columns have at least two entries.
+
+        \item \verb'UMFPACK_STRATEGY_UNSYMMETRIC': UMFPACK will order columns
+            of the matrix $A'A$ via COLAMD or METIS.
+
+        \item \verb'UMFPACK_STRATEGY_SYMMETRIC': UMFPACK will order the columns
+            of the matrix $A+A'$ via AMD or METIS.
+
+        \end{itemize}
+
+    \item \verb'PARU_CONTROL_ORDERING': % UMFPACK ordering
+
+        The default ordering is \verb'PARU_ORDERING_METIS_GUARD', which provides
+        low fill-in.  However, this ordering can be costly to compute.  It is
+        best suited to the case when multiple matrices with the same nonzero
+        pattern are being factorized, where the symbolic analysis is just
+        performed once, and reused for each of the subsequent numerical
+        factorizations.
+
+        For a one-off factorization of a single matrix,
+        \verb'PARU_ORDERING_AMD' can be faster; the ordering is much faster to
+        compute than METIS, and the quality of the ordering (which determines
+        the fill-in and flop count in the numerical factorization) can often be
+        acceptable.  This ordering option uses AMD when using the symmetric
+        strategy, or COLAMD when using the unsymmetric strateg.
+
+        \begin{itemize}
+        \item \verb'PARU_ORDERING_AMD':
+            use AMD on $A+A'$ (symmetric strategy) or COLAMD (unsymmetric
+            strategy), which orders $A'A$ without forming it explicitly.
+        \item \verb'PARU_ORDERING_METIS': use METIS on $A+A'$ (symmetric
+            strategy) or $A'A$ (unsymmetric strategy), where $A'A$ is
+            explicitly formed.
+        \item \verb'PARU_ORDERING_METIS_GUARD':
+            use METIS, AMD, or COLAMD.  This is the default.
+            Symmetric strategy: always use METIS on
+            $A+A'$.  Unsymmetric strategy: use METIS on $A'A$, unless $A$ has
+            one or more rows with $3.2\sqrt{n}$ or more entries.  In that case,
+            $A'A$ is very costly to form, and COLAMD is used instead of METIS.
+        \item \verb'PARU_ORDERING_CHOLMOD':
+            use CHOLMOD (AMD/COLAMD then METIS, see above).
+        \item \verb'PARU_ORDERING_BEST':
+            try many orderings and pick the best one found.
+        \item \verb'PARU_ORDERING_NONE':
+            natural ordering.  The permutations $P$ and $Q$ are identity,
+            unless singletons are removed prior to factorization.
+        \end{itemize}
+
+    \item \verb'PARU_CONTROL_RELAXED_AMALGAMATION': % goal # pivots in fronts
+        threshold for relaxed amalgamation. When constructing its frontal
+        matrices, ParU attempts to ensure that all frontal matrices contain at
+        least this many pivot columns.  Values less than zero are treated as
+        the default (32), and values greater than 512 are treated as 512.
+
+    \item \verb'PARU_CONTROL_PANEL_WIDTH': % # of pivots in a panel
+        Width of panel for dense factorization of
+        each frontal matrix.
+
+    \item \verb'PARU_CONTROL_DGEMM_TINY': % dimension of tiny dgemm's
+        Do not call the BLAS \verb'dgemm' routine if all dimenions of its dense
+        matrices are small than this threshold.
+
+    \item \verb'PARU_CONTROL_DGEMM_TASKED': % dimension of tasked dgemm's
+        When calling \verb'dgemm', if any dimension of its matriices are at or
+        above this threshold, then a tasked variant of \verb'dgemm' is used.
+        For the Intel MKL BLAS library, this is a standard call to
+        \verb'dgemm', controlled by \verb'mkl_set_num_threads_local'.  For
+        other BLAS library, ParU makes multiple calls to \verb'dgemm' using a
+        single thread each.
+
+    \item \verb'PARU_CONTROL_DTRSM_TASKED': % dimension of tasked dtrsm's
+        When calling \verb'dtrsm', if any dimension of its matriices are at or
+        above this threshold, then a tasked variant of \verb'dtrsm' is used.
+        For the Intel MKL BLAS library, this is a standard call to
+        \verb'dtrsm', controlled by \verb'mkl_set_num_threads_local'.  For
+        other BLAS library, ParU makes multiple calls to \verb'dtrsm' using a
+        single thread each.
+
+    \item \verb'PARU_CONTROL_PRESCALE': % prescale input matrix, or not
+
+        \begin{itemize}
+        \item \verb'PARU_PRESCALE_MAX':  each row is scaled by
+        the maximum absolute value in the row.
+        \item \verb'PARU_PRESCALE_SUM':  each row is scaled by
+        the sum of absolute values in the row.
+        \item \verb'PARU_PRESCALE_NONE': no scaling is performed.
+        \end{itemize}
+
+    \item \verb'PARU_CONTROL_SINGLETONS': % filter singletons, or not
+        If nonzero, singletons are permuted to the front of the matrix before
+        factorization.  If zero, singletons are left as-is and not treated
+        specially.
+
+    \item \verb'PARU_CONTROL_MEM_CHUNK': % chunk size of memset and memcpy
+        chunk size for parallel memset and memcpy.
+    \end{itemize}
+
+    For \verb'double' parameters:
+
+    \begin{itemize}
+    \item \verb'PARU_CONTROL_PIVOT_TOLERANCE': % pivot tolerance
+        Pivot tolerance for off-diagonal pivots, or for all pivots when using
+        the unsymmetric strategy.  A pivot is chosen if it is at least as large
+        as 0.1 (default) times the maximum absolute value in its column.  This
+        threshold allows for the selection of sparse pivot rows.  Standard
+        partial pivoting is used with the tolerance is 1.0.
+
+    \item \verb'PARU_CONTROL_DIAG_PIVOT_TOLERANCE': % diagonal pivot tolerance
+        Pivot tolerance for diagonal pivots when using the symmetric strategy.
+
+    \end{itemize}
+
+Default values of Control parameters are defined below:
+
+    {\footnotesize
+    \begin{verbatim}
+    #define PARU_DEFAULT_MAX_THREADS            (0)
+    #define PARU_DEFAULT_STRATEGY               PARU_STRATEGY_AUTO
+    #define PARU_DEFAULT_UMFPACK_STRATEGY       UMFPACK_STRATEGY_AUTO
+    #define PARU_DEFAULT_ORDERING               PARU_ORDERING_METIS_GUARD
+    #define PARU_DEFAULT_RELAXED_AMALGAMATION   (32)
+    #define PARU_DEFAULT_PANEL_WIDTH            (32)
+    #define PARU_DEFAULT_DGEMM_TINY             (4)
+    #define PARU_DEFAULT_DGEMM_TASKED           (512)
+    #define PARU_DEFAULT_DTRSM_TASKED           (4096)
+    #define PARU_DEFAULT_PRESCALE               PARU_PRESCALE_MAX
+    #define PARU_DEFAULT_SINGLETONS             (1)
+    #define PARU_DEFAULT_MEM_CHUNK              (1024*1024)
+    #define PARU_DEFAULT_PIVOT_TOLERANCE        (0.1)
+    #define PARU_DEFAULT_DIAG_PIVOT_TOLERANCE   (0.001) \end{verbatim}}
+
+Refer to the next section for how to use \verb'ParU_Get' to query
+the current settings of parameters in the Control object.
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Get}: get information from a ParU opaque object}
+\label{get}
+%-------------------------------------------------------------------------------
+
+The \verb'ParU_Get' method returns properties fron any of the three opaque ParU
+data structures: the \verb'ParU_Control' object, the \verb'ParU_Symbolic'
+object containing a symbolic analysis, and the \verb'ParU_Numeric' object
+containing a numeric factorization.
+
+There are several signatures for \verb'ParU_Get' depending on which
+object is being queried.  To query the \verb'ParU_Control' object,
+the \verb'ParU_Control_enum' is used (see Section~\ref{set}).  To query the
+other two objects (\verb'ParU_Symbolic' and  \verb'ParU_Numeric'), the
+\verb'ParU_Get_enum' is used, described below.
+
+    {\footnotesize
+    \begin{verbatim}
+    // enum for ParU_Get for Symbolic/Numeric objects
+    typedef enum
+    {
+        // int64_t scalars:
+        PARU_GET_N = 0,                 // # of rows/columns of A and its factors
+        PARU_GET_ANZ = 1,               // # of entries in input matrix
+        PARU_GET_LNZ_BOUND = 2,         // # of entries held in L
+        PARU_GET_UNZ_BOUND = 3,         // # of entries held in U
+        PARU_GET_NROW_SINGLETONS = 4,   // # of row singletons
+        PARU_GET_NCOL_SINGLETONS = 5,   // # of column singletons
+        PARU_GET_STRATEGY = 6,          // strategy used by ParU
+        PARU_GET_UMFPACK_STRATEGY = 7,  // strategy used by UMFPACK
+        PARU_GET_ORDERING = 8,          // ordering used by UMFPACK
+
+        // int64_t arrays of size n:
+        PARU_GET_P = 101,               // partial pivoting row ordering
+        PARU_GET_Q = 102,               // fill-reducing column ordering
+
+        // double scalars:
+        PARU_GET_FLOPS_BOUND = 201,     // flop count for factorization (bound)
+        PARU_GET_RCOND_ESTIMATE = 202,  // rcond estimate
+        PARU_GET_MIN_UDIAG = 203,       // min (abs (diag (U)))
+        PARU_GET_MAX_UDIAG = 204,       // max (abs (diag (U)))
+
+        // double array of size n:
+        PARU_GET_ROW_SCALE_FACTORS = 301,   // row scaling factors
+    }
+    ParU_Get_enum ; \end{verbatim}}
+
+Use the following signatures to query the symbolic or numeric factorization:
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Get              // get int64_t from the symbolic/numeric objects
+    (
+        // input:
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        ParU_Get_enum field,        // field to get
+        // output:
+        int64_t *result,            // int64_t result: a scalar or an array
+        // control:
+        ParU_Control Control
+    ) ;
+
+    ParU_Info ParU_Get              // get double from the symbolic/numeric objects
+    (
+        // input:
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        ParU_Get_enum field,        // field to get
+        // output:
+        double *result,             // double result: a scalar or an array
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim}}
+
+These fields are described below.
+
+\begin{itemize}
+
+\item \verb'PARU_GET_N': the number of rows and columns of the
+    matrices $A$, $L$, and $U$.
+
+\item \verb'PARU_GET_ANZ': the number of entries in the input matrix $A$.
+
+\item \verb'PARU_GET_LNZ_BOUND': the number of entries held in the data
+    structure for $L$.  This is an upper bound on the number of nonzeros
+    in $L$, because it includes extra zeros due to amalgamation.
+
+\item \verb'PARU_GET_UNZ_BOUND': the number of entries held in the data
+    structure for $U$.  This is an upper bound on the number of nonzeros
+    in $U$, because it includes extra zeros due to amalgamation.
+
+\item \verb'PARU_GET_NROW_SINGLETONS': number of row singletons, which
+    are rows of $A$ with just a single entry (or become so when other
+    singletons are removed).  These become diagonal pivot entries,
+    where the corresponding row of $U$ has just a single entry.
+
+\item \verb'PARU_GET_NCOL_SINGLETONS': number of column singletons, which
+    are columns of $A$ with just a single entry (or become so when other
+    singletons are removed).  These become diagonal pivot entries,
+    where the corresponding column of $L$ has just a single entry.
+
+\item \verb'PARU_GET_STRATEGY': the strategy selected by ParU, either
+    \verb'PARU_STRATEGY_UNSYMMETRIC' or
+    \verb'PARU_STRATEGY_SYMMETRIC'.
+
+\item \verb'PARU_GET_UMFPACK_STRATEGY': the strategy selected by
+    UMFPACK for the symbolic analysis phase of ParU, either
+    \verb'UMFPACK_STRATEGY_UNSYMMETRIC' or \newline
+    \verb'UMFPACK_STRATEGY_SYMMETRIC'.
+
+\item \verb'PARU_GET_ORDERING':
+    The ordering used during the symbolic analysis phase of ParU.
+    See the list in Section~\ref{set} under the description of
+    \verb'PARU_CONTROL_ORDERING'.
+
+% // int64_t arrays of size n:
+\item \verb'PARU_GET_P': partial pivoting row ordering,
+    an \verb'int64_t' array of size \verb'n' where $A$ is
+    \verb'n'-by-\verb'n'.
+
+\item \verb'PARU_GET_Q': fill-reducing column ordering,
+    an \verb'int64_t' array of size \verb'n' where $A$ is
+    \verb'n'-by-\verb'n'.
+
+% // double scalars:
+\item \verb'PARU_GET_FLOPS_BOUND':
+    an upper bound on the number of floating-operations
+    performed to compute the LU factorization.  This includes
+    extra flops due to amalgamation of frontal matrices.
+    It does not include the prescaling of $A$, which takes
+    an additional \verb'anz' flops (see \verb'PARU_GET_ANZ').
+
+\item \verb'PARU_GET_RCOND_ESTIMATE': a rough estimate of the
+    reciprical of the condition number of $A$, equal to the
+    minimum absolute value on the diagonal of $U$,
+    divided by the
+    maximum absolute value on the diagonal of $U$.
+\item \verb'PARU_GET_MIN_UDIAG':
+    the minimum absolute value on the diagonal of $U$.
+\item \verb'PARU_GET_MAX_UDIAG':
+    the maximum absolute value on the diagonal of $U$.
+
+% // double array of size n:
+\item \verb'PARU_GET_ROW_SCALE_FACTORS':
+    The row scaling factors, a \verb'double' array of size \verb'n'.
+\end{itemize}
 
 
-\item \verb'SuiteSparse/ParU/Include/ParU_C.h' describes
-the C-callable functions.
+For example, to get a copy of the size-n column permutation vector from the
+Symbolic object:
 
-\end{enumerate}
+    {\footnotesize
+    \begin{verbatim}
+    int64_t Q [n] ;
+    ParU_Get (Sym, Num, PARU_GET_Q, Q, Control) ; \end{verbatim}}
 
-There are C/C++ options to control ParU, which is an input argument to several 
-routines. When you make C++ \verb'ParU_Control' object, it is initialized with 
-default values. The user can change the values. When using C  
-\verb'ParU_C_Control', you have to fully initialize it or call
-\verb'ParU_C_Init_Control' before using it.
+Most of the \verb'int64_t' results can be obtained with a NULL numeric object,
+with the exception of the row permutation \verb'P', and the count of the number
+of entries in the \verb'L' and \verb'U' factors.
+All of the \verb'double' results require both the \verb'Sym' and \verb'Num'
+objects to be valid.
+
+The following three signatures are available for querying contents of the
+Control object:
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Get              // get int64_t parameter from Control
+    (
+        // input
+        ParU_Control_enum field,    // field to get
+        // output:
+        int64_t *c,                 // value of field
+        // control:
+        ParU_Control Control
+    ) ;
+
+    ParU_Info ParU_Get              // get double parameter from Control
+    (
+        // input
+        ParU_Control_enum field,    // field to get
+        // output:
+        double *c,                  // value of field
+        // control:
+        ParU_Control Control
+    ) ;
+
+    ParU_Info ParU_Get              // get string from Control
+    (
+        // input:
+        ParU_Control_enum field,    // field to get
+        // output:
+        const char **result,        // string result
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim}}
+
+The parameters that can be returned are the same as those described in
+Section~\ref{set}, with three additional parameters that can be queried by
+\verb'ParU_Get' but not set with \verb'ParU_Set'.  Two cases return string that
+is owned by the library and must not be modified:
+
+    {\footnotesize
+    \begin{verbatim}
+    char *blas_libary_name, *front_tasking ;
+    ParU_Get (PARU_CONTROL_BLAS_LIBRARY_NAME, &blas_name, Control)) ;
+    ParU_Get (PARU_CONTROL_FRONT_TREE_TASKING, &front_tasking, Control)) ; \end{verbatim}}
+
+A final case returns true if ParU was compiled with OpenMP, or false otherwise:
+
+    {\footnotesize
+    \begin{verbatim}
+    int64_t openmp_used ;
+    ParU_Get (PARU_CONTROL_OPENMP , &openmp_used, Control)) ; \end{verbatim}}
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Analyze}: symbolic analysis}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Analyze
+    (
+        // input:
+        cholmod_sparse *A,          // input matrix to analyze of size n-by-n
+        // output:
+        ParU_Symbolic *Sym_handle,  // output, symbolic analysis
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim}}
+
+    \verb'ParU_Analyze' takes as input a sparse matrix in the CHOLMOD data
+    structure, \verb'A'.  The matrix must be square, double precision, not
+    complex, and not held in the CHOLMOD symmetric storage format.  Refer to
+    the CHOLMOD documentation for details.  On output, the symbolic analysis
+    structure \verb'Sym' is created, passed in as \verb'&Sym'.  The symbolic
+    analysis can be used for different calls to \verb'ParU_Factorize' for
+    matrices that have the same sparsity pattern but different numerical
+    values.  The symbolic analysis structure must be freed by
+    \verb'ParU_FreeSymbolic'.
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Factorize}: numerical factorization}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Factorize
+    (
+        // input:
+        cholmod_sparse *A,          // input matrix to factorize
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        // output:
+        ParU_Numeric *Num_handle,
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim}}
+
+    \verb'ParU_Factorize' performs the numerical factorization of its input
+    sparse matrix \verb'A'.  The symbolic analsys \verb'Sym' must have been
+    created by a prior call to \verb'ParU_Analyze' with the same matrix
+    \verb'A', or one with the same sparsity pattern as the one passed to
+    \verb'ParU_Factorize'.  On output, the \verb'&Num' structure is created.
+    The numeric factorization structure must be freed by
+    \verb'ParU_FreeNumeric'.
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Solve}: solve a linear system, $Ax=b$}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_Solve' solves a sparse linear system $Ax=b$ for a sparse
+    matrix \verb'A' and vectors \verb'x' and \verb'b', or matrices
+    \verb'X' and \verb'B'.  The matrix \verb'A' must have been factorized
+    by \verb'ParU_Factorize', and the \verb'Sym' and \verb'Num' structures
+    from that call must be passed to this method.
+
+    The method has four overloaded signatures, so that it can handle a single
+    right-hand-side vector or a matrix with multiple right-hand-sides, and it
+    provides the option of overwriting the input right-hand-side(s) with the
+    solution(s).
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Solve            // solve Ax=b, overwriting b with solution x
+    (
+        // input:
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        // input/output:
+        double *x,                  // vector of size n-by-1; right-hand on input,
+                                    // solution on output
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Solve            // solve Ax=b
+    (
+        // input:
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        double *b,                  // vector of size n-by-1
+        // output
+        double *x,                  // vector of size n-by-1
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Solve            // solve AX=B, overwriting B with solution X
+    (
+        // input
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        int64_t nrhs,               // # of right-hand sides
+        // input/output:
+        double *X,                  // X is n-by-nrhs, where A is n-by-n;
+                                    // holds B on input, solution X on input
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Solve            // solve AX=B
+    (
+        // input
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        int64_t nrhs,               // # of right-hand sides
+        double *B,                  // n-by-nrhs, in column-major storage
+        // output:
+        double *X,                  // n-by-nrhs, in column-major storage
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_LSolve}: solve a linear system, $Lx=b$}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_LSolve' solves a lower triangular system, $Lx=b$ with vectors
+    $x$ and $b$, or $LX=B$ with matrices $X$ and $B$, using the lower
+    triangular factor computed by \verb'ParU_Factorize'.  No scaling or
+    permutations are used.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_LSolve           // solve Lx=b
+    (
+        // input
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        // input/output:
+        double *x,                  // n-by-1, in column-major storage;
+                                    // holds b on input, solution x on input
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_LSolve           // solve LX=B
+    (
+        // input
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        int64_t nrhs,               // # of right-hand-sides (# columns of X)
+        // input/output:
+        double *X,                  // X is n-by-nrhs, where A is n-by-n;
+                                    // holds B on input, solution X on input
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_USolve}: solve a linear system, $Ux=b$}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_USolve' solves an upper triangular system, $Ux=b$ with vectors
+    $x$ and $b$, or $UX=B$ with matrices $X$ and $B$, using the upper
+    triangular factor computed by \verb'ParU_Factorize'.  No scaling or
+    permutations are used.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_USolve           // solve Ux=b
+    (
+        // input
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        // input/output
+        double *x,                  // n-by-1, in column-major storage;
+                                    // holds b on input, solution x on input
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_USolve           // solve UX=B
+    (
+        // input
+        const ParU_Symbolic Sym,    // symbolic analysis from ParU_Analyze
+        const ParU_Numeric Num,     // numeric factorization from ParU_Factorize
+        int64_t nrhs,               // # of right-hand-sides (# columns of X)
+        // input/output:
+        double *X,                  // X is n-by-nrhs, where A is n-by-n;
+                                    // holds B on input, solution X on input
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Perm}: permute and scale a dense vector or matrix}
+\label{perm}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_Perm' permutes and optionally scales a vector $b$ or matrix $B$.
+    If the input \verb's' is \verb'NULL', no scaling is applied.  The
+    permutation vector \verb'P' has size \verb'n'.  If the $k$th index in the
+    permutation is row $i$, then \verb'i = P[k]'.
+
+    For the vector case, the output is $x(k) = b(P(k)) / s(P(k))$, or
+    $x(k) = b(P(k))$, or if \verb's' is \verb'NULL', for all $k$ in the range 0
+    to $n-1$.
+
+    For the matrix case, the output is $X(k,j) = B(P(k),j) / s(P(k))$ for all
+    rows $k$ and all columns $j$ of $X$ and $B$.  If \verb's' is \verb'NULL',
+    then the output is $X(k,j) = B(P(k),j)$.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Perm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size n
+        const double *s,    // vector of size n (optional)
+        const double *b,    // vector of size n
+        int64_t n,          // length of P, s, B, and X
+        // output
+        double *x,          // vector of size n
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Perm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size nrows
+        const double *s,    // vector of size nrows (optional)
+        const double *B,    // array of size nrows-by-ncols
+        int64_t nrows,      // # of rows of X and B
+        int64_t ncols,      // # of columns of X and B
+        // output
+        double *X,          // array of size nrows-by-ncols
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_InvPerm}: permute and scale a dense vector or matrix}
+\label{invperm}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_InvPerm' permutes and optionally scales a vector $b$ or matrix
+    $B$.  If the input \verb's' is \verb'NULL', no scaling is applied.  The
+    permutation vector \verb'P' has size \verb'n', and its inverse is
+    implicitly used by this method.  If the $k$th index in the permutation is
+    row $i$, then \verb'i = P[k]'.
+
+    For the vector case, the output is $x(P(k)) = b(k) / s(P(k))$, or
+    $x(P(k)) = b(k)$, or if \verb's' is \verb'NULL', for all $k$ in the range 0
+    to $n-1$.
+
+    For the matrix case, the output is $X(P(k),j) = B(k,j) / s(P(k))$ for all
+    rows $k$ and all columns $j$ of $X$ and $B$.  If \verb's' is \verb'NULL',
+    then the output is $X(P(k),j) = B(k,j)$.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_InvPerm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size n
+        const double *s,    // vector of size n (optional)
+        const double *b,    // vector of size n
+        int64_t n,          // length of P, s, B, and X
+        // output
+        double *x,          // vector of size n
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_InvPerm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size nrows
+        const double *s,    // vector of size nrows (optional)
+        const double *B,    // array of size nrows-by-ncols
+        int64_t nrows,      // # of rows of X and B
+        int64_t ncols,      // # of columns of X and B
+        // output
+        double *X,          // array of size nrows-by-ncols
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    The \verb'ParU_LSolve', \verb'ParU_USolve', \verb'ParU_Perm', and
+    \verb'ParU_InvPerm' can be used together to solve $Ax=b$ or $AX=B$.  For
+    example, if \verb't' is a temporary vector of size \verb'n', and $A$ is an
+    $n$-by-$n$ matrix, calling \verb'ParU_Solve' to solve $Ax=b$ is identical
+    to the following (ignoring any tests for error conditions):
+
+    {\footnotesize
+    \begin{verbatim}
+    int64_t P [n], Q [n] ;
+    double t [n], R [n] ;
+    ParU_Get (Sym, Num, PARU_GET_P, P, Control) ;
+    ParU_Get (Sym, Num, PARU_GET_Q, Q, Control) ;
+    ParU_Get (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R, Control) ;
+    ParU_Perm (P, Rs, b, n, t, Control) ;
+    ParU_LSolve (Sym, Num, t, Control) ;
+    ParU_USolve (Sym, Num, t, Control) ;
+    ParU_InvPerm (Q, NULL, t, n, x, Control) ; \end{verbatim} }
+
+    The numeric factorization \verb'Num' contains the row permutation vector
+    \verb'P' from partial pivoting, and the row scaling vector
+    \verb'R'.  The symbolic analysis structure \verb'Sym' contains the
+    fill-reducing column preordering, \verb'Q'.
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_Residual}: compute the residual}
+%-------------------------------------------------------------------------------
+
+    The \verb'ParU_Residual' function computes the relative residual of
+    $Ax=b$ or $AX=B$, in the 1-norm.  It also computes the 1-norm of $A$
+    and the solution $X$ or $x$.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Residual
+    (
+        // inputs:
+        cholmod_sparse *A,  // an n-by-n sparse matrix
+        double *x,          // vector of size n, solution to Ax=b
+        double *b,          // vector of size n
+        // output:
+        double &resid,      // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
+        double &anorm,      // 1-norm of A
+        double &xnorm,      // 1-norm of x
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_Residual
+    (
+        // inputs:
+        cholmod_sparse *A,  // an n-by-n sparse matrix
+        double *X,          // array of size n-by-nrhs, solution to AX=B
+        double *B,          // array of size n-by-nrhs
+        int64_t nrhs,
+        // output:
+        double &resid,      // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
+        double &anorm,      // 1-norm of A
+        double &xnorm,      // 1-norm of X
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_FreeNumeric}: free a numeric factorization}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_FreeNumeric
+    (
+        // input/output:
+        ParU_Numeric *Num_handle,       // numeric object to free
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_FreeSymbolic}: free a symbolic analysis}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_FreeSymbolic
+    (
+        // input/output:
+        ParU_Symbolic *Sym_handle,      // symbolic object to free
+        // control:
+        ParU_Control Control
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_FreeControl}: free a Control object}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_FreeControl
+    (
+        // input/output:
+        ParU_Control *Control_handle    // Control object to free
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\section{C Syntax}
+%-------------------------------------------------------------------------------
+
+The C interface is quite similar to the C++ interface.  The next sections
+describe the user-callable C functions, their prototypes, and what they can do.
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Version}: version of the ParU package}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Version (int ver [3], char date [128]) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Control}: parameters that control ParU}
+%-------------------------------------------------------------------------------
+
+    Any C ParU function can be passed a NULL pointer for its \verb'Control'
+    parameter.  In that case, defaults are used.  To use non-default
+    parameters, create a \verb'Control' object and then set its parameters.
+    The object is freed by \verb'ParU_C_FreeControl'.
+
+    The \verb'ParU_C_Control' structure contains parameters that control
+    various ParU options.  The object is created by \verb'ParU_C_InitControl',
+    modified by \verb'ParU_C_Set_Control_*', and deleted by
+    \verb'ParU_C_FreeControl'.  Its contents can be queried with
+    \verb'ParU_C_Get_Control_INT64'.  and \verb'ParU_C_Get_Control_FP64'.
+
+    Any ParU function can be passed a NULL pointer for its \verb'Control'
+    parameter.  In that case, defaults are used.  To use non-default
+    parameters, create a \verb'Control' object and then set its parameters.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_InitControl
+    (
+        ParU_C_Control *Control_C_handle    // Control object to create
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_FreeControl
+    (
+        ParU_C_Control *Control_handle_C    // Control object to free
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Get\_*}: get information from a ParU opaque object}
+%-------------------------------------------------------------------------------
+
+The \verb'ParU_C_Get_*' methods retrieve scalars or arrays from the C versions
+of the Control, Symbolic, or Numeric objects.  See Section~\ref{get} for
+details.
+
+    {\footnotesize
+    \begin{verbatim}
+
+    ParU_Info ParU_C_Get_INT64       // get int64_t contents of Sym_C and Num_C
+    (
+        // input:
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_Get_enum field,         // field to get
+        // output:
+        int64_t *result,             // int64_t result: a scalar or an array
+        // control:
+        ParU_C_Control Control_C
+    ) ;
+
+    ParU_Info ParU_C_Get_FP64        // get double contents of Sym_C and Num_C
+    (
+        // input:
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        ParU_Get_enum field,         // field to get
+        // output:
+        double *result,              // double result: a scalar or an array
+        // control:
+        ParU_C_Control Control_C
+    ) ;
+
+    ParU_Info ParU_C_Get_Control_INT64  // get int64_t contents of Control
+    (
+        // input:
+        ParU_Control_enum field,      // field to get
+        // output:
+        int64_t *result,              // int64_t result: a scalar or an array
+        // control:
+        ParU_C_Control Control_C
+    ) ;
+
+    ParU_Info ParU_C_Get_Control_FP64   // get double contents of Control
+    (
+        // input:
+        ParU_Control_enum field,      // field to get
+        // output:
+        double *result,               // int64_t result: a scalar or an array
+        // control:
+        ParU_C_Control Control_C
+    ) ;
+
+    ParU_Info ParU_C_Get_Control_CONSTCHAR   // get string from Control
+    (
+        // input:
+        ParU_Control_enum field,      // field to get
+        // output:
+        const char **result,          // string result
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
 
 
-Here is the list of control options (both in C and C++):
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Set\_Control\_*}: set Control parameters}
+%-------------------------------------------------------------------------------
 
-\vspace{0.1in}
-{\footnotesize
-\begin{tabular}{|lll|}
-\hline
-    \verb'ParU_Control' & default value & explanation  \\
-\hline\hline
-\verb'mem_chunk' & $1024*1024$ & chunk size for memset and memcpy\\
-\verb'paru_max_threads' & $0$ & initialized with \verb'omp_max_threads' \\
-\hline
-\verb'umfpack_ordering' & \verb'UMFPACK_ORDERING_AMD' & default UMFPACK ordering\\
-\verb'umfpack_strategy' & \verb'UMFPACK_STRATEGY_AUTO'& default UMFPACK strategy\\
-\verb'umfpack_default_singleton' & $1$ & default filter singletons if true\\
-\verb'relaxed_amalgamation_threshold' & 32 & threshold for relaxed amalgamation \\
-\hline
-\verb'scale' & 1 & if 1 matrix will be scaled using \verb'max_row'\\
-\verb'panel_width' & 32 & width of panel for dense factorizaiton\\
-\verb'paru_strategy' & \verb'PARU_STRATEGY_AUTO' & default strategy for ParU\\
-\verb'piv_toler' & $0.1$ & tolerance for accepting sparse pivots\\
-\verb'diag_toler' & $0.001$ & tolerance for accepting symmetric pivots\\
-\verb'trivial' & $4$ & Do not call BLAS for smaller dgemms\\
-\verb'worthwhile_dgemm' & $512$ & dgemms bigger than worthwhile are tasked\\
-\verb'worthwhile_trsm' & $4096$ & trsm bigger than worthwhile are tasked\\
-\hline
-\end{tabular}
-}
-\vspace{0.1in}
+The \verb'ParU_C_Set_Control_*' methods set parameters in the C version of the
+Control object.  See Section~\ref{control} for details.
 
-The first row of the options is either used in symbolic or numerical analysis.
-The second row of the options is used in the symbolic analysis. In the symbolic 
-analysis phase, only the matrix pattern is probed. 
-The third row of control options shows those that have an impact on numerical 
-analysis.
+    {\footnotesize
+    \begin{verbatim}
 
-\verb'paru_max_threads' is initalized by \verb'omp_max_threads' if the user do 
-not provide a smaller number.
+    ParU_Info ParU_C_Set_Control_INT64      // set int64_t parameter in Control
+    (
+        // input
+        ParU_Control_enum field,    // field to set
+        int64_t c,                  // value to set it to
+        // control:
+        ParU_C_Control Control_C
+    ) ;
 
-If \verb'paru_strategy' is set to \verb'PARU_STRATEGY_AUTO' ParU uses the same 
-strategy as UMFPACK. However, the user can ask UMFPACK for an unsymmetric 
-strategy but use a symmetric strategy for ParU. Usually, UMFPACK chooses a good 
-ordering; however, there might be cases where users prefer unsymmetric ordering on
-UMFPACK but symmetric computation on ParU.
-    
+    ParU_Info ParU_C_Set_Control_FP64       // set double parameter in Control
+    (
+        // input
+        ParU_Control_enum field,    // field to set
+        double c,                   // value to set it to
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Analyze}: symbolic analysis}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_C_Analyze' performs the symbolic analysis of a sparse
+        matrix, based solely on its nonzero pattern.  \verb'ParU_C_Analyze' is
+        called once and can be used for different \verb'ParU_C_Factorize' calls
+        for the matrices that have the same pattern but different numerical
+        values.  The symbolic analysis structure must be freed by
+        \verb'ParU_C_FreeSymbolic'.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Analyze
+    (
+        // input:
+        cholmod_sparse *A,  // input matrix to analyze of size n-by-n
+        // output:
+        ParU_C_Symbolic *Sym_handle_C,  // output, symbolic analysis
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Factorize}: numeric factorization}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_C_Factorize' computes the numeric factorization.  The
+    \verb'ParU_C_Symbolic' structure computed in \verb'ParU_C_Analyze' is an
+    input to this routine.  The numeric factorization structure must be freed
+    by \verb'ParU_C_FreeNumeric'.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Factorize
+    (
+        // input:
+        cholmod_sparse *A,              // input matrix to factorize of size n-by-n
+        const ParU_C_Symbolic Sym_C,    // symbolic analysis from ParU_Analyze
+        // output:
+        ParU_C_Numeric *Num_handle_C,   // output numerical factorization
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Solve\_A*}: solve a linear system, $Ax=b$}
+%-------------------------------------------------------------------------------
+
+    The \verb'ParU_C_Solve_Axx',  \verb'ParU_C_Solve_Axb',
+    \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB' methods solve a sparse
+    linear system $Ax=b$ for a sparse matrix \verb'A' and vectors \verb'x' and
+    \verb'b', or matrices \verb'X' and \verb'B'.  The matrix \verb'A' must have
+    been factorized by \verb'ParU_Factorize', and the \verb'Sym' and \verb'Num'
+    structures from that call must be passed to this method.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_Axx       // solve Ax=b, overwriting b with solution x
+    (
+        // input:
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        // input/output:
+        double *x,              // vector of size n-by-1; right-hand on input,
+                                // solution on output
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_Axb        // solve Ax=b
+    (
+        // input:
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        double *b,              // vector of size n-by-1
+        // output
+        double *x,              // vector of size n-by-1
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_AXX       // solve AX=B, overwriting B with solution X
+    (
+        // input
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        int64_t nrhs,
+        // input/output:
+        double *X,              // array of size n-by-nrhs in column-major storage,
+                                // right-hand-side on input, solution on output.
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_AXB       // solve AX=B, overwriting B with solution X
+    (
+        // input
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        int64_t nrhs,
+        double *B,              // array of size n-by-nrhs in column-major storage
+        // output:
+        double *X,              // array of size n-by-nrhs in column-major storage
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Solve\_L*}: solve a linear system, $Lx=b$}
+%-------------------------------------------------------------------------------
+
+    The \verb'ParU_C_Solve_Lxx' and \verb'ParU_C_Solve_LXX' methods solve lower
+    triangular systems, $Lx=b$ with vectors $x$ and $b$, or $LX=B$ with
+    matrices $X$ and $B$, using the lower triangular factor computed by
+    \verb'ParU_Factorize'.  No scaling or permutations are used.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_Lxx       // solve Lx=b, overwriting b with solution x
+    (
+        // input:
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        // input/output:
+        double *x,              // vector of size n-by-1; right-hand on input,
+                                // solution on output
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_LXX       // solve LX=B, overwriting B with solution X
+    (
+        // input
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        int64_t nrhs,
+        // input/output:
+        double *X,              // array of size n-by-nrhs in column-major storage,
+                                // right-hand-side on input, solution on output.
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Solve\_U*}: solve a linear system, $Ux=b$}
+%-------------------------------------------------------------------------------
+
+    The \verb'ParU_C_Solve_Uxx' and \verb'ParU_C_Solve_UXX' methods solve an
+    upper triangular system, $Ux=b$ or $UX=B$.  No scaling or permutation is
+    performed.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_Uxx       // solve Ux=b, overwriting b with solution x
+    (
+        // input:
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        // input/output:
+        double *x,              // vector of size n-by-1; right-hand on input,
+                                // solution on output
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Solve_UXX       // solve UX=B, overwriting B with solution X
+    (
+        // input
+        const ParU_C_Symbolic Sym_C, // symbolic analysis from ParU_C_Analyze
+        const ParU_C_Numeric Num_C,  // numeric factorization from ParU_C_Factorize
+        int64_t nrhs,
+        // input/output:
+        double *X,              // array of size n-by-nrhs in column-major storage,
+                                // right-hand-side on input, solution on output.
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Perm}: permute and scale a dense vector or matrix}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_C_Perm' and \verb'ParU_C_Perm_X' permutes and optionally scale a
+    dense vector or matrix.  Refer to Section \ref{perm} for details.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Perm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size n
+        const double *s,    // vector of size n (optional)
+        const double *b,    // vector of size n
+        int64_t n,          // length of P, s, B, and X
+        // output
+        double *x,          // vector of size n
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Perm_X
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size nrows
+        const double *s,    // vector of size nrows (optional)
+        const double *B,    // array of size nrows-by-ncols
+        int64_t nrows,      // # of rows of X and B
+        int64_t ncols,      // # of columns of X and B
+        // output
+        double *X,          // array of size nrows-by-ncols
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_InvPerm}: permute and scale a dense vector or matrix}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_C_InvPerm' and \verb'ParU_C_InvPerm_X' and permutes and
+    optionally scale a dense vector or matrix.  Refer to Section \ref{invperm}
+    for details.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_InvPerm
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size n
+        const double *s,    // vector of size n (optional)
+        const double *b,    // vector of size n
+        int64_t n,          // length of P, s, B, and X
+        // output
+        double *x,          // vector of size n
+        // control
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_InvPerm_X
+    (
+        // inputs
+        const int64_t *P,   // permutation vector of size nrows
+        const double *s,    // vector of size nrows (optional)
+        const double *B,    // array of size nrows-by-ncols
+        int64_t nrows,      // # of rows of X and B
+        int64_t ncols,      // # of columns of X and B
+        // output
+        double *X,          // array of size nrows-by-ncols
+        // control
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_Residual\_*}: compute the residual}
+%-------------------------------------------------------------------------------
+
+    \verb'ParU_C_Residual_bAx' and \verb'ParU_C_Residual_BAX' compute the
+    relative residual of $Ax=b$ or $AX=B$, in the 1-norm, and the 1-norm of $A$
+    and the solution $X$ or $x$.
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Residual_bAx
+    (
+        // inputs:
+        cholmod_sparse *A,  // an n-by-n sparse matrix
+        double *x,          // vector of size n
+        double *b,          // vector of size n
+        // output:
+        double *residc,     // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
+        double *anormc,     // 1-norm of A
+        double *xnormc,     // 1-norm of x
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_Residual_BAX
+    (
+        // inputs:
+        cholmod_sparse *A,  // an n-by-n sparse matrix
+        double *X,          // array of size n-by-nrhs
+        double *B,          // array of size n-by-nrhs
+        int64_t nrhs,
+        // output:
+        double *residc,     // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
+        double *anormc,     // 1-norm of A
+        double *xnormc,     // 1-norm of X
+        // control:
+        ParU_C_Control Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_FreeNumeric}: free a numeric factorization}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_FreeNumeric
+    (
+        ParU_C_Numeric *Num_handle_C,    // numeric object to free
+        // control:
+        ParU_C_Control *Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_FreeSymbolic}: free a symbolic analysis structure}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_FreeSymbolic
+    (
+        ParU_C_Symbolic *Sym_handle_C,   // symbolic object to free
+        // control:
+        ParU_C_Control *Control_C
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\subsection{{\sf ParU\_C\_FreeControl}: free a Control object}
+%-------------------------------------------------------------------------------
+
+    {\footnotesize
+    \begin{verbatim}
+    ParU_Info ParU_C_FreeControl
+    (
+        ParU_C_Control *Control_handle_C    // Control object to free
+    ) ; \end{verbatim} }
+
+%-------------------------------------------------------------------------------
+\section{Thread safety of {\sf malloc}, {\sf calloc}, {\sf realloc}, and
+{\sf free}}
+%-------------------------------------------------------------------------------
+
+ParU is a C++ library but uses the C memory manager for all of its memory
+allocations, for compatibility with the other packages in SuiteSparse.  It
+makes limited use of the C++ \verb'new' and \verb'delete', but overrides those
+functions to use \verb'SuiteSparse_malloc' and \verb'SuiteSparse_free'.  ParU
+relies on the memory manager routines defined by the \newline
+\verb'SuiteSparse_config'
+library (\verb'SuiteSparse_malloc', \verb'SuiteSparse_calloc', \newline
+\verb'SuiteSparse_realloc', and \verb'SuiteSparse_free').  By default, those
+routines relies on the C \verb'malloc', \verb'calloc', \verb'realloc', and
+\verb'free' methods, respectively.  They can be redefined; refer to the
+documentation of \verb'SuiteSparse_config' on how to do this.
+
+The \verb'malloc', \verb'calloc', \verb'realloc', and \verb'free' methods must
+be thread-safe, since ParU calls those methods from within its parallel tasks.
+All of their implementations in the standard C libraries that we are aware of
+are thread-safe.  However, if your memory manager routines are not thread-safe,
+ParU will fail catastrophically.
+
+%-------------------------------------------------------------------------------
+\section{Using ParU in MATLAB}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\subsection{Compiling ParU for MATLAB}
+%-------------------------------------------------------------------------------
+
+To use ParU in MATLAB, you must first compile the \verb'paru' mexFunction.
+In MATLAB, go to the \verb'ParU/MATLAB' directory and type \verb'paru_make'.
+Then add the \verb'ParU/MATLAB' directory to your MATLAB path for future use.
+
+For best performance, paru relies on functions unique to the Intel MKL BLAS.
+An optional input, \verb'paru_make(try_intel)', is true by default.
+\verb'paru_make' detects the BLAS library used by MATLAB and then attempts to
+use functions unique to the Intel MKL BLAS library
+(\verb'mkl*set_num_threads_local').  This may fail when \verb'paru' is
+compiled, in which case compilation is reattempted with \verb'try_intel'
+false).  If \verb'paru' fails when it runs, with a link error reporting that an
+an \verb'mkl_*' routine is not found, use \verb'paru_make(false)' to disable
+the Intel MKL functions.
+
+{\bf Limitations:}
+The built-in compiler used by the MATLAB \verb'mex' command on Windoes does not
+support OpenMP, so only parallelism within the BLAS can be used on Windows.
+
+%-------------------------------------------------------------------------------
+\subsection{Using ParU in MATLAB}
+%-------------------------------------------------------------------------------
+
+The basic usage \verb'x=paru(A,b)' solves the linear system $Ax=b$, computing
+\verb'x=A\b'.  The matrix \verb'A' must be sparse, square, non-singular, and
+real.
+
+Additional options are available to change \verb'paru''s behavior, and
+an additonal output parameter reports statistics on the algorithm:
+
+    \begin{verbatim}
+    \verb'[x,stats] = paru (A,b,opts)'
+    \end{verbatim}
+
+\verb'opts' is a struct containing the following fields.  Any field that is not
+recognized is ignored, and missing fields are treated as their defaults:
+
+\begin{itemize}
+
+    \item \verb'opts.strategy':  ordering strategy,
+        as a string (default: \verb"'auto'"):
+
+        \begin{itemize}
+        \item \verb"'auto'": the strategy is selected automatically.
+        \item \verb"'symmetric'": ordering of \verb"A+A'", with preference for
+            diagonal pivoting.  Works well for matrices with mostly symmetric
+            nonzero pattern.
+        \item \verb"'unsymmetric'": ordering \verb"A'*A", with no preference
+            for diagonal pivoting.  Works well for matrices with unsymmetric
+            nonzero pattern.
+        \end{itemize}
+
+    \item \verb'opts.tol':   relative pivot tolerance for off-diagonal entries
+    (default: 0.1).  Pivot entries must be 0.1 times the max absolute value in
+    its column.
+
+    \item \verb'opts.diagtol':   relative pivot tolerance for diagonal pivot
+    entries when using the symmetric strategy (default: 0.001).  A lower
+    tolerance for diagonal entries tends to reduce fill-in.
+
+    \item \verb'opts.ordering':  fill-reducing ordering option, as a string
+    (default: \verb"'amd'"):
+
+        \begin{itemize}
+        \item \verb"'amd'": AMD for the symmetric strategy, COLAMD for
+        unsymmetric.
+
+        \item \verb"'cholmod'": use CHOLMOD's ordering strategy: try AMD or
+        COLAMD, and then try METIS if the fill-in from AMD/COLAMD is high; then
+        selects the best ordering found.
+
+        \item \verb"'metis'": METIS on \verb"A+A'" for symmetric strategy,
+            \verb"A'*A" for the unsymmetric strategy.
+
+        \item \verb"'metis_guard'": use the \verb"'metis'" ordering unless the
+        matrix has one or more rows with $3.2\sqrt{n}$ entries, in which case
+        use \verb"'amd'".
+
+        \item \verb"'none'": no fill-reducing ordering.
+
+        \end{itemize}
+
+    \item \verb'opts.prescale': prescaling the input matrix
+        (default \verb"'max'").
+
+        \begin{itemize}
+        \item \verb"'none'": no prescaling.
+        \item \verb"'sum'": scale each row by the sum of the absolute values
+            of the row.  The prescaled matrix is $RA$ where
+            \verb'R(i,i) = 1/sum(abs(A(i,:)))'.
+        \item \verb"'max'": scale each row by the sum of the absolute values
+            of the row.  The prescaled matrix is $RA$ where
+            \verb'R(i,i) = 1/max(abs(A(i,:)))'.
+        \end{itemize}
+
+\end{itemize}
+
+\verb'stats' is an optional output that provides information on the ParU
+analysis and factorization of the matrix:
+
+\begin{itemize}
+    \item \verb'stats.analysis_time': symbolic analysis time in seconds.
+    \item \verb'stats.factorization_time': numeric factorization time in
+        seconds.
+    \item \verb'stats.solve_time': forward/backward solve time in seconds.
+    \item \verb'stats.strategy_used': symmetric or unsymmetric.
+    \item \verb'stats.ordering_used':
+        \verb"amd(A+A')", \verb"colamd(A)", \verb"metis(A+A')",
+        \verb"metis(A'*A)", or none.
+    \item \verb'stats.flops': flop count for LU factorization.
+    \item \verb'stats.lnz': number of entries in L.
+    \item \verb'stats.unz': number of entries in U.
+    \item \verb'stats.rcond': rough estimate of the recripical of the condition
+        number.
+    \item \verb'stats.blas': BLAS library used, as a string.
+    \item \verb'stats.front_tree_tasking': a string stating how the paru
+    mexFunction was compiled, whether or not tasking is available for
+    factorizing multiple fronts at the same time (\verb"'sequential'" or
+    \verb"'parallel'").  Parallel tasking is required for best performance, and
+    requires OpenMP tasking, which is available in OpenMP 4.0 and later.
+\end{itemize}
+
 %-------------------------------------------------------------------------------
 \section{Requirements and Availability}
 \label{summary}
 %-------------------------------------------------------------------------------
 
-ParU requires several Collected Algorithms of the ACM: CHOLMOD
-\cite{ChenDavisHagerRajamanickam09,DavisHager09} (version 1.7 or later), AMD
-\cite{AmestoyDavisDuff96,AmestoyDavisDuff03}, COLAMD
-\cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00} and UMFPACK 
-\cite{10.1145/992200.992206} for its
-ordering/analysis phase and for its basic sparse matrix data structure, and the
-BLAS \cite{dddh:90} for dense matrix computations on its frontal matrices. 
-An efficient implementation of the BLAS is strongly recommended, either
-vendor-provided (such as the Intel MKL, the AMD ACML, or the 
-Sun Performance Library) or other high-performance BLAS such as those of 
-\cite{GotoVanDeGeijn08}. Note that while ParU uses nested parallelism heavily
-the right options for the BLAS library must be chosen to get a good performance.
+ParU requires several Collected Algorithms of the ACM:
+CHOLMOD \cite{ChenDavisHagerRajamanickam09,DavisHager09},
+AMD \cite{AmestoyDavisDuff96,AmestoyDavisDuff03},
+COLAMD \cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00}
+and UMFPACK \cite{10.1145/992200.992206} for its ordering/analysis phase and
+for its basic sparse matrix data structure, and the BLAS \cite{dddh:90} for
+dense matrix computations on its frontal matrices.  An efficient implementation
+of the BLAS is strongly recommended, such as the Intel MKL, the AMD ACML,
+OpenBLAS, FLAME \cite{GotoVanDeGeijn08}. or vendor-provide BLAS. Note that
+while ParU uses nested parallelism heavily the right options for the BLAS
+library must be chosen to get a good performance.
 
-The use of OpenMP tasking is optional, but
-without it, only parallelism within the BLAS can be exploited (if available).
-See ParU/Doc/LICENSE for the license.
-Alternative licenses are also
+For best performance, the Intel MKL BLAS is required.  ParU relies on the
+\newline \verb'mkl_set_num_threads_local' function to select the number of
+threads to use for the BLAS calls from each of its own threads, which required
+nested parallelism.
+
+ParU also relies heavily on OpenMP tasking to factorize multiple frontal
+matrices at the same time, where each frontal matrix can also be factorized by
+multiple threads.  If tasking is not available, each frontal matrix is
+factorized one at a time (but still in parallel).  For best performance, nested
+parallelism is required.  However, when using the \verb'gcc' compiler on
+Windows and Mac, we have found that the OpenMP library can hang.  As a result,
+on those platforms, nested parallelism is disabled when using \verb'gcc'.
+If using \verb'gcc', use a recent compiler (version 7.5.0 fails; 12.2.0
+works).
+
+You can query ParU at run time to determine which BLAS library it is using, and
+whether or not it is compiled to use parallel or sequential factorization of
+its frontal matrix tree.  See \verb'ParU_Get' (Section~\ref{get}) for details.
+
+SuiteSparse uses a slightly modified version of METIS 5.1.0, distributed along
+with SuiteSparse itself.  Its use is optional, however. ParU uses AMD as its
+default ordering. METIS tends to give orderings that are good for parallelism.
+However, METIS itself can be slower than AMD. As a result, the symbolic
+analysis using METIS can be slow, but usually, the factorization is faster.
+Therefore, depending on your use case, either use METIS, or you can compile and
+run your code without using METIS.  If you are using METIS on an unsymmetric
+case, UMFPACK must form the Matrix $A^{T}A$. This matrix can have many entries
+it takes a lot of resources to form it. To avoid such conditions, ParU uses the
+ordering strategy \verb'PARU_ORDERING_METIS_GUARD' by default.  This
+ordering strategy uses COLAMD instead of METIS in when $A^T A$ is too costly to
+construct.
+
+This modified version of METIS is built into CHOLMOD itself, with all
+functions renamed, so it does not conflict with a standard METIS library.
+The unmodified METIS library can be safely linked with an application that
+uses the modified METIS inside CHOLMOD, without any linking conflicts.
+
+The use of OpenMP tasking is optional, but without it, only parallelism within
+the BLAS can be exploited (if available).  ParU depends on parallel tasking to
+factorize multiple fronts at the same time, and performance will suffer if the
+compiler and BLAS library are not suitable for this method.
+
+See \verb'ParU/LICENSE.txt' for the license.  Alternative licenses are also
 available; contact the authors for details.
 
 %-------------------------------------------------------------------------------

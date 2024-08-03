@@ -85,8 +85,7 @@ int main( int argc, char *argv[] )
         return (1) ;
     }
 
-    // Note, there are a few matrices in BasisLIB that dont fit in double
-    // Need to use the other tripread for those.
+    // Read in the matrix, assuming that it is stored in MPZ format.
     SPEX_TRY (spex_demo_tripread(&A, mat_file, SPEX_MPZ, option));
     fclose(mat_file);
     mat_file = NULL ;

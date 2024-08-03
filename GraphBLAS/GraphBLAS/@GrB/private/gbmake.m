@@ -47,17 +47,55 @@ end
 
 make_all = (isequal (what, 'all')) ;
 
+% use -R2018a for the new interleaved complex API
 flags = '-O -R2018a -DGBNCPUFEAT' ;
 
-% use -R2018a for the new interleaved complex API
+if ispc
+    % First do the following in GraphBLAS/build, in the Windows console:
+    %
+    %   cmake ..
+    %   cmake --build . --config Release
+    %
+    % The above commands require MS Visual Studio.  The graphblas.lib is
+    % compiled and placed in GraphBLAS/build/Release.  Then in the
+    % Command Window do:
+    %
+    %   gbmake
+    %
+    if (need_rename)
+        library_path = sprintf ('%s/../../build/Release', pwd) ;
+    else
+        library_path = sprintf ('%s/../../../build/Release', pwd) ;
+    end
+else
+    % First do one the following in GraphBLAS (use JOBS=n for a parallel
+    % build, which is faster):
+    %
+    %   make
+    %   make JOBS=8
+    %   sudo make install
+    %
+    % If you can't do "sudo make install" then add the GraphBLAS/build
+    % folder to your LD_LIBRARY_PATH.  Then in this folder in the
+    % Command Window do:
+    %
+    %   gbmake
+    %
+    if (need_rename)
+        library_path = sprintf ('%s/../../build', pwd) ;
+    else
+        library_path = sprintf ('%s/../../../build', pwd) ;
+    end
+end
+
 if (have_octave)
     % Octave does not have the new MEX classdef object and as of version 7, the
     % mex command doesn't handle compiler options the same way.
     flags = [flags ' -std=c11 -fopenmp -fPIC -Wno-pragmas' ] ;
 else
+    % remove -ansi from CFLAGS and replace it with -std=c11
     try
         if (strncmp (computer, 'GLNX', 4))
-            % remove -ansi from CFLAGS and replace it with -std=c11
             cc = mex.getCompilerConfigurations ('C', 'Selected') ;
             env = cc.Details.SetEnv ;
             c1 = strfind (env, 'CFLAGS=') ;
@@ -76,10 +114,21 @@ else
         end
     catch
     end
-    if (~ismac && isunix)
-        flags = [ flags   ' CFLAGS="$CXXFLAGS -fopenmp -fPIC -Wno-pragmas" '] ;
-        flags = [ flags ' CXXFLAGS="$CXXFLAGS -fopenmp -fPIC -Wno-pragmas" '] ;
-        flags = [ flags  ' LDFLAGS="$LDFLAGS  -fopenmp -fPIC" '] ;
+    % revise compiler flags for MATLAB
+    if (ismac)
+        cflags = '' ;
+        ldflags = '-fPIC' ;
+        rpath = '-rpath ' ;
+    elseif (isunix)
+        cflags = '-fopenmp' ;
+        ldflags = '-fopenmp -fPIC' ;
+        rpath = '-rpath=' ;
+    end
+    if (ismac || isunix)
+        rpath = sprintf (' -Wl,%s''''%s'''' ', rpath, library_path) ;
+        flags = [ flags ' CFLAGS=''$CFLAGS ' cflags ' -Wno-pragmas'' '] ;
+        flags = [ flags ' CXXFLAGS=''$CXXFLAGS ' cflags ' -Wno-pragmas'' '] ;
+        flags = [ flags ' LDFLAGS=''$LDFLAGS ' ldflags rpath ' '' '] ;
     end
 end
 
@@ -91,53 +140,54 @@ else
     object_suffix = '.o' ;
 end
 
-inc = '-Iutil -I../../../Include -I../../../Source -I../../../Source/Shared -I../../../Source/Template -I../../../Source/Factories ' ;
-
-if ispc
-    % First do the following in GraphBLAS/build, in the Windows console:
-    %
-    %   cmake ..
-    %   devenv graphblas.sln /build "release|x64" /project graphblas
-    %
-    % The above commands require MS Visual Studio.  The graphblas.lib is
-    % compiled and placed in GraphBLAS/build/Release.  Then in the
-    % Command Window do:
-    %
-    %   gbmake
-    if (need_rename)
-        library = sprintf ('%s/../../build/Release', pwd) ;
-    else
-        library = sprintf ('%s/../../../build/Release', pwd) ;
-    end
-else
-    % First do one the following in GraphBLAS (use JOBS=n for a parallel
-    % build, which is faster):
-    %
-    %   make
-    %   make JOBS=8
-    %   sudo make install
-    %
-    % If you can't do "sudo make install" then add the GraphBLAS/build
-    % folder to your LD_LIBRARY_PATH.  Then in this folder in the
-    % Command Window do:
-    %
-    %   gbmake
-    if (need_rename)
-        library = sprintf ('%s/../../build', pwd) ;
-    else
-        library = sprintf ('%s/../../../build', pwd) ;
-    end
-end
+inc = '-Iutil -I../../../Include -I../../../Source ' ;
+    inc = [inc '-I../../../Source/include '] ;
+    inc = [inc '-I../../.. ' ] ;
+    inc = [inc '-I../../../Source/ij ' ] ;
+    inc = [inc '-I../../../Source/math ' ] ;
+    inc = [inc '-I../../../Source/cast ' ] ;
+    inc = [inc '-I../../../Source/binaryop ' ] ;
+    inc = [inc '-I../../../Source/transpose ' ] ;
+    inc = [inc '-I../../../Source/helper ' ] ;
+    inc = [inc '-I../../../Source/builtin ' ] ;
 
 if (need_rename)
+    % use the renamed library for MATLAB
     flags = [flags ' -DGBMATLAB=1 ' ] ;
     inc = [inc ' -I../../rename ' ] ;
     libgraphblas = '-lgraphblas_matlab' ;
 else
+    % use the regular library for Octave
     libgraphblas = '-lgraphblas' ;
 end
 
-ldflags = sprintf ('-L''%s''', library) ;
+% determine if the compiler supports C99 or MSVC complex types
+try
+    % try C99 complex types
+    cflag = ' -DGxB_HAVE_COMPLEX_C99=1' ;
+    mexcmd = sprintf ('mex -silent %s %s complex/mex_complex.c', ...
+        flags, cflag) ;
+    eval (mexcmd) ;
+catch me
+    % try MSVC complex types
+    try
+        cflag = ' -DGxB_HAVE_COMPLEX_MSVC=1' ;
+        mexcmd = sprintf ('mex -silent %s %s complex/mex_complex.c', ...
+            flags, cflag) ;
+        eval (mexcmd) ;
+    catch me
+        error ('C99 or MSVC complex support required') ;
+    end
+end
+flags = [flags cflag] ;
+mex_complex
+
+Lflags = sprintf ('-L''%s''', library_path) ;
+
+fprintf ('compiler flags: %s\n', flags) ;
+fprintf ('compiler incs:  %s\n', inc) ;
+fprintf ('linking flags:  %s\n', Lflags) ;
+fprintf ('library:        %s\n', libgraphblas) ;
 
 hfiles = [ dir('*.h') ; dir('util/*.h') ] ;
 
@@ -180,6 +230,7 @@ for k = 1:length (cfiles)
         % fprintf ('%s\n', cfile) ;
         fprintf ('.') ;
         mexcmd = sprintf ('mex -c %s -silent %s ''%s''', flags, inc, cfile) ;
+        % fprintf ('%s\n', mexcmd) ;
         eval (mexcmd) ;
         any_c_compiled = true ;
     end
@@ -209,7 +260,7 @@ for k = 1:length (mexfunctions)
     if (make_all || tc > tobj || any_c_compiled)
         % compile the mexFunction
         mexcmd = sprintf ('mex %s -silent %s %s ''%s'' %s %s', ...
-            ldflags, flags, inc, mexfunction, objlist, libgraphblas) ;
+            Lflags, flags, inc, mexfunction, objlist, libgraphblas) ;
         % fprintf ('%s\n', mexcmd) ;
         fprintf (':') ;
         eval (mexcmd) ;
@@ -229,11 +280,9 @@ if (need_rename)
 end
 if ispc
     lib_path = sprintf ('%s/build/Release', pwd) ;
-else
-    lib_path = sprintf ('%s/build', pwd) ;
+    fprintf ('  addpath (''%s'') ;\n', lib_path) ;
+    addpath (lib_path) ;
 end
-fprintf ('  addpath (''%s'') ;\n', lib_path) ;
-addpath (lib_path) ;
 cd (here1) ;
 
 fprintf ('\nFor a quick demo of GraphBLAS, type the following commands:\n\n') ;

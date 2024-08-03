@@ -115,6 +115,11 @@ catch
 end
 
 if (pc)
+    % disable the SuiteSparse_config timer
+    mexcmd = [mexcmd ' -DNTIMER '] ;
+end
+
+if (pc)
     obj = '.obj' ;
 else
     obj = '.o' ;

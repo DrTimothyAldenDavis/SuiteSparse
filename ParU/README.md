@@ -1,17 +1,10 @@
 # SuiteSparse:ParU
 
-ParU, Copyright (c) 2022-2023, Mohsen Aznaveh and Timothy A. Davis,
+ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 All Rights Reserved.
-SPDX-License-Identifier: GNU GPL 3.0
+SPDX-License-Identifier: GPL-3.0-or-later
 
 --------------------------------------------------------------------------------
-
-## NOTE: This is a pre-release of ParU, not yet version 1.0.
-
-There are several FIXME's and TODO's in the code we need to resolv for the
-final version, and the API may change in the final stable v1.0 version.
-
-Stay tuned.
 
 ## Introduction
 
@@ -40,23 +33,25 @@ folder, then `sudo make install`.
 
 ##  How to use
 
-You should include ParU.hpp in your C++ project. Then for solving Ax=b in which
-A is a sparse matrix in matrix market format with double entries and b is a
-dense vector of double (or a dense matrix B for multiple rhs):
+You should include ParU.h in your C++ or C project. Then for solving Ax=b in
+which A is a CHOLMOD real sparse double-precision matrix and b is a dense
+double vector:
 
-     // you can have different Controls for each
-     info = ParU_Analyze(A, &Sym, &Control);
-     // you can have multiple different factorization with a single ParU_Analyze
-     info = ParU_Factorize(A, Sym, &Num, &Control);
-     info = ParU_Solve(Sym, Num, b, x, &Control);
-     ParU_Freenum(Sym, &Num, &Control);
-     ParU_Freesym(&Sym, &Control);
+     ParU_Analyze (A, &Sym, &Control) ;
+     ParU_Factorize (A, Sym, &Num, &Control) ;
+     ParU_Solve (Sym, Num, b, x, &Control) ;
+     ParU_FreeNumeric (Sym, &Num, &Control) ;
+     ParU_FreeSymbolic (&Sym, &Control) ;
 
-See Demo for more examples.
+ParU_Analyze only considers the sparsity pattern of A, not its values, so the
+Sym object can be reused for matrices with the same pattern but different
+values.
+
+See Demo for more examples.  See the ParU/ParU folder for a MATLAB interface.
 
 --------------------------------------------------------------------------------
 ## License
-Copyright (C) 2022-2023 Mohsen Aznaveh and Timothy A. Davis
+Copyright (C) 2022-2024 Mohsen Aznaveh and Timothy A. Davis
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

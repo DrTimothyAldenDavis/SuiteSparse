@@ -121,6 +121,9 @@ SPEX_info spex_python
         case 3:
             SPEX_CHECK( SPEX_cholesky_backslash(&x, SPEX_MPQ, A, b, option));
             break;
+        case 4:
+            SPEX_CHECK( SPEX_ldl_backslash(&x, SPEX_MPQ, A, b, option));
+            break;
         default:
             return SPEX_INCORRECT_INPUT;
     }
@@ -143,7 +146,7 @@ SPEX_info spex_python
             int sizeStr;
             sizeStr=strlen(s);
             //allocate sol_char[i]
-            sol_void[i] = (void*) malloc (sizeStr*sizeof(char));
+             sol_void[i] = malloc (sizeStr + 1);  // +1 for NULL terminator
             //copy s into sol_char[i]
             strcpy(sol_void[i],s);
         }

@@ -2,9 +2,9 @@
 //////////////////////////  paru_full_summed ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief  fully sum the pivotal column from a prior contribution block e
  *  assembling starts with el->lac and continues until no assembly is possible
@@ -35,18 +35,25 @@
  */
 #include "paru_internal.hpp"
 
-void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
+void paru_full_summed
+(
+    int64_t e,
+    int64_t f,
+    paru_work *Work,
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
-    ParU_Symbolic *Sym = Work->Sym;
+
 #ifndef NDEBUG
-    int64_t *snM = Sym->super2atree;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     PRLEVEL(PR, ("%% Fully summing " LD " in " LD "(" LD ")\n", e, f, eli));
 #endif
 
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
     PRLEVEL(PR, ("%% col1=" LD ", col2=" LD "\n", col1, col2));
@@ -77,7 +84,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 #ifndef NDEBUG  // print the element which is going to be assembled from
     PR = 2;
     PRLEVEL(PR, ("%% ASSEMBL element= " LD "  mEl =" LD " ", e, mEl));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
 
     int64_t j = el->lac;  // keep record of latest lac
@@ -86,7 +93,8 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
     //|| next active column is out of current pivotal columns
     // However it requires searching through columns; I will just waste a
     // temp space
-    {  // No need for a temp space for active rows; no reuse
+    {
+        // No need for a temp space for active rows; no reuse
         PRLEVEL(PR, ("%% 1 col left\n %%"));
         double *sC = el_Num + mEl * el->lac;  // source column pointer
         int64_t fcolInd = el_colIndex[el->lac] - col1;
@@ -102,7 +110,8 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
             int64_t rowInd = el_rowIndex[i];
             PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
             if (rowInd >= 0 && rowRelIndex[i] != -1)
-            {  // active and do not contain zero in pivot
+            {
+                // active and do not contain zero in pivot
                 int64_t ri = rowRelIndex[i];
                 PRLEVEL(1, ("%% ri = " LD " \n", ri));
                 PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
@@ -143,12 +152,13 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         PRLEVEL(PR, ("%% \n"));
 #endif
         // note: parallelism slows this down
-        // int64_t *Depth = Sym->Depth;
+        // const int64_t *Depth = Sym->Depth;
         //#pragma omp parallel
         //#pragma omp single
         //#pragma omp taskgroup
         for (; j < nEl; j++)
-        {  // j already defined out of this scope while it is needed
+        {
+            // j already defined out of this scope while it is needed
             PRLEVEL(1, ("%% j =" LD " \n", j));
             double *sC = el_Num + mEl * j;  // source column pointer
             int64_t colInd = el_colIndex[j];
@@ -184,7 +194,8 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
     }
 
     if (el->ncolsleft == 0)
-    {  // free el
+    {
+        // free el
         PRLEVEL(PR, ("%% element " LD " is freed after pivotal assembly\n", e));
         paru_free_el(e, elementList);
     }
@@ -201,7 +212,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 #ifndef NDEBUG  // print the element which has been assembled from
     PR = 1;
     PRLEVEL(PR, ("%% ASSEMBLED element= " LD "  mEl =" LD " ", e, mEl));
-    if (PR <= 0) paru_print_element(e, Work, Num);
+    if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 
     // Printing the pivotal front
     PR = 2;

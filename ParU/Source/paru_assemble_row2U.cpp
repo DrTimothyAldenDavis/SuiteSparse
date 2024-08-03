@@ -2,9 +2,9 @@
 //////////////////////////  paru_assemble_row2U.cpp ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief  assemble numbers in U part of the matrix.
  *          It is per row, and the matrices are stored in column,
@@ -16,9 +16,16 @@
 
 #include "paru_internal.hpp"
 
-void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
-                          std::vector<int64_t> &colHash, 
-                          paru_work *Work, ParU_Numeric *Num)
+void paru_assemble_row_2U
+(
+    int64_t e,
+    int64_t f,
+    int64_t sR,
+    int64_t dR,
+    std::vector<int64_t> &colHash,
+    paru_work *Work,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
 
@@ -26,8 +33,10 @@ void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
     paru_element *el = elementList[e];
 
     if (el->cValid != Work->time_stamp[f])
+    {
         // if not updatated
         paru_update_rel_ind_col(e, f, colHash, Work, Num);
+    }
 
     ParU_Factors *Us = Num->partial_Us;
     double *uPart = Us[f].p;  // uPart
@@ -52,7 +61,8 @@ void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
     {
         int64_t rj = colRelIndex[j];
         if (el_colIndex[j] >= 0)
-        {  // If still valid
+        {
+            // If still valid
             ncolsSeen--;
             PRLEVEL(1,
                     ("%% sM [" LD "] =%2.5lf \n", mEl * j + sR, sM[mEl * j + sR]));

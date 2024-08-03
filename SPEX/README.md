@@ -52,11 +52,18 @@ Dependencies:
                         Library for arbitrary precision floating point
                         operations. v4.0.2 or later is required.
 
-Default installation locations:
+Compilation options:
 
-    include
-    lib
-    share
+* `SPEX_USE_PYTHON`:
+
+  If `ON`, build Python interface for SPEX.
+  If `OFF`: do not build the SPEX Python interface.
+  Default: `SUITESPARSE_USE_PYTHON` (defaults to ON).
+
+* `SPEX_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in SPEX if it is available.
+  Default: `SUITESPARSE_USE_OPENMP` (defaults to ON).
 
 To compile SPEX and its dependencies, just type "make" in this folder.
 This will also run a few short demos

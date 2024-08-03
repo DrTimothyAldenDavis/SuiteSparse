@@ -121,8 +121,8 @@
 
 #define SPEX__VERSION SUITESPARSE__VERCODE(@SPEX_VERSION_MAJOR@,@SPEX_VERSION_MINOR@,@SPEX_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "SPEX @SPEX_VERSION_MAJOR@.@SPEX_VERSION_MINOR@.@SPEX_VERSION_SUB@ requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "SPEX @SPEX_VERSION_MAJOR@.@SPEX_VERSION_MINOR@.@SPEX_VERSION_SUB@ requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #if defined ( __cplusplus )
@@ -149,8 +149,11 @@ typedef enum
                                   // definite (for a Cholesky factorization)
     SPEX_INCORRECT_ALGORITHM = -5,// The algorithm is not compatible with
                                   // the factorization
-    SPEX_PANIC = -6               // SPEX used without proper initialization,
+    SPEX_PANIC = -6,              // SPEX used without proper initialization,
                                   // or other unrecoverable error
+    SPEX_ZERODIAG = -7,           // The diagonal element is zero meaning that
+                                  // an LDL factorization is not possible
+    SPEX_UNSYMMETRIC = -8         // Matrix is not symmetric
 }
 SPEX_info ;
 
@@ -260,14 +263,24 @@ SPEX_preorder ;
 //------------------------------------------------------------------------------
 
 // A code in SPEX_options to tell SPEX which factorization algorithm to use
+// By default, left-looking is used for LU and up-looking is utilized
+// for Cholesky/LDL. If desired, left-looking can be used for all 
+// Cholesky or LDL routines by setting option->algo to SPEX_CHOL_LEFT
+// or SPEX_LDL_LEFT, respectively. 
+// Witin SPEX Backslash, option->algo utilizes the specified algorithm
+// if option->algo is set. Otherwise, if option->algo is left as 
+// default, SPEX Backslash attempts an LDL factorization and, if that
+// fails, an LU factorization is done.
 
 typedef enum
 {
     SPEX_ALGORITHM_DEFAULT = SPEX_DEFAULT,    // Defaults: Left for LU,
-                         // Up for Chol
+                         // Up for Chol, UP for LDL
     SPEX_LU_LEFT = 1,    // Left looking LU factorization
     SPEX_CHOL_LEFT = 2,  // Left looking Cholesky factorization
-    SPEX_CHOL_UP = 3     // Up looking Cholesky factorization
+    SPEX_CHOL_UP = 3,    // Up looking Cholesky factorization
+    SPEX_LDL_LEFT = 4,   // Left looking LDL factorization
+    SPEX_LDL_UP = 5      // Up looking LDL factorization
 }
 SPEX_factorization_algorithm ;
 
@@ -571,7 +584,8 @@ typedef enum
 {
     SPEX_LU_FACTORIZATION = 0,            // LU factorization
     SPEX_CHOLESKY_FACTORIZATION = 1,      // Cholesky factorization
-    SPEX_QR_FACTORIZATION = 2             // QR factorization (FUTURE)
+    SPEX_LDL_FACTORIZATION = 2,           // LDL factorization 
+    SPEX_QR_FACTORIZATION = 3             // QR factorization (FUTURE)    
 }
 SPEX_factorization_kind ;
 
@@ -590,7 +604,7 @@ SPEX_factorization_kind ;
 
 typedef struct
 {
-    SPEX_factorization_kind kind;    // LU, Cholesky (or QR in the FUTURE)
+    SPEX_factorization_kind kind;    // LU, Cholesky, LDL (or QR in the FUTURE)
 
     //--------------------------------------------------------------------------
     // The permutations of the matrix that are found during the symbolic
@@ -664,7 +678,7 @@ SPEX_info SPEX_symbolic_analysis_free
 
 typedef struct
 {
-    SPEX_factorization_kind kind;         // LU, Cholesky, QR factorization
+    SPEX_factorization_kind kind;         // LU, Cholesky, LDL, QR factorization
 
     bool updatable;                       // flag to denote if the factorization
                                           // is in the updatable format
@@ -673,7 +687,7 @@ typedef struct
     mpq_t scale_for_A;                    // the scale of the target matrix
 
     //--------------------------------------------------------------------------
-    // These are used for LU or Cholesky factorization, but ignored for QR
+    // These are used for LU, Cholesky or LDL factorization, but ignored for QR
     // factorization.
     //--------------------------------------------------------------------------
 
@@ -688,12 +702,12 @@ typedef struct
 
     //--------------------------------------------------------------------------
     // The permutations of the matrix that are used during the factorization.
-    // These are currently used only for LU or Cholesky factorization.
+    // These are currently used only for LU, Cholesky or LDL factorization.
     // One or more of these permutations could be NULL for some
     // SPEX_factorization_kind. Specifically,
     // For kind == SPEX_LU_FACTORIZATION, Qinv_perm can be NULL
-    // For kind == SPEX_CHOLESKY_FACTORIZATION, both Q_perm and Qinv_perm are
-    // NULL.
+    // For kind == SPEX_CHOLESKY_FACTORIZATION, and SPEX_LDL_FACTORIZATION
+    // both Q_perm and Qinv_perm are NULL.
     //--------------------------------------------------------------------------
 
     int64_t *P_perm;                     // row permutation
@@ -876,150 +890,87 @@ SPEX_info SPEX_determine_symmetry
 // and the allocation routine passed to GMP returns directly to the wrapper.
 
 SPEX_info SPEX_mpfr_asprintf (char **str, const char *format, ... ) ;
-
-SPEX_info SPEX_gmp_fscanf (FILE *fp, const char *format, ... ) ;
-
-SPEX_info SPEX_mpz_init (mpz_t x) ;
-
-SPEX_info SPEX_mpz_init2(mpz_t x, const uint64_t size) ;
-
-SPEX_info SPEX_mpz_set (mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_set_ui (mpz_t x, const uint64_t y) ;
-
-SPEX_info SPEX_mpz_set_si (mpz_t x, const int64_t y) ;
-
-SPEX_info SPEX_mpz_swap (mpz_t x, mpz_t y);
-
-SPEX_info SPEX_mpz_get_d (double *x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_get_si (int64_t *x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_mul (mpz_t a, const mpz_t b, const mpz_t c) ;
-
-SPEX_info SPEX_mpz_mul_si (mpz_t a, const mpz_t b, const int64_t c) ;
-
-SPEX_info SPEX_mpz_sub (mpz_t a, const mpz_t b, const mpz_t c) ;
-
-SPEX_info SPEX_mpz_add (mpz_t a, const mpz_t b, const mpz_t c) ;
-
-SPEX_info SPEX_mpz_addmul (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_submul (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_fdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
-
-SPEX_info SPEX_mpz_cdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
-
-SPEX_info SPEX_mpz_cdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d) ;
-
-SPEX_info SPEX_mpz_divexact (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_gcd (mpz_t x, const mpz_t y, const mpz_t z) ;
-
-SPEX_info SPEX_mpz_lcm (mpz_t lcm, const mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_neg (mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_abs (mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_cmp (int *r, const mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_cmpabs (int *r, const mpz_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const uint64_t y) ;
-
-SPEX_info SPEX_mpz_cmpabs_ui (int *r, const mpz_t x, const uint64_t y) ;
-
-SPEX_info SPEX_mpz_sgn (int *sgn, const mpz_t x) ;
-
-SPEX_info SPEX_mpz_sizeinbase (size_t *size, const mpz_t x, int64_t base) ;
-
-SPEX_info SPEX_mpq_init (mpq_t x) ;
-
-SPEX_info SPEX_mpq_set (mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_set_z (mpq_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpq_canonicalize (mpq_t x);
-
-SPEX_info SPEX_mpq_set_d (mpq_t x, const double y) ;
-
-SPEX_info SPEX_mpq_set_ui (mpq_t x, const uint64_t y, const uint64_t z) ;
-
-SPEX_info SPEX_mpq_set_si (mpq_t x, const int64_t y, const uint64_t z) ;
-
-SPEX_info SPEX_mpq_set_num (mpq_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpq_set_den (mpq_t x, const mpz_t y) ;
-
-SPEX_info SPEX_mpq_get_d (double *x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_neg (mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_abs (mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_add (mpq_t x, const mpq_t y, const mpq_t z) ;
-
-SPEX_info SPEX_mpq_mul (mpq_t x, const mpq_t y, const mpq_t z) ;
-
-SPEX_info SPEX_mpq_div (mpq_t x, const mpq_t y, const mpq_t z) ;
-
-SPEX_info SPEX_mpq_cmp (int *r, const mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpq_cmp_ui (int *r, const mpq_t x,
-                    const uint64_t num, const uint64_t den) ;
-
-SPEX_info SPEX_mpq_sgn (int *sgn, const mpq_t x) ;
-
-SPEX_info SPEX_mpq_equal (int *r, const mpq_t x, const mpq_t y) ;
-
-SPEX_info SPEX_mpfr_init2(mpfr_t x, const uint64_t size) ;
-
-SPEX_info SPEX_mpfr_set_prec(mpfr_t x, const uint64_t size) ;
-
-SPEX_info SPEX_mpfr_set (mpfr_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_d (mpfr_t x, const double y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_si (mpfr_t x, int64_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_q (mpfr_t x, const mpq_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_set_z (mpfr_t x, const mpz_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_z (mpz_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_q (mpq_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_d (double *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_get_si (int64_t *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_mul (mpfr_t x, const mpfr_t y, const mpfr_t z,
-                    const mpfr_rnd_t rnd) ;
-
-SPEX_info SPEX_mpfr_mul_d (mpfr_t x, const mpfr_t y, const double z,
-                    const mpfr_rnd_t rnd) ;
-
+SPEX_info SPEX_mpfr_clear (mpfr_t x) ;
 SPEX_info SPEX_mpfr_div_d (mpfr_t x, const mpfr_t y, const double z,
                     const mpfr_rnd_t rnd) ;
-
+SPEX_info SPEX_mpfr_free_cache (void) ;
+SPEX_info SPEX_mpfr_free_str (char *str) ;
+SPEX_info SPEX_mpfr_get_d (double *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_get_si (int64_t *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_get_q (mpq_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_get_z (mpz_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_init2(mpfr_t x, const uint64_t size) ;
+SPEX_info SPEX_mpfr_mul (mpfr_t x, const mpfr_t y, const mpfr_t z,
+                    const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_mul_d (mpfr_t x, const mpfr_t y, const double z,
+                    const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set (mpfr_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_d (mpfr_t x, const double y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_null (mpfr_t x) ;
+SPEX_info SPEX_mpfr_set_prec(mpfr_t x, const uint64_t size) ;
+SPEX_info SPEX_mpfr_set_q (mpfr_t x, const mpq_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_si (mpfr_t x, int64_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_z (mpfr_t x, const mpz_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_sgn (int *sgn, const mpfr_t x) ;
 SPEX_info SPEX_mpfr_ui_pow_ui (mpfr_t x, const uint64_t y, const uint64_t z,
                     const mpfr_rnd_t rnd) ;
 
-SPEX_info SPEX_mpfr_sgn (int *sgn, const mpfr_t x) ;
+SPEX_info SPEX_gmp_fscanf (FILE *fp, const char *format, ... ) ;
 
-SPEX_info SPEX_mpfr_free_cache (void) ;
-
-SPEX_info SPEX_mpfr_free_str (char *str) ;
-
-SPEX_info SPEX_mpz_set_null (mpz_t x) ;
-SPEX_info SPEX_mpq_set_null (mpq_t x) ;
-SPEX_info SPEX_mpfr_set_null (mpfr_t x) ;
-SPEX_info SPEX_mpz_clear (mpz_t x) ;
+SPEX_info SPEX_mpq_abs (mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_add (mpq_t x, const mpq_t y, const mpq_t z) ;
+SPEX_info SPEX_mpq_canonicalize (mpq_t x);
 SPEX_info SPEX_mpq_clear (mpq_t x) ;
-SPEX_info SPEX_mpfr_clear (mpfr_t x) ;
+SPEX_info SPEX_mpq_cmp (int *r, const mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_cmp_ui (int *r, const mpq_t x,
+                    const uint64_t num, const uint64_t den) ;
+SPEX_info SPEX_mpq_div (mpq_t x, const mpq_t y, const mpq_t z) ;
+SPEX_info SPEX_mpq_equal (int *r, const mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_get_d (double *x, const mpq_t y) ;
+SPEX_info SPEX_mpq_init (mpq_t x) ;
+SPEX_info SPEX_mpq_mul (mpq_t x, const mpq_t y, const mpq_t z) ;
+SPEX_info SPEX_mpq_neg (mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_set (mpq_t x, const mpq_t y) ;
+SPEX_info SPEX_mpq_set_d (mpq_t x, const double y) ;
+SPEX_info SPEX_mpq_set_den (mpq_t x, const mpz_t y) ;
+SPEX_info SPEX_mpq_set_null (mpq_t x) ;
+SPEX_info SPEX_mpq_set_num (mpq_t x, const mpz_t y) ;
+SPEX_info SPEX_mpq_set_si (mpq_t x, const int64_t y, const uint64_t z) ;
+SPEX_info SPEX_mpq_set_ui (mpq_t x, const uint64_t y, const uint64_t z) ;
+SPEX_info SPEX_mpq_set_z (mpq_t x, const mpz_t y) ;
+SPEX_info SPEX_mpq_sgn (int *sgn, const mpq_t x) ;
+
+SPEX_info SPEX_mpz_abs (mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_add (mpz_t a, const mpz_t b, const mpz_t c) ;
+SPEX_info SPEX_mpz_addmul (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_cdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
+SPEX_info SPEX_mpz_cdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d) ;
+SPEX_info SPEX_mpz_clear (mpz_t x) ;
+SPEX_info SPEX_mpz_cmp (int *r, const mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_cmpabs (int *r, const mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_cmpabs_ui (int *r, const mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_divexact (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_fdiv_q (mpz_t q, const mpz_t n, const mpz_t d) ;
+SPEX_info SPEX_mpz_gcd (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_get_d (double *x, const mpz_t y) ;
+SPEX_info SPEX_mpz_get_si (int64_t *x, const mpz_t y) ;
+SPEX_info SPEX_mpz_init (mpz_t x) ;
+SPEX_info SPEX_mpz_init2(mpz_t x, const uint64_t size) ;
+SPEX_info SPEX_mpz_lcm (mpz_t lcm, const mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_mul (mpz_t a, const mpz_t b, const mpz_t c) ;
+SPEX_info SPEX_mpz_mul_si (mpz_t a, const mpz_t b, const int64_t c) ;
+SPEX_info SPEX_mpz_neg (mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_set (mpz_t x, const mpz_t y) ;
+SPEX_info SPEX_mpz_set_null (mpz_t x) ;
+SPEX_info SPEX_mpz_set_si (mpz_t x, const int64_t y) ;
+SPEX_info SPEX_mpz_set_ui (mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_sgn (int *sgn, const mpz_t x) ;
+SPEX_info SPEX_mpz_sizeinbase (size_t *size, const mpz_t x, int64_t base) ;
+SPEX_info SPEX_mpz_sub (mpz_t a, const mpz_t b, const mpz_t c) ;
+SPEX_info SPEX_mpz_submul (mpz_t x, const mpz_t y, const mpz_t z) ;
+SPEX_info SPEX_mpz_swap (mpz_t x, mpz_t y);
+
 
 
 //------------------------------------------------------------------------------
@@ -1135,7 +1086,7 @@ SPEX_info SPEX_lu_backslash
 SPEX_info SPEX_lu_analyze
 (
     SPEX_symbolic_analysis *S_handle,   // symbolic analysis including
-                                 // column perm. and nnz of L and U
+                                 // column permutation and nnz of L and U
     const SPEX_matrix A,         // Input matrix
     const SPEX_options option    // Control parameters, if NULL, use default
 ) ;
@@ -1165,6 +1116,7 @@ SPEX_info SPEX_lu_solve     // solves the linear system LD^(-1)U x = b
     const SPEX_options option // Command options
 ) ;
 
+
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //-------------------------SPEX Cholesky----------------------------------------
@@ -1176,9 +1128,10 @@ SPEX_info SPEX_lu_solve     // solves the linear system LD^(-1)U x = b
 // Preserving Cholesky factorizations. This code accompanies the paper (to be
 // submitted to ACM TOMs)
 
-//    "Algorithm 1xxx: Exactly Solving Sparse Symmetric Positive Definite
-//    Linear Systems via SPEX Cholesky factorization," C. Lourenco, L. Mejia
-//    Domenzain, E. Moreno-Centeno, T. Davis, to be submitted ACM TOMS.
+//    "Algorithm 1xxx: SPEX Cholesky and SPEX Backslash for Exactly Solving
+//     Sparse Linear Systems," L. Mejia Domenzain, J. Chen, C. Lourenco, 
+//     E. Moreno-Centeno, T. Davis, submitted to ACM TOMS
+
 
 //     The theory associated with this paper is found at:
 
@@ -1298,8 +1251,8 @@ SPEX_info SPEX_cholesky_factorize
                                     // pointers of L, and the exact number of
                                     // nonzeros of L.
     const SPEX_options option       // command options.
-                                    // Notably, option->chol_type indicates
-                                    // whether CHOL_UP (default) or CHOL_LEFT
+                                    // Notably, option->algo indicates whether
+                                    // SPEX_CHOL_UP (default) or SPEX_CHOL_LEFT
                                     // is used.
 ) ;
 
@@ -1328,6 +1281,106 @@ SPEX_info SPEX_cholesky_solve
     const SPEX_options option   // command options
 ) ;
 
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//-----------------------Primary SPEX LDL routines-------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//    This portion of the SPEX library exactly solves a sparse symmetric 
+//    indefinite or negative definite system with nonzero leading principle minors
+//    via an LDL factorization. The approach is very similar to the one for SPEX 
+//    Cholesky and is also described in the paper:
+
+//    "Algorithm 1xxx: SPEX Cholesky and SPEX Backslash for Exactly Solving
+//     Sparse Linear Systems," L. Mejia Domenzain, J. Chen, C. Lourenco, 
+//     E. Moreno-Centeno, T. Davis, submitted to ACM TOMS
+
+//     The theory associated with this paper is found at:
+
+//    "Exactly Solving Sparse Rational Linear Systems via Roundoff-Error-Free
+//    Cholesky Factorizations", C. Lourenco, E. Moreno-Centeno,
+//    SIAM J. Matrix Analysis and Applications.
+//     pp 609-638, vol 43, no 1, 2022.
+
+//    To use this code you must first download and install the GMP,
+//    MPFR, AMD, and COLAMD libraries. GMP and MPFR can be found at:
+//              https://gmplib.org/
+//              http://www.mpfr.org/
+//
+//   SPEX_Utilities, AMD, and COLAMD are distributed along with SPEX_Cholesky.
+//   The easiest way ensure these dependencies are met is to only access this
+//   package through the SPEX repository.
+//
+//   All of these codes are components of the SPEX software library. This code
+//   may be found at:
+//              https://github.com/clouren/spex
+//              www.suitesparse.com
+//
+//
+
+// Perform symbolic analysis prior to factorization
+SPEX_info SPEX_ldl_analyze
+(
+    // Output
+    SPEX_symbolic_analysis *S_handle, // Symbolic analysis data structure
+    // Input
+    const SPEX_matrix A,        // Input matrix. Must be SPEX_MPZ and SPEX_CSC
+    const SPEX_options option   // Command options (Default if NULL)
+) ;
+
+
+// Factorize a given matrix with SPEX LDL. A must be symmetric
+// with nonzero leading principle minors
+SPEX_info SPEX_ldl_factorize
+(
+    // Output
+    SPEX_factorization *F_handle,   // Cholesky factorization struct
+    //Input
+    const SPEX_matrix A,            // Matrix to be factored. Must be SPEX_MPZ
+                                    // and SPEX_CSC
+    const SPEX_symbolic_analysis S, // Symbolic analysis struct containing the
+                                    // elimination tree of A, the column
+                                    // pointers of L, and the exact number of
+                                    // nonzeros of L.
+    const SPEX_options option       // command options.
+                                    // Notably, option->algo indicates whether
+                                    // SPEX_LDL_UP (default) or SPEX_LDL_LEFT
+                                    // is used.
+);
+
+// Solve the system after factorization
+SPEX_info SPEX_ldl_solve
+(
+    // Output
+    SPEX_matrix *x_handle,      // On input: undefined.
+                                // On output: Rational solution (SPEX_MPQ)
+                                // to the system.
+    // input/output:
+    SPEX_factorization F,       // The non-updatable Cholesky factorization.
+                                // Mathematically, F is unchanged.  However, if
+                                // F is updatable on input, it is converted to
+                                // non-updatable.  If F is already
+                                // non-updatable, it is not modified.
+    // input:
+    const SPEX_matrix b,        // Right hand side vector
+    const SPEX_options option   // command options
+) ;
+
+// Solve the system Ax = b via LDL factorization
+SPEX_info SPEX_ldl_backslash
+(
+    // Output
+    SPEX_matrix *x_handle,      // On input: undefined.
+                                // On output: solution vector(s)
+    // Input
+    SPEX_type type,             // Type of output desired
+                                // Must be SPEX_FP64, SPEX_MPFR, or SPEX_MPQ
+    const SPEX_matrix A,        // Input matrix. Must be SPEX_MPZ and SPEX_CSC
+    const SPEX_matrix b,        // Right hand side vector(s). Must be
+                                // SPEX_MPZ and SPEX_DENSE
+    const SPEX_options option   // Command options (Default if NULL)
+);
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -1347,9 +1400,16 @@ SPEX_info SPEX_cholesky_solve
 // may be returned in either this rational form, or in double precision or in
 // arbitrary precision floating point.
 //
-// A must be square. If A is SPD, an exact up-looking Cholesky factorization is
-// applied.  Otherwise, an exact left-looking LU functionality is applied.
-// x and b be can be single vectors, or matrices.
+// A must be square. The bahavior of SPEX backslash depends on the value of
+// option->algo.
+// If option->algo is left as default:
+//      an up-looking LDL factorization is attempted if A is symmetric
+//      otherwise an exact left-looking LU factorization is applied.
+// If option->algo is specified:
+//      The exact algorithm requested is utilized with no substitutions.
+//      An appropriate error code is returned if the selected algorithm
+//      is not appopriate for the given matrix (e.g., if option->algo
+//      is SPEX_LDL_LEFT but the matrix is not symmetric).
 
 //------------------------------------------------------------------------------
 // Purpose: Solve Ax = b by analyzing the input matrix and applying the

@@ -14,7 +14,7 @@
 /* === include files and definitions ======================================== */
 /* ========================================================================== */
 
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
 
 #include <string.h>
 #include "cholmod_template.h"

@@ -13,9 +13,9 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPEX_DATE "Mar 22, 2024" )
+set ( SPEX_DATE "July 2, 2024" )
 set ( SPEX_VERSION_MAJOR 3 CACHE STRING "" FORCE )
-set ( SPEX_VERSION_MINOR 1 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_MINOR 2 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPEX version: v"
@@ -74,10 +74,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.7.0
+    find_package ( SuiteSparse_config 7.8.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.2
@@ -408,10 +408,34 @@ if ( NOT MSVC )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# python interface
+# Python interface
 #-------------------------------------------------------------------------------
 
+# The Python interface is built by default.  It can be disabled with
+# SPEX_USE_PYTHON (for just SPEX) or SUITESPARSE_USE_PYTHON (for all of
+# SuiteSparse).  Currently, only SPEX has a Python interface in SuiteSparse.
+
 if ( BUILD_SHARED_LIBS )
+    set ( _spex_use_python_default ${SUITESPARSE_USE_PYTHON} )
+else ( )
+    set ( _spex_use_python_default OFF )
+endif ( )
+
+option ( SPEX_USE_PYTHON "ON (default if building shared libraries): build Python interface for SPEX.  OFF (default if not building shared libraries): do not build Python interface for SPEX" ${_spex_use_python_default} )
+
+if ( SPEX_USE_PYTHON AND BUILD_SHARED_LIBS )
+    set ( SPEX_HAS_PYTHON ON )
+else ( )
+    set ( SPEX_HAS_PYTHON OFF )
+endif ( )
+message ( STATUS "SPEX with Python interface: ${SPEX_HAS_PYTHON}" )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND SPEX_USE_PYTHON AND NOT SPEX_HAS_PYTHON )
+    message ( FATAL_ERROR "Python interface for SPEX requires building shared libraries" )
+endif ( )
+
+if ( SPEX_HAS_PYTHON )
 
     file ( GLOB SPEX_PYTHON_SOURCES "Python/SPEXpy/Source/*.c" )
     add_library ( spexpython SHARED ${SPEX_PYTHON_SOURCES} )
@@ -421,7 +445,8 @@ if ( BUILD_SHARED_LIBS )
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         SOVERSION ${SPEX_VERSION_MAJOR}
-        PUBLIC_HEADER "Python/SPEXpy/Source/spex_python_connect.h" )
+        PUBLIC_HEADER "Python/SPEXpy/Source/spex_python_connect.h"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
     # MPFR:
     target_link_libraries ( spexpython PRIVATE ${MPFR_LIBRARIES} )
@@ -439,6 +464,7 @@ if ( BUILD_SHARED_LIBS )
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -463,6 +489,8 @@ if ( SUITESPARSE_DEMOS )
     add_executable ( spex_demo_backslash         "Demo/spex_demo_backslash.c"         ${SPEX_DEMO_SOURCES} )
     add_executable ( spex_demo_cholesky_extended "Demo/spex_demo_cholesky_extended.c" ${SPEX_DEMO_SOURCES} )
     add_executable ( spex_demo_cholesky_simple   "Demo/spex_demo_cholesky_simple.c"   ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_ldl_extended      "Demo/spex_demo_ldl_extended.c"   ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_ldl_simple        "Demo/spex_demo_ldl_simple.c"   ${SPEX_DEMO_SOURCES} )
     add_executable ( spex_demo_lu_doub           "Demo/spex_demo_lu_doub.c"           ${SPEX_DEMO_SOURCES} )
     add_executable ( spex_demo_lu_extended       "Demo/spex_demo_lu_extended.c"       ${SPEX_DEMO_SOURCES} )
     add_executable ( spex_demo_lu_simple1        "Demo/spex_demo_lu_simple1.c"        ${SPEX_DEMO_SOURCES} )
@@ -474,6 +502,8 @@ if ( SUITESPARSE_DEMOS )
         target_link_libraries ( spex_demo_backslash         PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
         target_link_libraries ( spex_demo_cholesky_extended PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
         target_link_libraries ( spex_demo_cholesky_simple   PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( spex_demo_ldl_extended      PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( spex_demo_ldl_simple        PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
         target_link_libraries ( spex_demo_lu_doub           PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
         target_link_libraries ( spex_demo_lu_extended       PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
         target_link_libraries ( spex_demo_lu_simple1        PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
@@ -483,6 +513,8 @@ if ( SUITESPARSE_DEMOS )
         target_link_libraries ( spex_demo_backslash         PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_cholesky_extended PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_cholesky_simple   PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
+        target_link_libraries ( spex_demo_ldl_simple        PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
+        target_link_libraries ( spex_demo_ldl_extended      PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_lu_doub           PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_lu_extended       PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_lu_simple1        PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
@@ -490,7 +522,7 @@ if ( SUITESPARSE_DEMOS )
         target_link_libraries ( spex_demo_threaded          PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
     endif ( )
 
-    if ( SPEX_USE_OPENMP )
+    if ( SPEX_HAS_OPENMP )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( spex_demo_threaded PUBLIC OpenMP::OpenMP_C )
         endif ( )

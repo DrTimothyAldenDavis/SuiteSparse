@@ -42,7 +42,9 @@ hfiles = [ dir('../Test/*.h') ; dir('../Test/Template/*.c') ] ;
 % list of include directories
 inc = '-Itmp_include -I../Test -I../Test/Template -I../lz4 -I../rmm_wrap' ;
 inc = [inc ' -I../zstd -I../zstd/zstd_subset -I. -I../xxHash'] ;
-inc = [inc ' -I../Source/JitKernels '] ;
+% inc = [inc ' -I../Source/jit_kernels '] ;
+inc = [inc ' -I../Source/builtin '] ;
+inc = [inc ' -I../Source '] ;
 
 have_octave = (exist ('OCTAVE_VERSION', 'builtin') == 5) ;
 if (have_octave)
@@ -84,16 +86,24 @@ end
 
 libraries = sprintf ('-L%s -lgraphblas_tcov', pwd) ;
 
+rpath = '' ;
 if (ismac)
-    % Mac (do 'make install' for GraphBLAS first)
-%   flags = [ flags   ' CFLAGS="$CXXFLAGS -Xpreprocessor -fopenmp" ' ] ;
-%   flags = [ flags ' CXXFLAGS="$CXXFLAGS -Xpreprocessor -fopenmp" ' ] ;
-%   flags = [ flags  ' LDFLAGS="$LDFLAGS  -fopenmp"' ] ;
-else
+    rpath = '-rpath ' ;
+elseif (isunix)
+    rpath = '-rpath=' ;
+end
+
+rpath = sprintf (' -Wl,%s''''%s'''' ', rpath, pwd) ;
+if (ismac)
+    % Mac
+    flags = [ flags   ' CFLAGS="$CXXFLAGS -fPIC -Wno-pragmas" '] ;
+    flags = [ flags ' CXXFLAGS="$CXXFLAGS -fPIC -Wno-pragmas" '] ;
+    flags = [ flags  ' LDFLAGS=''$LDFLAGS -fPIC ' rpath ' '' '] ;
+elseif (isunix)
     % Linux
     flags = [ flags   ' CFLAGS="$CXXFLAGS -fopenmp -fPIC -Wno-pragmas" '] ;
     flags = [ flags ' CXXFLAGS="$CXXFLAGS -fopenmp -fPIC -Wno-pragmas" '] ;
-    flags = [ flags  ' LDFLAGS="$LDFLAGS  -fopenmp -fPIC" '] ;
+    flags = [ flags  ' LDFLAGS=''$LDFLAGS  -fopenmp -fPIC ' rpath ' '' '] ;
 end
 
 dryrun = false ;
@@ -175,6 +185,7 @@ for k = 1:length (mexfunctions)
             flags, inc, mexfunction, objlist, libraries) ;
         fprintf ('.', mexfunction) ;
         % fprintf ('%s\n', mexfunction) ;
+        % fprintf ('%s\n', mexcmd) ;
         if (dryrun)
             fprintf ('%s\n', mexcmd) ;
         else

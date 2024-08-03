@@ -11,7 +11,7 @@
 
 // This example shows how to use SPEX Left LU within your code.  Unlike
 // example1, the input matrix here is directly read in from the triplet
-// formmat. Also, differs from example1 in that the output solution is given in
+// format. Also, differs from example1 in that the output solution is given in
 // mpq_t precision
 
 // usage:
@@ -50,7 +50,7 @@ int main (int argc, char **argv)
     SPEX_matrix A = NULL ;                     // input matrix
     SPEX_matrix b = NULL ;                     // Right hand side vector
     SPEX_matrix x = NULL ;                     // Solution vectors
-    SPEX_symbolic_analysis S = NULL ;                // Column permutation
+    SPEX_symbolic_analysis S = NULL ;          // Column permutation
     SPEX_options option = NULL;
     FILE *mat_file = NULL;
     FILE *rhs_file = NULL;
@@ -124,20 +124,17 @@ int main (int argc, char **argv)
     // solve
     //--------------------------------------------------------------------------
 
-    double start_s = SuiteSparse_time ();
-
-    // SPEX Left LU has an optional check, to enable it, one can set the
-    // following parameter to be true.
-    // option->check = true;
+    double start_s = SUITESPARSE_TIME;
 
     // Solve the system and give MPQ solution
+    // Will utilize default COLAMD ordering and small pivoting
     SPEX_TRY (SPEX_lu_backslash( &x, SPEX_MPQ, A, b, option));
 
-    double end_s = SuiteSparse_time ();
+    double end_s = SUITESPARSE_TIME;
 
     double t_s = (end_s - start_s) ;
 
-    printf("\nSPEX Left LU Factor & Solve time: %lf\n", t_s);
+    printf("\nSPEX LU Factor & Solve time: %lf\n", t_s);
 
     //--------------------------------------------------------------------------
     // Free memory

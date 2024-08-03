@@ -2,20 +2,33 @@
 //////////////////////////  paru_cov.hpp ///////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef PARU_COV_HPP
 #define PARU_COV_HPP
 
 #include "paru_internal.hpp"
 
+// not user-callable: for testing only
+ParU_Info paru_backward
+(
+    double *x1,
+    double &resid,
+    double &anorm,
+    double &xnorm,
+    cholmod_sparse *A,
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num,
+    ParU_Control Control
+) ;
+
 #define TEST_PASSES                 \
 {                                   \
-    printf ("all tests pass\n") ;   \
+    printf ("all tests pass\n\n") ; \
     TEST_FREE_ALL                   \
-    return (0) ;                    \
+    return (PARU_SUCCESS) ;         \
 }
 
 #define TEST_ASSERT(ok)                                                     \

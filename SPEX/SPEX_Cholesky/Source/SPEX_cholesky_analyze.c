@@ -16,9 +16,9 @@
  * Input arguments of the function:
  *
  * S:           Symbolic analysis struct for Cholesky factorization.
- *              On input it's NULL
- *              On output it contains the row/column permutation, the elimination
- *              tree, and the number of nonzeros in L.
+ *              On input it's NULL.  On output it contains the row/column
+ *              permutation, the elimination tree, and the number of nonzeros
+ *              in L.
  *
  * A:           User's input matrix (Must be SPEX_MPZ and SPEX_CSC)
  *
@@ -34,7 +34,7 @@
 #define SPEX_FREE_ALL                               \
 {                                                   \
     SPEX_FREE_WORKSPACE ;                           \
-    SPEX_symbolic_analysis_free (&S, option);      \
+    SPEX_symbolic_analysis_free (&S, option);       \
 }
 
 #include "spex_cholesky_internal.h"
@@ -48,65 +48,18 @@ SPEX_info SPEX_cholesky_analyze
     const SPEX_options option   // Command options (Default if NULL)
 )
 {
+    // get option->algo, or use SPEX_ALGORITHM_DEFAULT if option is NULL:
+    SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
+    if (algo != SPEX_ALGORITHM_DEFAULT && algo != SPEX_CHOL_LEFT
+        && algo != SPEX_CHOL_UP)
+    {
+        return SPEX_INCORRECT_ALGORITHM;
+    }
 
     SPEX_info info;
-    // SPEX must be initialized
-    if (!spex_initialized())
-    {
-        return SPEX_PANIC;
-    }
-
-    // Check inputs
-    if ( !S_handle || !A)
-    {
-        return SPEX_INCORRECT_INPUT;
-    }
-
-    // SPEX must be CSC
-    SPEX_REQUIRE_KIND(A, SPEX_CSC);
-
-    // Declare permuted matrix and S
-    SPEX_matrix PAP = NULL;
-    SPEX_symbolic_analysis S = NULL;
-
-    //--------------------------------------------------------------------------
-    // Determine if A is indeed symmetric. If so, we try Cholesky.
-    // This symmetry check checks for both the nonzero pattern and values.
-    //--------------------------------------------------------------------------
-
-    bool is_symmetric ;
-    SPEX_CHECK( SPEX_determine_symmetry(&is_symmetric, A, option) );
-    if (!is_symmetric)
-    {
-        SPEX_FREE_WORKSPACE ;
-        return SPEX_NOTSPD ;
-    }
-
-    //--------------------------------------------------------------------------
-    // Preorder: obtain the row/column ordering of A (Default is AMD)
-    //--------------------------------------------------------------------------
-
-    SPEX_CHECK( spex_cholesky_preorder(&S, A, option) );
-
-    //--------------------------------------------------------------------------
-    // Permute matrix A, that is apply the row/column ordering from the
-    // symbolic analysis step to get the permuted matrix PAP.
-    //--------------------------------------------------------------------------
-
-    SPEX_CHECK( spex_cholesky_permute_A(&PAP, A, false, S) );
-
-    //--------------------------------------------------------------------------
-    // Symbolic Analysis: compute the elimination tree of PAP
-    //--------------------------------------------------------------------------
-
-    SPEX_CHECK( spex_cholesky_symbolic_analysis(S, PAP, option) );
-
-    //--------------------------------------------------------------------------
-    // Set output, free all workspace and return success
-    //--------------------------------------------------------------------------
-
-    (*S_handle) = S ;
-    SPEX_FREE_WORKSPACE ;
-    return (SPEX_OK);
+    // SPEX Cholesky analyze just calls symmetric analyze
+    info = spex_symmetric_analyze( S_handle, A, option);
+    if (info == SPEX_OK) (*S_handle)->kind = SPEX_CHOLESKY_FACTORIZATION;
+    return info;
 }
 

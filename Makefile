@@ -193,7 +193,6 @@ demos:
 # Create the PDF documentation
 docs:
 	( cd GraphBLAS && $(MAKE) docs )
-	( cd Mongoose  && $(MAKE) docs )
 	( cd AMD && $(MAKE) docs )
 	( cd CAMD && $(MAKE) docs )
 	( cd KLU && $(MAKE) docs )
@@ -203,6 +202,7 @@ docs:
 	( cd ParU && $(MAKE) docs )
 	( cd SPQR && $(MAKE) docs )
 	( cd SPEX && $(MAKE) docs )
+	( cd Mongoose  && $(MAKE) docs )
 
 # statement coverage (Linux only); this requires a lot of time.
 cov: local install

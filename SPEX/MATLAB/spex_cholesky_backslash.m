@@ -1,13 +1,13 @@
 function x = spex_cholesky_backslash (A,b,option)
-% spex_cholesky_BACKSLASH: solve Ax=b via sparse integer-preserving Cholesky
-% spex_cholesky_backslash: computes the exact solution to the sparse linear system Ax =
-% b where A and b are stored as doubles. A must be stored as a sparse matrix and be SPD. b
-% must be stored as a dense set of right hand side vectors. b can be either 1
-% or multiple vector(s).  The result x is computed exactly, represented in
-% arbitrary-precision rational values, and then returned to MATLAB as a
-% floating-poing double result.  This final conversion means that x may no
-% longer exactly solve A*x=b, unless this final conversion is able to be
-% done without modification.
+%SPEX_CHOLESKY_BACKSLASH solve Ax=b via sparse integer-preserving Cholesky
+% spex_cholesky_backslash computes the exact solution to the sparse linear
+% system Ax = b where A and b are stored as doubles. A must be stored as a
+% sparse matrix and be SPD. b must be stored as a dense set of right hand side
+% vectors. b can be either 1 or multiple vector(s).  The result x is computed
+% exactly, represented in arbitrary-precision rational values, and then
+% returned to MATLAB as a floating-poing double result.  This final conversion
+% means that x may no longer exactly solve A*x=b, unless this final conversion
+% is able to be done without modification.
 %
 % x may also be returned as a vpa matrix, or a cell array of strings, with
 % x {i} = 'numerator/denominator', where the numerator and denominator are
@@ -15,15 +15,17 @@ function x = spex_cholesky_backslash (A,b,option)
 %
 % Usage:
 %
-% x = spex_cholesky_backslash (A,b) returns the solution to Ax=b using default settings.
+% x = spex_cholesky_backslash (A,b) returns the solution to Ax=b using default
+%   settings.
 %
-% x = spex_cholesky_backslash (A,b,options) returns the solution to Ax=b with user
-%   defined settings in an options struct.  Entries not present are treated as
-%   defaults.
+% x = spex_cholesky_backslash (A,b,options) returns the solution to Ax=b with
+%   user defined settings in an options struct.  Entries not present in the
+%   options struct are treated as defaults.
 %
 %   option.order: Column ordering used.
+%       'default' (or if not present): AMD
 %       'none': no column ordering; factorize the matrix A as-is
-%       'colamd': COLAMD (the default ordering)
+%       'colamd': COLAMD
 %       'amd': AMD
 %
 %   option.print: display the inputs and outputs
@@ -49,10 +51,10 @@ function x = spex_cholesky_backslash (A,b,option)
 %
 % Example:
 %
-%   % In this first example, x = spex_cholesky_backslash (A,b) returns an approximate
-%   % solution, not because it was computed incorrectly in spex_cholesky_backslash.  It
-%   % is computed exactly as a rational result in SPEX_backslash with arbitrary
-%   % precision, but then converted to double precision on output.
+%   % In this first example, x = spex_cholesky_backslash (A,b) returns an
+%   % approximate solution, not because it was computed incorrectly.
+%   % It is computed exactly as a rational result with arbitrary precision,
+%   % but then converted to double precision on output.
 %
 %   load west0479
 %   A = west0479 ;
@@ -74,7 +76,7 @@ function x = spex_cholesky_backslash (A,b,option)
 %   A = floor (2^20 * (A / amax)) + n * speye (n) ;
 %   xtrue = floor (64 * xtrue) ;
 %   b = A*xtrue ;
-%   x = SPEX_backslash (A, b) ;
+%   x = spex_cholesky_backslash (A, b) ;
 %   % error and residual will be exactly zero:
 %   err = norm (x-xtrue)
 %   resid = norm (A*x-b)
@@ -83,15 +85,15 @@ function x = spex_cholesky_backslash (A,b,option)
 %   err = norm (x-xtrue)
 %   resid = norm (A*x-b)
 %
-% See also vpa, spex_mex_install, spex_mex_test, spex_mex_demo,
-%   spex_lu_backslash
+% See also vpa, spex_lu_backslash, spex_backslash, spex_ldl_backslash,
+% spex_mex_install, spex_mex_test, spex_mex_demo, spex_lu_backslash
 
-% spex_cholesky_backslash is a wrapper for the exact routines contained within the SPEX
-% software package.  In order to use spex_cholesky_backslash you must install the MATLAB
-% interfaces of all SPEX packages.  Typing spex_mex_install in this directory
-% should do this correctly.
+% spex_cholesky_backslash is a wrapper for the exact routines contained within
+% the SPEX software package.  In order to use spex_cholesky_backslash you must
+% install the MATLAB interfaces of all SPEX packages.  Typing spex_mex_install
+% in this directory should do this correctly.
 
-% SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
+% Copyright (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
 % Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
@@ -115,7 +117,6 @@ if ( normest(A-A') > 1e-6)
     error('inputs must be symmetric')
 end
 
-
 % Preprocessing complete. Now use SPEX Chol to solve A*x=b.
 x=spex_cholesky_mex_soln (A, b, option) ;
 
@@ -130,4 +131,5 @@ if (isfield (option, 'solution') && isequal (option.solution, 'vpa'))
         x = vpa (x) ;
     end
 end
+
 

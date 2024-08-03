@@ -28,9 +28,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     SPEX_info status ;
-    SPEX_MEX_OK (SPEX_initialize_expert
-            (mxMalloc, mxCalloc, mxRealloc, mxFree));
-
+    SPEX_MEX_OK(SPEX_initialize_expert(mxMalloc, mxCalloc, mxRealloc, mxFree));
     SuiteSparse_config_printf_func_set (mexPrintf);
 
     //--------------------------------------------------------------------------
@@ -170,4 +168,9 @@ void mexFunction
     SPEX_FREE (option);
     SPEX_finalize ( );
 }
+
+#if defined ( __clang__ ) && defined ( CLANG_NEEDS_MAIN )
+// when using clang inside MATLAB, it seems to require a "_main" symbol.
+int main (void) { return (0) ; }
+#endif
 
