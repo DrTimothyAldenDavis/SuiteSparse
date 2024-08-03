@@ -27,7 +27,7 @@ SUITESPARSE ?= $(realpath $(CURDIR)/../..)
 
 CF = $(OPTION) -g --coverage -fprofile-abs-path -std=c11 -DTESTING -fopenmp \
     -DBLAS32
-I = -I../../include/suitesparse -I../Include -I../../UMFPACK/Source -I../../AMD/Include
+I = -I../../include/suitesparse -I../Include -I../../UMFPACK/Source -I../../AMD/Include -isystem /usr/local/cuda/include
 
 BLAS = -lblas
 FLIB = $(LAPACK) $(BLAS)
@@ -41,8 +41,8 @@ CLIB = $(SUITESPARSE)/SuiteSparse_config/build/libsuitesparseconfig.a \
       $(SUITESPARSE)/CCOLAMD/build/libccolamd.a
 
 # dynamic libraries (if CUDA is needed for CHOLMOD): Linux only
-CLIB = -L../../lib -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd \
-    -Wl,--rpath=$(SUITESPARSE)/lib
+CLIB = -L../../lib -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd \
+    -lcamd -Wl,--rpath=$(SUITESPARSE)/lib
 
 LIBS = $(FLIB) $(CLIB) -lm -lrt
 
