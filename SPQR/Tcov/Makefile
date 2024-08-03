@@ -54,7 +54,7 @@ CF = -pg -g --coverage -fprofile-abs-path -O0 \
 CUDA_LIB = $(CUDART_LIB) $(CUBLAS_LIB)
 
 NVCC = /usr/local/cuda/bin/nvcc -g --profile --generate-line-info $(NV20) \
-	-Xcompiler -fprofile-arcs -Xcompiler -ftest-coverage
+	-Xcompiler -fprofile-arcs -Xcompiler -ftest-coverage -DSPQR_HAS_CUDA
 
 #-------------------------------------------------------------------------------
 
@@ -163,11 +163,12 @@ endif
 
 $(OBJ): $(INC)
 
-I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include -I../../include/suitesparse
+I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include -I../../include/suitesparse 
 
 ifneq ($(GPU_CONFIG),)
-    I += -I../../SuiteSparse_GPURuntime/Include \
-        -I../../GPUQREngine/Include $(CUDA_INC)
+    I += -I../GPURuntime/Include \
+        -I../GPUQREngine/Include $(CUDA_INC) \
+        -isystem /usr/local/cuda/include
 endif
 
 C = $(CXX) $(CF) $(I) $(GPU_CONFIG)
@@ -365,7 +366,7 @@ spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 # SuiteSparse_GPURuntime
 #-------------------------------------------------------------------------------
 
-GPURUNTIME = ../../SuiteSparse_GPURuntime
+GPURUNTIME = ../GPURuntime
 GPURUNSRC = $(GPURUNTIME)/Source
 GPURUNINC = -I$(GPURUNTIME)/Include -I../../SuiteSparse_config
 
@@ -398,7 +399,7 @@ SuiteSparseGPU_Workspace_transfer.o: \
 # GPUQREngine
 #-------------------------------------------------------------------------------
 
-GPUQR = ../../GPUQREngine
+GPUQR = ../GPUQREngine
 GPUQRSRC = $(GPUQR)/Source
 GPUQRDEMO = $(GPUQR)/Demo
 GPUQRINC = $(GPURUNINC) -I$(GPUQR)/Include
