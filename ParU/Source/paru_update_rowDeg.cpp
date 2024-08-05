@@ -2,9 +2,9 @@
 //////////////////////////  paru_update_rowDeg /////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief  growing current front if necessary and update the row degree of
  *   current front for current panel.
@@ -13,27 +13,39 @@
  */
 #include "paru_internal.hpp"
 
-void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
-    int64_t start_fac, std::set<int64_t> &stl_colSet,
-    std::vector<int64_t> &pivotal_elements, paru_work *Work, ParU_Numeric *Num)
+void paru_update_rowDeg
+(
+    int64_t panel_num,
+    int64_t row_end,
+    int64_t f,
+    int64_t start_fac,
+    std::set<int64_t> &stl_colSet,
+    std::vector<int64_t> &pivotal_elements,
+    paru_work *Work,
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
+)
 {
+
+    // get Control
+    int64_t panel_width = Work->panel_width ;
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
+
 #ifndef NDEBUG
     int64_t n = Num->n;
     static int64_t r1 = 0, r2 = 0, r3 = 0;
 #endif
     PRLEVEL(1, ("%%-------ROW degree update of panel " LD " of front " LD " \n",
                 panel_num, f));
-    ParU_Control *Control = Num->Control;
-    int64_t panel_width = Control->panel_width;
+
     paru_element **elementList = Work->elementList;
 
     int64_t *elRow = Work->elRow;
     int64_t *elCol = Work->elCol;
 
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
     int64_t col1 = Super[f];  // fornt F has columns col1:col2-1
     int64_t col2 = Super[f + 1];
     int64_t fp = col2 - col1;  // first fp columns are pivotal
@@ -133,7 +145,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             ASSERT(el_rowIndex[curRowIndex] == curFsRow);
 
             if (el->rValid != pMark)
-            {  // an element never seen before
+            {
+                // an element never seen before
 
                 PRLEVEL(
                     1, ("%%P: first time seen elRow[" LD "]=" LD " \n", e, elRow[e]));
@@ -151,7 +164,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 #endif
             }
             else  // el->rValid == pMark
-            {     // already added to pivotal rows
+            {
+                // already added to pivotal rows
                 if (npMark == pMark + 1) elRow[e]--;
                 PRLEVEL(1, ("%%already seen elRow[" LD "]=" LD " \n", e, elRow[e]));
                 continue;
@@ -170,13 +184,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 if (curCol < 0)  // already deleted
                     continue;
 
-                
-                //Found this in coverage test
-                //It also makes sense while the pivotal columns have been 
-                //already deleted
-                ////is a pivotal col 
-                //if (curCol < col2 && curCol >= col1) continue;
-                ASSERT(curCol >= col2 || curCol < col1); 
+                // pivotal columns have been already deleted
+                ASSERT (curCol >= col2 || curCol < col1) ;
 
                 auto insertResult = stl_colSet.insert(curCol);
                 // inserted to stl_colSet => insert to stl_newColSet
@@ -200,10 +209,11 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
         curRowTupleList->numTuple = pdst;
     }
 
-    int64_t *snM = Sym->super2atree;
+    const int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     if (colCount == 0)
-    {  // there is no CB, Nothing to be done
+    {
+        // there is no CB, Nothing to be done
         Work->rowMark[eli] += rowCount;
         return;
     }
@@ -256,7 +266,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
      * |          |       |     |       #  v    00000000   |           ...
      * rowCount   |==================================================
      * |          |       |     |     ooooooooooooooooooooo
-     * |          |       |     |     ooo HERE oooooooooooo
+     * |          |       |     |     ooo here oooooooooooo
      * |          |       |row_end    oooooooo EL ooooooooo
      * |          .       .      .    ooooooooooooooooooooo
      * |          .       .      .      .
@@ -277,32 +287,22 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
     for (int64_t e : pivotal_elements)
     {
         paru_element *el = elementList[e];
-        //Found this in coverage test
-        //It seems that I keep pivotal_elements really clean before this
-        //if (el == NULL)
-        //{  // removing the  element from the list
-        //    PRLEVEL(1, ("%% eli = " LD ", element= " LD "  \n", eli, e));
-        //    continue;
-        //}
-        //This next lines are also extra; I didn't have resize after them
-        //There is no NULL inside pivotal_elements here.
-        // keeping other elements inside the list
-        //pivotal_elements[ii++] = pivotal_elements[i];
-        
-        ASSERT(el != NULL);
+        ASSERT(el != NULL); // element list is clean
 
 #ifndef NDEBUG
         PRLEVEL(PR, ("%% pivotal element= " LD " lac=" LD " colsleft=" LD " \n", e,
                      el->lac, el->ncolsleft));
-        if (PR <= 0) paru_print_element(e, Work, Num);
+        if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
         int64_t intsct = paru_intersection(e, elementList, stl_newColSet);
         if (el->cValid < pMark)
-        {  // first time seeing this element in this front
+        {
+            // first time seeing this element in this front
             elCol[e] = el->ncolsleft - intsct;  // initiaze
         }
         else if (el->cValid != npMark)
-        {  // it has been seen
+        {
+            // it has been seen
             elCol[e] -= intsct;
         }
 
@@ -346,8 +346,10 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
      *
      */
 
-    if (npMark == pMark + 1)  // just once for each front
-    {                         // in the first time calling this function
+    if (npMark == pMark + 1)
+    {
+        // just once for each front
+        // in the first time calling this function
         PRLEVEL(1, ("UPDATING elRow\n"));
         for (int64_t k = j2; k < rowCount; k++)
         {
@@ -368,7 +370,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 int64_t e = curTpl.e;
 
 #ifndef NDEBUG
-                if (PR <= 0) paru_print_element(e, Work, Num);
+                if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
                 int64_t curRowIndex = curTpl.f;
 
@@ -385,7 +387,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 listRowTuples[pdst++] = curTpl;  // keeping the tuple
 
                 if (el->rValid == pMark)
-                {  // already a pivot and wont change the row degree
+                {
+                    // already a pivot and wont change the row degree
                     elRow[e]--;
                     PRLEVEL(1, ("%% Pivotal elRow[" LD "]=" LD " \n", e, elRow[e]));
                 }
@@ -398,7 +401,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                                 elRow[e]));
                 }
                 else
-                {  // el->rValid == npMark //it has been seen in this stage
+                {
+                    // el->rValid == npMark //it has been seen in this stage
                     elRow[e]--;
                     PRLEVEL(1, ("%%seen before: elRow[e]=" LD " \n", elRow[e]));
                 }
@@ -470,7 +474,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             int64_t e = curTpl.e;
 
 #ifndef NDEBUG
-            if (PR <= 0) paru_print_element(e, Work, Num);
+            if (PR <= 0) paru_print_element(e, Work, Sym, Num);
 #endif
             int64_t curRowIndex = curTpl.f;
 
@@ -486,13 +490,15 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             listRowTuples[pdst++] = curTpl;  // keeping the tuple
 
             if (el->rValid == pMark)
-            {  // already a pivot and wont change the row degree
+            {
+                // already a pivot and wont change the row degree
                 PRLEVEL(1, ("%% Pivotal elRow[" LD "]=" LD " \n", e, elRow[e]));
                 continue;
             }
 
             if (elRow[e] != 0)
-            {                            // use the upperbound
+            {
+                // use the upperbound
                 if (el->cValid < pMark)  // never seen
                     new_row_degree_bound_for_r += el->ncolsleft;
                 else  // tighter upperbound
@@ -501,13 +507,15 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             }
 
             if (el->cValid < pMark)
-            {  // first time seeing this element in this front
+            {
+                // first time seeing this element in this front
                 el->cValid = npMark;
                 int64_t intsct = paru_intersection(e, elementList, stl_newColSet);
                 elCol[e] = el->ncolsleft - intsct;  // initiaze
             }
             else if (el->cValid != npMark)
-            {  // it has been seen
+            {
+                // it has been seen
                 el->cValid = npMark;
                 if (elCol[e] != 0)
                 {

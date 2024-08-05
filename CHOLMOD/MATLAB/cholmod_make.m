@@ -27,6 +27,8 @@ flags = '-O -R2018a -silent ' ;
 if (ispc)
     % MSVC does not define ssize_t
     flags = [flags ' -DNO_SSIZE_T'] ;
+    % disable the SuiteSparse_config timer
+    flags = ['-DNTIMER ' flags] ;
 end
 
 include = '-I. -I.. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;

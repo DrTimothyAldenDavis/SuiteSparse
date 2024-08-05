@@ -65,18 +65,18 @@
  * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
  */
 
-#define COLAMD_DATE "Mar 22, 2024"
+#define COLAMD_DATE "June 20, 2024"
 #define COLAMD_MAIN_VERSION   3
 #define COLAMD_SUB_VERSION    3
-#define COLAMD_SUBSUB_VERSION 3
+#define COLAMD_SUBSUB_VERSION 4
 
 #define COLAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define COLAMD_VERSION COLAMD_VERSION_CODE(3,3)
 
-#define COLAMD__VERSION SUITESPARSE__VERCODE(3,3,3)
+#define COLAMD__VERSION SUITESPARSE__VERCODE(3,3,4)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "COLAMD 3.3.3 requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "COLAMD 3.3.4 requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 /* ========================================================================== */

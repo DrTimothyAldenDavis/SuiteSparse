@@ -1,5 +1,5 @@
 ( cd build && cmake  -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j8 )
--- Building CXSparse version: v4.4.0 (Mar 22, 2024)
+-- Building CXSparse version: v4.4.1 (June 20, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/CXSparse 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/CXSparse/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -16,9 +16,9 @@
 -- CUDA toolkit lib: /usr/local/cuda/lib64
 -- CUDA:             enabled
 -- complex data type: enabled
--- SuiteSparse_config version: 7.7.0
+-- SuiteSparse_config version: 7.8.0
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.7.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.8.0
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in CXSparse/Demo
 -- ------------------------------------------------------------------------
@@ -45,28 +45,28 @@
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/CXSparse/build'
 [ 44%] Built target CXSparse
 [ 89%] Built target CXSparse_static
-[ 89%] Built target cs_demo1
-[ 89%] Built target cs_di_demo1
-[ 90%] Built target cs_demo2
+[ 90%] Built target cs_demo3
 [ 91%] Built target cs_di_demo2
-[ 91%] Built target cs_dl_demo1
-[ 92%] Built target cs_di_demo3
-[ 93%] Built target cs_demo3
+[ 91%] Built target cs_di_demo1
+[ 92%] Built target cs_demo2
+[ 92%] Built target cs_dl_demo1
+[ 94%] Built target cs_di_demo3
+[ 94%] Built target cs_demo1
 [ 94%] Built target cs_dl_demo2
 [ 95%] Built target cs_dl_demo3
-[ 96%] Built target cs_cl_demo1
-[ 97%] Built target cs_ci_demo1
+[ 96%] Built target cs_ci_demo1
+[ 96%] Built target cs_ci_demo2
+[ 96%] Built target cs_idemo
+[ 97%] Built target cs_ci_demo3
 [ 97%] Built target cs_cl_demo2
-[ 97%] Built target cs_ci_demo2
-[ 98%] Built target cs_ci_demo3
+[ 98%] Built target cs_cl_demo1
 [ 99%] Built target cs_cl_demo3
-[ 99%] Built target cs_idemo
 [100%] Built target cs_ldemo
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/CXSparse/build'
 ./build/cs_demo1 < Matrix/t1
-CXSparse v4.4.0
+CXSparse v4.4.1
 T:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -79,7 +79,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -96,7 +96,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -113,7 +113,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -151,7 +151,7 @@ LU   amd(A'*A)  time:     0.00 resid: 1.53e-17
 zero entries dropped: 71
 tiny entries dropped: 10
 blocks: 38 singletons: 37 structural rank: 183
-QR   natural    time:     0.00 resid: 1.42e-27
+QR   natural    time:     0.01 resid: 1.42e-27
 QR   amd(A'*A)  time:     0.00 resid: 3.35e-28
 LU   natural    time:     0.00 resid: 6.20e-28
 LU   amd(A+A')  time:     0.00 resid: 1.55e-27
@@ -184,7 +184,7 @@ QR   amd(A'*A)  time:     0.00 resid: 1.61e-02
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
 QR   natural    time:     0.06 resid:      nan
-QR   amd(A'*A)  time:     0.06 resid:      nan
+QR   amd(A'*A)  time:     0.07 resid:      nan
 ./build/cs_demo2 < Matrix/bcsstk01
 
 --- Matrix: 48-by-48, nnz: 224 (sym: -1: nnz 400), norm: 3.57e+09
@@ -235,9 +235,9 @@ rechol:   time:     0.09 (incl solve) resid: 1.17e-23
 downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 4.09e-22
 ./build/cs_di_demo1 < Matrix/t1
-CXSparse v4.4.0
+CXSparse v4.4.1
 T:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -250,7 +250,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -267,7 +267,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -284,7 +284,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -322,7 +322,7 @@ LU   amd(A'*A)  time:     0.00 resid: 1.53e-17
 zero entries dropped: 71
 tiny entries dropped: 10
 blocks: 38 singletons: 37 structural rank: 183
-QR   natural    time:     0.01 resid: 1.42e-27
+QR   natural    time:     0.00 resid: 1.42e-27
 QR   amd(A'*A)  time:     0.00 resid: 3.35e-28
 LU   natural    time:     0.00 resid: 6.20e-28
 LU   amd(A+A')  time:     0.00 resid: 1.55e-27
@@ -354,8 +354,8 @@ QR   amd(A'*A)  time:     0.00 resid: 1.61e-02
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.06 resid:      nan
-QR   amd(A'*A)  time:     0.07 resid:      nan
+QR   natural    time:     0.05 resid:      nan
+QR   amd(A'*A)  time:     0.06 resid:      nan
 ./build/cs_di_demo2 < Matrix/bcsstk01
 
 --- Matrix: 48-by-48, nnz: 224 (sym: -1: nnz 400), norm: 3.57e+09
@@ -386,10 +386,10 @@ downdate: time:     0.00 (incl solve) resid: 3.74e-17
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
-QR   amd(A'*A)  time:     0.62 resid: 2.01e-22
+QR   amd(A'*A)  time:     0.61 resid: 2.01e-22
 LU   amd(A+A')  time:     0.32 resid: 1.10e-22
 LU   amd(S'*S)  time:     0.32 resid: 1.28e-22
-LU   amd(A'*A)  time:     0.36 resid: 1.78e-22
+LU   amd(A'*A)  time:     0.33 resid: 1.78e-22
 Chol amd(A+A')  time:     0.10 resid: 1.19e-22
 ./build/cs_di_demo3 < Matrix/bcsstk16
 
@@ -397,7 +397,7 @@ Chol amd(A+A')  time:     0.10 resid: 1.19e-22
 
 chol then update/downdate amd(A+A')  
 symbolic chol time     0.01
-numeric  chol time     0.11
+numeric  chol time     0.10
 solve    chol time     0.00
 original: resid: 1.19e-22
 update:   time:     0.00
@@ -406,9 +406,9 @@ rechol:   time:     0.09 (incl solve) resid: 1.17e-23
 downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 4.09e-22
 ./build/cs_dl_demo1 < Matrix/t1
-CXSparse v4.4.0
+CXSparse v4.4.1
 T:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -421,7 +421,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -438,7 +438,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -455,7 +455,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -557,7 +557,7 @@ downdate: time:     0.00 (incl solve) resid: 3.74e-17
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
-QR   amd(A'*A)  time:     0.62 resid: 2.01e-22
+QR   amd(A'*A)  time:     0.65 resid: 2.01e-22
 LU   amd(A+A')  time:     0.32 resid: 1.10e-22
 LU   amd(S'*S)  time:     0.33 resid: 1.28e-22
 LU   amd(A'*A)  time:     0.34 resid: 1.78e-22
@@ -568,7 +568,7 @@ Chol amd(A+A')  time:     0.11 resid: 1.19e-22
 
 chol then update/downdate amd(A+A')  
 symbolic chol time     0.01
-numeric  chol time     0.10
+numeric  chol time     0.11
 solve    chol time     0.00
 original: resid: 1.19e-22
 update:   time:     0.00
@@ -577,7 +577,7 @@ rechol:   time:     0.10 (incl solve) resid: 1.17e-23
 downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 4.09e-22
 ( cd build && cmake  -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j8 )
--- Building CXSparse version: v4.4.0 (Mar 22, 2024)
+-- Building CXSparse version: v4.4.1 (June 20, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/CXSparse 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/CXSparse/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -594,9 +594,9 @@ downdate: time:     0.00 (incl solve) resid: 4.09e-22
 -- CUDA toolkit lib: /usr/local/cuda/lib64
 -- CUDA:             enabled
 -- complex data type: enabled
--- SuiteSparse_config version: 7.7.0
+-- SuiteSparse_config version: 7.8.0
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.7.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.8.0
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in CXSparse/Demo
 -- ------------------------------------------------------------------------
@@ -621,23 +621,23 @@ downdate: time:     0.00 (incl solve) resid: 4.09e-22
 -- Generating done (0.1s)
 -- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/CXSparse/build
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/CXSparse/build'
-[ 44%] Built target CXSparse
-[ 89%] Built target CXSparse_static
+[ 74%] Built target CXSparse_static
+[ 89%] Built target CXSparse
 [ 89%] Built target cs_demo1
 [ 90%] Built target cs_di_demo3
-[ 91%] Built target cs_di_demo2
+[ 90%] Built target cs_dl_demo1
+[ 90%] Built target cs_di_demo1
+[ 91%] Built target cs_demo3
 [ 92%] Built target cs_demo2
-[ 92%] Built target cs_dl_demo1
-[ 93%] Built target cs_demo3
-[ 93%] Built target cs_di_demo1
-[ 94%] Built target cs_dl_demo2
+[ 93%] Built target cs_dl_demo2
+[ 94%] Built target cs_di_demo2
 [ 95%] Built target cs_dl_demo3
-[ 96%] Built target cs_ci_demo3
-[ 96%] Built target cs_ci_demo2
-[ 97%] Built target cs_ci_demo1
-[ 97%] Built target cs_cl_demo2
+[ 95%] Built target cs_cl_demo2
+[ 95%] Built target cs_ci_demo2
+[ 96%] Built target cs_ci_demo1
+[ 97%] Built target cs_cl_demo3
 [ 98%] Built target cs_cl_demo1
-[ 99%] Built target cs_cl_demo3
+[ 99%] Built target cs_ci_demo3
 [ 99%] Built target cs_idemo
 [100%] Built target cs_ldemo
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/CXSparse/build'
@@ -646,7 +646,7 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/CXSparse/bui
 --- cs_idemo, size of CS_INT: 4
 
 T:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -660,7 +660,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : (1.7, 1)
 
 Treal:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -674,7 +674,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1.7
 
 Timag:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3.14159
     1 0 : 42
@@ -688,7 +688,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1
 
 A:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -706,7 +706,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0.9, 99)
 
 C1 = real(A):
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -724,7 +724,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 0.9
 
 C2 = imag(A):
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : 42
@@ -742,7 +742,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 99
 
 A1:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : (3.1, 0)
@@ -760,7 +760,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0.9, 0)
 
 A2:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : (0, 42)
@@ -778,7 +778,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0, 99)
 
 B = conj(A):
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, -42)
@@ -799,7 +799,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 --- cs_ldemo, size of CS_INT: 8
 
 T:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -813,7 +813,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : (1.7, 1)
 
 Treal:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -827,7 +827,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1.7
 
 Timag:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3.14159
     1 0 : 42
@@ -841,7 +841,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1
 
 A:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -859,7 +859,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0.9, 99)
 
 C1 = real(A):
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -877,7 +877,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 0.9
 
 C2 = imag(A):
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : 42
@@ -895,7 +895,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 99
 
 A1:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : (3.1, 0)
@@ -913,7 +913,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0.9, 0)
 
 A2:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : (0, 42)
@@ -931,7 +931,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0, 99)
 
 B = conj(A):
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, -42)
@@ -948,9 +948,9 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       3 : (1, -7)
       1 : (0.9, -99)
 ./build/cs_ci_demo1 < Matrix/t2
-CXSparse v4.4.0
+CXSparse v4.4.1
 T:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -963,7 +963,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : (4.5, 6)
     2 1 : (1.7, 1)
 A:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -980,7 +980,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       3 : (1, 7)
       1 : (0.9, 99)
 AT:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 144.296
     col 0 : locations 0 to 1
       0 : (4.5, -6)
@@ -997,7 +997,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0.4, -2.71828)
       3 : (1, -7)
 D:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 25308.3
     col 0 : locations 0 to 3
       1 : (265.95, 170.4)
@@ -1061,8 +1061,8 @@ LU   amd(A'*A)  time:     0.00 resid: 4.76e-17
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.12 resid:      nan
-QR   amd(A'*A)  time:     0.13 resid:      nan
+QR   natural    time:     0.14 resid:      nan
+QR   amd(A'*A)  time:     0.15 resid:      nan
 ./build/cs_ci_demo2 < Matrix/young1c
 
 --- Matrix: 841-by-841, nnz: 4089 (sym: 0: nnz 0), norm: 7.30e+02
@@ -1142,9 +1142,9 @@ rechol:   time:     0.00 (incl solve) resid: 1.71e-25
 downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 5.85e-25
 ./build/cs_cl_demo1 < Matrix/t2
-CXSparse v4.4.0
+CXSparse v4.4.1
 T:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -1157,7 +1157,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : (4.5, 6)
     2 1 : (1.7, 1)
 A:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -1174,7 +1174,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       3 : (1, 7)
       1 : (0.9, 99)
 AT:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 144.296
     col 0 : locations 0 to 1
       0 : (4.5, -6)
@@ -1191,7 +1191,7 @@ CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : (0.4, -2.71828)
       3 : (1, -7)
 D:
-CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse Version 4.4.1, June 20, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 25308.3
     col 0 : locations 0 to 3
       1 : (265.95, 170.4)
@@ -1255,7 +1255,7 @@ LU   amd(A'*A)  time:     0.00 resid: 4.76e-17
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.11 resid:      nan
+QR   natural    time:     0.14 resid:      nan
 QR   amd(A'*A)  time:     0.13 resid:      nan
 ./build/cs_cl_demo2 < Matrix/young1c
 
@@ -1263,7 +1263,7 @@ QR   amd(A'*A)  time:     0.13 resid:      nan
 blocks: 1 singletons: 0 structural rank: 841
 QR   natural    time:     0.01 resid: 1.81e-16
 QR   amd(A'*A)  time:     0.01 resid: 1.57e-16
-LU   natural    time:     0.01 resid: 1.39e-16
+LU   natural    time:     0.00 resid: 1.39e-16
 LU   amd(A+A')  time:     0.01 resid: 2.95e-16
 LU   amd(S'*S)  time:     0.00 resid: 3.37e-16
 LU   amd(A'*A)  time:     0.00 resid: 3.37e-16
@@ -1282,7 +1282,7 @@ LU   amd(A'*A)  time:     0.01 resid: 4.71e-17
 --- Matrix: 1600-by-1600, nnz: 7840 (sym: 0: nnz 0), norm: 1.41e+01
 blocks: 1 singletons: 0 structural rank: 1600
 QR   amd(A'*A)  time:     0.02 resid: 1.04e-15
-LU   amd(A+A')  time:     0.00 resid: 3.55e-16
+LU   amd(A+A')  time:     0.01 resid: 3.55e-16
 LU   amd(S'*S)  time:     0.01 resid: 4.03e-16
 LU   amd(A'*A)  time:     0.01 resid: 4.03e-16
 ./build/cs_cl_demo2 < Matrix/c4

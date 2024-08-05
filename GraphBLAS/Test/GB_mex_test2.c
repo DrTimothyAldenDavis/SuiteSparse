@@ -11,7 +11,6 @@
 
 #include "GB_mex.h"
 #include "GB_mex_errors.h"
-#include "GB_ij.h"
 
 #define USAGE "GB_mex_test2"
 
@@ -128,15 +127,15 @@ void mexFunction
     GrB_Scalar_free_(&scalar) ;
 
     //--------------------------------------------------------------------------
-    // GB_pslice
+    // GB_p_slice
     //--------------------------------------------------------------------------
 
     int64_t Slice [30] ;
-    GB_pslice (Slice, A->p, n, 2, true) ;
+    GB_p_slice (Slice, A->p, n, 2, true) ;
     CHECK (Slice [0] == 0) ;
 
     int64_t Ap [11] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } ;
-    GB_pslice (Slice, Ap, 10, 10, false) ;
+    GB_p_slice (Slice, Ap, 10, 10, false) ;
     printf ("Slice: ") ;
     for (int k = 0 ; k <= 10 ; k++) printf (" %ld", Slice [k]) ;
     printf ("\n") ;

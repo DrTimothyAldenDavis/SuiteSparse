@@ -713,9 +713,9 @@ particular BLAS library use either:
     cd Package ; cmake -DBLA_VENDOR=OpenBLAS .. make
 
 To use the default (hunt for a BLAS), do not set `BLA_VENDOR`, or set it to
-`ANY`.  In this case, if `SUITESPARSE_USE_64BIT_BLAS` is ON, preference is
-given to a 64-bit BLAS, but a 32-bit BLAS library will be used if no 64-bit
-library is found.  However, if both `SUITESPARSE_USE_64BIT_BLAS` and
+an empty string.  In this case, if `SUITESPARSE_USE_64BIT_BLAS` is ON,
+preference is given to a 64-bit BLAS, but a 32-bit BLAS library will be used if
+no 64-bit library is found.  However, if both `SUITESPARSE_USE_64BIT_BLAS` and
 `SUITESPARSE_USE_STRICT` are ON, then only a 64-bit BLAS is considered.
 
 When selecting a particular BLAS library, the `SUITESPARSE_USE_64BIT_BLAS`
@@ -979,6 +979,12 @@ build type).  The static libraries will not be built (since
 
   If `ON`, look for a 64-bit BLAS.  If `OFF`: 32-bit only.  Default: `OFF`.
 
+* `SUITESPARSE_USE_PYTHON`:
+
+  If `ON`, build Python interfaces for any package in SuiteSparse that has
+  one (currently only SPEX).  If `OFF`: do not build any Python interface.
+  Default: `ON`.
+
 * `SUITESPARSE_USE_OPENMP`:
 
   If `ON`, OpenMP is used by default if it is available.  Default: `ON`.
@@ -1209,7 +1215,7 @@ Julia interface:
 
   https://github.com/JuliaSparse/SparseArrays.jl
 
-python interface to GraphBLAS by Anaconda and NVIDIA:
+Python interface to GraphBLAS by Anaconda and NVIDIA:
 
   https://pypi.org/project/python-graphblas
 

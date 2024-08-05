@@ -22,6 +22,11 @@ if (~verLessThan ('matlab', '8.3.0'))
     d = ['-silent ' d] ;
 end
 
+if (ispc)
+    % disable the SuiteSparse_config timer
+    d = ['-DNTIMER ' d] ;
+end
+
 i = sprintf ('-I../Include -I../../SuiteSparse_config') ;
 cmd = sprintf ('mex -O %s -output amd2 %s amd_mex.c %s', d, i, ...
     '../../SuiteSparse_config/SuiteSparse_config.c') ;

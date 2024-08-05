@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 echo "Test coverage summary" > cov.out
 echo '=============================================================' >> cov.out
 
@@ -8,7 +12,7 @@ do
 	gcov -o . $file >& /dev/null
 done
 
-for file in paru_*.?cov
+for file in ?ar?_*.?cov
 do
 	echo $file >> cov.out
 	grep "#####" $file | grep -v "__dev" | grep -v "__major" | \
@@ -17,6 +21,7 @@ do
 done
 
 echo -n "statements not tested: "
-grep "\#\#\#\#\#:" paru_*v | grep -v DEAD | wc -l
+grep "\#\#\#\#\#:" ?ar?_*v | grep -v DEAD | wc -l
+echo " "
 
 set status=0

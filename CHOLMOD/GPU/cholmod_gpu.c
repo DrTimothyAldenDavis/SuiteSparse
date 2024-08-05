@@ -18,7 +18,7 @@
 
 #include "cholmod_internal.h"
 
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
 #include <cuda.h>
 #include <cuda_runtime.h>
 #endif
@@ -41,7 +41,7 @@
 
 static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
 {
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
     /* Returns TRUE if the GPU has a block of memory of size s,
        FALSE otherwise.  The block of memory is immediately freed. */
     void *p = NULL ;
@@ -81,7 +81,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
         return (0) ;                    /* not using the GPU at all */
     }
 
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
 
     /* find the total amount of free memory */
     cudaMemGetInfo (&total_free, &total_memory) ;
@@ -148,7 +148,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 int CHOLMOD(gpu_probe) ( cholmod_common *Common )
 {
 
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
     int ngpus, idevice;
     double tstart, tend;
     struct cudaDeviceProp gpuProp;
@@ -190,7 +190,7 @@ int CHOLMOD(gpu_deallocate)
 )
 {
 
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
     cudaError_t cudaErr;
 
     if ( Common->dev_mempool )
@@ -236,7 +236,7 @@ int CHOLMOD(gpu_start)
     cholmod_common *Common
 )
 {
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
     cudaError_t cudaErr ;
 
     if (Common->cublasHandle == NULL)
@@ -321,7 +321,7 @@ void CHOLMOD(gpu_end)
     cholmod_common *Common
 )
 {
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
 
     //----------------------------------------------------------------------
     // destroy cublasHandle
@@ -426,7 +426,7 @@ void CHOLMOD(gpu_end)
 int CHOLMOD(gpu_allocate) ( cholmod_common *Common )
 {
 
-#ifdef CHOLMOD_HAS_CUDA
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
 
     size_t fdm, tdm;
     size_t requestedDeviceMemory, requestedHostMemory;

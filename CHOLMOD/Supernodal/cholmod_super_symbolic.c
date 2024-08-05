@@ -234,7 +234,7 @@ int CHOLMOD(super_symbolic2)
 
     L->useGPU = 0 ;     // only used for Cholesky factorization, not QR
 
-    #ifdef CHOLMOD_HAS_CUDA
+    #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
 
     // GPU module is installed
     if (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && A->dtype == CHOLMOD_DOUBLE)
@@ -413,7 +413,7 @@ int CHOLMOD(super_symbolic2)
         if (Parent [j-1] != j       // parent of j-1 is not j
             || (ColCount [j-1] != ColCount [j] + 1) // j-1 not subset of j
             || Wi [j] > 1           // j has more than one child
-            #ifdef CHOLMOD_HAS_CUDA
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
             // Ensure that the supernode will fit in the GPU buffers
             // Data size of 16 bytes must be assumed for case of PATTERN
             || (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && L->useGPU &&
@@ -573,7 +573,7 @@ int CHOLMOD(super_symbolic2)
             }
         }
 
-        #ifdef CHOLMOD_HAS_CUDA
+        #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
         if ( for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && L->useGPU ) {
           // Ensure that the aggregated supernode fits in the device
           // supernode buffers

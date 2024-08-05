@@ -1,6 +1,9 @@
 name: macos
 on:
   workflow_dispatch:
+  schedule:
+    # Run job every Saturday at 08:20 UTC
+    - cron: '20 8 * * 6'
 # push:
 #   branches-ignore:
 #     - '**/dev2'
@@ -51,6 +54,8 @@ jobs:
           brew install --overwrite python@3.10 python@3.11 python@3.12
           brew reinstall gcc
           brew install autoconf automake ccache cmake gmp lapack libomp mpfr openblas
+          HOMEBREW_PREFIX=$(brew --prefix)
+          echo "HOMEBREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -89,8 +94,8 @@ jobs:
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
-                  -DBLA_VENDOR="OpenBLAS" \
-                  -DCMAKE_PREFIX_PATH="/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+                  -DBLA_VENDOR="Apple" \
+                  -DCMAKE_PREFIX_PATH="${HOMEBREW_PREFIX}/opt/lapack;${HOMEBREW_PREFIX}/opt/openblas;${HOMEBREW_PREFIX}/opt/libomp" \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -98,89 +103,89 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: check_Mongoose
+      - name: check Mongoose
         run: |
           cd ${GITHUB_WORKSPACE}/Mongoose/build
           ctest .
 
-      - name: check_AMD
+      - name: check AMD
         run: |
           cd ${GITHUB_WORKSPACE}/AMD
           make demos
 
-      - name: check_CAMD
+      - name: check CAMD
         run: |
           cd ${GITHUB_WORKSPACE}/CAMD
           make demos
 
-      - name: check_COLAMD
+      - name: check COLAMD
         run: |
           cd ${GITHUB_WORKSPACE}/COLAMD
           make demos
 
-      - name: check_CCOLAMD
+      - name: check CCOLAMD
         run: |
           cd ${GITHUB_WORKSPACE}/CCOLAMD
           make demos
 
-      - name: check_CHOLMOD
+      - name: check CHOLMOD
         run: |
           cd ${GITHUB_WORKSPACE}/CHOLMOD
           make demos
           cd ${GITHUB_WORKSPACE}/CHOLMOD/build
           ctest .
 
-      - name: check_CSparse
+      - name: check CSparse
         run: |
           cd ${GITHUB_WORKSPACE}/CSparse
           make demos
 
-      - name: check_CXSparse
+      - name: check CXSparse
         run: |
           cd ${GITHUB_WORKSPACE}/CXSparse
           make demos
 
-      - name: check_LDL
+      - name: check LDL
         run: |
           cd ${GITHUB_WORKSPACE}/LDL
           make demos
 
-      - name: check_KLU
+      - name: check KLU
         run: |
           cd ${GITHUB_WORKSPACE}/KLU
           make demos
 
-      - name: check_UMFPACK
+      - name: check UMFPACK
         run: |
           cd ${GITHUB_WORKSPACE}/UMFPACK
           make demos
 
-      - name: check_RBio
+      - name: check RBio
         run: |
           cd ${GITHUB_WORKSPACE}/RBio
           make demos
 
-      - name: check_SPQR
+      - name: check SPQR
         run: |
           cd ${GITHUB_WORKSPACE}/SPQR
           make demos
 
-      - name: check_SPEX
+      - name: check SPEX
         run: |
           cd ${GITHUB_WORKSPACE}/SPEX
           make demos
 
-      - name: check_GraphBLAS
+      - name: check GraphBLAS
         run: |
           cd ${GITHUB_WORKSPACE}/GraphBLAS
           make demos
 
-      - name: check_LAGraph
+      - name: check LAGraph
         run: |
           cd ${GITHUB_WORKSPACE}/LAGraph
           make demos
 
-      - name: check_ParU
+      - name: check ParU
         run: |
           cd ${GITHUB_WORKSPACE}/ParU
           make demos
@@ -212,7 +217,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
-            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;${HOMEBREW_PREFIX}/opt/lapack;${HOMEBREW_PREFIX}/opt/openblas;${HOMEBREW_PREFIX}/opt/libomp" \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"

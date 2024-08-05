@@ -1,14 +1,14 @@
 //------------------------------------------------------------------------------
 // GB_jit__AxB_dot2__2c1f000bbb0bbbcd__plus_my_rdiv.c
 //------------------------------------------------------------------------------
-// SuiteSparse:GraphBLAS v9.0.0, Timothy A. Davis, (c) 2017-2023,
+// SuiteSparse:GraphBLAS v9.3.0, Timothy A. Davis, (c) 2017-2024,
 // All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 // The above copyright and license do not apply to any
 // user-defined types and operators defined below.
 //------------------------------------------------------------------------------
 
-#include "GB_jit_kernel.h"
+#include "include/GB_jit_kernel.h"
 
 // semiring: (plus, my_rdiv, double)
 
@@ -22,6 +22,7 @@
 #define GB_IDENTITY_BYTE 0x00
 #define GB_PRAGMA_SIMD_REDUCTION_MONOID(z) GB_PRAGMA_SIMD_REDUCTION (+,z)
 #define GB_Z_IGNORE_OVERFLOW 1
+#define GB_Z_SIZE  8
 #define GB_Z_NBITS 64
 #define GB_Z_ATOMIC_BITS 64
 #define GB_Z_HAS_ATOMIC_UPDATE 1
@@ -31,16 +32,22 @@
 #define GB_Z_CUDA_ATOMIC_TYPE double
 
 // multiplicative operator:
+#define GB_X_TYPE double
+#define GB_Y_TYPE double
 #ifndef GB_GUARD_my_rdiv_DEFINED
 #define GB_GUARD_my_rdiv_DEFINED
 GB_STATIC_INLINE
 void my_rdiv (double *z, const double *x, const double *y)
 {
+    // escape this quote: "
+    /* escape this backslash \ */
     (*z) = (*y) / (*x) ;
 }
 #define GB_my_rdiv_USER_DEFN \
 "void my_rdiv (double *z, const double *x, const double *y)\n" \
 "{\n" \
+"    // escape this quote: \"\n" \
+"    /* escape this backslash \\ */\n" \
 "    (*z) = (*y) / (*x) ;\n" \
 "}"
 #endif
@@ -113,12 +120,12 @@ void my_rdiv (double *z, const double *x, const double *y)
 #define GB_DECLAREB(b) double b
 #define GB_GETB(b,Bx,p,iso) b = Bx [p]
 
-#include "GB_mxm_shared_definitions.h"
+#include "include/GB_mxm_shared_definitions.h"
 #ifndef GB_JIT_RUNTIME
 #define GB_jit_kernel GB_jit__AxB_dot2__2c1f000bbb0bbbcd__plus_my_rdiv
 #define GB_jit_query  GB_jit__AxB_dot2__2c1f000bbb0bbbcd__plus_my_rdiv_query
 #endif
-#include "GB_jit_kernel_AxB_dot2.c"
+#include "template/GB_jit_kernel_AxB_dot2.c"
 GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query) ;
 GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query)
 {

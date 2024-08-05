@@ -53,9 +53,9 @@ message ( STATUS "MY prefix path:    ${CMAKE_PREFIX_PATH}" )
 #-------------------------------------------------------------------------------
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Mar 22, 2024" )
+set ( MY_DATE "Aug 2, 2024" )
 set ( MY_VERSION_MAJOR 1 )
-set ( MY_VERSION_MINOR 7 )
+set ( MY_VERSION_MINOR 8 )
 set ( MY_VERSION_PATCH 0 )
 
 message ( STATUS "Building MY library version: v"
@@ -87,25 +87,25 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
-find_package ( SuiteSparse_config 7.7.0 REQUIRED )
-find_package ( AMD 3.3.2 REQUIRED )
+find_package ( SuiteSparse_config 7.8.0 REQUIRED )
+find_package ( AMD 3.3.3 REQUIRED )
 find_package ( BTF 2.3.2 REQUIRED )
-find_package ( CAMD 3.3.2 REQUIRED )
-find_package ( CCOLAMD 3.3.3 REQUIRED )
-find_package ( CHOLMOD 5.2.1 REQUIRED )
-find_package ( COLAMD 3.3.3 REQUIRED )
-find_package ( CXSparse 4.4.0 REQUIRED )
-find_package ( GraphBLAS 9.1.0 )
-find_package ( KLU 2.3.3 REQUIRED )
-find_package ( KLU_CHOLMOD 2.3.3 REQUIRED )
+find_package ( CAMD 3.3.3 REQUIRED )
+find_package ( CCOLAMD 3.3.4 REQUIRED )
+find_package ( CHOLMOD 5.3.0 REQUIRED )
+find_package ( COLAMD 3.3.4 REQUIRED )
+find_package ( CXSparse 4.4.1 REQUIRED )
+find_package ( GraphBLAS 9.3.0 )
+find_package ( KLU 2.3.4 REQUIRED )
+find_package ( KLU_CHOLMOD 2.3.4 REQUIRED )
 find_package ( LDL 3.3.2 REQUIRED )
 find_package ( LAGraph 1.1.3 )
-find_package ( SuiteSparse_Mongoose 3.3.3 REQUIRED )
-find_package ( ParU 0.1.3 REQUIRED )
-find_package ( RBio 4.3.2 REQUIRED )
-find_package ( SPEX 3.1.0 REQUIRED )    # requires GMP and MPFR
-find_package ( SPQR 4.3.3 REQUIRED )
-find_package ( UMFPACK 6.3.3 REQUIRED )
+find_package ( SuiteSparse_Mongoose 3.3.4 REQUIRED )
+find_package ( ParU 0.2.0 REQUIRED )
+find_package ( RBio 4.3.3 REQUIRED )
+find_package ( SPEX 3.2.0 REQUIRED )    # requires GMP and MPFR
+find_package ( SPQR 4.3.4 REQUIRED )
+find_package ( UMFPACK 6.3.4 REQUIRED )
 
 # for GMP and MPFR
 find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules

@@ -60,14 +60,12 @@
 //------------------------------------------------------------------------------
 
 #define DOUBLE
-#ifdef CHOLMOD_INT64
-#ifdef CHOLMOD_HAS_CUDA
-#include "cholmod_gpu_kernels.h"
-#define REAL
-#include "../GPU/t_cholmod_gpu.c"
-#define COMPLEX
-#include "../GPU/t_cholmod_gpu.c"
-#endif
+#if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 )
+    #include "cholmod_gpu_kernels.h"
+    #define REAL
+    #include "../GPU/t_cholmod_gpu.c"
+    #define COMPLEX
+    #include "../GPU/t_cholmod_gpu.c"
 #endif
 
 //------------------------------------------------------------------------------

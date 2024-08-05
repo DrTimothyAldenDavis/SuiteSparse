@@ -4,7 +4,8 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# ParUConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
+# ParUConfig.cmake, Copyright (c) 2023-2024, Timothy A. Davis.
+# All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -16,7 +17,7 @@
 
 # For backward compatibility the following variables are set:
 
-# PARU_INCLUDE_DIR - where to find ParU.hpp and other headers
+# PARU_INCLUDE_DIR - where to find ParU.h
 # PARU_LIBRARY     - dynamic ParU library
 # PARU_STATIC      - static ParU library
 # PARU_LIBRARIES   - libraries when using ParU

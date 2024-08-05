@@ -23,7 +23,12 @@ This file will contain an index of the kernels listed above:
 
     GB_prejit.c
 
-If GraphBLAS is modified, test145 should be run again to create these
-JIT kernels, and then copy them here.  Then modify GB_mex_rdiv.c to
-trigger the stale PreJIT kernel case.
+If GraphBLAS is modified, test145 should be run again to create these JIT
+kernels, using the Test/test145.m script.  Next, copy the above files into
+GraphBLAS/Tcov/GB_prejit.c.  Also copy them into GraphBLAS/PreJIT and rerun
+'make' for the main GraphBLAS library, and then copy Config/GB_prejit.c here.
+
+Finally, modify GB_mex_rdiv.c to trigger the stale PreJIT kernel case, by
+changing the string MY_RDIV.  After modifying it, rerun test145 and copy the
+final GB_jit__user_op__0__my_rdiv.c here.
 

@@ -1,0 +1,4 @@
+# Ignore these files:
+*.mat
+?.txt
+!.gitignore

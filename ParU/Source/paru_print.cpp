@@ -2,17 +2,24 @@
 //////////////////////////  paru_print   ///////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-/*! @brief printing datas are implemented in this file
+/*! @brief printing datas are implemented in this file (for development only)
  *
  * @author Aznaveh
  */
 
 #include "paru_internal.hpp"
-void paru_print_element(int64_t e, paru_work *Work, ParU_Numeric *Num)
+
+void paru_print_element
+(
+    int64_t e,
+    paru_work *Work,
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
+)
 {
     // print out contribution blocks
     paru_element **elementList;
@@ -20,12 +27,12 @@ void paru_print_element(int64_t e, paru_work *Work, ParU_Numeric *Num)
     paru_element *curEl = elementList[e];
 
     int64_t morign = Num->m;
-    int64_t nf = Work->Sym->nf;
+    int64_t nf = Sym->nf;
 
     if (e > morign + nf + 1)
     {
-        printf("%% paru_element " LD " is out of range; just " LD " elements \n", e,
-               morign + nf + 1);
+        printf("%% paru_element " LD " is out of range; just " LD
+            " elements \n", e, morign + nf + 1);
         return;
     }
 

@@ -44,6 +44,14 @@ SPEX_info SPEX_lu_analyze
     //--------------------------------------------------------------------------
 
     if (!spex_initialized()) return SPEX_PANIC;
+    
+    // get option->algo, or use SPEX_ALGORITHM_DEFAULT if option is NULL:
+    SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
+    if (algo != SPEX_ALGORITHM_DEFAULT && algo != SPEX_LU_LEFT)
+    {
+        return SPEX_INCORRECT_ALGORITHM;
+    }
+    
     SPEX_info info ;
 
     // A can have any data type, but must be in sparse CSC format
@@ -76,11 +84,10 @@ SPEX_info SPEX_lu_analyze
     S->kind = SPEX_LU_FACTORIZATION;
 
     //--------------------------------------------------------------------------
-    // No ordering is used. S->Q_perm is set to [0...n] and the number of
-    // nonzeros in L and U is estimated to be 10 times the number of nonzeros
-    // in A. This is a very crude estimate on the nnz(L) and nnz(U)
+    // order the matrix and estimate the # of entries in L and U
     //--------------------------------------------------------------------------
 
+    // Get option->order to determine which ordering to use.
     SPEX_preorder order = SPEX_OPTION_ORDER (option);
     switch(order)
     {
@@ -89,7 +96,6 @@ SPEX_info SPEX_lu_analyze
         case SPEX_COLAMD:
         // ---COLAMD ordering is used (DEFAULT)---
         // S->q is set to COLAMD's column ordering on A.
-
         {
             SPEX_CHECK( spex_colamd(&(S->Q_perm),&(S->unz),A,option));
             S->lnz = S->unz;
@@ -98,9 +104,9 @@ SPEX_info SPEX_lu_analyze
 
         case SPEX_NO_ORDERING:
         // ---No ordering is used---
-        // S->q is set to [0 ... n] and the number of nonzeros in L is estimated
-        // to be 10 times the number of nonzeros in A.
-        // This is a very crude estimate on the nnz(L)
+        // S->q is set to [0 ... n] and the number of nonzeros in L and U are
+        // estimated to be 10 times the number of nonzeros in A.  This is a
+        // very crude estimate on nnz(L) and nnz (U).
         {
             S->Q_perm = (int64_t*)SPEX_malloc( (n+1)*sizeof(int64_t) );
             if (S->Q_perm == NULL)
@@ -120,7 +126,7 @@ SPEX_info SPEX_lu_analyze
 
         case SPEX_AMD:
         // --- AMD ordering is used
-        // S->q is set as AMD's column ordering.
+        // S->q is set as AMD's ordering.
         {
             SPEX_CHECK( spex_amd(&(S->Q_perm),&(S->unz),A,option));
             S->lnz = S->unz;

@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( AMD_DATE "Mar 22, 2024" )
+set ( AMD_DATE "June 20, 2024" )
 set ( AMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( AMD_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( AMD_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( AMD_VERSION_SUB   3 CACHE STRING "" FORCE )
 
 message ( STATUS "Building AMD version: v"
     ${AMD_VERSION_MAJOR}.
@@ -49,10 +49,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.7.0
+    find_package ( SuiteSparse_config 7.8.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
     endif ( )
 endif ( )
 
@@ -90,7 +90,8 @@ if ( BUILD_SHARED_LIBS )
         OUTPUT_NAME amd
         SOVERSION ${AMD_VERSION_MAJOR}
         PUBLIC_HEADER "Include/amd.h"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+        LINKER_LANGUAGE C )
 
     if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
         set_target_properties ( AMD PROPERTIES EXPORT_NO_SYSTEM ON )
@@ -111,7 +112,8 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME amd
-        PUBLIC_HEADER "Include/amd.h" )
+        PUBLIC_HEADER "Include/amd.h"
+        LINKER_LANGUAGE C )
 
     if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( AMD_static PROPERTIES

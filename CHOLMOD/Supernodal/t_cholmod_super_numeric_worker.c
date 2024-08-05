@@ -171,7 +171,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
     // these variables are not used if the GPU module is not installed
 
-    #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+    #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
     Int ndescendants, mapCreatedOnGpu, supernodeUsedGPU,
         idescendant, dlarge, dsmall, skips ;
     int iHostBuff, iDevBuff, useGPU, GPUavailable ;
@@ -228,7 +228,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
     Lx = L->x ;
 
-    #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+    #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
     // local copy of useGPU
     if ( (Common->useGPU == 1) && L->useGPU)
     {
@@ -319,7 +319,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     // Once supernode s is repeated, the factorization is terminated.
     repeat_supernode = FALSE ;
 
-    #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+    #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
     if ( useGPU )
     {
         // Case of GPU, zero all supernodes at one time for better performance
@@ -357,7 +357,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
         ASSERT ((size_t) (psx + nsrow*nscol) <= L->xsize) ;
 
-        #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+        #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
         if ( !useGPU )
         #endif
         {
@@ -403,7 +403,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         // (all supernodes in a level are independent)
         //----------------------------------------------------------------------
 
-        #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+        #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
         if ( useGPU )
         {
             TEMPLATE2 (CHOLMOD (gpu_reorder_descendants))
@@ -564,7 +564,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         PRINT1 (("\nNow factorizing supernode "ID":\n", s)) ;
         #endif
 
-        #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+        #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
         if ( useGPU )
         {
             // initialize the buffer counter
@@ -586,7 +586,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         }
 
         while
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             ( (!useGPU && (dnext != EMPTY))
                || (useGPU && (idescendant < ndescendants)))
             #else
@@ -594,7 +594,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             #endif
         {
 
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             if ( useGPU )
             {
 
@@ -729,7 +729,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             ndrow3 = ndrow2 - ndrow1 ;  // number of rows of C2
             ASSERT (ndrow3 >= 0) ;
 
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             if ( useGPU )
             {
                 // set up GPU to assemble new supernode
@@ -751,7 +751,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             }
             #endif
 
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             if ( !useGPU
                 || GPUavailable!=1
                 || !TEMPLATE2 (CHOLMOD (gpu_updateC)) (ndrow1, ndrow2, ndrow,
@@ -931,7 +931,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
             }
 
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             else
             {
                 supernodeUsedGPU = 1;   // GPU was used for this supernode
@@ -968,7 +968,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
         }  // end of descendant supernode loop
 
-        #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+        #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
         if ( useGPU ) {
             iHostBuff = (Common->ibuffer)%CHOLMOD_HOST_SUPERNODE_BUFFERS;
             iDevBuff = (Common->ibuffer)%CHOLMOD_DEVICE_STREAMS;
@@ -1003,7 +1003,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
         nscol2 = (repeat_supernode) ? (nscol_new) : (nscol) ;
 
-        #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+        #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
         if ( !useGPU
             || !supernodeUsedGPU
             || !TEMPLATE2 (CHOLMOD (gpu_lower_potrf))(nscol2, nsrow, psx, Lx,
@@ -1011,7 +1011,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         #endif
         {
             // Note that the GPU will not be used for the triangular solve
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             supernodeUsedGPU = 0;
             #endif
             #ifdef BLAS_TIMER
@@ -1126,7 +1126,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 // zero.  Also, info will be 1 if integer overflow occured in
                 // the BLAS.
                 Head [s] = EMPTY ;
-                #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+                #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
                 if ( useGPU ) {
                     CHOLMOD (gpu_end) (Common) ;
                 }
@@ -1159,7 +1159,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             // overwritten with L2.  More precisely, L2 = S2 / L1' in MATLAB
             // notation.
 
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             if ( !useGPU
                 || !supernodeUsedGPU
                 || !TEMPLATE2 (CHOLMOD(gpu_triangular_solve))
@@ -1236,7 +1236,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         }
         else
         {
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             TEMPLATE2 ( CHOLMOD (gpu_copy_supernode) )
                 ( Common, Lx, psx, nscol, nscol2, nsrow,
                   supernodeUsedGPU, iHostBuff, gpu_p) ;
@@ -1255,7 +1255,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             // matrix is not positive definite; finished clean-up for supernode
             // containing negative diagonal
 
-            #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+            #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
             if ( useGPU )
             {
                 CHOLMOD (gpu_end) (Common) ;
@@ -1268,7 +1268,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     // success; matrix is positive definite
     L->minor = n ;
 
-    #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
+    #if defined ( CHOLMOD_HAS_CUDA ) && defined ( CHOLMOD_INT64 ) && defined (DOUBLE)
     if ( useGPU )
     {
         CHOLMOD (gpu_end) (Common) ;

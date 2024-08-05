@@ -24,6 +24,11 @@ if (~verLessThan ('matlab', '8.3.0'))
     d = ['-silent ' d] ;
 end
 
+if (ispc)
+    % disable the SuiteSparse_config timer
+    d = ['-DNTIMER ' d] ;
+end
+
 src = '../Source/colamd_l.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
 cmd = sprintf ( ...
     'mex -O %s -I../../SuiteSparse_config -I../Include -output ', d) ;

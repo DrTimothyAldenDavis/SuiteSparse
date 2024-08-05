@@ -9,8 +9,8 @@
 
 #include "GB_mex.h"
 #include "GB_mex_errors.h"
-#include "GB_file.h"
-#include "GB_jitifyer.h"
+#include "../Source/jitifyer/GB_file.h"
+#include "../Source/jitifyer/GB_jitifyer.h"
 
 #define USAGE "GB_mex_test11"
 
@@ -308,7 +308,11 @@ if (jit_enabled)
     OK (GxB_get (GxB_JIT_CACHE_PATH, &s)) ;
     printf ("new cache path: [%s]\n", s) ;
     CHECK (MATCH (s, "/tmp/grb_cache")) ;
-    printf ("\nat %d cache path: [%s]\n", __LINE__, save_cache) ;
+
+    OK (GxB_set (GxB_JIT_CACHE_PATH, "/tmp/::tmp/grb_@cache \\gunk??")) ;
+    OK (GxB_get (GxB_JIT_CACHE_PATH, &s)) ;
+    printf ("\nfixed cache path: [%s]\n", s) ;
+    CHECK (MATCH (s, "/tmp/__tmp/grb__cache /gunk__")) ;
 
     expected = GrB_INVALID_VALUE ;
     ERR (GxB_Global_Option_set_CHAR (999, "gunk")) ;

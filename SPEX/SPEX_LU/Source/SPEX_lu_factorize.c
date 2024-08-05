@@ -49,6 +49,13 @@ SPEX_info SPEX_lu_factorize
     //--------------------------------------------------------------------------
 
     if (!spex_initialized ( )) return (SPEX_PANIC);
+    
+    // get option->algo, or use SPEX_ALGORITHM_DEFAULT if option is NULL:
+    SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
+    if (algo != SPEX_ALGORITHM_DEFAULT && algo != SPEX_LU_LEFT)
+    {
+        return SPEX_INCORRECT_ALGORITHM;
+    }
 
     SPEX_REQUIRE (A, SPEX_CSC, SPEX_MPZ);
     int64_t anz;

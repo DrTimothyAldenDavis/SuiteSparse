@@ -60,6 +60,13 @@ SPEX_info SPEX_lu_backslash
 
     SPEX_info info ;
     if (!spex_initialized ( )) return (SPEX_PANIC);
+    
+    // get option->algo, or use SPEX_ALGORITHM_DEFAULT if option is NULL:
+    SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
+    if (algo != SPEX_ALGORITHM_DEFAULT && algo != SPEX_LU_LEFT)
+    {
+        return SPEX_INCORRECT_ALGORITHM;
+    }
 
     if (x_handle == NULL)
     {
@@ -90,7 +97,7 @@ SPEX_info SPEX_lu_backslash
     //--------------------------------------------------------------------------
 
     SPEX_CHECK(SPEX_lu_factorize(&F, A, S, option));
-
+    
     //--------------------------------------------------------------------------
     // Solve
     //--------------------------------------------------------------------------

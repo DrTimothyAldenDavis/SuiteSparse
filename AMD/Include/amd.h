@@ -382,18 +382,18 @@ void amd_version (int version [3]) ;
  * Versions 1.1 and earlier of AMD do not include a #define'd version number.
  */
 
-#define AMD_DATE "Mar 22, 2024"
+#define AMD_DATE "June 20, 2024"
 #define AMD_MAIN_VERSION   3
 #define AMD_SUB_VERSION    3
-#define AMD_SUBSUB_VERSION 2
+#define AMD_SUBSUB_VERSION 3
 
 #define AMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define AMD_VERSION AMD_VERSION_CODE(3,3)
 
-#define AMD__VERSION SUITESPARSE__VERCODE(3,3,2)
+#define AMD__VERSION SUITESPARSE__VERCODE(3,3,3)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
-#error "AMD 3.3.2 requires SuiteSparse_config 7.7.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
+#error "AMD 3.3.3 requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #endif

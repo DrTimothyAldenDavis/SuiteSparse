@@ -2,9 +2,9 @@
 //////////////////////////  paru_write /////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief Writing the results into a file
  *    it must be called after the results are computed
@@ -12,22 +12,29 @@
  */
 
 #include "paru_internal.hpp"
-void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
+
+void paru_write
+(
+    int scale,
+    char *id,
+    paru_work *Work,
+    const ParU_Symbolic Sym,
+    ParU_Numeric Num
+)
 {
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% Start Writing\n"));
-    ParU_Symbolic *Sym = Work->Sym;
-    int64_t nf = Sym->nf;
 
+    int64_t nf = Sym->nf;
     int64_t m = Sym->m;
     int64_t n = Sym->n;
     int64_t n1 = Sym->n1;  // row+col singletons
 
-    int64_t *Qfill = Sym->Qfill;
+    const int64_t *Qfill = Sym->Qfill;
 
     ParU_Factors *LUs = Num->partial_LUs;
     ParU_Factors *Us = Num->partial_Us;
-    int64_t *Super = Sym->Super;
+    const int64_t *Super = Sym->Super;
 
     char default_name[] = "0";
     char *name;
@@ -36,7 +43,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
     else
         name = default_name;
 
-    char dpath[] = "../Demo/Res/";
+    char dpath[] = "./";
 
     //-------------------- writing column permutation to a file
     {
@@ -56,7 +63,8 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         fprintf(colfptr, "%%cols\n");
 
         for (int64_t col = 0; col < n; col++)
-        {                                      // for each column of A(:,Qfill)
+        {
+            // for each column of A(:,Qfill)
             int64_t j = Qfill ? Qfill[col] : col;  // col of S is column j of A
             fprintf(colfptr, LD "\n", j);
         }
@@ -71,16 +79,16 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
     // some working memory that is freed in this function
     int64_t *oldRofS = NULL;
     int64_t *newRofS = NULL;
-    int64_t *Pinit = Sym->Pinit;
+    const int64_t *Pinit = Sym->Pinit;
 
-    oldRofS = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));  // S -> LU P
-    newRofS = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));  // Pinv of S
+    oldRofS = PARU_MALLOC (m, int64_t);  // S -> LU P
+    newRofS = PARU_MALLOC (m, int64_t);  // Pinv of S
 
     if (oldRofS == NULL || newRofS == NULL)
     {
         printf("memory problem for writing into files\n");
-        paru_free(m, sizeof(int64_t), oldRofS);
-        paru_free(m, sizeof(int64_t), newRofS);
+        PARU_FREE(m, int64_t, oldRofS);
+        PARU_FREE(m, int64_t, newRofS);
         return;
     }
 
@@ -111,11 +119,14 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 
         int64_t ip = 0;  // number of rows seen so far
         for (int64_t k = 0; k < n1; k++)
+        {
             // first singletons
             fprintf(rowfptr, LD "\n", Pinit[k]);
+        }
 
         for (int64_t f = 0; f < nf; f++)
-        {  // rows for each front
+        {
+            // rows for each front
             int64_t col1 = Super[f];
             int64_t col2 = Super[f + 1];
             int64_t fp = col2 - col1;
@@ -135,9 +146,10 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 
     //-------- computing the direct permutation of S
     for (int64_t k = 0; k < m - n1; k++)
+    {
         // Inv permutation for S Pinv[i] = k;
         newRofS[oldRofS[k]] = k;
-
+    }
     //--------------------
 
     //-------------------- writing row scales to a file
@@ -157,7 +169,9 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
             return;
         }
         for (int64_t row = 0; row < m; row++)
+        {
             fprintf(scalefptr, "%.17g\n", Rs[row]);
+        }
         fclose(scalefptr);
     }
     //--------------------
@@ -227,12 +241,14 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         }
 
         for (int64_t j = 0; j < colCount; j++)
+        {
             for (int64_t i = 0; i < fp; i++)
             {
                 {
                     if (uPart[fp * j + i] != 0.0) nnz++;
                 }
             }
+        }
     }
     nnz += Sym->anz - Sym->snz;  // adding singletons
 
@@ -258,6 +274,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         double *pivotalFront = LUs[f].p;
         PRLEVEL(1, ("%% pivotalFront =%p \n", pivotalFront));
         for (int64_t j = col1; j < col2; j++)
+        {
             for (int64_t i = 0; i < rowCount; i++)
             {
                 if (pivotalFront[(j - col1) * rowCount + i] != 0.0)
@@ -265,6 +282,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
                             newRofS[frowList[i]] + n1 + 1, j + n1 + 1,
                             pivotalFront[(j - col1) * rowCount + i]);
             }
+        }
 
 #ifndef NDEBUG  // Printing the pivotal front
         int64_t p = 1;
@@ -273,8 +291,10 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         {
             PRLEVEL(p, (" "));
             for (int64_t c = col1; c < col2; c++)
+            {
                 PRLEVEL(p,
                         (" %.17g ", pivotalFront[(c - col1) * rowCount + r]));
+            }
             PRLEVEL(p, (";\n%% "));
         }
         PRLEVEL(p, (";]\n"));
@@ -283,6 +303,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         // Printing U part
         double *uPart = Us[f].p;
         for (int64_t j = 0; j < colCount; j++)
+        {
             for (int64_t i = 0; i < fp; i++)
             {
                 if (uPart[fp * j + i] != 0.0)
@@ -290,6 +311,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
                             newRofS[frowList[i]] + n1 + 1, fcolList[j] + n1 + 1,
                             uPart[fp * j + i]);
             }
+        }
 #ifndef NDEBUG  // Printing the  U part
         p = 1;
         PRLEVEL(p, ("\n"));
@@ -299,7 +321,9 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
             for (int64_t i = 0; i < fp; i++)
             {
                 for (int64_t j = 0; j < colCount; j++)
+                {
                     PRLEVEL(p, (" %2.5lf\t", uPart[j * fp + i]));
+                }
                 PRLEVEL(p, (";\n  %% "));
             }
 
@@ -309,7 +333,6 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
     }
 
     fclose(LUfptr);
-
-    paru_free(m, sizeof(int64_t), oldRofS);
-    paru_free(m, sizeof(int64_t), newRofS);
+    PARU_FREE(m, int64_t, oldRofS);
+    PARU_FREE(m, int64_t, newRofS);
 }

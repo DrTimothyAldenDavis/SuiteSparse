@@ -1,0 +1,33 @@
+
+Notes:
+
+    Changes to more C++ style:
+
+        for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
+        {
+            int64_t i1 = tempRow[ii];
+            ...
+        }
+
+    can become
+
+        for (int64_t i1 : tempRow)
+        {
+            ...
+        }
+
+    and:
+
+        for (int64_t k = 0; k < (int64_t)chHeap->size(); k++)
+        {
+            int64_t e = (*chHeap)[k];
+            ...
+        }
+
+    can become:
+
+        for (int64_t e : *chHeap)
+        {
+            ...
+        }
+

@@ -1,3 +1,9 @@
+%MTEST: test x=A\b and paru for all test matrices
+
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
+
 files = {
     'tumorAntiAngiogenesis_2.mtx', ...
     'olm500.mtx', ...
@@ -57,12 +63,12 @@ warning ('off', 'MATLAB:nearlySingularMatrix') ;
 
 for k = 1:length (files)
     file = files {k} ;
-    fprintf ('\nmatrix: %s\n', file) ;
+    fprintf ('%-30s ', file) ;
     % mread is in the CHOLMOD/MATLAB interface:
     A = mread (['../Matrix/' file]) ;
     [m n] = size (A) ;
     if (m ~= n)
-        fprintf ('    rectangular\n') ;
+        fprintf ('rectangular\n') ;
         continue ;
     end
     b = (1:n)' ;
@@ -78,7 +84,7 @@ for k = 1:length (files)
         xnorm = 1 ;
     end
     rel_resid = norm (A*x-b,1) / (anorm * xnorm) ;
-    fprintf ('    anorm %8.2e  rel_resid %8.2e ', anorm, rel_resid) ;
+    fprintf ('anorm %8.2e resids: %8.2e', anorm, rel_resid) ;
 
     % just use umfpack, but with row scaling.  No iterative refinement
     [L,U,P,Q,D] = lu (A) ;
@@ -101,7 +107,16 @@ for k = 1:length (files)
         xnorm = 1 ;
     end
     rel_resid = norm (A*x-b,1) / (anorm * xnorm) ;
-    fprintf (' %8.2e\n', rel_resid) ;
+    fprintf (' %8.2e', rel_resid) ;
+
+    % paru:
+    try
+        x = paru (A, b) ;
+        rel_resid = norm (A*x-b,1) / (anorm * xnorm) ;
+        fprintf (' %8.2e\n', rel_resid) ;
+    catch me
+        fprintf (' -\n') ;
+    end
 
     clear A Z x b L U P Q D Z
 

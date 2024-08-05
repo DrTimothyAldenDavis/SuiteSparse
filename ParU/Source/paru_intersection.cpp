@@ -2,9 +2,9 @@
 //////////////////////////  paru_intersection //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief  finding the number of intersection between new columns and piror
  * block columns
@@ -38,8 +38,10 @@ int paru_intersection(int64_t e, paru_element **elementList,
     // find the intersection between columns of e and
     int64_t intersection = 0;
     // conditions for early stop
-    if (el_colIndex[el->lac] > *stl_newColSet.end()) 
+    if (el_colIndex[el->lac] > *stl_newColSet.end())
+    {
         return 0;
+    }
 
     PRLEVEL(PR, ("%% newColSet.size = " LD "\n", stl_newColSet.size()));
     PRLEVEL(PR, ("%% nEl = " LD "\n", nEl));
@@ -61,11 +63,12 @@ int paru_intersection(int64_t e, paru_element **elementList,
                 intersection++;
                 PRLEVEL(PR, ("%%##1: c=" LD " ", c));
                 PRLEVEL(PR, ("%%intersection=" LD "\n", intersection));
-            };
+            }
         }
     }
     else if ((int64_t)stl_newColSet.size() > Const * (nEl - el->lac))
-    {  //  else if stl_newColSet >> el
+    {
+        //  else if stl_newColSet >> el
         PRLEVEL(PR, ("%%el << stl_newColSet\n"));
         //      binary search each of elements in el in stl_newColSet
         //      log(stl_newColSet.size())*nEl
@@ -80,12 +83,13 @@ int paru_intersection(int64_t e, paru_element **elementList,
                 intersection++;
                 PRLEVEL(PR, ("%%2: col=" LD " ", col));
                 PRLEVEL(PR, ("%%intersection=" LD "\n", intersection));
-            };
+            }
             if (ncolsseen == 0) return intersection;
         }
     }
     else
-    {  // Merge style m+n
+    {
+        // Merge style m+n
         PRLEVEL(PR, ("%%Merge style\n"));
         it = stl_newColSet.begin();
         int64_t c = el->lac;
@@ -96,15 +100,17 @@ int paru_intersection(int64_t e, paru_element **elementList,
             if (c >= nEl) break;
 
             if (*it < el_colIndex[c])
+            {
                 ++it;
+            }
             else if (el_colIndex[c] < *it)
             {
                 c++;
                 ncolsseen--;
             }
             else
-            // *it == col
             {
+                // *it == col
                 intersection++;
                 PRLEVEL(PR, ("%%3: c=" LD " ", c));
                 PRLEVEL(PR, ("%%col= " LD "", el_colIndex[c]));
@@ -112,7 +118,7 @@ int paru_intersection(int64_t e, paru_element **elementList,
                 ++it;
                 c++;
                 ncolsseen--;
-            };
+            }
         }
     }
     PRLEVEL(PR, (" e = " LD " intersection= " LD "\n", e, intersection));

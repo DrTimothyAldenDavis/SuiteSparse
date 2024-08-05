@@ -34,6 +34,8 @@ end
 if (ispc)
     % MSVC does not define ssize_t
     d = [d ' -DNO_SSIZE_T'] ;
+    % disable the SuiteSparse_config timer
+    d = ['-DNTIMER ' d] ;
 end
 
 fprintf ('Compiling KLU ') ;

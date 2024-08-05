@@ -13,6 +13,7 @@ default: cov
 
 SUITESPARSE ?= $(realpath $(CURDIR)/../..)
 
+
 ################################################################################
 
 # configured by CMake:
@@ -29,6 +30,7 @@ GMP_PATH = @GMP_PATH@
 MPFR_PATH = @MPFR_PATH@
 
 ################################################################################
+
 
     # use 8 jobs by default
     JOBS ?= 8
@@ -173,34 +175,44 @@ DEMO_SRC = \
 OBJ_Cholesky = \
     SPEX_cholesky_analyze.o \
     SPEX_cholesky_backslash.o \
-    spex_cholesky_backward_sub.o \
-    spex_cholesky_counts.o \
-    spex_cholesky_ereach.o \
-    spex_cholesky_etree.o \
-    spex_cholesky_factor.o \
+    spex_symmetric_analyze.o \
+    spex_symmetric_backward_sub.o \
+    spex_symmetric_counts.o \
+    spex_symmetric_ereach.o \
+    spex_symmetric_etree.o \
     SPEX_cholesky_factorize.o \
-    spex_cholesky_forward_sub.o \
-    spex_cholesky_leaf.o \
-    spex_cholesky_left_factor.o \
-    spex_cholesky_left_triangular_solve.o \
-    spex_cholesky_permute_A.o \
-    spex_cholesky_post.o \
-    spex_cholesky_pre_left_factor.o \
-    spex_cholesky_preorder.o \
+    spex_symmetric_forward_sub.o \
+    spex_symmetric_leaf.o \
+    spex_symmetric_left_factor.o \
+    spex_symmetric_left_triangular_solve.o \
+    spex_symmetric_permute_A.o \
+    spex_symmetric_post.o \
+    spex_symmetric_pre_left_factor.o \
+    spex_symmetric_preorder.o \
     SPEX_cholesky_solve.o \
-    spex_cholesky_symbolic_analysis.o \
-    spex_cholesky_tdfs.o \
-    spex_cholesky_up_factor.o \
-    spex_cholesky_up_triangular_solve.o
+    spex_symmetric_symbolic_analysis.o \
+    spex_symmetric_backslash.o \
+    spex_symmetric_factor.o \
+    spex_symmetric_solve.o \
+    spex_symmetric_tdfs.o \
+    spex_symmetric_up_factor.o \
+    spex_symmetric_up_triangular_solve.o \
+    SPEX_ldl_analyze.o \
+    SPEX_ldl_factorize.o \
+    SPEX_ldl_solve.o \
+    SPEX_ldl_backslash.o \
 
-$(OBJ_Cholesky): ../Include/SPEX.h
+$(OBJ_Cholesky): ../Include/SPEX.h ../SPEX_Cholesky/Source/spex_cholesky_internal.h
 
-.PRECIOUS: SPEX_cholesky_%.c spex_cholesky_%.c
+.PRECIOUS: SPEX_cholesky_%.c spex_symmetric_%.c SPEX_ldl_%.c
 
 SPEX_cholesky_%.c:
 	- ln -s ../SPEX_Cholesky/Source/$@
 
-spex_cholesky_%.c:
+spex_symmetric_%.c:
+	- ln -s ../SPEX_Cholesky/Source/$@
+
+SPEX_ldl_%.c:
 	- ln -s ../SPEX_Cholesky/Source/$@
 
 #chol_demos.c:
