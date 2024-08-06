@@ -142,13 +142,20 @@ int main (int argc, char **argv)
         OK (fr != NULL) ;
 
         // get number of lines in file
-        char ch;
+        int ch;
         do
         {
             ch = fgetc (fr);
             if (ch == '\n')
+            {
                 nfiles++;
+//              printf ("%d ", nfiles) ;
+//              fflush (stdout) ;
+            }
+//          printf ("%d\n", ch) ;
         } while (ch != EOF);
+//      printf ("nfiles in input file: %d\n", nfiles) ;
+//      fflush (stdout) ;
 
         // read file list from response file
         rewind (fr);
@@ -171,6 +178,8 @@ int main (int argc, char **argv)
             OK (file_list [i] != NULL) ;
             strncpy (file_list[i], temp, length);
             file_list[i][length-1] = '\0';
+//          printf (".") ;
+//          fflush (stdout) ;
         }
     }
     else
@@ -178,7 +187,12 @@ int main (int argc, char **argv)
         // input argument list is the file list
         nfiles = argc - 1 ;
         file_list = argv;
+//      printf ("nfiles in argv: %d\n", nfiles) ;
+//      fflush (stdout) ;
     }
+
+//  printf ("\n") ;
+//  fflush (stdout) ;
 
     //--------------------------------------------------------------------------
     // start the GB_JITpackage.c file
