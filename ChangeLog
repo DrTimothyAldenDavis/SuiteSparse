@@ -1,3 +1,30 @@
+Aug 12, 2024: version 7.8.1
+
+    * GraphBLAS 9.3.1: bug fix in creation of JIT package
+    * SuiteSparse_config, Example: modified to reflect the release of
+        GraphBLAS 9.3.1
+    * Package versions in this release: (* denotes a new version)
+        SuiteSparse_config 7.8.1    *
+        AMD 3.3.3
+        BTF 2.3.2
+        CAMD 3.3.3
+        CCOLAMD 3.3.4
+        CHOLMOD 5.3.0
+        COLAMD 3.3.4
+        CSparse 4.3.2
+        CXSparse 4.4.1
+        Example 1.8.1               *
+        GraphBLAS 9.3.1             *
+        KLU 2.3.4
+        LDL 3.3.2
+        LAGraph 1.1.3
+        SuiteSparse_Mongoose 3.3.4
+        ParU 0.2.0
+        RBio 4.3.3
+        SPEX 3.2.0
+        SPQR 4.3.4
+        UMFPACK 6.3.4
+
 Aug 2, 2024: version 7.8.0
 
     * ParU 0.2.0: many changes; nearing a stable release.

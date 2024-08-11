@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0)
-#error "This library requires SuiteSparse_config 7.8.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,1)
+#error "This library requires SuiteSparse_config 7.8.1 or later"
 #endif
 
 #include "amd.h"
@@ -56,8 +56,8 @@
 #if ! defined (NO_GRAPHBLAS)
     #include "GraphBLAS.h"
     #if !defined ( GxB_SUITESPARSE_GRAPHBLAS ) || \
-        GxB_IMPLEMENTATION < GxB_VERSION (9,3,0)
-    #error "This library requires SuiteSparse:GraphBLAS 9.3.0 or later"
+        GxB_IMPLEMENTATION < GxB_VERSION (9,3,1)
+    #error "This library requires SuiteSparse:GraphBLAS 9.3.1 or later"
     #endif
 #endif
 
