@@ -1,3 +1,8 @@
+Aug 12, 2024: version 9.3.1
+
+    * (56) bug fix:  wrong type for fgetc return value in JITpackage; leads
+        to infinite loop on some systems when building GraphBLAS.
+
 Aug 2, 2024: version 9.3.0
 
     * code restructuring:  Source folder split into many subfolders, and

@@ -142,12 +142,14 @@ int main (int argc, char **argv)
         OK (fr != NULL) ;
 
         // get number of lines in file
-        char ch;
+        int ch;
         do
         {
             ch = fgetc (fr);
             if (ch == '\n')
+            {
                 nfiles++;
+            }
         } while (ch != EOF);
 
         // read file list from response file
