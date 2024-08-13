@@ -1,3 +1,31 @@
+Aug 20, 2024: version 7.8.2
+
+    * LAGraph 1.1.4: bug fix for LAGraph_MMWrite when matrix is dense
+    * SPEX 3.2.1: release date revised, sync with primary SPEX repo
+    * SuiteSparse_config, Example: modified to reflect the release of
+        LAGraph 1.1.4 and SPEX 3.2.1
+    * Package versions in this release: (* denotes a new version)
+        SuiteSparse_config 7.8.2    *
+        AMD 3.3.3
+        BTF 2.3.2
+        CAMD 3.3.3
+        CCOLAMD 3.3.4
+        CHOLMOD 5.3.0
+        COLAMD 3.3.4
+        CSparse 4.3.2
+        CXSparse 4.4.1
+        Example 1.8.2               *
+        GraphBLAS 9.3.1
+        KLU 2.3.4
+        LDL 3.3.2
+        LAGraph 1.1.4               *
+        SuiteSparse_Mongoose 3.3.4
+        ParU 0.2.0
+        RBio 4.3.3
+        SPEX 3.2.1                  *
+        SPQR 4.3.4
+        UMFPACK 6.3.4
+
 Aug 12, 2024: version 7.8.1
 
     * GraphBLAS 9.3.1: bug fix in creation of JIT package

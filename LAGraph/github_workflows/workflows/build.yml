@@ -13,9 +13,7 @@ jobs:
     strategy:
       matrix:
         config:
-         - {grb_version: 7.1.0, conda_grb_package_hash: h27087fc, conda_extension: tar.bz2}
-         - {grb_version: 7.3.0, conda_grb_package_hash: h27087fc, conda_extension: tar.bz2}
-         - {grb_version: 7.4.1, conda_grb_package_hash: hcb278e6, conda_extension: conda}
+         - {grb_version: 9.1.0, conda_grb_package_hash: hd29ac08, conda_extension: conda}
     steps:
     - name: Checkout
       uses: actions/checkout@v2.0.0
@@ -36,7 +34,7 @@ jobs:
         cd ..
     - name: Build project
       run: |
-        export GRAPHBLAS_INCLUDE_DIR=`pwd`/graphblas-binaries/include
+        export GRAPHBLAS_INCLUDE_DIR=`pwd`/graphblas-binaries/include/suitesparse
         export GRAPHBLAS_LIBRARY=`pwd`/graphblas-binaries/lib/libgraphblas.so
         cd build
         cmake .. -DCOVERAGE=1 -DGRAPHBLAS_INCLUDE_DIR=${GRAPHBLAS_INCLUDE_DIR} -DGRAPHBLAS_LIBRARY=${GRAPHBLAS_LIBRARY}
@@ -44,7 +42,7 @@ jobs:
         make test_coverage
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@4.1.1
-      if: matrix.config.grb_version == '7.4.1' && github.event_name == 'push' && github.ref == 'refs/heads/stable'
+      if: matrix.config.grb_version == '9.1.0' && github.event_name == 'push' && github.ref == 'refs/heads/stable'
       with:
         branch: gh-pages
         folder: build/test_coverage/
@@ -59,9 +57,7 @@ jobs:
     strategy:
       matrix:
         config:
-         - {grb_version: 7.1.0, conda_grb_package_hash: h7881ed4, conda_extension: tar.bz2}
-         - {grb_version: 7.3.0, conda_grb_package_hash: ha894c9a, conda_extension: tar.bz2}
-         - {grb_version: 7.4.1, conda_grb_package_hash: ha894c9a, conda_extension: conda}
+         - {grb_version: 9.1.0, conda_grb_package_hash: heb48c95, conda_extension: conda}
     steps:
     - name: Checkout
       uses: actions/checkout@v2.0.0
@@ -84,7 +80,7 @@ jobs:
         cd ..
     - name: Build project
       run: |
-        export GRAPHBLAS_INCLUDE_DIR=`pwd`/graphblas-binaries/include
+        export GRAPHBLAS_INCLUDE_DIR=`pwd`/graphblas-binaries/include/suitesparse
         export GRAPHBLAS_LIBRARY=`pwd`/graphblas-binaries/lib/libgraphblas.dylib
         # adding an extra line to the CMakeLists.txt file to locate the libomp instance installed by brew
         echo 'include_directories("/usr/local/opt/libomp/include")' | cat - CMakeLists.txt

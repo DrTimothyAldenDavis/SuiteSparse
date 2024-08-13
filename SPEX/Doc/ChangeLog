@@ -1,4 +1,8 @@
-June 20, 2024: version 3.2.0
+Aug 20, 2024: version 3.2.1
+
+    * Python interface: bug fix for string length, and Python Inf
+
+July 2, 2024: version 3.2.0
 
     * added SPEX_ldl_* methods: allowing D to have negative diagonal entries;
         SPEX_cholesky_* methods revised to require D to have positive entries.
