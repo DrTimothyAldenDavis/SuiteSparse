@@ -101,7 +101,7 @@ find_package ( KLU_CHOLMOD 2.3.4 REQUIRED )
 find_package ( LDL 3.3.2 REQUIRED )
 find_package ( LAGraph 1.1.4 )
 find_package ( SuiteSparse_Mongoose 3.3.4 REQUIRED )
-find_package ( ParU 0.2.0 REQUIRED )
+find_package ( ParU 0.3.0 REQUIRED )
 find_package ( RBio 4.3.3 REQUIRED )
 find_package ( SPEX 3.2.1 REQUIRED )    # requires GMP and MPFR
 find_package ( SPQR 4.3.4 REQUIRED )
