@@ -13,9 +13,9 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Aug 2, 2024" )
+set ( PARU_DATE "Aug 20, 2024" )
 set ( PARU_VERSION_MAJOR  0 CACHE STRING "" FORCE )
-set ( PARU_VERSION_MINOR  2 CACHE STRING "" FORCE )
+set ( PARU_VERSION_MINOR  3 CACHE STRING "" FORCE )
 set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
@@ -423,12 +423,18 @@ if ( SUITESPARSE_DEMOS )
 
     if ( PARU_HAS_OPENMP )
         add_executable ( paru_demo "Demo/paru_demo.cpp" )
+        add_executable ( paru_benchmark "Demo/paru_benchmark.cpp" )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( paru_demo PUBLIC ParU )
+            target_link_libraries ( paru_benchmark PUBLIC ParU )
         else ( )
             target_link_libraries ( paru_demo PUBLIC ParU_static )
+            target_link_libraries ( paru_benchmark PUBLIC ParU_static )
         endif ( )
         target_link_libraries ( paru_demo
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK
+            SuiteSparse::SuiteSparseConfig OpenMP::OpenMP_CXX )
+        target_link_libraries ( paru_benchmark
             PUBLIC SuiteSparse::CHOLMOD SuiteSparse::UMFPACK
             SuiteSparse::SuiteSparseConfig OpenMP::OpenMP_CXX )
 

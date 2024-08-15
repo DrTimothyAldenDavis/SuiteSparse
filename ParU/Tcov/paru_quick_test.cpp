@@ -78,6 +78,10 @@ int main(int argc, char **argv)
     ParU_Set (PARU_CONTROL_MAX_THREADS, 4, Control) ;
     ParU_Set (PARU_CONTROL_STRATEGY, PARU_STRATEGY_SYMMETRIC, Control) ;
 
+    int64_t nthreads2 = 0 ;
+    ParU_Get (PARU_CONTROL_NUM_THREADS, &nthreads2, Control) ;
+    printf ("nthreads in use: %d\n", (int32_t) nthreads2) ;
+
     // read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     int64_t n = A->nrow ;

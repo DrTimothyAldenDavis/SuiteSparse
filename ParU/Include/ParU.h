@@ -139,6 +139,7 @@ typedef enum
     // int64_t parameter, for ParU_Get only:
     PARU_CONTROL_OPENMP = 1013,               // if ParU compiled with OpenMP;
                                               // (for ParU_Get only, not set)
+    PARU_CONTROL_NUM_THREADS = 1014,          // actual number of threads used
 
     // double parameters for ParU_Set and ParU_Get:
     PARU_CONTROL_PIVOT_TOLERANCE = 2001,      // pivot tolerance
