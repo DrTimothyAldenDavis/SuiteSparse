@@ -21,7 +21,7 @@ Aug 20, 2024: version 7.8.2
         LDL 3.3.2
         LAGraph 1.1.4               *
         SuiteSparse_Mongoose 3.3.4
-        ParU 0.3.0		    *
+        ParU 0.3.0                  *
         RBio 4.3.3
         SPEX 3.2.1                  *
         SPQR 4.3.4

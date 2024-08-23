@@ -396,8 +396,6 @@ void test_BF (void)
                     // since d5 is a dense vector filled with infinity, we have
                     // to compare it against d seperaterly
                     OK (GrB_Vector_extractElement (&di, d5, i)) ;
-                    printf ("di %g d[i] %g difference %g\n",
-                        di, d [i], di - d [i]) ;
                     TEST_CHECK (di == d[i]) ;
 
                     // since d5a is a dense vector filled with infinity, we
