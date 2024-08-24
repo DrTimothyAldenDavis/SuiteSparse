@@ -53,25 +53,25 @@ typedef enum ParU_Info
     PARU_TOO_LARGE = -4         // problem too large for the BLAS
 } ParU_Info ;
 
-#define PARU_DATE "Aug 2, 2024"
+#define PARU_DATE "Aug 20, 2024"
 #define PARU_VERSION_MAJOR  0
-#define PARU_VERSION_MINOR  2
+#define PARU_VERSION_MINOR  3
 #define PARU_VERSION_UPDATE 0
 
-#define PARU__VERSION SUITESPARSE__VERCODE(0,2,0)
+#define PARU__VERSION SUITESPARSE__VERCODE(0,3,0)
 #if !defined (SUITESPARSE__VERSION) || \
     (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
-#error "ParU 0.2.0 requires SuiteSparse_config 7.8.0 or later"
+#error "ParU 0.3.0 requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #if !defined (UMFPACK__VERSION) || \
     (UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,4))
-#error "ParU 0.2.0 requires UMFPACK 6.3.4 or later"
+#error "ParU 0.3.0 requires UMFPACK 6.3.4 or later"
 #endif
 
 #if !defined (CHOLMOD__VERSION) || \
     (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,0))
-#error "ParU 0.2.0 requires CHOLMOD 5.3.0 or later"
+#error "ParU 0.3.0 requires CHOLMOD 5.3.0 or later"
 #endif
 
 //  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h
@@ -139,6 +139,7 @@ typedef enum
     // int64_t parameter, for ParU_Get only:
     PARU_CONTROL_OPENMP = 1013,               // if ParU compiled with OpenMP;
                                               // (for ParU_Get only, not set)
+    PARU_CONTROL_NUM_THREADS = 1014,          // actual number of threads used
 
     // double parameters for ParU_Set and ParU_Get:
     PARU_CONTROL_PIVOT_TOLERANCE = 2001,      // pivot tolerance

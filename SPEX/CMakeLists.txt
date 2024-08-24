@@ -13,10 +13,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPEX_DATE "July 2, 2024" )
+set ( SPEX_DATE "Aug 20, 2024" )
 set ( SPEX_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( SPEX_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
@@ -74,22 +74,22 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.8.0
+    find_package ( SuiteSparse_config 7.8.2
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.2 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.2
+    find_package ( AMD 3.3.3
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.2 REQUIRED )
+        find_package ( AMD 3.3.3 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.3.3
+    find_package ( COLAMD 3.3.4
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.3.3 REQUIRED )
+        find_package ( COLAMD 3.3.4 REQUIRED )
     endif ( )
 endif ( )
 
