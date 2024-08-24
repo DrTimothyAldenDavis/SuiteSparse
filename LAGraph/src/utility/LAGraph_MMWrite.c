@@ -459,8 +459,18 @@ int LAGraph_MMWrite
         nvals_to_print = nself_edges + (nvals - nself_edges) / 2 ;
     }
 
-    FPRINTF (f, "%" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
-        nrows, ncols, nvals_to_print) ;
+    if (MM_fmt == MM_array)
+    {
+        // write `nrows ncols` if the array format is used
+        FPRINTF (f, "%" PRIu64 " %" PRIu64 "\n",
+            nrows, ncols) ;
+    }
+    else
+    {
+        // otherwise write `nrows ncols nvals` for the coordinate format
+        FPRINTF (f, "%" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
+            nrows, ncols, nvals_to_print) ;
+    }
 
     if (nvals_to_print == 0)
     {

@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,1)
-#error "This library requires SuiteSparse_config 7.8.1 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,2)
+#error "This library requires SuiteSparse_config 7.8.2 or later"
 #endif
 
 #include "amd.h"
@@ -63,8 +63,8 @@
 
 #if ! defined (NO_LAGRAPH)
     #include "LAGraph.h"
-    #if SUITESPARSE__VERCODE(LAGRAPH_VERSION_MAJOR,LAGRAPH_VERSION_MINOR,LAGRAPH_VERSION_UPDATE) < SUITESPARSE__VERCODE(1,1,3)
-    #error "This library requires LAGraph 1.1.3 or later"
+    #if SUITESPARSE__VERCODE(LAGRAPH_VERSION_MAJOR,LAGRAPH_VERSION_MINOR,LAGRAPH_VERSION_UPDATE) < SUITESPARSE__VERCODE(1,1,4)
+    #error "This library requires LAGraph 1.1.4 or later"
     #endif
 #endif
 
@@ -84,8 +84,8 @@
 #endif
 
 #include "SPEX.h"
-#if !defined (SPEX__VERSION) || SPEX__VERSION < SUITESPARSE__VERCODE(3,2,0)
-#error "This library requires SPEX 3.2.0 or later"
+#if !defined (SPEX__VERSION) || SPEX__VERSION < SUITESPARSE__VERCODE(3,2,1)
+#error "This library requires SPEX 3.2.1 or later"
 #endif
 
 #include "SuiteSparseQR_C.h"

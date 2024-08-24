@@ -57,6 +57,9 @@ demos: library
 	( cd build && [ -f paru_democ$(EXEEXT) ] && ./paru_democ$(EXEEXT) < ../Matrix/west0067.mtx || true )
 	( cd build && [ -f paru_demo$(EXEEXT) ] && ./paru_demo$(EXEEXT) < ../Matrix/xenon1.mtx || true )
 
+bench: library
+	( cd build && [ -f paru_benchmark$(EXEEXT) ] && ./paru_benchmark$(EXEEXT) < ../Matrix/xenon1.mtx || true )
+
 V = valgrind --leak-check=full --show-leak-kinds=all
 
 vdemos: library

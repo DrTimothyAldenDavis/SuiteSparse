@@ -249,8 +249,15 @@ ParU_Info ParU_Get          // get an int64_t parameter from the Control object
     {
 
         case PARU_CONTROL_MAX_THREADS:            // max number of threads
+            // 0 is the default, which lets ParU use the # of threads
+            // determined by omp_get_max_threads.
             (*c) = (Control == NULL) ? PARU_DEFAULT_MAX_THREADS :
                 Control->paru_max_threads ;
+            break ;
+
+        case PARU_CONTROL_NUM_THREADS:            // actual # of threads
+            // This is the actual # of threads ParU will use.
+            (*c) = (int64_t) paru_nthreads (Control) ;
             break ;
 
         case PARU_CONTROL_OPENMP:                 // 1 if OpenMP, 0 if not
