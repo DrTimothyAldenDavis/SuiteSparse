@@ -1,7 +1,7 @@
 Sept 5, 2024: version 7.8.3
 
     * ParU 1.0.0: first stable release. No change since last version
-        v0.3.0, except for date and version.
+        v0.3.0, except for date, version, and updates to the User Guide.
     * SuiteSparse_config and Example: revised to reflect ParU 1.0.0.
     * Package versions in this release: (* denotes a new version)
         SuiteSparse_config 7.8.3    *
@@ -13,7 +13,7 @@ Sept 5, 2024: version 7.8.3
         COLAMD 3.3.4
         CSparse 4.3.2
         CXSparse 4.4.1
-        Example 1.8.3                *
+        Example 1.8.3               *
         GraphBLAS 9.3.1
         KLU 2.3.4
         LDL 3.3.2
