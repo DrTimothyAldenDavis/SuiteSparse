@@ -94,8 +94,8 @@
 #endif
 
 #include "umfpack.h"
-#if !defined (UMFPACK__VERSION) || UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,4)
-#error "This library requires UMFPACK 6.3.4 or later"
+#if !defined (UMFPACK__VERSION) || UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,5)
+#error "This library requires UMFPACK 6.3.5 or later"
 #endif
 
 // SuiteSparse include files for C++:

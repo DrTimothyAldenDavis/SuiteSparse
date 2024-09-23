@@ -1,7 +1,8 @@
-Sept 5, 2024: version 7.8.3
+Sept 23, 2024: version 7.8.3
 
     * ParU 1.0.0: first stable release. No change since last version
         v0.3.0, except for date, version, and updates to the User Guide.
+    * UMFPACK 6.3.5: a few typos in comments and user guide; no change to code
     * SuiteSparse_config and Example: revised to reflect ParU 1.0.0.
     * Package versions in this release: (* denotes a new version)
         SuiteSparse_config 7.8.3    *
@@ -23,7 +24,7 @@ Sept 5, 2024: version 7.8.3
         RBio 4.3.3
         SPEX 3.2.1
         SPQR 4.3.4
-        UMFPACK 6.3.4
+        UMFPACK 6.3.5               *
 
 Aug 20, 2024: version 7.8.2
 

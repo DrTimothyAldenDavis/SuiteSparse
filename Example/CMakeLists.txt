@@ -105,7 +105,7 @@ find_package ( ParU 1.0.0 REQUIRED )
 find_package ( RBio 4.3.3 REQUIRED )
 find_package ( SPEX 3.2.1 REQUIRED )    # requires GMP and MPFR
 find_package ( SPQR 4.3.4 REQUIRED )
-find_package ( UMFPACK 6.3.4 REQUIRED )
+find_package ( UMFPACK 6.3.5 REQUIRED )
 
 # for GMP and MPFR
 find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
