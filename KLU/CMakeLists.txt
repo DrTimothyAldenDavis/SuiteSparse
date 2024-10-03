@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( KLU_DATE "June 20, 2024" )
+set ( KLU_DATE "Oct 10, 2024" )
 set ( KLU_VERSION_MAJOR 2 CACHE STRING "" FORCE )
 set ( KLU_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( KLU_VERSION_SUB   4 CACHE STRING "" FORCE )
+set ( KLU_VERSION_SUB   5 CACHE STRING "" FORCE )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -43,22 +43,22 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.8.0
+    find_package ( SuiteSparse_config 7.8.3
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.3 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.2
+    find_package ( AMD 3.3.3
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.2 REQUIRED )
+        find_package ( AMD 3.3.3 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.3.3
+    find_package ( COLAMD 3.3.4
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.3.3 REQUIRED )
+        find_package ( COLAMD 3.3.4 REQUIRED )
     endif ( )
 
     find_package ( BTF 2.3.2
@@ -77,10 +77,10 @@ if ( SUITESPARSE_ROOT_CMAKELISTS )
 else ( )
     if ( KLU_USE_CHOLMOD )
         # look for CHOLMOD (optional fill-reducing orderings)
-        find_package ( CHOLMOD 5.2.1
+        find_package ( CHOLMOD 5.3.0
             PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CHOLMOD )
-            find_package ( CHOLMOD 5.2.1 )
+            find_package ( CHOLMOD 5.3.0 )
         endif ( )
         if ( NOT CHOLMOD_FOUND )
             # CHOLMOD not found so disable it

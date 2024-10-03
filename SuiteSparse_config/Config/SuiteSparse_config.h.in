@@ -79,10 +79,10 @@
 // MATLAB/Octave
 //------------------------------------------------------------------------------
 
-#if defined ( MATLAB_MEX_FILE )
-#include "mex.h"
-#include "matrix.h"
-#endif
+//  #if defined ( MATLAB_MEX_FILE )
+//  #include "mex.h"
+//  #include "matrix.h"
+//  #endif
 
 //------------------------------------------------------------------------------
 // string and token handling macros
