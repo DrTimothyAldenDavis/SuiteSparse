@@ -72,17 +72,29 @@ configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_vers
 include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
+# object libraries for int32_t and int64_t
+#-------------------------------------------------------------------------------
+
+file ( GLOB AMD_C_SOURCES "Source/*.c" )
+# exclude amd_version.c because there is no int64_t variant of it
+file ( GLOB AMD_VERSION_C_SOURCE "Source/amd_version.c" )
+list ( REMOVE_ITEM AMD_C_SOURCES ${AMD_VERSION_C_SOURCE} )
+
+if ( SUITESPARSE_HAS_FORTRAN )
+    file ( GLOB AMD_F_SOURCES "Source/*.f" )
+endif ( )
+
+add_library ( amd_i OBJECT ${AMD_C_SOURCES} ${AMD_VERSION_C_SOURCE} ${AMD_F_SOURCES} )
+add_library ( amd_l OBJECT ${AMD_C_SOURCES} )
+target_compile_definitions ( amd_l PRIVATE DLONG )
+
+#-------------------------------------------------------------------------------
 # dynamic amd library properties
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_HAS_FORTRAN )
-    file ( GLOB AMD_SOURCES "Source/*.c" "Source/*.f" )
-else ( )
-    file ( GLOB AMD_SOURCES "Source/*.c" )
-endif ( )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( AMD SHARED ${AMD_SOURCES} )
+    add_library ( AMD SHARED
+        $<TARGET_OBJECTS:amd_i> $<TARGET_OBJECTS:amd_l> )
     set_target_properties ( AMD PROPERTIES
         VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
         C_STANDARD 11
@@ -107,7 +119,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( AMD_static STATIC ${AMD_SOURCES} )
+    add_library ( AMD_static STATIC
+        $<TARGET_OBJECTS:amd_i> $<TARGET_OBJECTS:amd_l> )
     set_target_properties ( AMD_static PROPERTIES
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
@@ -135,6 +148,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( amd_i PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+target_include_directories ( amd_l PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( AMD PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( AMD PUBLIC
