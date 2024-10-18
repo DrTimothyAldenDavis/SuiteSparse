@@ -66,13 +66,7 @@ configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_vers
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
-#-------------------------------------------------------------------------------
-
-include_directories ( Source Include )
-
-#-------------------------------------------------------------------------------
-# dynamic amd library properties
+# object library
 #-------------------------------------------------------------------------------
 
 if ( SUITESPARSE_HAS_FORTRAN )
@@ -81,8 +75,15 @@ else ( )
     file ( GLOB AMD_SOURCES "Source/*.c" )
 endif ( )
 
+add_library ( amd_obj OBJECT ${AMD_SOURCES} )
+target_include_directories ( amd_obj PRIVATE Source Include )
+
+#-------------------------------------------------------------------------------
+# dynamic amd library properties
+#-------------------------------------------------------------------------------
+
 if ( BUILD_SHARED_LIBS )
-    add_library ( AMD SHARED ${AMD_SOURCES} )
+    add_library ( AMD SHARED $<TARGET_OBJECTS:amd_obj> )
     set_target_properties ( AMD PROPERTIES
         VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
         C_STANDARD 11
@@ -107,7 +108,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( AMD_static STATIC ${AMD_SOURCES} )
+    add_library ( AMD_static STATIC $<TARGET_OBJECTS:amd_obj> )
     set_target_properties ( AMD_static PROPERTIES
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
@@ -135,6 +136,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( amd_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( AMD PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( AMD PUBLIC
