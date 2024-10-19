@@ -1,4 +1,4 @@
-UMFPACK V6.3.3 (Mar 22, 2024), Control:
+UMFPACK V6.3.5 (Sept 23, 2024), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int64_t
 
@@ -33,17 +33,17 @@ UMFPACK V6.3.3 (Mar 22, 2024), Control:
     The following options can only be changed at compile-time:
     8: BLAS library used:  Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     compiled for ANSI C
-    CPU timer: SuiteSparse_time ( )
+    CPU timer: omp_get_wtime
     compiled with CHOLMOD ordering options
     computer/operating system: Linux
     size of int32_t: 4 int64_t: 8 Int: 8 pointer: 8 double: 8 Entry: 16 (in bytes)
 
-UMFPACK V6.3.3 (Mar 22, 2024), Info:
+UMFPACK V6.3.5 (Sept 23, 2024), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB: no.
-    CPU timer: SuiteSparse_time ( )
+    CPU timer: omp_get_wtime
     number of rows in matrix A:       324
     number of columns in matrix A:    324
     entries in matrix A:              26730
@@ -119,10 +119,10 @@ UMFPACK V6.3.3 (Mar 22, 2024), Info:
     numeric factorization defragmentations:        0
     numeric factorization reallocations:           0
     costly numeric factorization reallocations:    0
-    numeric factorization wallclock time (sec):    0.02
-    numeric factorization mflops (wallclock):      852.02
-    symbolic + numeric wall clock time (sec):      0.02
-    symbolic + numeric mflops (wall clock):        750.09
+    numeric factorization wallclock time (sec):    0.00
+    numeric factorization mflops (wallclock):      2886.50
+    symbolic + numeric wall clock time (sec):      0.01
+    symbolic + numeric mflops (wall clock):        2357.41
 
     solve flops:                                   3.70332e+05
     iterative refinement steps taken:              0
@@ -134,7 +134,7 @@ UMFPACK V6.3.3 (Mar 22, 2024), Info:
  Matrix key: QC324                         
 symbolic analysis:
    status:     0.
-   time:      0.23E-02 (sec)
+   time:      0.11E-02 (sec)
    estimates (upper bound) for numeric LU:
    size of LU:          1.37 (MB)
    memory needed:       2.97 (MB)
@@ -143,11 +143,11 @@ symbolic analysis:
    nnz (U):           39609.
 numeric factorization:
    status:     0.
-   time:      0.17E-01
+   time:      0.50E-02
    actual numeric LU statistics:
    size of LU:          0.74 (MB)
    memory needed:       1.38 (MB)
    flop count:      0.14E+08
    nnz (L):           23247.
    nnz (U):           23247.
- norm (A*x-b):    2.7037543144102808E-013
+ norm (A*x-b):    2.7082234386269613E-013

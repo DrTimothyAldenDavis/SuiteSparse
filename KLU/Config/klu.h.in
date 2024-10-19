@@ -833,8 +833,8 @@ void klu_version (int version [3]) ;
 
 #define KLU__VERSION SUITESPARSE__VERCODE(@KLU_VERSION_MAJOR@,@KLU_VERSION_MINOR@,@KLU_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
-#error "KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires SuiteSparse_config 7.8.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,3))
+#error "KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires SuiteSparse_config 7.8.3 or later"
 #endif
 
 #if !defined (AMD__VERSION) || \

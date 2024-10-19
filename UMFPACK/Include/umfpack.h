@@ -74,23 +74,23 @@
  * below.
  */
 
-#define UMFPACK_DATE "June 20, 2024"
+#define UMFPACK_DATE "Sept 23, 2024"
 #define UMFPACK_MAIN_VERSION   6
 #define UMFPACK_SUB_VERSION    3
-#define UMFPACK_SUBSUB_VERSION 4
+#define UMFPACK_SUBSUB_VERSION 5
 
 #define UMFPACK_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define UMFPACK_VER UMFPACK_VER_CODE(6,3)
 
-#define UMFPACK__VERSION SUITESPARSE__VERCODE(6,3,4)
+#define UMFPACK__VERSION SUITESPARSE__VERCODE(6,3,5)
 #if !defined (SUITESPARSE__VERSION) || \
     (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
-#error "UMFPACK 6.3.4 requires SuiteSparse_config 7.8.0 or later"
+#error "UMFPACK 6.3.5 requires SuiteSparse_config 7.8.0 or later"
 #endif
 
 #if !defined (AMD__VERSION) || \
     (AMD__VERSION < SUITESPARSE__VERCODE(3,3,3))
-#error "UMFPACK 6.3.4 requires AMD 3.3.3 or later"
+#error "UMFPACK 6.3.5 requires AMD 3.3.3 or later"
 #endif
 
 // user code should not directly use GB_STR or GB_XSTR
@@ -5008,12 +5008,12 @@ complex int32_t Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    double *Mx, *Mz, *Ex, Info [UMFPACK_INFO] ;
+    double Mx, Mz, Ex, Info [UMFPACK_INFO] ;
     int status = umfpack_zl_get_determinant (&Mx, &Mz, &Ex, Numeric, Info) ;
 
 packed complex Syntax:
 
-    Same as above, except Mz is NULL.
+    Same as above, except Mz is NULL, and Mx is an array of size 2.
 
 Author: Contributed by David Bateman, Motorola, Paris
 

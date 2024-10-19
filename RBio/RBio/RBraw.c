@@ -41,6 +41,7 @@ c See also RBfix, RBread, RBreade.
 c-----------------------------------------------------------------------
 */
 
+#include "mex.h"
 #include "RBio.h"
 #define LEN 1024
 

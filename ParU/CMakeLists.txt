@@ -13,9 +13,9 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Aug 20, 2024" )
-set ( PARU_VERSION_MAJOR  0 CACHE STRING "" FORCE )
-set ( PARU_VERSION_MINOR  3 CACHE STRING "" FORCE )
+set ( PARU_DATE "Sept 5, 2024" )
+set ( PARU_VERSION_MAJOR  1 CACHE STRING "" FORCE )
+set ( PARU_VERSION_MINOR  0 CACHE STRING "" FORCE )
 set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
@@ -109,10 +109,10 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( CHOLMOD 5.3.0 REQUIRED )
     endif ( )
 
-    find_package ( UMFPACK 6.3.3
+    find_package ( UMFPACK 6.3.5
         PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
     if ( NOT UMFPACK_FOUND )
-        find_package ( UMFPACK 6.3.3 REQUIRED )
+        find_package ( UMFPACK 6.3.5 REQUIRED )
     endif ( )
 endif ( )
 

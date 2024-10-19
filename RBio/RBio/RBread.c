@@ -19,6 +19,7 @@
    mtype: see RBwrite.m for a description.
 */
 
+#include "mex.h"
 #include "RBio.h"
 #define LEN 1024
 #define TRUE (1)

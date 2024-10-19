@@ -75,18 +75,18 @@
 #define RBIO_VALUE_IOERROR (-94)  /* I/O error: numerical values */
 #define RBIO_FILE_IOERROR (-95)   /* I/O error: cannot read/write the file */
 
-#define RBIO_DATE "June 20, 2024"
+#define RBIO_DATE "Oct 10, 2024"
 #define RBIO_MAIN_VERSION   4
 #define RBIO_SUB_VERSION    3
-#define RBIO_SUBSUB_VERSION 3
+#define RBIO_SUBSUB_VERSION 4
 
 #define RBIO_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define RBIO_VERSION RBIO_VER_CODE(4,3)
 
-#define RBIO__VERSION SUITESPARSE__VERCODE(4,3,3)
+#define RBIO__VERSION SUITESPARSE__VERCODE(4,3,4)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
-#error "RBio 4.3.3 requires SuiteSparse_config 7.8.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,3))
+#error "RBio 4.3.4 requires SuiteSparse_config 7.8.3 or later"
 #endif
 
 /* -------------------------------------------------------------------------- */

@@ -78,11 +78,11 @@ PRIVATE int rescale_determinant
 
 int UMFPACK_get_determinant
 (
-    double *Mx,
+    double *Mx,             // array of size 1 or 2 (2 if complex)
 #ifdef COMPLEX
-    double *Mz,
+    double *Mz,             // scalar (imaginary part, if split complex)
 #endif
-    double *Ex,
+    double *Ex,             // scalar
     void *NumericHandle,
     double User_Info [UMFPACK_INFO]
 )

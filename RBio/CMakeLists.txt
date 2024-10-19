@@ -2,7 +2,7 @@
 # SuiteSparse/RBio/CMakeLists.txt:  cmake for RBio
 #-------------------------------------------------------------------------------
 
-# RBio, Copyright (c) 2009-2023, Timothy A. Davis.  All Rights Reserved.
+# RBio, Copyright (c) 2009-2024, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
 #-------------------------------------------------------------------------------
@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( RBIO_DATE "June 20, 2024" )
+set ( RBIO_DATE "Oct 10, 2024" )
 set ( RBIO_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( RBIO_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( RBIO_VERSION_SUB   3 CACHE STRING "" FORCE )
+set ( RBIO_VERSION_SUB   4 CACHE STRING "" FORCE )
 
 message ( STATUS "Building RBio version: v"
     ${RBIO_VERSION_MAJOR}.
@@ -43,10 +43,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.8.0
+    find_package ( SuiteSparse_config 7.8.3
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.8.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.8.3 REQUIRED )
     endif ( )
 endif ( )
 

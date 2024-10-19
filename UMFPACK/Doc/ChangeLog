@@ -1,3 +1,8 @@
+Sept 23, 2024: version 6.3.5
+
+    * typos in comments and user guide for umfpack_get_determinant;
+        no change to the code
+
 June 20, 2024: version 6.3.4
 
     * minor update for MATLAB on Windows

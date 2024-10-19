@@ -823,33 +823,33 @@ void klu_version (int version [3]) ;
  *      #endif
  */
 
-#define KLU_DATE "June 20, 2024"
+#define KLU_DATE "Oct 10, 2024"
 #define KLU_MAIN_VERSION   2
 #define KLU_SUB_VERSION    3
-#define KLU_SUBSUB_VERSION 4
+#define KLU_SUBSUB_VERSION 5
 
 #define KLU_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define KLU_VERSION KLU_VERSION_CODE(2,3)
 
-#define KLU__VERSION SUITESPARSE__VERCODE(2,3,4)
+#define KLU__VERSION SUITESPARSE__VERCODE(2,3,5)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
-#error "KLU 2.3.4 requires SuiteSparse_config 7.8.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,3))
+#error "KLU 2.3.5 requires SuiteSparse_config 7.8.3 or later"
 #endif
 
 #if !defined (AMD__VERSION) || \
     (AMD__VERSION < SUITESPARSE__VERCODE(3,3,3))
-#error "KLU 2.3.4 requires AMD 3.3.3 or later"
+#error "KLU 2.3.5 requires AMD 3.3.3 or later"
 #endif
 
 #if !defined (COLAMD__VERSION) || \
     (COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,4))
-#error "KLU 2.3.4 requires COLAMD 3.3.4 or later"
+#error "KLU 2.3.5 requires COLAMD 3.3.4 or later"
 #endif
 
 #if !defined (BTF__VERSION) || \
     (BTF__VERSION < SUITESPARSE__VERCODE(2,3,2))
-#error "KLU 2.3.4 requires BTF 2.3.2 or later"
+#error "KLU 2.3.5 requires BTF 2.3.2 or later"
 #endif
 
 #endif

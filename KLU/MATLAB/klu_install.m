@@ -21,7 +21,7 @@ if (nargin < 1)
 end
 
 % compile KLU and add to the path
-klu_make (metis_path) ;
+klu_make ;
 klu_path = pwd ;
 addpath (klu_path)
 
