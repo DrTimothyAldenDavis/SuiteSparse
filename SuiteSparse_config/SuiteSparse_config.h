@@ -79,10 +79,10 @@
 // MATLAB/Octave
 //------------------------------------------------------------------------------
 
-#if defined ( MATLAB_MEX_FILE )
-#include "mex.h"
-#include "matrix.h"
-#endif
+//  #if defined ( MATLAB_MEX_FILE )
+//  #include "mex.h"
+//  #include "matrix.h"
+//  #endif
 
 //------------------------------------------------------------------------------
 // string and token handling macros
@@ -434,7 +434,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Sept 5, 2024"
+#define SUITESPARSE_DATE "Oct 10, 2024"
 #define SUITESPARSE_MAIN_VERSION    7
 #define SUITESPARSE_SUB_VERSION     8
 #define SUITESPARSE_SUBSUB_VERSION  3

@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/CMakeLists.txt:  cmake for SuiteSparse_config
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
+# SuiteSparse_config, Copyright (c) 2012-2024, Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
@@ -15,7 +15,7 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Sept 5, 2024" )
+set ( SUITESPARSE_DATE "Oct 10, 2024" )
 set ( SUITESPARSE_VERSION_MAJOR 7 )
 set ( SUITESPARSE_VERSION_MINOR 8 )
 set ( SUITESPARSE_VERSION_SUB   3 )

@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,2)
-#error "This library requires SuiteSparse_config 7.8.2 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,3)
+#error "This library requires SuiteSparse_config 7.8.3 or later"
 #endif
 
 #include "amd.h"
@@ -69,8 +69,8 @@
 #endif
 
 #include "klu.h"
-#if !defined (KLU__VERSION) || KLU__VERSION < SUITESPARSE__VERCODE(2,3,4)
-#error "This library requires KLU 2.3.4 or later"
+#if !defined (KLU__VERSION) || KLU__VERSION < SUITESPARSE__VERCODE(2,3,5)
+#error "This library requires KLU 2.3.5 or later"
 #endif
 
 #include "ldl.h"
@@ -79,8 +79,8 @@
 #endif
 
 #include "RBio.h"
-#if !defined (RBIO__VERSION) || RBIO__VERSION < SUITESPARSE__VERCODE(4,3,3)
-#error "This library requires RBio 4.3.3 or later"
+#if !defined (RBIO__VERSION) || RBIO__VERSION < SUITESPARSE__VERCODE(4,3,4)
+#error "This library requires RBio 4.3.4 or later"
 #endif
 
 #include "SPEX.h"
