@@ -97,8 +97,6 @@ int TEMPLATE2 (CHOLMOD (gpu_init))
     cudaError_t cudaErr ;
     size_t maxBytesSize, HostPinnedSize ;
 
-//  feenableexcept (FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW );
-
     maxSize = L->maxcsize;
 
     /* #define PAGE_SIZE (4*1024) */

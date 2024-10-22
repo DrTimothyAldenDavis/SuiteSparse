@@ -275,7 +275,7 @@ int main(int argc, char **argv)
 
     {\footnotesize
     \begin{verbatim}
-    #define PARU_DATE "June 20, 2024"
+    #define PARU_DATE "Sept 5, 2024"
     #define PARU_VERSION_MAJOR  1
     #define PARU_VERSION_MINOR  0
     #define PARU_VERSION_UPDATE 0
@@ -1104,7 +1104,7 @@ from \verb'omp_get_max_threads'.  Otherwise, the value is smaller of
     ParU_Get (Sym, Num, PARU_GET_P, P, Control) ;
     ParU_Get (Sym, Num, PARU_GET_Q, Q, Control) ;
     ParU_Get (Sym, Num, PARU_GET_ROW_SCALE_FACTORS, R, Control) ;
-    ParU_Perm (P, Rs, b, n, t, Control) ;
+    ParU_Perm (P, R, b, n, t, Control) ;
     ParU_LSolve (Sym, Num, t, Control) ;
     ParU_USolve (Sym, Num, t, Control) ;
     ParU_InvPerm (Q, NULL, t, n, x, Control) ; \end{verbatim} }
@@ -1390,8 +1390,8 @@ Control object.  See Section~\ref{control} for details.
     \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB' methods solve a sparse
     linear system $Ax=b$ for a sparse matrix \verb'A' and vectors \verb'x' and
     \verb'b', or matrices \verb'X' and \verb'B'.  The matrix \verb'A' must have
-    been factorized by \verb'ParU_Factorize', and the \verb'Sym' and \verb'Num'
-    structures from that call must be passed to this method.
+    been factorized by \verb'ParU_C_Factorize', and the \verb'Sym_C' and
+    \verb'Num_C' structures from that call must be passed to this method.
 
     {\footnotesize
     \begin{verbatim}
@@ -1458,7 +1458,7 @@ Control object.  See Section~\ref{control} for details.
     The \verb'ParU_C_Solve_Lxx' and \verb'ParU_C_Solve_LXX' methods solve lower
     triangular systems, $Lx=b$ with vectors $x$ and $b$, or $LX=B$ with
     matrices $X$ and $B$, using the lower triangular factor computed by
-    \verb'ParU_Factorize'.  No scaling or permutations are used.
+    \verb'ParU_C_Factorize'.  No scaling or permutations are used.
 
     {\footnotesize
     \begin{verbatim}
@@ -1716,7 +1716,8 @@ To use ParU in MATLAB, you must first compile the \verb'paru' mexFunction.
 In MATLAB, go to the \verb'ParU/MATLAB' directory and type \verb'paru_make'.
 Then add the \verb'ParU/MATLAB' directory to your MATLAB path for future use.
 
-For best performance, paru relies on functions unique to the Intel MKL BLAS.
+For best performance, the \verb'paru' mexFunction
+relies on functions unique to the Intel MKL BLAS.
 An optional input, \verb'paru_make(try_intel)', is true by default.
 \verb'paru_make' detects the BLAS library used by MATLAB and then attempts to
 use functions unique to the Intel MKL BLAS library
@@ -1727,8 +1728,9 @@ an \verb'mkl_*' routine is not found, use \verb'paru_make(false)' to disable
 the Intel MKL functions.
 
 {\bf Limitations:}
-The built-in compiler used by the MATLAB \verb'mex' command on Windoes does not
-support OpenMP, so only parallelism within the BLAS can be used on Windows.
+The built-in compiler used by the MATLAB \verb'mex' command on Windows does not
+support OpenMP, so only parallelism within the BLAS can be used on Windows
+when using MATLAB.
 
 %-------------------------------------------------------------------------------
 \subsection{Using ParU in MATLAB}
@@ -1742,8 +1744,7 @@ Additional options are available to change \verb'paru''s behavior, and
 an additonal output parameter reports statistics on the algorithm:
 
     \begin{verbatim}
-    \verb'[x,stats] = paru (A,b,opts)'
-    \end{verbatim}
+    [x,stats] = paru (A,b,opts) \end{verbatim}
 
 \verb'opts' is a struct containing the following fields.  Any field that is not
 recognized is ignored, and missing fields are treated as their defaults:
@@ -1786,8 +1787,8 @@ recognized is ignored, and missing fields are treated as their defaults:
             \verb"A'*A" for the unsymmetric strategy.
 
         \item \verb"'metis_guard'": use the \verb"'metis'" ordering unless the
-        matrix has one or more rows with $3.2\sqrt{n}$ entries, in which case
-        use \verb"'amd'".
+        matrix has one or more rows with $3.2\sqrt{n}$ or more entries, in
+        which case use \verb"'amd'".
 
         \item \verb"'none'": no fill-reducing ordering.
 
@@ -1846,14 +1847,12 @@ and UMFPACK \cite{10.1145/992200.992206} for its ordering/analysis phase and
 for its basic sparse matrix data structure, and the BLAS \cite{dddh:90} for
 dense matrix computations on its frontal matrices.  An efficient implementation
 of the BLAS is strongly recommended, such as the Intel MKL, the AMD ACML,
-OpenBLAS, FLAME \cite{GotoVanDeGeijn08}. or vendor-provide BLAS. Note that
-while ParU uses nested parallelism heavily the right options for the BLAS
-library must be chosen to get a good performance.
-
-For best performance, the Intel MKL BLAS is required.  ParU relies on the
-\newline \verb'mkl_set_num_threads_local' function to select the number of
-threads to use for the BLAS calls from each of its own threads, which required
-nested parallelism.
+OpenBLAS, FLAME \cite{GotoVanDeGeijn08}. or vendor-provide BLAS.
+ParU relies heavily on nested parallelism, by making parallel calls to
+the BLAS, each of which can themselves be parallel.  This is supported by the
+Intel MKL BLAS library with an Intel-specific method
+(\verb'mkl_set_num_threads_local') to tell the BLAS how many threads to use.
+As a result, tor best performance, the Intel MKL BLAS is required.
 
 ParU also relies heavily on OpenMP tasking to factorize multiple frontal
 matrices at the same time, where each frontal matrix can also be factorized by
@@ -1872,13 +1871,13 @@ its frontal matrix tree.  See \verb'ParU_Get' (Section~\ref{get}) for details.
 SuiteSparse uses a slightly modified version of METIS 5.1.0, distributed along
 with SuiteSparse itself.  Its use is optional, however. ParU uses AMD as its
 default ordering. METIS tends to give orderings that are good for parallelism.
-However, METIS itself can be slower than AMD. As a result, the symbolic
+However, METIS itself can be much slower than AMD. As a result, the symbolic
 analysis using METIS can be slow, but usually, the factorization is faster.
 Therefore, depending on your use case, either use METIS, or you can compile and
 run your code without using METIS.  If you are using METIS on an unsymmetric
 case, UMFPACK must form the Matrix $A^{T}A$. This matrix can have many entries
-it takes a lot of resources to form it. To avoid such conditions, ParU uses the
-ordering strategy \verb'PARU_ORDERING_METIS_GUARD' by default.  This
+it takes a lot of memory and time to form it. To avoid such conditions, ParU
+uses the ordering strategy \verb'PARU_ORDERING_METIS_GUARD' by default.  This
 ordering strategy uses COLAMD instead of METIS in when $A^T A$ is too costly to
 construct.
 
