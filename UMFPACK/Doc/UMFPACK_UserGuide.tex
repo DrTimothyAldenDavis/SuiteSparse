@@ -1854,7 +1854,7 @@ status = umfpack_di_copy_symbolic (&SymbolicCopy, SymbolicOriginal) ;
 status = umfpack_di_serialize_symbolic_size (&blobsize, Symbolic) ;
 status = umfpack_di_serialize_symbolic (blob, blobsize, Symbolic) ;
 status = umfpack_di_deserialize_symbolic (&Symbolic, blob, blobsize) ;
-status = umfapck_di_get_determinant (Mx, Ex, Numeric, Info) ;
+status = umfpack_di_get_determinant (Mx, Ex, Numeric, Info) ;
 \end{verbatim}
 }
 
@@ -1963,7 +1963,7 @@ status = umfpack_zi_copy_symbolic (&SymbolicCopy, SymbolicOriginal) ;
 status = umfpack_zi_serialize_symbolic_size (&blobsize, Symbolic) ;
 status = umfpack_zi_serialize_symbolic (blob, blobsize, Symbolic) ;
 status = umfpack_zi_deserialize_symbolic (&Symbolic, blob, blobsize) ;
-status = umfapck_zi_get_determinant (Mx, Mz, Ex, Numeric, Info) ;
+status = umfpack_zi_get_determinant (Mx, Mz, Ex, Numeric, Info) ;
 \end{verbatim}
 }
 
@@ -7013,12 +7013,12 @@ complex int32_t Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    double *Mx, *Mz, *Ex, Info [UMFPACK_INFO] ;
+    double Mx, Mz, Ex, Info [UMFPACK_INFO] ;
     int status = umfpack_zl_get_determinant (&Mx, &Mz, &Ex, Numeric, Info) ;
 
 packed complex Syntax:
 
-    Same as above, except Mz is NULL.
+    Same as above, except Mz is NULL, and Mx is an array of size 2.
 
 Author: Contributed by David Bateman, Motorola, Paris
 

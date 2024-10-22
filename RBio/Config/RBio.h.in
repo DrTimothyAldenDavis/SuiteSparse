@@ -85,8 +85,8 @@
 
 #define RBIO__VERSION SUITESPARSE__VERCODE(@RBIO_VERSION_MAJOR@,@RBIO_VERSION_MINOR@,@RBIO_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,0))
-#error "RBio @RBIO_VERSION_MAJOR@.@RBIO_VERSION_MINOR@.@RBIO_VERSION_SUB@ requires SuiteSparse_config 7.8.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,8,3))
+#error "RBio @RBIO_VERSION_MAJOR@.@RBIO_VERSION_MINOR@.@RBIO_VERSION_SUB@ requires SuiteSparse_config 7.8.3 or later"
 #endif
 
 /* -------------------------------------------------------------------------- */

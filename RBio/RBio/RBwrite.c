@@ -41,6 +41,7 @@ function mtype = RBwrite (filename, A, Z, title, key)                       %#ok
 % See also RBread, RBtype.
 */
 
+#include "mex.h"
 #include "RBio.h"
 #define LEN 1024
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
