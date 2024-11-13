@@ -129,16 +129,21 @@ configure_file ( "Config/paru_version.tex.in"
     "${PROJECT_SOURCE_DIR}/Doc/paru_version.tex"
     NEWLINE_STYLE LF )
 
-include_directories ( Source Include )
+#-------------------------------------------------------------------------------
+# object library
+#-------------------------------------------------------------------------------
+
+file ( GLOB PARU_SOURCES "Source/*.cpp" )
+
+add_library ( paru_obj OBJECT ${PARU_SOURCES} )
+target_include_directories ( paru_obj PRIVATE Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic paru library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB PARU_SOURCES "Source/*.cpp" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( ParU SHARED ${PARU_SOURCES} )
+    add_library ( ParU SHARED $<TARGET_OBJECTS:paru_obj> )
 
     set_target_properties ( ParU PROPERTIES
         VERSION ${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}
@@ -163,7 +168,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( ParU_static STATIC ${PARU_SOURCES} )
+    add_library ( ParU_static STATIC $<TARGET_OBJECTS:paru_obj> )
 
     set_target_properties ( ParU_static PROPERTIES
         CXX_STANDARD 11
@@ -195,12 +200,7 @@ if (( NOT PARU_HAS_OPENMP ) OR
     # Some parallelization levels don't work correctly with GCC on Windows or
     # Mac (because of emuTLS?). Omit them.  See the user guide for details.
     message ( STATUS "ParU frontal tree tasking: sequential")
-    if ( BUILD_SHARED_LIBS )
-        target_compile_definitions (ParU PRIVATE PARU_1TASK )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_compile_definitions (ParU_static PRIVATE PARU_1TASK )
-    endif ( )
+    target_compile_definitions (paru_obj PRIVATE PARU_1TASK )
 else ( )
     message ( STATUS "ParU frontal tree tasking: parallel")
 endif ( )
@@ -210,6 +210,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
+target_include_directories ( paru_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( ParU PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( ParU PUBLIC
@@ -224,6 +226,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # umfpack:
+target_include_directories ( paru_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::UMFPACK,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( ParU PRIVATE SuiteSparse::UMFPACK )
     target_include_directories ( ParU PUBLIC
@@ -238,6 +242,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # cholmod:
+target_include_directories ( paru_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_include_directories ( ParU PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
@@ -252,6 +258,7 @@ if ( PARU_HAS_OPENMP )
     message ( STATUS "OpenMP C++ libraries:    ${OpenMP_CXX_LIBRARIES} ")
     message ( STATUS "OpenMP C++ include:      ${OpenMP_CXX_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C++ flags:        ${OpenMP_CXX_FLAGS} ")
+    target_include_directories ( paru_obj PRIVATE OpenMP::OpenMP_CXX )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( ParU PRIVATE OpenMP::OpenMP_CXX )
     endif ( )
@@ -275,14 +282,13 @@ endif ( )
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+target_include_directories ( paru_obj PRIVATE ${BLAS_INCLUDE_DIRS} )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( ParU PRIVATE ${BLAS_LIBRARIES} )
-    target_include_directories ( ParU PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND PARU_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( ParU_static PUBLIC ${BLAS_LIBRARIES} )
-    target_include_directories ( ParU_static PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 #-------------------------------------------------------------------------------
