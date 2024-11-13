@@ -59,19 +59,20 @@ configure_file ( "Config/colamd.h.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include )
+file ( GLOB COLAMD_SOURCES "Source/*.c" )
+
+add_library ( colamd_obj OBJECT ${COLAMD_SOURCES} )
+target_include_directories ( colamd_obj PRIVATE Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic colamd library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB COLAMD_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( COLAMD SHARED ${COLAMD_SOURCES} )
+    add_library ( COLAMD SHARED $<TARGET_OBJECTS:colamd_obj> )
 
     set_target_properties ( COLAMD PROPERTIES
         VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
@@ -96,7 +97,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( COLAMD_static STATIC ${COLAMD_SOURCES} )
+    add_library ( COLAMD_static STATIC $<TARGET_OBJECTS:colamd_obj> )
 
     set_target_properties ( COLAMD_static PROPERTIES
         OUTPUT_NAME colamd
@@ -122,6 +123,8 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
+target_include_directories ( colamd_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( COLAMD PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( COLAMD PUBLIC
