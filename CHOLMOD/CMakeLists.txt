@@ -359,22 +359,23 @@ configure_file ( "Config/cholmod_version.tex.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
-#-------------------------------------------------------------------------------
-
-include_directories ( Check Cholesky Utility MatrixOps Modify Partition
-    Supernodal Include ${PROJECT_SOURCE_DIR} )
-
-#-------------------------------------------------------------------------------
-# dynamic cholmod library properties
+# object library
 #-------------------------------------------------------------------------------
 
 file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
     "Utility/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
     "Partition/cholmod_*.c" "Supernodal/cholmod_*.c" )
 
+add_library ( cholmod_obj OBJECT ${CHOLMOD_SOURCES} )
+target_include_directories ( cholmod_obj PRIVATE Check Cholesky Utility
+    MatrixOps Modify Partition Supernodal Include ${PROJECT_SOURCE_DIR} )
+
+#-------------------------------------------------------------------------------
+# dynamic cholmod library properties
+#-------------------------------------------------------------------------------
+
 if ( BUILD_SHARED_LIBS )
-    add_library ( CHOLMOD SHARED ${CHOLMOD_SOURCES} )
+    add_library ( CHOLMOD SHARED $<TARGET_OBJECTS:cholmod_obj> )
 
     set_target_properties ( CHOLMOD PROPERTIES
         VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
@@ -405,7 +406,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( CHOLMOD_static STATIC ${CHOLMOD_SOURCES} )
+    add_library ( CHOLMOD_static STATIC $<TARGET_OBJECTS:cholmod_obj> )
 
     set_target_properties ( CHOLMOD_static PROPERTIES
         C_STANDARD 11
@@ -439,6 +440,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( cholmod_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( CHOLMOD PUBLIC
@@ -453,6 +456,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # AMD:
+target_include_directories ( cholmod_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::AMD )
 endif ( )
@@ -465,6 +470,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # COLAMD:
+target_include_directories ( cholmod_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::COLAMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::COLAMD )
 endif ( )
@@ -478,6 +485,8 @@ endif ( )
 
 # CAMD and CCOLAMD:
 if ( CHOLMOD_CAMD )
+    target_include_directories ( cholmod_obj PRIVATE
+        "$<TARGET_PROPERTY:SuiteSparse::CAMD,INTERFACE_INCLUDE_DIRECTORIES>" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::CAMD )
     endif ( )
@@ -490,6 +499,8 @@ if ( CHOLMOD_CAMD )
         endif ( )
     endif ( )
 
+    target_include_directories ( cholmod_obj PRIVATE
+        "$<TARGET_PROPERTY:SuiteSparse::CCOLAMD,INTERFACE_INCLUDE_DIRECTORIES>" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::CCOLAMD )
     endif ( )
@@ -508,6 +519,7 @@ if ( CHOLMOD_HAS_OPENMP )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
+    target_link_libraries ( cholmod_obj PRIVATE OpenMP::OpenMP_C )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE OpenMP::OpenMP_C )
     endif ( )
@@ -548,7 +560,7 @@ if ( CHOLMOD_SUPERNODAL )
         list ( APPEND CHOLMOD_STATIC_LIBS ${LAPACK_LIBRARIES} )
         target_link_libraries ( CHOLMOD_static PRIVATE ${LAPACK_LIBRARIES} )
     endif ( )
-    include_directories ( ${LAPACK_INCLUDE_DIR} )
+    target_include_directories ( cholmod_obj PRIVATE ${LAPACK_INCLUDE_DIR} )
 
     # BLAS:
     message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES}" )
@@ -561,14 +573,15 @@ if ( CHOLMOD_SUPERNODAL )
         list ( APPEND CHOLMOD_STATIC_LIBS ${BLAS_LIBRARIES} )
         target_link_libraries ( CHOLMOD_static PRIVATE ${BLAS_LIBRARIES} )
     endif ( )
-    include_directories ( ${BLAS_INCLUDE_DIRS} )
+    target_include_directories ( cholmod_obj PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 # METIS and the Partition module:
 if ( CHOLMOD_PARTITION )
-    include_directories ( SuiteSparse_metis/GKlib )
-    include_directories ( SuiteSparse_metis/libmetis )
-    include_directories ( SuiteSparse_metis/include )
+    target_include_directories ( cholmod_obj PRIVATE
+        SuiteSparse_metis/GKlib
+        SuiteSparse_metis/libmetis
+        SuiteSparse_metis/include )
 endif ( )
 
 # CHOLMOD_CUDA
@@ -582,6 +595,8 @@ if ( CHOLMOD_HAS_CUDA )
 #   if ( BUILD_STATIC_LIBS )
 #       target_compile_definitions ( CHOLMOD_static PUBLIC "CHOLMOD_HAS_CUDA" )
 #   endif ( )
+    target_link_libraries ( cholmod_obj PRIVATE
+        CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
         target_include_directories ( CHOLMOD INTERFACE
@@ -610,6 +625,7 @@ if ( CHOLMOD_HAS_CUDA )
     set ( CMAKE_EXTRA_INCLUDE_FILES ${_orig_CMAKE_EXTRA_INCLUDE_FILES} )
 
     if ( NOT HAVE_COMPAR_FN_T )
+        target_compile_definitions ( cholmod_obj PRIVATE NCOMPAR_FN_T )
         if ( BUILD_SHARED_LIBS )
             target_compile_definitions ( CHOLMOD PRIVATE NCOMPAR_FN_T )
         endif ( )

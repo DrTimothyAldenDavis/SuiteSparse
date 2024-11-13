@@ -28,13 +28,7 @@ message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c"
     "cholmod_gpu_kernels.cu" )
 
-if ( BUILD_SHARED_LIBS )
-    target_sources ( CHOLMOD PRIVATE ${CHOLMOD_CUDA_SOURCES} )
-endif ( )
-
-if ( BUILD_STATIC_LIBS )
-    target_sources ( CHOLMOD_static PRIVATE ${CHOLMOD_CUDA_SOURCES} )
-endif ( )
+target_sources ( cholmod_obj PRIVATE ${CHOLMOD_CUDA_SOURCES} )
 
 set ( CHOLMOD_CUDA_INCLUDES
         ../Check
@@ -45,12 +39,13 @@ set ( CHOLMOD_CUDA_INCLUDES
         ../Include
         ../GPU )
 
-include_directories ( ${CHOLMOD_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
+target_include_directories ( cholmod_obj PRIVATE
+    ${CHOLMOD_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
+set_target_properties ( cholmod_obj PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    CUDA_SEPARABLE_COMPILATION ON )
 
 if ( BUILD_SHARED_LIBS )
-    target_include_directories ( CHOLMOD PRIVATE
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${CHOLMOD_CUDA_INCLUDES} )
     set_target_properties ( CHOLMOD PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( CHOLMOD PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 #   target_compile_definitions ( CHOLMOD PUBLIC "CHOLMOD_HAS_CUDA" )
@@ -60,16 +55,7 @@ if ( BUILD_STATIC_LIBS )
     target_include_directories ( CHOLMOD_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
-    set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-    set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
 #   target_compile_definitions ( CHOLMOD_static PUBLIC "CHOLMOD_HAS_CUDA" )
-endif ( )
-
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( CHOLMOD PRIVATE
-        CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    target_link_libraries ( CHOLMOD_static PRIVATE
-        CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )
