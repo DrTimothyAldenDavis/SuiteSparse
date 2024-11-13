@@ -117,19 +117,25 @@ configure_file ( "Config/klu_version.tex.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include User )
+file ( GLOB KLU_SOURCES "Source/*.c" )
+
+add_library ( klu_obj OBJECT ${KLU_SOURCES} )
+target_include_directories ( klu_obj PRIVATE Source Include User )
+
+set_target_properties ( klu_obj PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON )
 
 #-------------------------------------------------------------------------------
 # dynamic klu library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB KLU_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( KLU SHARED ${KLU_SOURCES} )
+    add_library ( KLU SHARED $<TARGET_OBJECTS:klu_obj> )
 
     set_target_properties ( KLU PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
@@ -154,7 +160,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( KLU_static STATIC ${KLU_SOURCES} )
+    add_library ( KLU_static STATIC $<TARGET_OBJECTS:klu_obj> )
 
     set_target_properties ( KLU_static PROPERTIES
         C_STANDARD 11
@@ -184,8 +190,15 @@ if ( KLU_HAS_CHOLMOD )
 
     file ( GLOB KLU_CHOLMOD_SOURCES "User/*.c" )
 
+    add_library ( klu_cholmod_obj OBJECT ${KLU_CHOLMOD_SOURCES} )
+    target_include_directories ( klu_cholmod_obj PRIVATE Source Include User )
+    set_target_properties ( klu_cholmod_obj PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON )
+
     if ( BUILD_SHARED_LIBS )
-        add_library ( KLU_CHOLMOD SHARED ${KLU_CHOLMOD_SOURCES} )
+        add_library ( KLU_CHOLMOD SHARED $<TARGET_OBJECTS:klu_cholmod_obj> )
 
         set_target_properties ( KLU_CHOLMOD PROPERTIES
             VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
@@ -201,11 +214,12 @@ if ( KLU_HAS_CHOLMOD )
 
         target_include_directories ( KLU_CHOLMOD
             INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/User>
                       $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
     endif ( )
 
     if ( BUILD_STATIC_LIBS )
-        add_library ( KLU_CHOLMOD_static STATIC ${KLU_CHOLMOD_SOURCES} )
+        add_library ( KLU_CHOLMOD_static STATIC $<TARGET_OBJECTS:klu_cholmod_obj> )
 
         set_target_properties ( KLU_CHOLMOD_static PROPERTIES
             C_STANDARD 11
@@ -224,6 +238,7 @@ if ( KLU_HAS_CHOLMOD )
 
         target_include_directories ( KLU_CHOLMOD_static
             INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/User>
                       $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
     endif ( )
 
@@ -234,6 +249,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( klu_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( KLU PRIVATE SuiteSparse::SuiteSparseConfig )
 endif ( )
@@ -246,6 +263,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # AMD:
+target_include_directories ( klu_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( KLU PRIVATE SuiteSparse::AMD )
     target_include_directories ( KLU PUBLIC
@@ -260,6 +279,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # COLAMD:
+target_include_directories ( klu_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::COLAMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( KLU PRIVATE SuiteSparse::COLAMD )
     target_include_directories ( KLU PUBLIC
@@ -274,6 +295,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # BTF:
+target_include_directories ( klu_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::BTF,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( KLU PRIVATE SuiteSparse::BTF )
     target_include_directories ( KLU PUBLIC
@@ -292,6 +315,8 @@ if ( KLU_HAS_CHOLMOD )
     # CHOLMOD:
     # link with CHOLMOD and its dependencies, both required and optional
     # CHOLMOD without CUDA
+    target_include_directories ( klu_cholmod_obj PRIVATE
+        "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( KLU_CHOLMOD PRIVATE SuiteSparse::CHOLMOD )
     endif ( )
@@ -305,6 +330,8 @@ if ( KLU_HAS_CHOLMOD )
     endif ( )
 
     # klu:
+    target_include_directories ( klu_cholmod_obj PRIVATE
+        "$<TARGET_PROPERTY:KLU,INTERFACE_INCLUDE_DIRECTORIES>" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( KLU_CHOLMOD PRIVATE KLU )
     endif ( )
