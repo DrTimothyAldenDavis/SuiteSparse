@@ -112,19 +112,20 @@ configure_file ( "Config/umfpack_version.tex.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include )
+file ( GLOB UMFPACK_SOURCES "Source2/*.c" )
+
+add_library ( umfpack_obj OBJECT ${UMFPACK_SOURCES} )
+target_include_directories ( umfpack_obj PRIVATE  Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic umfpack library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB UMFPACK_SOURCES "Source2/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( UMFPACK SHARED ${UMFPACK_SOURCES} )
+    add_library ( UMFPACK SHARED $<TARGET_OBJECTS:umfpack_obj> )
 
     set_target_properties ( UMFPACK PROPERTIES
         VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
@@ -149,7 +150,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( UMFPACK_static STATIC ${UMFPACK_SOURCES} )
+    add_library ( UMFPACK_static STATIC $<TARGET_OBJECTS:umfpack_obj> )
 
     set_target_properties ( UMFPACK_static PROPERTIES
         C_STANDARD 11
@@ -176,6 +177,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( umfpack_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( UMFPACK PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( UMFPACK PUBLIC
@@ -190,6 +193,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # AMD:
+target_include_directories ( umfpack_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
     target_include_directories ( UMFPACK PUBLIC
@@ -206,6 +211,8 @@ endif ( )
 # CHOLMOD:
 if ( UMFPACK_HAS_CHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
+    target_include_directories ( umfpack_obj PRIVATE
+        "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
     endif ( )
@@ -219,12 +226,7 @@ if ( UMFPACK_HAS_CHOLMOD )
     endif ( )
 else ( )
     # tell UMFPACK that CHOLMOD is not available
-    if ( BUILD_SHARED_LIBS )
-        target_compile_definitions ( UMFPACK PRIVATE NCHOLMOD )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_compile_definitions ( UMFPACK_static PRIVATE NCHOLMOD )
-    endif ( )
+    target_compile_definitions ( umfpack_obj PRIVATE NCHOLMOD )
 endif ( )
 
 # libm:
@@ -244,14 +246,13 @@ endif ( )
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES}" )
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS}" )
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS}" )
+target_include_directories ( umfpack_obj PRIVATE ${BLAS_INCLUDE_DIRS} )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( UMFPACK PRIVATE ${BLAS_LIBRARIES} )
-    target_include_directories ( UMFPACK PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND UMFPACK_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( UMFPACK_static PUBLIC ${BLAS_LIBRARIES} )
-    target_include_directories ( UMFPACK_static PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -280,12 +281,7 @@ check_source_compiles ( C
     FAIL_REGEX "[wW]arning" )
 
 if ( HAVE_PRAGMA_GCC_IVDEP )
-    if ( BUILD_SHARED_LIBS )
-        target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
-    endif ( )
+    target_compile_definitions ( umfpack_obj PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
     set ( _pragma_found ON )
 endif ( )
 
@@ -304,17 +300,9 @@ if ( NOT _pragma_found )
         # Clang is very verbose if a hint for vectorization cannot be performed.
         # Disable the respective warning.
         check_c_compiler_flag ( "-Wno-pass-failed" HAVE_NO_PASS_FAILED )
-        if ( BUILD_SHARED_LIBS )
-            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_CLANG_LOOP_VECTORIZE" )
-            if ( HAVE_NO_PASS_FAILED )
-                target_compile_options ( UMFPACK PRIVATE "-Wno-pass-failed" )
-            endif ( )
-        endif ( )
-        if ( BUILD_STATIC_LIBS )
-            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_CLANG_LOOP_VECTORIZE" )
-            if ( HAVE_NO_PASS_FAILED )
-                target_compile_options ( UMFPACK_static PRIVATE "-Wno-pass-failed" )
-            endif ( )
+        target_compile_definitions ( umfpack_obj PRIVATE "HAVE_PRAGMA_CLANG_LOOP_VECTORIZE" )
+        if ( HAVE_NO_PASS_FAILED )
+            target_compile_options ( umfpack_obj PRIVATE "-Wno-pass-failed" )
         endif ( )
         set ( _pragma_found ON )
     endif ( )
@@ -332,12 +320,7 @@ if ( NOT _pragma_found )
         FAIL_REGEX "[wW]arning" )
 
     if ( HAVE_PRAGMA_IVDEP )
-        if ( BUILD_SHARED_LIBS )
-            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_IVDEP" )
-        endif ( )
-        if ( BUILD_STATIC_LIBS )
-            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_IVDEP" )
-        endif ( )
+        target_compile_definitions ( umfpack_obj PRIVATE "HAVE_PRAGMA_IVDEP" )
         set ( _pragma_found ON )
     endif ( )
 endif ( )
@@ -354,12 +337,7 @@ if ( NOT _pragma_found )
         FAIL_REGEX "[wW]arning" )
 
     if ( HAVE_PRAGMA_LOOP_IVDEP )
-        if ( BUILD_SHARED_LIBS )
-            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
-        endif ( )
-        if ( BUILD_STATIC_LIBS )
-            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
-        endif ( )
+        target_compile_definitions ( umfpack_obj PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
         set ( _pragma_found ON )
     endif ( )
 endif ( )
@@ -378,12 +356,7 @@ if ( NOT _pragma_found )
         FAIL_REGEX "[wW]arning" )
 
     if ( HAVE_PRAGMA_GCC_NOVECTOR )
-        if ( BUILD_SHARED_LIBS )
-            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
-        endif ( )
-        if ( BUILD_STATIC_LIBS )
-            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
-        endif ( )
+        target_compile_definitions ( umfpack_obj PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
         set ( _pragma_found ON )
     endif ( )
 endif ( )
@@ -400,12 +373,7 @@ if ( NOT _pragma_found )
         FAIL_REGEX "[wW]arning" )
 
     if ( HAVE_PRAGMA_NOVECTOR )
-        if ( BUILD_SHARED_LIBS )
-            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_NOVECTOR" )
-        endif ( )
-        if ( BUILD_STATIC_LIBS )
-            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_NOVECTOR" )
-        endif ( )
+        target_compile_definitions ( umfpack_obj PRIVATE "HAVE_PRAGMA_NOVECTOR" )
         set ( _pragma_found ON )
     endif ( )
 endif ( )
@@ -422,12 +390,7 @@ if ( NOT _pragma_found )
         FAIL_REGEX "[wW]arning" )
 
     if ( HAVE_PRAGMA_LOOP_NO_VECTOR )
-        if ( BUILD_SHARED_LIBS )
-            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
-        endif ( )
-        if ( BUILD_STATIC_LIBS )
-            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
-        endif ( )
+        target_compile_definitions ( umfpack_obj PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
         set ( _pragma_found ON )
     endif ( )
 endif ( )
