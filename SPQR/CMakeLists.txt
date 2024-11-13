@@ -96,13 +96,20 @@ configure_file ( "Config/spqr_version.tex.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# dynamic spqr library properties
+# object library
 #-------------------------------------------------------------------------------
 
 file ( GLOB SPQR_SOURCES "Source/spqr_*.cpp" "Source/SuiteSparseQR*.cpp" )
 
+add_library ( spqr_obj OBJECT ${SPQR_SOURCES} )
+target_include_directories ( spqr_obj PRIVATE Source Include )
+
+#-------------------------------------------------------------------------------
+# dynamic spqr library properties
+#-------------------------------------------------------------------------------
+
 if ( BUILD_SHARED_LIBS )
-    add_library ( SPQR SHARED ${SPQR_SOURCES} )
+    add_library ( SPQR SHARED $<TARGET_OBJECTS:spqr_obj> )
 
     set_target_properties ( SPQR PROPERTIES
         VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
@@ -119,7 +126,6 @@ if ( BUILD_SHARED_LIBS )
     endif ( )
 
     target_include_directories ( SPQR 
-        PRIVATE Source Include
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
@@ -129,7 +135,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( SPQR_static STATIC ${SPQR_SOURCES} )
+    add_library ( SPQR_static STATIC $<TARGET_OBJECTS:spqr_obj> )
 
     set_target_properties ( SPQR_static PROPERTIES
         CXX_STANDARD 11
@@ -148,7 +154,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 
     target_include_directories ( SPQR_static 
-        PRIVATE Source Include
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
@@ -158,6 +163,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( spqr_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPQR PRIVATE SuiteSparse::SuiteSparseConfig )
 endif ( )
@@ -171,6 +178,8 @@ endif ( )
 
 # CHOLMOD:
 # link with CHOLMOD and its dependencies
+target_include_directories ( spqr_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD )
 endif ( )
@@ -183,6 +192,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 if ( SPQR_HAS_CUDA )
+    target_link_libraries ( spqr_obj PRIVATE GPUQREngine GPURuntime )
+    target_compile_definitions ( spqr_obj PRIVATE "SPQR_HAS_CUDA" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SPQR PRIVATE GPUQREngine GPURuntime )
         target_compile_definitions ( SPQR PUBLIC "SPQR_HAS_CUDA" )
@@ -215,28 +226,26 @@ endif ( )
 message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
 message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
+target_include_directories ( spqr_obj PRIVATE ${LAPACK_INCLUDE_DIR} )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPQR PRIVATE ${LAPACK_LIBRARIES} )
-    target_include_directories ( SPQR PRIVATE ${LAPACK_INCLUDE_DIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPQR_STATIC_LIBS ${LAPACK_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${LAPACK_LIBRARIES} )
-    target_include_directories ( SPQR_static PRIVATE ${LAPACK_INCLUDE_DIR} )
 endif ( )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+target_include_directories ( spqr_obj PRIVATE ${BLAS_INCLUDE_DIRS} )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPQR PRIVATE ${BLAS_LIBRARIES} )
-    target_include_directories ( SPQR PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPQR_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${BLAS_LIBRARIES} )
-    target_include_directories ( SPQR_static PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 #-------------------------------------------------------------------------------

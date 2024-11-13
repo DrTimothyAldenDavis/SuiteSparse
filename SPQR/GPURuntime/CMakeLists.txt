@@ -43,19 +43,29 @@ configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
+# object library
+#-------------------------------------------------------------------------------
 
 file ( GLOB SUITESPARSE_GPURUNTIME_SOURCES "Source/*.cpp" )
 
 set ( SUITESPARSE_GPURUNTIME_INCLUDES Include )
 
-include_directories ( ${SUITESPARSE_GPURUNTIME_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
+add_library ( gpuruntime_obj OBJECT ${SUITESPARSE_GPURUNTIME_SOURCES} )
+target_include_directories ( gpuruntime_obj PUBLIC
+    ${SUITESPARSE_GPURUNTIME_INCLUDES}
+    ${CUDAToolkit_INCLUDE_DIRS} )
+
+target_compile_definitions ( gpuruntime_obj PRIVATE "SPQR_HAS_CUDA" )
+
+target_include_directories ( gpuruntime_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 #-------------------------------------------------------------------------------
 # dynamic suitesparse_gpuruntime library properties
 #-------------------------------------------------------------------------------
 
 if ( BUILD_SHARED_LIBS )
-    add_library ( GPURuntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
+    add_library ( GPURuntime SHARED $<TARGET_OBJECTS:gpuruntime_obj> )
 
     set_target_properties ( GPURuntime PROPERTIES
         VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
@@ -66,10 +76,6 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-    target_include_directories ( GPURuntime PRIVATE
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
-
     target_link_libraries ( GPURuntime PRIVATE SuiteSparse::SuiteSparseConfig )
 
     set_target_properties ( GPURuntime PROPERTIES
@@ -78,7 +84,6 @@ if ( BUILD_SHARED_LIBS )
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPURuntime PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
-    target_compile_definitions ( GPURuntime PRIVATE "SPQR_HAS_CUDA" )
 
     target_include_directories ( GPURuntime 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -90,7 +95,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( GPURuntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
+    add_library ( GPURuntime_static STATIC $<TARGET_OBJECTS:gpuruntime_obj> )
 
     set_target_properties ( GPURuntime_static PROPERTIES
         CXX_STANDARD 17
@@ -103,10 +108,6 @@ if ( BUILD_STATIC_LIBS )
             OUTPUT_NAME suitesparse_gpuruntime_static )
     endif ( )
 
-    target_include_directories ( GPURuntime_static PRIVATE
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
-
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( GPURuntime_static PRIVATE SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -118,7 +119,6 @@ if ( BUILD_STATIC_LIBS )
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPURuntime_static PRIVATE CUDA::nvrtc CUDA::cudart_static )
-    target_compile_definitions ( GPURuntime_static PRIVATE "SPQR_HAS_CUDA" )
     # FIXME: Ok to hardcode CUDA library names like this?
     set ( GPURUNTIME_STATIC_LIBS "-L${CUDAToolkit_LIBRARY_DIR} -lcuda -lcudart_static" )
     if ( TARGET CUDA::cublas_static )

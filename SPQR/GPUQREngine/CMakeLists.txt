@@ -65,6 +65,8 @@ configure_file ( "Config/GPUQREngine.hpp.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
+# object library
+#-------------------------------------------------------------------------------
 
 file ( GLOB GPUQRENGINE_SOURCES "Source/*.cpp"
     "Source/*.cu"
@@ -76,12 +78,25 @@ file ( GLOB GPUQRENGINE_SOURCES "Source/*.cpp"
 set ( GPUQRENGINE_INCLUDES Include Include/Kernel
     Include/Kernel/Apply Include/Kernel/Assemble Include/Kernel/Factorize )
 
+add_library ( gpuqrengine_obj OBJECT ${GPUQRENGINE_SOURCES} )
+target_include_directories ( gpuqrengine_obj PRIVATE ${GPUQRENGINE_INCLUDES} )
+
+target_compile_definitions ( gpuqrengine_obj PRIVATE "SPQR_HAS_CUDA" )
+
+target_include_directories ( gpuqrengine_obj PRIVATE
+    "$<TARGET_PROPERTY:gpuruntime_obj,INTERFACE_INCLUDE_DIRECTORIES>"
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+
+set_target_properties ( gpuqrengine_obj PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON )
+
 #-------------------------------------------------------------------------------
 # dynamic gpuqrengine library properties
 #-------------------------------------------------------------------------------
 
 if ( BUILD_SHARED_LIBS )
-    add_library ( GPUQREngine SHARED ${GPUQRENGINE_SOURCES} )
+    add_library ( GPUQREngine SHARED $<TARGET_OBJECTS:gpuqrengine_obj> )
 
     set_target_properties ( GPUQREngine PROPERTIES
         VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
@@ -91,9 +106,6 @@ if ( BUILD_SHARED_LIBS )
         SOVERSION ${SPQR_VERSION_MAJOR}
         PUBLIC_HEADER "Include/GPUQREngine.hpp"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
-
-    target_include_directories ( GPUQREngine PRIVATE
-        ${GPUQRENGINE_INCLUDES} )
 
     target_link_libraries ( GPUQREngine PRIVATE
         GPURuntime SuiteSparse::SuiteSparseConfig )
@@ -105,7 +117,6 @@ if ( BUILD_SHARED_LIBS )
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPUQREngine PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
-    target_compile_definitions ( GPUQREngine PRIVATE "SPQR_HAS_CUDA" )
 
     target_include_directories ( GPUQREngine
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -117,7 +128,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( GPUQREngine_static STATIC ${GPUQRENGINE_SOURCES} )
+    add_library ( GPUQREngine_static STATIC $<TARGET_OBJECTS:gpuqrengine_obj> )
 
     set_target_properties ( GPUQREngine_static PROPERTIES
         CXX_STANDARD 17
@@ -129,10 +140,6 @@ if ( BUILD_STATIC_LIBS )
         set_target_properties ( GPUQREngine_static PROPERTIES
             OUTPUT_NAME gpuqrengine_static )
     endif ( )
-
-    target_include_directories ( GPUQREngine_static PRIVATE
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${GPUQRENGINE_INCLUDES} )
 
     target_link_libraries ( GPUQREngine_static PRIVATE GPURuntime_static )
 
@@ -148,7 +155,6 @@ if ( BUILD_STATIC_LIBS )
         CUDA_RESOLVE_DEVICE_SYMBOLS ON
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPUQREngine_static PRIVATE CUDA::nvrtc CUDA::cudart_static )
-    target_compile_definitions ( GPUQREngine_static PRIVATE "SPQR_HAS_CUDA" )
     # FIXME: Ok to hardcode CUDA library names like this?
     set ( GPUQRENGINE_STATIC_LIBS "-L${CUDAToolkit_LIBRARY_DIR} -lcuda -lcudart_static" )
     if ( TARGET CUDA::cublas_static )
