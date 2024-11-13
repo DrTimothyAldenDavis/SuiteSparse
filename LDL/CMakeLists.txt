@@ -42,7 +42,6 @@ include ( SuiteSparsePolicy )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     find_package ( SuiteSparse_config 7.7.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
@@ -71,19 +70,20 @@ configure_file ( "Config/ldl_version.tex.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include )
+file ( GLOB LDL_SOURCES "Source/*.c" )
+
+add_library ( ldl_obj OBJECT ${LDL_SOURCES} )
+target_include_directories ( ldl_obj PRIVATE Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic ldl library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB LDL_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( LDL SHARED ${LDL_SOURCES} )
+    add_library ( LDL SHARED $<TARGET_OBJECTS:ldl_obj> )
 
     set_target_properties ( LDL PROPERTIES
         VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
@@ -108,7 +108,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( LDL_static STATIC ${LDL_SOURCES} )
+    add_library ( LDL_static STATIC $<TARGET_OBJECTS:ldl_obj> )
 
     set_target_properties ( LDL_static PROPERTIES
         C_STANDARD 11
@@ -134,6 +134,8 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
+target_include_directories ( ldl_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_include_directories ( LDL PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
