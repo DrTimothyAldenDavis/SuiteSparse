@@ -142,13 +142,24 @@ configure_file ( "Config/README.md.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# dynamic SuiteSparseConfig library properties
+# object library
 #-------------------------------------------------------------------------------
 
 file ( GLOB SUITESPARSECONFIG_SOURCES "*.c" )
 
+add_library ( suitesparseconfig_obj OBJECT ${SUITESPARSECONFIG_SOURCES} )
+
+set_target_properties ( suitesparseconfig_obj PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON )
+
+#-------------------------------------------------------------------------------
+# dynamic SuiteSparseConfig library properties
+#-------------------------------------------------------------------------------
+
 if ( BUILD_SHARED_LIBS )
-    add_library ( SuiteSparseConfig SHARED ${SUITESPARSECONFIG_SOURCES} )
+    add_library ( SuiteSparseConfig SHARED $<TARGET_OBJECTS:suitesparseconfig_obj> )
 
     set_target_properties ( SuiteSparseConfig PROPERTIES
         VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
@@ -173,7 +184,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( SuiteSparseConfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
+    add_library ( SuiteSparseConfig_static STATIC $<TARGET_OBJECTS:suitesparseconfig_obj> )
 
     set_target_properties ( SuiteSparseConfig_static PROPERTIES
         C_STANDARD 11
@@ -217,6 +228,7 @@ if ( SUITESPARSE_CONFIG_HAS_OPENMP )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
+    target_link_libraries ( suitesparseconfig_obj PRIVATE OpenMP::OpenMP_C )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SuiteSparseConfig PRIVATE OpenMP::OpenMP_C )
         target_include_directories ( SuiteSparseConfig SYSTEM AFTER INTERFACE
