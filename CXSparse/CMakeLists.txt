@@ -86,13 +86,7 @@ configure_file ( "Config/cs.h.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
-#-------------------------------------------------------------------------------
-
-include_directories ( Source Include )
-
-#-------------------------------------------------------------------------------
-# dynamic cxsparse library properties
+# object library
 #-------------------------------------------------------------------------------
 
 if ( CXSPARSE_HAS_COMPLEX )
@@ -110,8 +104,15 @@ else ( )
         )
 endif ( )
 
+add_library ( cxsparse_obj OBJECT ${CXSPARSE_SOURCES} )
+target_include_directories ( cxsparse_obj PRIVATE Source Include )
+
+#-------------------------------------------------------------------------------
+# dynamic cxsparse library properties
+#-------------------------------------------------------------------------------
+
 if ( BUILD_SHARED_LIBS )
-    add_library ( CXSparse SHARED ${CXSPARSE_SOURCES} )
+    add_library ( CXSparse SHARED $<TARGET_OBJECTS:cxsparse_obj> )
 
     set_target_properties ( CXSparse PROPERTIES
         VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
@@ -136,7 +137,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( CXSparse_static STATIC ${CXSPARSE_SOURCES} )
+    add_library ( CXSparse_static STATIC $<TARGET_OBJECTS:cxsparse_obj> )
 
     set_target_properties ( CXSparse_static PROPERTIES
         OUTPUT_NAME cxsparse
@@ -162,6 +163,8 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
+target_include_directories ( cxsparse_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CXSparse PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( CXSparse PUBLIC
