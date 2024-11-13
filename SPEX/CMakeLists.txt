@@ -108,10 +108,13 @@ configure_file ( "Config/SPEX_version.tex.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Include
+file ( GLOB SPEX_SOURCES "SPEX*/Source/*.c" )
+
+add_library ( spex_obj OBJECT ${SPEX_SOURCES} )
+target_include_directories ( spex_obj PRIVATE Include
     SPEX_Backslash/Source SPEX_Cholesky/Source SPEX_LU/Source
     SPEX_Utilities/Source
     ${SUITESPARSE_CONFIG_INCLUDE_DIR}
@@ -122,10 +125,8 @@ include_directories ( Include
 # dynamic spex library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB SPEX_SOURCES "SPEX*/Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( SPEX SHARED ${SPEX_SOURCES} )
+    add_library ( SPEX SHARED $<TARGET_OBJECTS:spex_obj> )
 
     set_target_properties ( SPEX PROPERTIES
         VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
@@ -150,7 +151,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( SPEX_static STATIC ${SPEX_SOURCES} )
+    add_library ( SPEX_static STATIC $<TARGET_OBJECTS:spex_obj> )
 
     set_target_properties ( SPEX_static PROPERTIES
         C_STANDARD 11
@@ -177,6 +178,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( spex_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( SPEX PUBLIC
@@ -191,6 +194,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # AMD:
+target_include_directories ( spex_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE SuiteSparse::AMD )
 endif ( )
@@ -203,6 +208,8 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # COLAMD:
+target_include_directories ( spex_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::COLAMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE SuiteSparse::COLAMD )
 endif ( )
@@ -215,6 +222,7 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # MPFR:
+target_include_directories ( spex_obj  SYSTEM AFTER PRIVATE ${MPFR_INCLUDE_DIR} )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${MPFR_LIBRARIES} )
     target_include_directories ( SPEX SYSTEM AFTER PUBLIC ${MPFR_INCLUDE_DIR} )
@@ -227,6 +235,7 @@ endif ( )
 
 # GMP:
 # must occur after MPFR
+target_include_directories ( spex_obj  SYSTEM AFTER PRIVATE ${GMP_INCLUDE_DIR} )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${GMP_LIBRARIES} )
     target_include_directories ( SPEX SYSTEM AFTER PUBLIC ${GMP_INCLUDE_DIR} )
@@ -242,6 +251,7 @@ if ( SPEX_HAS_OPENMP )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
+    target_link_libraries ( spex_obj PRIVATE OpenMP::OpenMP_C )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SPEX PRIVATE OpenMP::OpenMP_C )
     endif ( )
@@ -439,6 +449,9 @@ if ( SPEX_HAS_PYTHON )
 
     file ( GLOB SPEX_PYTHON_SOURCES "Python/SPEXpy/Source/*.c" )
     add_library ( spexpython SHARED ${SPEX_PYTHON_SOURCES} )
+
+    target_include_directories ( spexpython PRIVATE
+        SPEX_Cholesky/Source SPEX_Utilities/Source )
 
     set_target_properties ( spexpython PROPERTIES
         VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
