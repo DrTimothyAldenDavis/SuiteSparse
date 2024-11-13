@@ -62,19 +62,20 @@ configure_file ( "Config/camd_version.tex.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include )
+file ( GLOB CAMD_SOURCES "Source/*.c" )
+
+add_library ( camd_obj OBJECT ${CAMD_SOURCES} )
+target_include_directories ( camd_obj PRIVATE  Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic camd library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB CAMD_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( CAMD SHARED ${CAMD_SOURCES} )
+    add_library ( CAMD SHARED $<TARGET_OBJECTS:camd_obj> )
 
     set_target_properties ( CAMD PROPERTIES
         VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
@@ -99,7 +100,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( CAMD_static STATIC ${CAMD_SOURCES} )
+    add_library ( CAMD_static STATIC $<TARGET_OBJECTS:camd_obj> )
 
     set_target_properties ( CAMD_static PROPERTIES
         C_STANDARD 11
@@ -124,6 +125,9 @@ endif ( )
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
+
+target_include_directories ( camd_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CAMD PRIVATE SuiteSparse::SuiteSparseConfig )
