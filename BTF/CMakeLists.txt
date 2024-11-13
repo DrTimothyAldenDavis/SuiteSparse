@@ -59,19 +59,20 @@ configure_file ( "Config/btf.h.in" "${PROJECT_SOURCE_DIR}/Include/btf.h"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include )
+file ( GLOB BTF_SOURCES "Source/*.c" )
+
+add_library ( btf_obj OBJECT ${BTF_SOURCES} )
+target_include_directories ( btf_obj PRIVATE Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic btf library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB BTF_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( BTF SHARED ${BTF_SOURCES} )
+    add_library ( BTF SHARED $<TARGET_OBJECTS:btf_obj> )
 
     set_target_properties ( BTF PROPERTIES
         VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
@@ -96,7 +97,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( BTF_static STATIC ${BTF_SOURCES} )
+    add_library ( BTF_static STATIC $<TARGET_OBJECTS:btf_obj> )
 
     set_target_properties ( BTF_static PROPERTIES
         C_STANDARD 11
@@ -123,6 +124,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( btf_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_include_directories ( BTF PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
