@@ -59,19 +59,20 @@ configure_file ( "Config/RBio.h.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include )
+file ( GLOB RBIO_SOURCES "Source/*.c" )
+
+add_library ( rbio_obj OBJECT ${RBIO_SOURCES} )
+target_include_directories ( rbio_obj PRIVATE Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic rbio library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB RBIO_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( RBio SHARED ${RBIO_SOURCES} )
+    add_library ( RBio SHARED $<TARGET_OBJECTS:rbio_obj> )
 
     set_target_properties ( RBio PROPERTIES
         VERSION ${RBIO_VERSION_MAJOR}.${RBIO_VERSION_MINOR}.${RBIO_VERSION_SUB}
@@ -96,7 +97,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( RBio_static STATIC ${RBIO_SOURCES} )
+    add_library ( RBio_static STATIC $<TARGET_OBJECTS:rbio_obj> )
 
     set_target_properties ( RBio_static PROPERTIES
         C_STANDARD 11
@@ -123,6 +124,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
+target_include_directories ( rbio_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( RBio PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( RBio PUBLIC
