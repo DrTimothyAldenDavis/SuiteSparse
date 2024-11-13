@@ -59,19 +59,20 @@ configure_file ( "Config/ccolamd.h.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include )
+file ( GLOB CCOLAMD_SOURCES "Source/*.c" )
+
+add_library ( ccolamd_obj OBJECT ${CCOLAMD_SOURCES} )
+target_include_directories ( ccolamd_obj PRIVATE Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic ccolamd library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB CCOLAMD_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( CCOLAMD SHARED ${CCOLAMD_SOURCES} )
+    add_library ( CCOLAMD SHARED $<TARGET_OBJECTS:ccolamd_obj> )
 
     set_target_properties ( CCOLAMD PROPERTIES
         VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
@@ -96,7 +97,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( CCOLAMD_static STATIC ${CCOLAMD_SOURCES} )
+    add_library ( CCOLAMD_static STATIC $<TARGET_OBJECTS:ccolamd_obj> )
 
     set_target_properties ( CCOLAMD_static PROPERTIES
         OUTPUT_NAME ccolamd
@@ -122,6 +123,8 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
+target_include_directories ( ccolamd_obj PRIVATE
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CCOLAMD PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( CCOLAMD PUBLIC
