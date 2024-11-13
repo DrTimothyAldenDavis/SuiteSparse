@@ -76,20 +76,24 @@ configure_file ( "Config/cs.h.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# include directories
+# object library
 #-------------------------------------------------------------------------------
 
-set ( CMAKE_INCLUDE_CURRENT_DIR ON )
-include_directories ( Source Include )
+file ( GLOB CSPARSE_SOURCES "Source/*.c" )
+
+add_library ( csparse_obj OBJECT ${CSPARSE_SOURCES} )
+target_include_directories ( csparse_obj PRIVATE Source Include )
+
+set_target_properties ( csparse_obj PROPERTIES
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON )
 
 #-------------------------------------------------------------------------------
 # dynamic csparse library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB CSPARSE_SOURCES "Source/*.c" )
-
 if ( BUILD_SHARED_LIBS )
-    add_library ( csparse SHARED ${CSPARSE_SOURCES} )
+    add_library ( csparse SHARED $<TARGET_OBJECTS:csparse_obj> )
 
     set_target_properties ( csparse PROPERTIES
         VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
@@ -98,6 +102,10 @@ if ( BUILD_SHARED_LIBS )
         SOVERSION ${CSPARSE_VERSION_MAJOR}
         PUBLIC_HEADER "Include/cs.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+    target_include_directories ( csparse
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -105,7 +113,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
+    add_library ( csparse_static STATIC $<TARGET_OBJECTS:csparse_obj> )
 
     set_target_properties ( csparse_static PROPERTIES
         OUTPUT_NAME csparse
@@ -117,6 +125,10 @@ if ( BUILD_STATIC_LIBS )
         set_target_properties ( csparse_static PROPERTIES
             OUTPUT_NAME csparse_static )
     endif ( )
+
+    target_include_directories ( csparse_static
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 
 #-------------------------------------------------------------------------------
