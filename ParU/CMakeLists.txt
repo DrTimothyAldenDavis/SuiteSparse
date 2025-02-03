@@ -172,7 +172,7 @@ if ( BUILD_STATIC_LIBS )
         PUBLIC_HEADER "Include/ParU.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( ParU_static PROPERTIES
             OUTPUT_NAME ParU_static )
     endif ( )

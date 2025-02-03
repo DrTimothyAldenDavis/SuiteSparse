@@ -138,7 +138,7 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME spqr )
 
-    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( SPQR_static PROPERTIES
             OUTPUT_NAME spqr_static )
     endif ( )

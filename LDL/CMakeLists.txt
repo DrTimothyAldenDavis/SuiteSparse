@@ -116,7 +116,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME ldl
         PUBLIC_HEADER "Include/ldl.h" )
 
-    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( LDL_static PROPERTIES
             OUTPUT_NAME ldl_static )
     endif ( )

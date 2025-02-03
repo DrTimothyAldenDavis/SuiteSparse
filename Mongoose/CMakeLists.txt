@@ -205,7 +205,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME suitesparse_mongoose
         PUBLIC_HEADER "Include/Mongoose.hpp" )
 
-    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( Mongoose_static PROPERTIES
             OUTPUT_NAME suitesparse_mongoose_static )
     endif ( )

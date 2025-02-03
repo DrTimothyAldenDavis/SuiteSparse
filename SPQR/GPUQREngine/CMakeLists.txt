@@ -125,7 +125,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME gpuqrengine
         PUBLIC_HEADER "Include/GPUQREngine.hpp" )
 
-    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( GPUQREngine_static PROPERTIES
             OUTPUT_NAME gpuqrengine_static )
     endif ( )

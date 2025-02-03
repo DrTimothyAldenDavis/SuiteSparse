@@ -62,7 +62,7 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
 
-    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( lagraphxtest_static PROPERTIES
             OUTPUT_NAME lagraphxtest_static )
     endif ( )

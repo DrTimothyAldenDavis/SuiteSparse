@@ -115,7 +115,7 @@ if ( BUILD_STATIC_LIBS )
         PUBLIC_HEADER "Include/amd.h"
         LINKER_LANGUAGE C )
 
-    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( AMD_static PROPERTIES
             OUTPUT_NAME amd_static )
     endif ( )

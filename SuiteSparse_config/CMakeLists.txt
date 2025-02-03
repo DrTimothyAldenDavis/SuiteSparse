@@ -181,7 +181,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME suitesparseconfig
         PUBLIC_HEADER "SuiteSparse_config.h" )
 
-    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( SuiteSparseConfig_static PROPERTIES
             OUTPUT_NAME suitesparseconfig_static )
     endif ( )

@@ -414,7 +414,7 @@ if ( BUILD_STATIC_LIBS )
         PUBLIC_HEADER "Include/cholmod.h"
         LINKER_LANGUAGE C )
 
-    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
+    if ( CMAKE_STATIC_LIBRARY_SUFFIX STREQUAL CMAKE_IMPORT_LIBRARY_SUFFIX )
         set_target_properties ( CHOLMOD_static PROPERTIES
             OUTPUT_NAME cholmod_static )
     endif ( )
