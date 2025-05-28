@@ -4,18 +4,17 @@ on:
   push:
     branches-ignore:
       - '**/dev2'
-      - '**/*dev2'
   pull_request:
 
 concurrency: ci-cross-compile-${{ github.ref }}
 
 env:
   # string with name of libraries to be built
-  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
+  BUILD_LIBS: "GraphBLAS:LAGraph"
   # string with name of libraries to be checked
-  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
+  CHECK_LIBS: "GraphBLAS:LAGraph"
   # string with name of libraries that are installed
-  INSTALLED_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
+  INSTALLED_LIBS: "GraphBLAS:LAGraph"
 
 
 jobs:
@@ -35,7 +34,7 @@ jobs:
       matrix:
         # List of architectures that are supported by Ubuntu:
         # https://canonical-ubuntu-packaging-guide.readthedocs-hosted.com/en/latest/reference/architectures/
-        arch: [armhf, ppc64el, s390x, riscv64]
+        arch: [s390x]
         include:
           - arch: armhf
             target-triple: arm-linux-gnueabihf

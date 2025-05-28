@@ -48,6 +48,19 @@ const char* testsb [ ] =
     "bucky.mtx",
     ""
 } ;
+
+#undef OK
+#define OK(method) \
+{ \
+    GrB_Info info = method ; \
+    if (info != GrB_SUCCESS) \
+    { \
+        printf ("FAIL at %s, %d: info: %d, msg: %s\n", __FILE__, \
+            __LINE__, info, msg) ; \
+        TEST_CHECK (false) ; \
+    } \
+}
+
 void test_SwapEdges (void)
 {
     #if LG_SUITESPARSE_GRAPHBLAS_V10
