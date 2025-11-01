@@ -7,7 +7,7 @@
 [![root-cmakelists-msvc](https://github.com/DrTimothyAldenDavis/SuiteSparse/actions/workflows/root-cmakelists-msvc.yaml/badge.svg)](https://github.com/DrTimothyAldenDavis/SuiteSparse/actions/workflows/root-cmakelists-msvc.yaml)
 
 -----------------------------------------------------------------------------
-SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
+SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com (ParU subset)
 -----------------------------------------------------------------------------
 
 Nov 1, 2025, SuiteSparse VERSION 7.12.0
@@ -15,56 +15,19 @@ Nov 1, 2025, SuiteSparse VERSION 7.12.0
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
 
+This meta-package is a subset of SuiteSparse 7.12.0, including ParU and all its
+dependencies (`SuiteSparse_config`, AMD, CAMD, COLAMD, CCOLAMD, UMFPACK, and
+CHOLMOD).
+
 Primary author of SuiteSparse (codes and algorithms, excl. METIS): Tim Davis
 
-Code co-authors, in alphabetical order (not including METIS or LAGraph):
+Code co-authors, in alphabetical order:
     Patrick Amestoy, Mohsen Aznaveh, David Bateman, Jinhao Chen, Yanqing Chen,
     Iain Duff, Joe Eaton, Les Foster, William Hager, Raye Kimmerer, Scott
     Kolodziej, Chris Lourenco, Stefan Larimore, Lorena Mejia Domenzain, Erick
     Moreno-Centeno, Markus Mützel, Corey Nolet, Ekanathan Palamadai,
     Sivasankaran Rajamanickam, Sanjay Ranka, Wissam Sid-Lakhdar, and
     Nuri Yeralan.
-
-LAGraph has been developed by the highest number of developers of any of
-the packages in SuiteSparse and deserves its own list.  The list also
-appears in LAGraph/Contibutors.txt:
-
-    Janos B. Antal      Budapest University of Technology and Economics, Hungary
-    Mohsen Aznaveh      Texas A&M University
-    David A. Bader      New Jersey Institute of Technology
-    Georgiy Belyanin    St. Petersburg State University
-    Aydin Buluc         Lawrence Berkeley National Lab
-    Jinhao Chen         Texas A&M University
-    Tim Davis           Texas A&M University
-    Florentin Dorre     Technische Univeritat Dresden, Neo4j
-    Marton Elekes       Budapest University of Technology and Economics, Hungary
-    Alexandra Goff      Texas A&M University
-    Gabriel Gomez       Texas A&M University
-    Semyon Grigoriev    St. Petersburg State University
-    Balint Hegyi        Budapest University of Technology and Economics, Hungary
-    Tanner Hoke         Texas A&M University
-    James Kitchen       Anaconda
-    Scott Kolodziej     Texas A&M University
-    Ilhom Kombaev       St. Petersburg State University
-    Pranav Konduri      Texas A&M University
-    Christina Koutsou   Aristotle University of Thessaloniki
-    Roi Lipman          Redis Labs
-    Tze Meng Low        Carnegie Mellon University
-    Vidith Madhu        Texas A&M University
-    Tim Mattson         Intel
-    Scott McMillan      Carnegie Mellon University
-    Markus Muetzel
-    Hemanth Mukesh      Texas A&M University
-    Olumayowa Olowomeye Texas A&M University
-    Casey Pei           Texas A&M University
-    Michel Pelletier    Graphegon, OneSparse
-    Darin Peries        Texas A&M University
-    Cameron Quilici     Texas A&M University
-    Aurko Routh         Texas A&M University
-    Gabor Szarnyas      CWI Amsterdam, The Netherlands
-    Erik Welch          Anaconda, then NVIDIA
-    Carl Yang           University of California at Davis, Waymo
-    Yongzhe Zhang       SOKENDAI, Japan
 
 METIS is authored by George Karypis.
 
@@ -145,10 +108,6 @@ Packages in SuiteSparse, and files in this directory:
   Karypis.  This is a slightly modified copy included with SuiteSparse via the
   open-source license provided by George Karypis.  SuiteSparse cannot use an
   unmodified copy of METIS.
-
-* `CITATION.bib`
-
-  citations for SuiteSparse packages, in bibtex format.
 
 * `CMakeLists.txt`
 
@@ -277,10 +236,7 @@ Packages in SuiteSparse, and files in this directory:
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis (email: davis@tamu.edu),
-except for METIS (by George Karypis), `GraphBLAS/cpu_features` (by Google),
-GraphBLAS/lz4, zstd, and xxHash (by Yann Collet, now at Facebook), and
-GraphBLAS/CUDA/jitify.hpp (by NVIDIA).  Parts of GraphBLAS/CUDA are
-Copyright (c) by NVIDIA.  Please refer to each of these licenses.
+except for METIS (by George Karypis).
 
 -----------------------------------------------------------------------------
 For distro maintainers (Linux, homebrew, spack, R, Octave, Trilinos, ...):
@@ -288,11 +244,10 @@ For distro maintainers (Linux, homebrew, spack, R, Octave, Trilinos, ...):
 
 Thanks for packaging SuiteSparse!  Here are some suggestions:
 
-* CUDA acceleration:  CHOLMOD and SPQR can benefit from their CUDA kernels.  If
+* CUDA acceleration:  CHOLMOD can benefit from its CUDA kernels.  If
   you do not have CUDA or do not want to include it in your distro, this
-  version of SuiteSparse skips the building of the `CHOLMOD_CUDA` and `SPQR_CUDA`
-  libraries, and does not link against the `GPUQREngine` and
-  `SuiteSparse_GPURuntime` libraries.
+  version of SuiteSparse skips the building of the `CHOLMOD_CUDA`
+  libraries.
 
 -----------------------------------------------------------------------------
 How to cite the SuiteSparse meta-package and its component packages:
@@ -405,7 +360,7 @@ To select your BLAS/LAPACK, see the instructions in SuiteSparseBLAS.cmake in
 64-bit integers (such as the Intel MKL ilp64 BLAS), it configures
 `SuiteSparse_config.h` with the `SUITESPARSE_BLAS_INT` defined as `int64_t`.
 Otherwise, if a 32-bit BLAS is found, this type is defined as `int32_t`.  If
-later on, UMFPACK, CHOLMOD, or SPQR are compiled and linked  with a BLAS that
+later on, UMFPACK or CHOLMOD are compiled and linked  with a BLAS that
 has a different integer size, you must override the definition with `-DBLAS64`
 (to assert the use of 64-bit integers in the BLAS) or `-DBLAS32`, (to assert
 the use of 32-bit integers in the BLAS).
@@ -473,10 +428,7 @@ on Windows in the command window, run:
 ```
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
-CHOLMOD, and SPQR, and GMP and MPFR for SPEX.  Be sure to use the latest
-libraries; SPEX requires MPFR 4.0.2 and GMP 6.1.2 (these version numbers
-do NOT correspond to the X.Y.Z suffix of libgmp.so.X.Y.Z and libmpfr.so.X.Y.Z;
-see the SPEX user guide for details).
+CHOLMOD, and ParU.  Be sure to use the latest libraries.
 
 To compile the libraries and install them only in SuiteSparse/lib (not
 /usr/local/lib), do this instead in the top-level of SuiteSparse:
@@ -534,44 +486,6 @@ packages in SuiteSparse:
         a specific package pkgconfig
 
 -----------------------------------------------------------------------------
-QUICK START FOR MATLAB USERS (Linux or Mac):
------------------------------------------------------------------------------
-
-Suppose you place SuiteSparse in the `/home/me/SuiteSparse` folder.
-
-Add the `SuiteSparse/lib` folder to your run-time library path.  On Linux, add
-this to your `~/.bashrc` script, assuming `/home/me/SuiteSparse` is the
-location of your copy of SuiteSparse:
-```
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/me/SuiteSparse/lib
-    export LD_LIBRARY_PATH
-```
-
-For the Mac, use this instead, in your `~/.zshrc` script, assuming you place
-SuiteSparse in `/Users/me/SuiteSparse`:
-```
-    DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/me/SuiteSparse/lib
-    export DYLD_LIBRARY_PATH
-```
-
-Compile all of SuiteSparse with `make local`.
-
-Next, compile the GraphBLAS MATLAB library.  In the system shell while in the
-SuiteSparse folder, type `make gbmatlab` if you want to install it system-wide
-with `make install`, or `make gblocal` if you want to use the library in
-your own SuiteSparse/lib.
-
-Then in the MATLAB Command Window, cd to the SuiteSparse directory and type
-`SuiteSparse_install`.  All packages will be compiled, and several demos will be
-run.  To run a (long!) exhaustive test, do `SuiteSparse_test`.
-
-Save your MATLAB path for future sessions with the MATLAB pathtool or savepath
-commands.  If those methods fail because you don't have system-wide permission,
-add the new paths to your startup.m file, normally in
-Documents/MATLAB/startup.m.  You can also use the `SuiteSparse_paths` m-file to
-set all your paths at the start of each MATLAB session.
-
------------------------------------------------------------------------------
 Compilation options
 -----------------------------------------------------------------------------
 
@@ -625,11 +539,6 @@ build type).  The static libraries will not be built (since
 
   Default: `ON`.  Both `SUITESPARSE_USE_CUDA` and `CHOLMOD_USE_CUDA` must be
   enabled to use CUDA in CHOLMOD.
-
-* `SPQR_USE_CUDA`:
-
-  Default: `ON`.  Both `SUITESPARSE_USE_CUDA` and `SPQR_USE_CUDA` must be
-  enabled to use CUDA in SPQR.
 
 * `CMAKE_INSTALL_PREFIX`:
 
@@ -703,18 +612,15 @@ build type).  The static libraries will not be built (since
 
   If `ON`, OpenMP is used by default if it is available.  Default: `ON`.
 
-  GraphBLAS, LAGraph, and ParU will be vastly slower if OpenMP is not used.
+  ParU will be vastly slower if OpenMP is not used.
   CHOLMOD will be somewhat slower without OpenMP (as long as it still has a
-  parallel BLAS/LAPACK).  Three packages (UMFPACK, CHOLMOD, and SPQR) rely
+  parallel BLAS/LAPACK).  Three packages (UMFPACK, CHOLMOD, and ParU) rely
   heavily on parallel BLAS/LAPACK libraries and those libraries may use OpenMP
   internally.  If you wish to disable OpenMP in an entire application, select a
   single-threaded BLAS/LAPACK, or a parallel BLAS/LAPACK that does not use
   OpenMP (such as the Apple Accelerate Framework).  Using a single-threaded
-  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, and SPQR to be vastly
+  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, and ParU to be vastly
   slower.
-
-  WARNING: GraphBLAS may not be thread-safe if built without OpenMP or pthreads
-  (see the GraphBLAS User Guide for details).
 
 * `SUITESPARSE_CONFIG_USE_OPENMP`:
 
@@ -728,34 +634,14 @@ build type).  The static libraries will not be built (since
   If `ON`, OpenMP is used in CHOLMOD if it is available.
   Default: `SUITESPARSE_USE_OPENMP`.
 
-* `GRAPHBLAS_USE_OPENMP`:
-
-  If `ON`, OpenMP is used in GraphBLAS if it is available.
-  Default: `SUITESPARSE_USE_OPENMP`.
-
-* `LAGRAPH_USE_OPENMP`:
-
-  If `ON`, OpenMP is used in LAGraph if it is available.
-  Default: `SUITESPARSE_USE_OPENMP`.
-
 * `PARU_USE_OPENMP`:
 
   If `ON`, OpenMP is used in ParU if it is available.
   Default: `SUITESPARSE_USE_OPENMP`.
 
-* `SPEX_USE_OPENMP`:
-
-  If `ON`, OpenMP is used in SPEX if it is available.
-  Default: `SUITESPARSE_USE_OPENMP`.
-
 * `SUITESPARSE_DEMOS`:
 
   If `ON`, build the demo programs for each package.  Default: `OFF`.
-
-* `SUITESPARSE_USE_SYSTEM_BTF`:
-
-  If `ON`, use BTF libraries installed on the build system. If `OFF`,
-  automatically build BTF as dependency if needed. Default: `OFF`.
 
 * `SUITESPARSE_USE_SYSTEM_CHOLMOD`:
 
@@ -781,11 +667,6 @@ build type).  The static libraries will not be built (since
 
   If `ON`, use CCOLAMD libraries installed on the build system. If `OFF`,
   automatically build CCOLAMD as dependency if needed. Default: `OFF`.
-
-* `SUITESPARSE_USE_SYSTEM_GRAPHBLAS`:
-
-  If `ON`, use GraphBLAS libraries installed on the build system. If `OFF`,
-  automatically build GraphBLAS as dependency if needed. Default: `OFF`.
 
 * `SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG`:
 
@@ -967,8 +848,6 @@ SuiteSparse build system and how it works with various Linux / Python distros
 and other package managers.  If you are a maintainer of a SuiteSparse packaging
 for a Linux distro, conda-forge, R, spack, brew, vcpkg, etc, please feel free
 to contact me if there's anything I can do to make your life easier.
-I would also like to thank Raye Kimmerer for adding support for 32-bit
-row/column indices in SPQR v4.2.0.
 
 See also the various Acknowledgements within each package.
 

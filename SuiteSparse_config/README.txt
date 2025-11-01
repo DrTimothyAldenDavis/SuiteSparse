@@ -75,22 +75,8 @@ SuiteSparse packages:
   COLAMD   column approximate minimum degree ordering
   CCOLAMD  constrained approximate minimum degree ordering
   UMFPACK  sparse LU factorization, with the BLAS
-  CXSparse int/long/real/complex version of CSparse
   CHOLMOD  sparse Cholesky factorization, update/downdate
-  KLU      sparse LU factorization, BLAS-free
-  BTF      permutation to block triangular form
-  LDL      concise sparse LDL'
-  LPDASA   LP Dual Active Set Algorithm
-  RBio     read/write files in Rutherford/Boeing format
-  SPQR     sparse QR factorization (full name: SuiteSparseQR)
-  SPEX     sparse left-looking integer-preserving LU factorization
-
-SuiteSparse_config is not required by these packages:
-
-  CSparse       a Concise Sparse matrix package
-  MATLAB_Tools  toolboxes for use in MATLAB
-  GraphBLAS     for graph algorithms in the language of linear algebra
-  LAGraph       graph algorithms based on GraphBLAS
+  ParU     parallel unsymmetric-pattern multifrontal method
 
 If you edit this directory then you should do "make purge ; make" in the parent
 directory to recompile all of SuiteSparse.  Otherwise, the changes will not
