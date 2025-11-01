@@ -22,7 +22,7 @@ concurrency: ci-macos-${{ github.ref }}
 
 env:
   # string with name of libraries to be built
-  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
+  BUILD_LIBS: "SuiteSparse_config:AMD:CAMD:CCOLAMD:COLAMD:CHOLMOD:UMFPACK:ParU"
 
 jobs:
 
@@ -106,11 +106,6 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: check Mongoose
-        run: |
-          cd ${GITHUB_WORKSPACE}/Mongoose/build
-          ctest .
-
       - name: check AMD
         run: |
           cd ${GITHUB_WORKSPACE}/AMD
@@ -138,54 +133,9 @@ jobs:
           cd ${GITHUB_WORKSPACE}/CHOLMOD/build
           ctest .
 
-      - name: check CSparse
-        run: |
-          cd ${GITHUB_WORKSPACE}/CSparse
-          make demos
-
-      - name: check CXSparse
-        run: |
-          cd ${GITHUB_WORKSPACE}/CXSparse
-          make demos
-
-      - name: check LDL
-        run: |
-          cd ${GITHUB_WORKSPACE}/LDL
-          make demos
-
-      - name: check KLU
-        run: |
-          cd ${GITHUB_WORKSPACE}/KLU
-          make demos
-
       - name: check UMFPACK
         run: |
           cd ${GITHUB_WORKSPACE}/UMFPACK
-          make demos
-
-      - name: check RBio
-        run: |
-          cd ${GITHUB_WORKSPACE}/RBio
-          make demos
-
-      - name: check SPQR
-        run: |
-          cd ${GITHUB_WORKSPACE}/SPQR
-          make demos
-
-      - name: check SPEX
-        run: |
-          cd ${GITHUB_WORKSPACE}/SPEX
-          make demos
-
-      - name: check GraphBLAS
-        run: |
-          cd ${GITHUB_WORKSPACE}/GraphBLAS
-          make demos
-
-      - name: check LAGraph
-        run: |
-          cd ${GITHUB_WORKSPACE}/LAGraph
           make demos
 
       - name: check ParU

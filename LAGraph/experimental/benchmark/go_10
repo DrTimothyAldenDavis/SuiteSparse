@@ -1,3 +1,0 @@
-#!/bin/bash
-
-../../build/experimental/benchmark/dot3_demo ../../data/mtx_0010.mtx > ./out_0010.txt

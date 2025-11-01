@@ -108,12 +108,6 @@ Packages in SuiteSparse, and files in this directory:
 
   where programs are placed when compiled, for `make local`
 
-* `BTF`
-
-  permutation to block triangular form
-
-  authors: Tim Davis, Ekanathan Palamadai
-
 * `build`
 
   folder for default build tree
@@ -160,10 +154,6 @@ Packages in SuiteSparse, and files in this directory:
 
   optional, to compile all of SuiteSparse.  See below.
 
-* `CODE_OF_CONDUCT.md`
-
-  community guidelines
-
 * `COLAMD`
 
   column approximate minimum degree ordering.  This is the built-in COLAMD
@@ -173,80 +163,14 @@ Packages in SuiteSparse, and files in this directory:
 
   Algorithm design collaborators: Esmond Ng, John Gilbert
 
-* `Contents.m`
-
-  a list of contents for 'help SuiteSparse' in MATLAB.
-
-* `CONTRIBUTING.md`
-
-  how to contribute to SuiteSparse
-
-* `CONTRIBUTOR-LICENSE.txt`
-
-  required contributor agreement
-
-* `CSparse`
-
-  a concise sparse matrix package, developed for my book, "Direct Methods for
-  Sparse Linear Systems", published by SIAM.  Intended primarily for teaching.
-  Note that the code is (c) Tim Davis, as stated in the book.
-
-  For production, use CXSparse instead.  In particular, both CSparse and
-  CXSparse have the same include filename: `cs.h`.  This package is used for
-  the built-in DMPERM in MATLAB.
-
-  author: Tim Davis
-
-* `CXSparse`
-
-  CSparse Extended.  Includes support for complex matrices and both int or long
-  integers.  Use this instead of CSparse for production use; it creates a
-  libcsparse.so (or dylib on the Mac) with the same name as CSparse.  It is a
-  superset of CSparse.  Any code that links against CSparse should also be able
-  to link against CXSparse instead.
-
-  author: Tim Davis, David Bateman
-
-* `Example`
-
-  a simple package that relies on almost all of SuiteSparse
-
 * `.github`
 
   workflows for CI testing on GitHub.
-
-* `GraphBLAS`
-
-  graph algorithms in the language of linear algebra.
-
-  https://graphblas.org
-
-  authors: Tim Davis, Joe Eaton, Corey Nolet
 
 * `include`
 
   `make install` places user-visible include files for each package here, after
   `make local`.
-
-* `KLU`
-
-  sparse LU factorization, primarily for circuit simulation.  Requires AMD,
-  COLAMD, and BTF.  Optionally uses CHOLMOD, CAMD, CCOLAMD, and METIS.
-
-  authors: Tim Davis, Ekanathan Palamadai
-
-* `LAGraph`
-
-  a graph algorithms library based on GraphBLAS.  See also
-  https://github.com/GraphBLAS/LAGraph
-
-  Authors: many.
-
-* `LDL`
-
-  a very concise LDL' factorization package
-
-  author: Tim Davis
 
 * `lib`
 
@@ -315,100 +239,6 @@ Packages in SuiteSparse, and files in this directory:
 
     runs statement coverage tests (Linux only)
 
-* `MATLAB_Tools`
-
-  various m-files for use in MATLAB
-
-  author: Tim Davis (all parts)
-
-  for `spqr_rank`: author Les Foster and Tim Davis
-
-  * `Contents.m`
-
-    list of contents
-
-  * `dimacs10`
-
-    loads matrices for DIMACS10 collection
-
-  * `Factorize`
-
-    object-oriented `x=A\b` for MATLAB
-
-  * `find_components`
-
-    finds connected components in an image
-
-  * `GEE`
-
-    simple Gaussian elimination
-
-  * `getversion.m`
-
-    determine MATLAB version
-
-  * `gipper.m`
-
-    create MATLAB archive
-
-  * `hprintf.m`
-
-    print hyperlinks in command window
-
-  * `LINFACTOR`
-
-    predecessor to `Factorize` package
-
-  * `MESHND`
-
-    nested dissection ordering of regular meshes
-
-  * `pagerankdemo.m`
-
-    illustrates how PageRank works
-
-  * `SFMULT`
-
-    `C=S*F` where `S` is sparse and `F` is full
-
-  * `shellgui`
-
-    display a seashell
-
-  * `sparseinv`
-
-    sparse inverse subset
-
-  * `spok`
-
-    check if a sparse matrix is valid
-
-  * `spqr_rank`
-
-    SPQR_RANK package.  MATLAB toolbox for rank deficient sparse matrices: null
-    spaces, reliable factorizations, etc.  With Leslie Foster, San Jose State
-    Univ.
-
-  * `SSMULT`
-
-    `C=A*B` where `A` and `B` are both sparse.
-    This was the basis for the built-in `C=A*B` in MATLAB, until it was
-    superseded by GraphBLAS in MATLAB R2021a.
-
-  * `SuiteSparseCollection`
-
-    for the SuiteSparse Matrix Collection
-
-  * `waitmex`
-
-    waitbar for use inside a mexFunction
-
-* `Mongoose`
-
-  graph partitioning.
-
-  authors: Nuri Yeralan, Scott Kolodziej, William Hager, Tim Davis
-
 * `ParU`
 
   a parallel unsymmetric pattern multifrontal method.
@@ -417,43 +247,9 @@ Packages in SuiteSparse, and files in this directory:
 
   authors: Mohsen Aznaveh and Tim Davis
 
-* `RBio`
-
-  read/write sparse matrices in Rutherford/Boeing format
-
-  author: Tim Davis
-
 * `README.md`
 
   this file
-
-* `SPEX`
-
-  solves sparse linear systems in exact arithmetic.
-
-  Requires the GNU GMP and MPRF libraries.
-
-  This will be soon replaced by a more general package, SPEX v3 that includes
-  this method (exact sparse LU) and others (sparse exact Cholesky, and sparse
-  exact update/downdate).  The API of v3 will be changing significantly.
-
-  authors: Chris Lourenco, Jinhao Chen, Erick Moreno-Centeno,
-  Lorena Lorena Mejia Domenzain, and Tim Davis.
-
-  See https://github.com/clouren/SPEX for the latest version.
-
-* `SPQR`
-
-  sparse QR factorization.  This the built-in `qr` and `x=A\b` in MATLAB.  Also
-  called SuiteSparseQR.
-
-  Includes two GPU libraries: `SPQR/GPUQREngine` and
-  `SPQR/SuiteSparse_GPURuntime`.
-
-  author of the CPU code: Tim Davis
-
-  author of GPU modules: Tim Davis, Nuri Yeralan, Wissam Sid-Lakhdar,
-  Sanjay Ranka
 
 * `ssget`
 
@@ -468,22 +264,6 @@ Packages in SuiteSparse, and files in this directory:
   `SuiteSparse_config`.
 
   author: Tim Davis
-
-* `SuiteSparse_demo.m`
-
-  a demo of SuiteSparse for MATLAB
-
-* `SuiteSparse_install.m`
-
-  install SuiteSparse for MATLAB
-
-* `SuiteSparse_paths.m`
-
-  set paths for SuiteSparse MATLAB mexFunctions
-
-* `SuiteSparse_test.m`
-
-  exhaustive test for SuiteSparse in MATLAB
 
 * `UMFPACK`
 
@@ -508,19 +288,6 @@ For distro maintainers (Linux, homebrew, spack, R, Octave, Trilinos, ...):
 
 Thanks for packaging SuiteSparse!  Here are some suggestions:
 
-* GraphBLAS takes a long time to compile because it creates many fast
-  "FactoryKernels" at compile-time.  If you want to reduce the compile time and
-  library size, enable the `GRAPHBLAS_COMPACT` mode, but keep the JIT compiler
-  enabled.  Then GraphBLAS will compile the kernels it needs at run-time, via
-  its JIT compiler.  Performance will be the same as the FactoryKernels once
-  the JIT kernels are compiled.  User compiled kernels are placed in
-  `~/.SuiteSparse`, by default.  You do not need to distribute the source for
-  GraphBLAS to enable the JIT compiler: just `libgraphblas.so` and
-  `GraphBLAS.h` is enough.
-
-* GraphBLAS needs OpenMP!  It's fundamentally a parallel code so please
-  distribute it with OpenMP enabled.  Performance will suffer otherwise.
-
 * CUDA acceleration:  CHOLMOD and SPQR can benefit from their CUDA kernels.  If
   you do not have CUDA or do not want to include it in your distro, this
   version of SuiteSparse skips the building of the `CHOLMOD_CUDA` and `SPQR_CUDA`
@@ -544,42 +311,6 @@ papers in ACM TOMS, for each package.
 
 * For the MATLAB x=A\b, see below for AMD, COLAMD, CHOLMOD, UMFPACK,
     and SuiteSparseQR (SPQR).
-
-* for GraphBLAS, and C=AB in MATLAB (sparse-times-sparse):
-
-  T. A. Davis. Algorithm 1037: SuiteSparse:GraphBLAS: Parallel Graph Algorithms
-  in the Language of Sparse Linear Algebra. ACM Trans. Math.  Softw. 49, 3,
-  Article 28 (September 2023), 30 pages.  https://doi.org/10.1145/3577195
-
-  T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in the
-  language of sparse linear algebra, ACM Trans on Mathematical Software, vol
-  45, no 4, Dec. 2019, Article No 44.  https://doi.org/10.1145/3322125.
-
-* for LAGraph:
-
-  G. Szárnyas et al., "LAGraph: Linear Algebra, Network Analysis Libraries, and
-  the Study of Graph Algorithms," 2021 IEEE International Parallel and
-  Distributed Processing Symposium Workshops (IPDPSW), Portland, OR, USA, 2021,
-  pp. 243-252. https://doi.org/10.1109/IPDPSW52791.2021.00046.
-
-* for CSparse/CXSParse:
-
-  T. A. Davis, Direct Methods for Sparse Linear Systems, SIAM Series on the
-  Fundamentals of Algorithms, SIAM, Philadelphia, PA, 2006.
-  https://doi.org/10.1137/1.9780898718881
-
-* for SuiteSparseQR (SPQR): (also cite AMD, COLAMD):
-
-  T. A. Davis, Algorithm 915: SuiteSparseQR: Multifrontal multithreaded
-  rank-revealing sparse QR factorization, ACM Trans. on Mathematical Software,
-  38(1), 2011, pp. 8:1--8:22.  https://doi.org/10.1145/2049662.2049670
-
-* for SuiteSparseQR/GPU:
-
-  Sencer Nuri Yeralan, T. A. Davis, Wissam M. Sid-Lakhdar, and Sanjay Ranka.
-  2017. Algorithm 980: Sparse QR Factorization on the GPU.  ACM Trans. Math.
-  Softw. 44, 2, Article 17 (June 2018), 29 pages.
-  https://doi.org/10.1145/3065870
 
 * for CHOLMOD: (also cite AMD, COLAMD):
 
@@ -653,25 +384,6 @@ papers in ACM TOMS, for each package.
   sparse LU factorization, SIAM J. Matrix Analysis and Computations, 18(1),
   1997, pp. 140--158.  https://doi.org/10.1137/S0895479894246905
 
-* for the FACTORIZE m-file:
-
-  T. A. Davis, Algorithm 930: FACTORIZE, an object-oriented linear system
-  solver for MATLAB, ACM Trans. on Mathematical Software, 39(4), 2013, pp.
-  28:1-28:18.  https://doi.org/10.1145/2491491.2491498
-
-* for KLU and BTF (also cite AMD and COLAMD):
-
-  T. A. Davis and Ekanathan Palamadai Natarajan. 2010. Algorithm 907: KLU, A
-  Direct Sparse Solver for Circuit Simulation Problems. ACM Trans.  Math.
-  Softw. 37, 3, Article 36 (September 2010), 17 pages.
-  https://dl.acm.org/doi/abs/10.1145/1824801.1824814
-
-* for LDL:
-
-  T. A. Davis. Algorithm 849: A concise sparse Cholesky factorization package.
-  ACM Trans. Math. Softw. 31, 4 (December 2005), 587–591.
-  https://doi.org/10.1145/1114268.1114277
-
 * for ssget and the SuiteSparse Matrix Collection:
 
   T. A. Davis and Yifan Hu. 2011. The University of Florida sparse matrix
@@ -681,27 +393,6 @@ papers in ACM TOMS, for each package.
   Kolodziej et al., (2019). The SuiteSparse Matrix Collection Website
   Interface. Journal of Open Source Software, 4(35), 1244.
   https://doi.org/10.21105/joss.01244
-
-* for `spqr_rank`:
-
-  Leslie V. Foster and T. A. Davis. 2013. Algorithm 933: Reliable calculation
-  of numerical rank, null space bases, pseudoinverse solutions, and basic
-  solutions using suitesparseQR. ACM Trans. Math.  Softw. 40, 1, Article 7
-  (September 2013), 23 pages.  https://doi.org/10.1145/2513109.2513116
-
-* for Mongoose:
-
-  T. A. Davis, William W. Hager, Scott P. Kolodziej, and S. Nuri Yeralan.
-  2020. Algorithm 1003: Mongoose, a Graph Coarsening and Partitioning Library.
-  ACM Trans. Math. Softw. 46, 1, Article 7 (March 2020), 18 pages.
-  https://doi.org/10.1145/3337792
-
-* for SPEX:
-
-  Christopher Lourenco, Jinhao Chen, Erick Moreno-Centeno, and T. A.  Davis.
-  2022. Algorithm 1021: SPEX Left LU, Exactly Solving Sparse Linear Systems via
-  a Sparse Left-Looking Integer-Preserving LU Factorization. ACM Trans. Math.
-  Softw. June 2022.  https://doi.org/10.1145/3519024
 
 -----------------------------------------------------------------------------
 About the BLAS and LAPACK libraries
@@ -899,7 +590,7 @@ build type).  The static libraries will not be built (since
   Semicolon separated list of projects to be built or `all`.
   Default: `all` in which case the following projects are built:
 
-  `suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;paru;rbio;spqr;spex;graphblas;lagraph`
+  `suitesparse_config;amd;camd;ccolamd;colamd;cholmod;klu;umfpack;paru`
 
   Additionally, `csparse` can be included in that list to build CSparse.
   If you place this string in a cmake command inside another cmake script,
@@ -1146,11 +837,6 @@ Additional options are available for specific packages:
 * `UMFPACK_USE_CHOLMOD`:
 
   If `ON`, UMFPACK uses CHOLMOD for additional (optional)
-  ordering options.  Default: `ON`.
-
-* `KLU_USE_CHOLMOD`:
-
-  If `ON`, KLU uses CHOLMOD for additional (optional)
   ordering options.  Default: `ON`.
 
 CHOLMOD is composed of a set of Modules that can be independently selected;

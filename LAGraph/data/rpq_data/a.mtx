@@ -1,9 +1,0 @@
-%%MatrixMarket matrix coordinate pattern general$
-%%GraphBLAS type bool$
-8 8 6
-1 2
-1 7
-2 4
-3 6
-5 8
-7 6

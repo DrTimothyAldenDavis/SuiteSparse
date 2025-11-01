@@ -1,4 +1,0 @@
-#!/bin/bash
-./gcovs *.c
-echo -n 'statements not covered: '
-grep "#####" *.c.gcov | wc -l
