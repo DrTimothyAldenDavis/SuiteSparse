@@ -1,5 +1,5 @@
 
-UMFPACK V6.3 (July 25, 2025) demo: _di_ version
+UMFPACK V6.3 (Nov 1, 2025) demo: _di_ version
 
 UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.
 
@@ -10,9 +10,9 @@ UMFPACK License: SPDX-License-Identifier: GPL-2.0+
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V6.3.6 (July 25, 2025): OK
+UMFPACK V6.3.7 (Nov 1, 2025): OK
 
-UMFPACK V6.3.6 (July 25, 2025), Control:
+UMFPACK V6.3.7 (Nov 1, 2025), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int32_t
 
@@ -45,7 +45,7 @@ UMFPACK V6.3.6 (July 25, 2025), Control:
     19: AMD and COLAMD aggressive absorption: 1 (yes)
 
     The following options can only be changed at compile-time:
-    8: BLAS library used:  Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    8: BLAS library used:  Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     compiled for ANSI C
     CPU timer: omp_get_wtime
     compiled with CHOLMOD ordering options
@@ -257,10 +257,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.3.6 (July 25, 2025), Info:
+UMFPACK V6.3.7 (Nov 1, 2025), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     MATLAB: no.
     CPU timer: omp_get_wtime
     number of rows in matrix A:       5
@@ -345,7 +345,7 @@ UMFPACK V6.3.6 (July 25, 2025), Info:
 
 UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.3.6 (July 25, 2025): OK
+UMFPACK V6.3.7 (Nov 1, 2025): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -361,7 +361,7 @@ maxnorm of residual: 1.06581e-14
 
 UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.3.6 (July 25, 2025): OK
+UMFPACK V6.3.7 (Nov 1, 2025): OK
 
 determinant: (1.14) * 10^(2)
 
@@ -375,10 +375,10 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 1.06581e-14
 
-UMFPACK V6.3.6 (July 25, 2025), Info:
+UMFPACK V6.3.7 (Nov 1, 2025), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     MATLAB: no.
     CPU timer: omp_get_wtime
     number of rows in matrix A:       5
@@ -603,10 +603,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.3.6 (July 25, 2025), Info:
+UMFPACK V6.3.7 (Nov 1, 2025), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     MATLAB: no.
     CPU timer: omp_get_wtime
     number of rows in matrix A:       5
@@ -850,10 +850,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.3.6 (July 25, 2025), Info:
+UMFPACK V6.3.7 (Nov 1, 2025), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     MATLAB: no.
     CPU timer: omp_get_wtime
     number of rows in matrix A:       5
@@ -1298,10 +1298,10 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V6.3.6 (July 25, 2025), Info:
+UMFPACK V6.3.7 (Nov 1, 2025), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     MATLAB: no.
     CPU timer: omp_get_wtime
     number of rows in matrix A:       5
@@ -1507,10 +1507,10 @@ Done copying numeric object
 Numeric blob size: 752
 
 Done serialize/deserialize of numeric object
-UMFPACK V6.3.6 (July 25, 2025), Info:
+UMFPACK V6.3.7 (Nov 1, 2025), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     MATLAB: no.
     CPU timer: omp_get_wtime
     number of rows in matrix A:       5
@@ -1605,10 +1605,10 @@ maxnorm of residual: 3.55271e-15
 
 
 Solving C'x=b again, using umfpack_di_wsolve instead:
-UMFPACK V6.3.6 (July 25, 2025), Info:
+UMFPACK V6.3.7 (Nov 1, 2025), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers, threaded).  size of BLAS integer: 4
     MATLAB: no.
     CPU timer: omp_get_wtime
     number of rows in matrix A:       5
