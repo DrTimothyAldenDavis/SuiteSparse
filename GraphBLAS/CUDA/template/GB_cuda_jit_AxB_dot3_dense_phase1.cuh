@@ -82,9 +82,8 @@ __global__ void GB_cuda_AxB_dot3_dense_phase1_kernel
         {
 
             // get the pM and k value of Mi,Mx [pM]:
-            int64_t pM ;    // = pfirst + pdelta
-            int64_t k = GB_cuda_ek_slice_entry<GB_Mp_TYPE> (&pM, pdelta, pfirst, Mp, mnvec1,
-                kfirst, slope) ;
+            int64_t pM = pfirst + pdelta ;
+            int64_t k = GB_cuda_ek_slice_entry<GB_Mp_TYPE> (pM, pdelta, Mp, mnvec1, kfirst, slope) ;
 
             #if GB_MASK_STRUCT
             {

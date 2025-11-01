@@ -30,8 +30,7 @@
     // h == 0,   f == 0: unoccupied and unlocked
     // h == i+1, f == 1: occupied with M(i,j)=1
 
-    uint64_t *restrict
-        Hf = (uint64_t *restrict) SaxpyTasks [taskid].Hf ;
+    uint64_t *restrict Hf = (uint64_t *restrict) SaxpyTasks [taskid].Hf ;
     uint64_t hash_bits = (hash_size-1) ;
     // scan this task's M(:,j)
     for (int64_t pM = mystart ; pM < myend ; pM++)
@@ -74,7 +73,6 @@
             //    __ATOMIC_SEQ_CST) ;
             // __sync_synchronize ( ) ;
 
-
             // This doesn't work; it requires amo.h which reports an error on
             // the Power8NVL.  The Power8 doesn't implement the v3.0 ISA,
             // required by amo_ldat_swap.
@@ -82,7 +80,7 @@
             // _amo_ldat_swap (&hf, &(Hf [hash])) ;
 
             // This printf makes the GB_ATOMIC_CAPTURE work, if it is added!!
-            // printf ("   Hf [%ld] = %ld, i = %ld, i_mine = %ld\n", hash,
+            // printf("   Hf [%ld] = %ld, i = %ld, i_mine = %ld\n", hash,
             //      Hf [hash], i, i_mine) ;
 
             // Because of this failure, gcc must be used with caution when

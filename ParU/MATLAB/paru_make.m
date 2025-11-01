@@ -28,7 +28,7 @@ function paru_make (try_intel)
 %
 % See also paru, paru_demo, paru_many, paru_tiny, mldivide.
 
-% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% ParU, Copyright (c) 2022-2025, Mohsen Aznaveh and Timothy A. Davis,
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 

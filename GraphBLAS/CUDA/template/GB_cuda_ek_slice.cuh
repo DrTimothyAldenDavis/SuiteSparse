@@ -163,12 +163,9 @@ template <typename T> __device__ void GB_cuda_ek_slice_setup
 
 template <typename T> __device__ int64_t GB_cuda_ek_slice_entry
 (
-    // output:
-    int64_t *p_handle,          // p = pfirst + pdelta
     // inputs, not modified:
+    const int64_t p,            // p = pfirst + pdelta
     const int64_t pdelta,       // find the k value of the pfirst+pdelta entry
-    const int64_t pfirst,       // first entry in A to find k (for which
-                                // pdelta=0)
     const T *Ap,                // array of size anvec+1
     const int64_t anvec1,       // anvec-1
     const int64_t kfirst,       // estimate of first vector in the chunk
@@ -185,8 +182,6 @@ template <typename T> __device__ int64_t GB_cuda_ek_slice_entry
 
     // look for p in Ap, where p is in range pfirst:plast-1
     // where pfirst >= 0 and plast < anz
-    int64_t p = pfirst + pdelta ;
-    (*p_handle) = p ;
 
     // linear-time search for the k value of the pth entry
     while (Ap [k+1] <= p) k++ ;
@@ -247,9 +242,8 @@ template <typename T>__device__ int64_t GB_cuda_ek_slice // returns my_chunk_siz
         // determine the kth vector that contains the pth entry
         //----------------------------------------------------------------------
 
-        int64_t p ;     // unused, p = pfirst + pdelta
-        int64_t k = GB_cuda_ek_slice_entry<T> (&p, pdelta, pfirst, Ap, anvec1,
-            kfirst, slope) ;
+        int64_t p = pfirst + pdelta ;
+        int64_t k = GB_cuda_ek_slice_entry<T> (p, pdelta, Ap, anvec1, kfirst, slope) ;
 
         //----------------------------------------------------------------------
         // save the result in ks

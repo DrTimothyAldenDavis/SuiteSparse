@@ -90,8 +90,8 @@ void GB_cuda_upscale_identity
 // stream pool
 //------------------------------------------------------------------------------
 
-GrB_Info GB_cuda_acquire_stream (cudaStream_t *stream) ;
-GrB_Info GB_cuda_release_stream (cudaStream_t *stream) ;
+GrB_Info GB_cuda_stream_pool_acquire (cudaStream_t *stream) ;
+GrB_Info GB_cuda_stream_pool_release (cudaStream_t *stream) ;
 
 #endif
 

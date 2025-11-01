@@ -23,8 +23,7 @@ GrB_Info GB_cuda_select_bitmap_jit
     const GrB_IndexUnaryOp op,
     // CUDA stream and launch parameters:
     cudaStream_t stream,
-    int32_t gridsz,
-    int32_t blocksz
+    int32_t gridsz
 ) ;
 
 GrB_Info GB_cuda_select_sparse_jit
@@ -38,8 +37,7 @@ GrB_Info GB_cuda_select_sparse_jit
     const GrB_IndexUnaryOp op,
     // CUDA stream and launch parameters:
     cudaStream_t stream,
-    int32_t gridsz,
-    int32_t blocksz
+    int32_t gridsz
 ) ;
 
 #endif

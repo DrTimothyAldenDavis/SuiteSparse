@@ -199,6 +199,8 @@ typedef enum
 {
     GrB_NONBLOCKING = 0,    // methods may return with pending computations
     GrB_BLOCKING = 1        // no computations are ever left pending
+    GxB_NONBLOCKING_GPU = 7099, // non-blocking mode, allow use of GPU(s)
+    GxB_BLOCKING_GPU = 7098,    // blocking mode, allow use of GPU(s)
 }
 GrB_Mode ;
 \end{verbatim}
@@ -223,6 +225,10 @@ when needed.  Non-blocking mode can be much faster than blocking mode, by many
 orders of magnitude in extreme cases.  Blocking mode should be used only when
 debugging a user application.  The mode cannot be changed once it is set by
 \verb'GrB_init'.
+
+To use the GPU, set the mode to \verb'GxB_NONBLOCKING_GPU' or
+\verb'GxB_BLOCKING_GPU'.  In this case, the memory manager functions will
+be based on the Rapids Memory Manager (RMM), with unified shared memory.
 
 GraphBLAS objects are opaque.  This allows GraphBLAS to
 postpone operations and then do them later in a more efficient manner by
@@ -319,21 +325,21 @@ the user application control over this is particularly important when using the
 \verb'GxB_*serialize' and \verb'GxB_Container' methods described in Section
 \ref{serialize_deserialize} and \ref{container}, since they require the user
 application and GraphBLAS to use the same memory manager.
-\verb'user_calloc_func' and \verb'user_realloc_func' are optional, and
-may be \verb'NULL'.  If \verb'NULL', then the \verb'user_malloc_func' is
-relied on instead, for all memory allocations.
-These functions can only be set once, when GraphBLAS starts.
-They can be queried using \verb'GrB_get' (see
-Section~\ref{get_set_global}).
-Either
-\verb'GrB_init' or \verb'GxB_init' must be called before any other GraphBLAS
-operation, but not both.  The functions passed to \verb'GxB_init' must be
-thread-safe.
-The following usage is identical to \verb'GrB_init(mode)':
+\verb'user_calloc_func' and \verb'user_realloc_func' are optional, and may be
+\verb'NULL'.  If \verb'NULL', then the \verb'user_malloc_func' is relied on
+instead, for all memory allocations.  These functions can only be set once,
+when GraphBLAS starts.  They can be queried using \verb'GrB_get' (see
+Section~\ref{get_set_global}).  Either \verb'GrB_init' or \verb'GxB_init' must
+be called before any other GraphBLAS operation, but not both.  The functions
+passed to \verb'GxB_init' must be thread-safe.  The following usage is
+identical to \verb'GrB_init(mode)':
 
     {\footnotesize
     \begin{verbatim}
     GxB_init (mode, malloc, calloc, realloc, free) ; \end{verbatim}}
+
+If a GPU mode is used, the memory manager functions are ignored, and
+the Rapids Memory Manager (RMM) versions are used instead.
 
 %===============================================================================
 \subsection{{\sf GrB\_Info:} status code returned by GraphBLAS} %===============

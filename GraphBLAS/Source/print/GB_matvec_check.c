@@ -37,6 +37,8 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
     bool is_full = GB_IS_FULL (A) ;
     bool is_bitmap = GB_IS_BITMAP (A) ;
     bool is_sparse = GB_IS_SPARSE (A) ;
+    char *string = NULL ;
+    size_t string_size = 0 ;
 
     bool skip_zombie_checks = false ;
     if (pr > 5)
@@ -540,8 +542,12 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         GBPR0 ("  iso value: ") ;
         if (pr > 0)
         { 
-            info = GB_entry_check (A->type, A->x, pr, f) ;
-            if (info != GrB_SUCCESS) return (info) ;
+            info = GB_entry_check (A->type, A->x, pr, f, &string, &string_size) ;
+            if (info != GrB_SUCCESS)
+            { 
+                GB_FREE_MEMORY (&string, string_size) ;
+                return (info) ;
+            }
         }
         GBPR0 ("\n") ;
     }
@@ -554,6 +560,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
     {
         GBPR0 ("\nentries: " GBd " max entries: " GBd " (invalid)\n",
             anz, nnz_max) ;
+        GB_FREE_MEMORY (&string, string_size) ;
         return (GrB_INVALID_OBJECT) ;
     }
 
@@ -589,6 +596,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             // full/bitmap cannot have zombies
             GBPR0 ("  %s %s cannot have zombies\n",
                 is_full ? "full" : "bitmap", kind) ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
         if (Pending != NULL)
@@ -596,6 +604,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             // full/bitmap cannot have pending tuples
             GBPR0 ("  %s %s cannot have pending tuples\n",
                 is_full ? "full" : "bitmap", kind) ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
         if (A->jumbled)
@@ -603,6 +612,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             // full/bitmap jumbled
             GBPR0 ("  %s %s cannot be jumbled\n",
                 is_full ? "full" : "bitmap", kind) ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
     }
@@ -613,6 +623,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         { 
             GBPR0 ("  invalid number of zombies: " GBd " "
                 "must be >= 0 and <= # entries (" GBd ")\n", A->nzombies, anz) ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
     }
@@ -651,6 +662,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
                 { 
                     // bitmap with value other than 0, 1
                     GBPR0 ("    invalid bitmap %d\n", ab) ;
+                    GB_FREE_MEMORY (&string, string_size) ;
                     return (GrB_INVALID_OBJECT) ;
                 }
                 ajnz += (ab != 0)  ;
@@ -709,6 +721,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             { 
                 GBPR0 ("  index (" GBd "," GBd ") out of range\n",
                     row+offset, col+offset) ;
+                GB_FREE_MEMORY (&string, string_size) ;
                 return (GrB_INVALID_OBJECT) ;
             }
 
@@ -723,8 +736,13 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
                 { 
                     GB_void *Ax = (GB_void *) A->x ;
                     info = GB_entry_check (A->type,
-                        Ax + (A->iso ? 0 : (p * (A->type->size))), pr, f) ;
-                    if (info != GrB_SUCCESS) return (info) ;
+                        Ax + (A->iso ? 0 : (p * (A->type->size))), pr, f,
+                        &string, &string_size) ;
+                    if (info != GrB_SUCCESS)
+                    { 
+                        GB_FREE_MEMORY (&string, string_size) ;
+                        return (info) ;
+                    }
                 }
             }
 
@@ -736,6 +754,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
                 // indices unsorted, or duplicates present
                 GBPR0 (" index (" GBd "," GBd ") invalid\n",
                     row+offset, col+offset) ;
+                GB_FREE_MEMORY (&string, string_size) ;
                 return (GrB_INDEX_OUT_OF_BOUNDS) ;
             }
 
@@ -770,6 +789,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         // bitmap with invalid nvals
         GBPR0 ("  invalid bitmap count: " GBd " exist but"
             " A->nvals = " GBd "\n", anz_actual, anz) ;
+        GB_FREE_MEMORY (&string, string_size) ;
         return (GrB_INVALID_OBJECT) ;
     }
     else if ((is_sparse || is_hyper) && anz != anz_actual)
@@ -777,6 +797,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         // sparse/hypersparse with invalid nvals
         GBPR0 ("  invalid sparse/hypersparse entry count: " GBd " exist but"
             " A->nvals = " GBd "\n", anz_actual, anz) ;
+        GB_FREE_MEMORY (&string, string_size) ;
         return (GrB_INVALID_OBJECT) ;
     }
 
@@ -788,6 +809,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
     { 
         GBPR0 ("  invalid zombie count: " GBd " exist but"
             " A->nzombies = " GBd "\n", nzombies, A->nzombies) ;
+        GB_FREE_MEMORY (&string, string_size) ;
         return (GrB_INVALID_OBJECT) ;
     }
 
@@ -826,6 +848,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             Pending->nmax < 0)
         { 
             GBPR0 ("  invalid pending count\n") ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
 
@@ -836,6 +859,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             (A->vdim > 1 && Pending_j == NULL))
         { 
             GBPR0 ("  invalid pending tuples\n") ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
 
@@ -846,6 +870,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         { 
             // invalid Pending->type
             GBPR0 ("  %s has an invalid Pending->type\n", kind) ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
 
@@ -867,8 +892,13 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
                 if (!A->iso)
                 { 
                     info = GB_entry_check (Pending->type,
-                        Pending_x +(k * Pending->type->size), pr, f) ;
-                    if (info != GrB_SUCCESS) return (info) ;
+                        Pending_x +(k * Pending->type->size), pr, f,
+                        &string, &string_size) ;
+                    if (info != GrB_SUCCESS)
+                    { 
+                        GB_FREE_MEMORY (&string, string_size) ;
+                        return (info) ;
+                    }
                 }
                 GBPR ("\n") ;
             }
@@ -876,6 +906,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             if (i < 0 || i >= A->vlen || j < 0 || j >= A->vdim)
             { 
                 GBPR0 ("    tuple (" GBd "," GBd ") out of range\n", row, col) ;
+                GB_FREE_MEMORY (&string, string_size) ;
                 return (GrB_INVALID_OBJECT) ;
             }
 
@@ -887,6 +918,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         if (sorted != Pending->sorted)
         { 
             GBPR0 ("  invalid pending tuples: invalid sort\n") ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
 
@@ -900,6 +932,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             if (info != GrB_SUCCESS)
             { 
                 GBPR0 ("  invalid pending operator\n") ;
+                GB_FREE_MEMORY (&string, string_size) ;
                 return (GrB_INVALID_OBJECT) ;
             }
         }
@@ -923,6 +956,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
     { 
         // invalid nvec_nonempty
         GBPR0 ("  invalid count of non-empty vectors\n") ;
+        GB_FREE_MEMORY (&string, string_size) ;
         return (GrB_INVALID_OBJECT) ;
     }
 
@@ -937,6 +971,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         { 
             // A->Y is optional, but A must be hypersparse for A->Y to exist
             GBPR0 ("  hyper_hash invalid\n") ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
         info = GB_matvec_check (Y, "Y hyper_hash", pr_developer, f, "matrix") ;
@@ -944,6 +979,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         { 
             // A->Y fails the tests in GB_matvec_check
             GBPR0 ("  hyper_hash invalid") ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (info) ;
         }
         GrB_Type ytype = (A->j_is_32) ? GrB_UINT32 : GrB_UINT64 ;
@@ -957,6 +993,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             // A->vdim, and with a Y->vdim that is a power of 2. It cannot have
             // any pending work.
             GBPR0 ("  hyper_hash invalid") ;
+            GB_FREE_MEMORY (&string, string_size) ;
             return (GrB_INVALID_OBJECT) ;
         }
         // ensure that Y is the inverse of A->h
@@ -977,6 +1014,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
                     { 
                         // j is found but not with the right value of k
                         GBPR0 ("  hyper_hash invalid\n") ;
+                        GB_FREE_MEMORY (&string, string_size) ;
                         return (GrB_INVALID_OBJECT) ;
                     }
                     found = true ;
@@ -987,15 +1025,17 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
             { 
                 // j must appear in the hyper_hash
                 GBPR0 ("  hyper_hash invalid\n") ;
+                GB_FREE_MEMORY (&string, string_size) ;
                 return (GrB_INVALID_OBJECT) ;
             }
         }
     }
 
     //--------------------------------------------------------------------------
-    // return result
+    // free workspace and return result
     //--------------------------------------------------------------------------
 
+    GB_FREE_MEMORY (&string, string_size) ;
     return (GrB_SUCCESS) ;
 }
 

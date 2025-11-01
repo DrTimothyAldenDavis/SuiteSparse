@@ -25,7 +25,7 @@
 {                                                           \
     GB_FREE_WORKSPACE ;                                     \
     GB_Matrix_free (&V) ;                                   \
-    GB_cuda_release_stream (&stream) ;                      \
+    GB_cuda_stream_pool_release (&stream) ;                      \
 }
 
 #include "GB_cuda_reduce.hpp"
@@ -58,7 +58,7 @@ GrB_Info GB_cuda_reduce_to_scalar
     //--------------------------------------------------------------------------
 
     cudaStream_t stream = nullptr ;
-    GB_OK (GB_cuda_acquire_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_acquire (&stream)) ;
     
     //--------------------------------------------------------------------------
     // determine problem characteristics and allocate worksbace
@@ -130,7 +130,7 @@ GrB_Info GB_cuda_reduce_to_scalar
     // return result and release the stream
     //--------------------------------------------------------------------------
 
-    GB_OK (GB_cuda_release_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_release (&stream)) ;
 
     if (has_cheeseburger)
     {

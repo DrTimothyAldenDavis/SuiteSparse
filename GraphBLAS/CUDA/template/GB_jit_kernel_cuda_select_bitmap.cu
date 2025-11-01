@@ -6,10 +6,7 @@ using namespace cooperative_groups ;
 #define log2_tile_sz 5
 
 #include "GB_cuda_atomics.cuh"
-
 #include "GB_cuda_tile_sum_uint64.cuh"
-
-
 #include "GB_cuda_threadblock_sum_uint64.cuh"
 
 __global__ void GB_cuda_select_bitmap_kernel
@@ -82,7 +79,7 @@ GB_JIT_CUDA_KERNEL_SELECT_BITMAP_PROTO (GB_jit_kernel)
 {
     GB_GET_CALLBACKS ;
     dim3 grid (gridsz) ;
-    dim3 block (blocksz) ;
+    dim3 block (GB_CUDA_SELECT_BITMAP_BLOCKDIM) ;
 
     CUDA_OK (cudaGetLastError ( )) ;
     CUDA_OK (cudaStreamSynchronize (stream)) ;

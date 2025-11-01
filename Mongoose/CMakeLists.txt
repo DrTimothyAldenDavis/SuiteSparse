@@ -35,11 +35,11 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( Mongoose_DATE "July 25, 2025" )
-set ( Mongoose_NUMERIC_DATE "2025-07-25" )
+set ( Mongoose_DATE "Nov 1, 2025" )
+set ( Mongoose_NUMERIC_DATE "2025-11-01" )
 set ( Mongoose_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( Mongoose_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( Mongoose_VERSION_PATCH 5 CACHE STRING "" FORCE )
+set ( Mongoose_VERSION_PATCH 6 CACHE STRING "" FORCE )
 
 message ( STATUS "Building Mongoose version: v"
     ${Mongoose_VERSION_MAJOR}.
@@ -233,6 +233,7 @@ if ( BUILD_SHARED_LIBS )
 
     set_target_properties ( Mongoose PROPERTIES
         OUTPUT_NAME suitesparse_mongoose
+        VERSION ${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}
         SOVERSION ${Mongoose_VERSION_MAJOR}
         PUBLIC_HEADER "Include/Mongoose.hpp"
         WINDOWS_EXPORT_ALL_SYMBOLS ON

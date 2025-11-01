@@ -15,6 +15,20 @@
 "typedef struct { double re ; double im ; } gb_mycx ;"
 
 //------------------------------------------------------------------------------
+// function to print a single gb_mycx scalar
+//------------------------------------------------------------------------------
+
+int64_t gb_mycx_print
+(
+    // output:
+    char *string,           // value is printed to the string
+    // input:
+    size_t string_size,     // size of the string array
+    const void *value,      // value to print
+    int verbose             // if >0, print verbosely; else tersely
+) ;
+
+//------------------------------------------------------------------------------
 // 10 binary functions, z=f(x,y), where CxC -> C
 //------------------------------------------------------------------------------
 

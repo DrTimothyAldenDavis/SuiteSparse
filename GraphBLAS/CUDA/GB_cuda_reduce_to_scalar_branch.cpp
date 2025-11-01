@@ -55,8 +55,6 @@ bool GB_cuda_reduce_to_scalar_branch    // return true to use the GPU
     GBURBLE (" work:%g gpus:%d ", work, ngpus_to_use) ;
     if (ngpus_to_use > 0)
     {
-        // FIXME: gpu_id = GB_Context_gpu_id_get ( ) ;
-        // cudaSetDevice (gpu_id) ;
         return (true) ;
     }
     else

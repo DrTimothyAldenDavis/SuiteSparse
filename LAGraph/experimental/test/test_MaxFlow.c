@@ -53,7 +53,7 @@ test_info tests[] = {
 void test_MaxFlow(void) {
 #if LG_SUITESPARSE_GRAPHBLAS_V10
   LAGraph_Init(msg);
-//OK(LG_SET_BURBLE(1));
+  //OK(LG_SET_BURBLE(1));
   OK(LG_SET_BURBLE(0));
   for(uint8_t test = 0; test < NTESTS; test++){
     GrB_Matrix A=NULL;
@@ -86,6 +86,23 @@ void test_MaxFlow(void) {
     OK(LAGr_MaxFlow(&flow, NULL, G, tests[test].S, tests[test].T, msg));
     TEST_CHECK(flow == tests[test].F);
     OK(GxB_Global_Option_set(GxB_JIT_C_CONTROL, GxB_JIT_ON));
+
+    // test all source/destination pairs for small problems
+    GrB_Index n ;
+    OK (GrB_Matrix_nrows (&n, G->A)) ;
+    printf ("n: %d\n", (int) n) ;
+    if (n < 100)
+    {
+        for (GrB_Index src = 0 ; src < n ; src++)
+        {
+            for (GrB_Index dest = 0 ; dest < n ; dest++)
+            {
+              printf("src: %d, dest: %d\n", (int) src, (int) dest);
+                if (src == dest) continue ;
+                OK(LAGr_MaxFlow(&flow, NULL, G, src, dest, msg));
+            }
+        }
+    }
 
     //free work
     OK(LAGraph_Delete(&G, msg));

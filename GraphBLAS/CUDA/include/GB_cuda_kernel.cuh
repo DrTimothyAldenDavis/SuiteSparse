@@ -23,7 +23,8 @@
 #include <cstdint>
 #include <cmath>
 #include <stdio.h>
-#include <cub/block/block_scan.cuh>
+// #include <cub/block/block_scan.cuh>
+#include <cub/cub.cuh>
 #include <cooperative_groups.h>
 using namespace cooperative_groups ;
 
@@ -72,6 +73,7 @@ extern "C"
     #include "include/GB_callback.h"
     #include "include/GB_hyper_hash_lookup.h"
     #include "include/GB_ok.h"
+    #include "include/GB_omp_kernels.h"
 }
 
 #include "GB_cuda_error.hpp"

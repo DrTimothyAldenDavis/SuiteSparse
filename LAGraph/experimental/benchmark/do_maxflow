@@ -1,0 +1,17 @@
+#!/bin/bash
+
+
+MTX="/home/davis/matrices"
+GAP="/home/davis/GAP"
+
+# OK with 128GB of RAM:
+../../build/experimental/benchmark/maxflow_demo $MTX/com-Youtube.mtx 4 275
+../../build/experimental/benchmark/maxflow_demo $MTX/com-LiveJournal.mtx 2 88
+../../build/experimental/benchmark/maxflow_demo $MTX/com-Orkut.mtx 43 75
+../../build/experimental/benchmark/maxflow_demo $GAP/GAP-twitter/GAP-twitter.grb 13 17
+
+# takes a *very* long time when computing the flow matrix:
+../../build/experimental/benchmark/maxflow_demo $GAP/GAP-road/GAP-road.grb 4 1075
+
+# too large for hyper (needs > 128GB of RAM)
+# ../../build/experimental/benchmark/maxflow_demo $GAP/GAP-web/GAP-web.grb 64712 500

@@ -43,6 +43,7 @@ all: library
 
 demos: library
 	( cd build && ./my_demo )
+	( cd build && ./my_cxx_demo )
 
 # just compile after running cmake; do not run cmake again
 remake:

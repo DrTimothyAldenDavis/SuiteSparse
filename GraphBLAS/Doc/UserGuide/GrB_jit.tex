@@ -22,9 +22,8 @@ Using the JIT in a user application is simple:  by default, there is nothing to
 do.  LAGraph can use the JIT (and PreJIT) kernels without changing a single
 line of code, for example.
 
-Currently, the JIT compiles kernels for the CPU only, but a CUDA JIT is in
-progress to exploit NVIDIA GPUs, in collaboration with Joe Eaton and
-Corey Nolet, with NVIDIA.
+The JIT compiles kernels for the CPU, using OpenMP if available,
+and CUDA kernels if one or more NVIDIA GPUs are available.
 
 When GraphBLAS is compiled, the \verb'cmake' build system creates a {\em cache}
 folder where it will keep any kernels created and compiled by the JIT
@@ -559,8 +558,8 @@ might be needed later for larger problems.
 \subsubsection{CUDA / SYCL / OpenCL kernels}
 The CUDA JIT will enable NVIDIA GPUs to be exploited.  There are simply too
 many kernels to create at compile time as the ``factory kernels.''  This CUDA
-JIT is in progress.  A related JIT for SYCL / OpenCL kernels is under
-consideration.
+JIT is in progress, but some kernels are already available for production use.
+A related JIT for SYCL / OpenCL kernels is under consideration.
 
 \subsubsection{Better performance for multithreaded user programs:}
 This version is thread-safe when used in a multithread user application, but a

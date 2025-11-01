@@ -44,6 +44,7 @@ typedef struct
     size_t  pool_size ;
     size_t  max_pool_size ;
     void *memory_resource ;
+    // TODO: add something about the streams for this device
 }
 GB_cuda_device ;
 

@@ -82,8 +82,8 @@ __global__ void GB_cuda_apply_unop_kernel
                         &kfirst, &klast, &my_chunk_size, &anvec_sub1, &slope) ;
                     for (int64_t pdelta = threadIdx.x ; pdelta < my_chunk_size ; pdelta += blockDim.x)
                     {
-                        int64_t p ;
-                        int64_t k = GB_cuda_ek_slice_entry<GB_Ap_TYPE> (&p, pdelta, pfirst, Ap, anvec_sub1, kfirst, slope) ;
+                        int64_t p = pfirst + pdelta ;
+                        int64_t k = GB_cuda_ek_slice_entry<GB_Ap_TYPE> (p, pdelta, Ap, anvec_sub1, kfirst, slope) ;
                         int64_t col_idx = GBh_A (Ah, k) ;
                         #if ( GB_DEPENDS_ON_I )
                         int64_t row_idx = Ai [p] ;

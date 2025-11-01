@@ -138,6 +138,7 @@ typedef enum
     GB_JIT_KERNEL_SUBASSIGN_15  = 60, // GB_subassign_15
     GB_JIT_KERNEL_SUBASSIGN_17  = 61, // GB_subassign_17
     GB_JIT_KERNEL_SUBASSIGN_19  = 62, // GB_subassign_19
+    GB_JIT_KERNEL_SUBASSIGN_27  = 88, // GB_subassign_27
     GB_JIT_KERNEL_BITMAP_ASSIGN_1        = 63, // GB_bitmap_assign_1
     GB_JIT_KERNEL_BITMAP_ASSIGN_1_WHOLE  = 64, // GB_bitmap_assign_1_whole
     GB_JIT_KERNEL_BITMAP_ASSIGN_2        = 65, // GB_bitmap_assign_2

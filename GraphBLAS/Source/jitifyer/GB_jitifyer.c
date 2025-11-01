@@ -72,7 +72,7 @@ static size_t   GB_jit_C_link_flags_allocated = 0 ;
 static char    *GB_jit_C_libraries = NULL ;
 static size_t   GB_jit_C_libraries_allocated = 0 ;
 
-// libraries to link against when using cmake: 
+// libraries to link against when using cmake:
 static char    *GB_jit_C_cmake_libs = NULL ;
 static size_t   GB_jit_C_cmake_libs_allocated = 0 ;
 
@@ -282,7 +282,7 @@ GrB_Info GB_jitifyer_init (void)
     #if defined ( GRAPHBLAS_HAS_CUDA )
     int device = -1 ;
     GB_cuda_get_device (&device) ;
-    printf ("JIT init, device %d\n", device) ;
+    printf ("JIT init, device %d\n", device) ;  // for CUDA only
     #endif
 
     //--------------------------------------------------------------------------
@@ -827,7 +827,6 @@ GrB_Info GB_jitifyer_extract_JITpackage (GrB_Info error_condition)
 int GB_jitifyer_get_control (void)
 {
     int control ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     { 
         control = GB_jit_control ;
@@ -842,7 +841,6 @@ int GB_jitifyer_get_control (void)
 
 void GB_jitifyer_set_control (int control)
 { 
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         control = GB_IMAX (control, (int) GxB_JIT_OFF) ;
@@ -916,7 +914,6 @@ GrB_Info GB_jitifyer_alloc_space (void)
 const char *GB_jitifyer_get_cache_path (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_cache_path ;
@@ -951,7 +948,6 @@ GrB_Info GB_jitifyer_set_cache_path (const char *new_cache_path)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_cache_path_worker (new_cache_path) ;
@@ -987,7 +983,6 @@ GrB_Info GB_jitifyer_set_cache_path_worker (const char *new_cache_path)
 const char *GB_jitifyer_get_error_log (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_error_log ;
@@ -1011,7 +1006,6 @@ GrB_Info GB_jitifyer_set_error_log (const char *new_error_log)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_error_log_worker
@@ -1043,7 +1037,6 @@ GrB_Info GB_jitifyer_set_error_log_worker (const char *new_error_log)
 const char *GB_jitifyer_get_C_compiler (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_C_compiler ;
@@ -1073,7 +1066,6 @@ GrB_Info GB_jitifyer_set_C_compiler (const char *new_C_compiler)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_C_compiler_worker (new_C_compiler) ;
@@ -1103,7 +1095,6 @@ GrB_Info GB_jitifyer_set_C_compiler_worker (const char *new_C_compiler)
 const char *GB_jitifyer_get_C_flags (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_C_flags ;
@@ -1133,7 +1124,6 @@ GrB_Info GB_jitifyer_set_C_flags (const char *new_C_flags)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_C_flags_worker (new_C_flags) ;
@@ -1163,7 +1153,6 @@ GrB_Info GB_jitifyer_set_C_flags_worker (const char *new_C_flags)
 const char *GB_jitifyer_get_C_link_flags (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_C_link_flags ;
@@ -1193,7 +1182,6 @@ GrB_Info GB_jitifyer_set_C_link_flags (const char *new_C_link_flags)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_C_link_flags_worker (new_C_link_flags) ;
@@ -1223,7 +1211,6 @@ GrB_Info GB_jitifyer_set_C_link_flags_worker (const char *new_C_link_flags)
 const char *GB_jitifyer_get_C_libraries (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_C_libraries ;
@@ -1253,7 +1240,6 @@ GrB_Info GB_jitifyer_set_C_libraries (const char *new_C_libraries)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_C_libraries_worker (new_C_libraries) ;
@@ -1283,7 +1269,6 @@ GrB_Info GB_jitifyer_set_C_libraries_worker (const char *new_C_libraries)
 bool GB_jitifyer_get_use_cmake (void)
 { 
     bool use_cmake ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         use_cmake = GB_jit_use_cmake ;
@@ -1298,7 +1283,6 @@ bool GB_jitifyer_get_use_cmake (void)
 
 void GB_jitifyer_set_use_cmake (bool use_cmake)
 { 
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         #if defined (_MSC_VER)
@@ -1322,7 +1306,6 @@ void GB_jitifyer_set_use_cmake (bool use_cmake)
 const char *GB_jitifyer_get_C_cmake_libs (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_C_cmake_libs ;
@@ -1352,7 +1335,6 @@ GrB_Info GB_jitifyer_set_C_cmake_libs (const char *new_cmake_libs)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_C_cmake_libs_worker (new_cmake_libs) ;
@@ -1382,7 +1364,6 @@ GrB_Info GB_jitifyer_set_C_cmake_libs_worker (const char *new_cmake_libs)
 const char *GB_jitifyer_get_C_preface (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_C_preface ;
@@ -1412,7 +1393,6 @@ GrB_Info GB_jitifyer_set_C_preface (const char *new_C_preface)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_C_preface_worker (new_C_preface) ;
@@ -1441,7 +1421,6 @@ GrB_Info GB_jitifyer_set_C_preface_worker (const char *new_C_preface)
 const char *GB_jitifyer_get_CUDA_preface (void)
 { 
     const char *s ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         s = GB_jit_CUDA_preface ;
@@ -1471,7 +1450,6 @@ GrB_Info GB_jitifyer_set_CUDA_preface (const char *new_CUDA_preface)
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     {
         info = GB_jitifyer_set_CUDA_preface_worker (new_CUDA_preface) ;
@@ -1685,7 +1663,6 @@ GrB_Info GB_jitifyer_load
     // do the rest inside a critical section
     //--------------------------------------------------------------------------
 
-//  #pragma omp critical (GB_jitifyer_worker)
     GB_OPENMP_LOCK_SET (1)
     { 
         info = GB_jitifyer_load2_worker (dl_function, family, kname, hash,
@@ -2604,6 +2581,7 @@ void GB_jitifyer_nvcc_compile
     // compile:
     "sh -c \""                          // execute with POSIX shell
     // Fixme for CUDA: use GB_CUDA_COMPILER here:
+    "nvcc --version ; "
     "nvcc "                             // compiler command
     "-forward-unknown-to-host-compiler "
     "-DGB_JIT_RUNTIME=1  "              // nvcc flags

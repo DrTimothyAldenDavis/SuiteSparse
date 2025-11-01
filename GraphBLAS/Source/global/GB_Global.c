@@ -98,6 +98,14 @@ typedef struct
     //--------------------------------------------------------------------------
 
     int64_t hack [8] ;              // settings for testing/development only
+    // 0:  very_costly parameter in saxpy3 method
+    // 1:  disable the Werk stack for test coverage only
+    // 2:  force the GPU(s) to be used, or disable the GPU(s)
+    // 3:  disable the JIT
+    // 4:  tell GB_cumsum to fail for test coverage only
+    // 5:  tell GB_cumsum to fail for test coverage only
+    // 6:  if true: GB_Global_gpu_count_get returns hack [7]
+    // 7:  fake # of GPUs for test coverage only
 
     //--------------------------------------------------------------------------
     // diagnostic output
@@ -144,7 +152,7 @@ typedef struct
     int8_t i_control ;      // controls A->i
 
     //--------------------------------------------------------------------------
-    // CUDA (DRAFT: in progress):
+    // CUDA
     //--------------------------------------------------------------------------
 
     int gpu_count ;                 // # of GPUs in the system
@@ -241,9 +249,10 @@ static GB_Global_struct GB_Global =
     .j_control = (int8_t) 32,
     .i_control = (int8_t) 32,
 
-    // CUDA environment (DRAFT: in progress)
+    // CUDA environment
     .gpu_count = 0,                     // # of GPUs in the system
 
+    // OpenMP locks
     .lock_is_created = {0, 0, 0, 0},
 } ;
 
@@ -571,7 +580,6 @@ void GB_Global_memtable_add (void *p, size_t size)
     #ifdef GB_DEBUG
     bool fail = false ;
     GBMDUMP ("memtable add %p size %ld\n", p, size) ;
-//  #pragma omp critical(GB_memtable)
     GB_OPENMP_LOCK_SET (3)
     {
         int n = GB_Global.nmemtable ;
@@ -610,7 +618,6 @@ size_t GB_Global_memtable_size (void *p)
     #ifdef GB_DEBUG
     if (p == NULL) return (0) ;
     bool found = false ;
-//  #pragma omp critical(GB_memtable)
     GB_OPENMP_LOCK_SET (3)
     {
         int n = GB_Global.nmemtable ;
@@ -643,7 +650,6 @@ bool GB_Global_memtable_find (void *p)
 
     #ifdef GB_DEBUG
     if (p == NULL) return (false) ;
-//  #pragma omp critical(GB_memtable)
     GB_OPENMP_LOCK_SET (3)
     {
         int n = GB_Global.nmemtable ;
@@ -675,7 +681,6 @@ void GB_Global_memtable_remove (void *p)
     #ifdef GB_DEBUG
     bool found = false ;
     GBMDUMP ("memtable remove %p ", p) ;
-//  #pragma omp critical(GB_memtable)
     GB_OPENMP_LOCK_SET (3)
     {
         int n = GB_Global.nmemtable ;
@@ -729,7 +734,6 @@ void * GB_Global_malloc_function (size_t size)
     }
     else
     {
-//      #pragma omp critical(GB_malloc_protection)
         GB_OPENMP_LOCK_SET (2)
         {
             p = GB_Global.malloc_function (size) ;
@@ -785,7 +789,6 @@ void * GB_Global_realloc_function (void *p, size_t size)
     }
     else
     {
-//      #pragma omp critical(GB_malloc_protection)
         GB_OPENMP_LOCK_SET (2)
         {
             pnew = GB_Global.realloc_function (p, size) ;
@@ -822,7 +825,6 @@ void GB_Global_free_function (void *p)
     }
     else
     {
-//      #pragma omp critical(GB_malloc_protection)
         GB_OPENMP_LOCK_SET (2)
         {
             GB_Global.free_function (p) ;
@@ -1035,13 +1037,15 @@ bool GB_Global_stats_mem_shallow_get (void)
 }
 
 //------------------------------------------------------------------------------
-// CUDA (DRAFT: in progress)
+// CUDA
 //------------------------------------------------------------------------------
 
 bool GB_Global_gpu_count_set (bool enable_cuda)
 { 
     // set the # of GPUs in the system;
     // this function is only called once, by GB_init.
+    memset (GB_Global.gpu_properties, 0,
+            GB_CUDA_MAX_GPUS * sizeof (GB_cuda_device)) ;
     #if defined ( GRAPHBLAS_HAS_CUDA )
     if (enable_cuda)
     {
@@ -1058,7 +1062,11 @@ bool GB_Global_gpu_count_set (bool enable_cuda)
 
 int GB_Global_gpu_count_get (void)
 { 
-    // get the # of GPUs in the system
+    // get the max # of GPUs in the system
+    if (GB_Global_hack_get (6) != 0)
+    { 
+        return (GB_Global_hack_get (7)) ;
+    }
     return (GB_Global.gpu_count) ;
 }
 
@@ -1103,20 +1111,20 @@ bool GB_Global_gpu_device_pool_size_set (int device, size_t size)
 bool GB_Global_gpu_device_max_pool_size_set (int device, size_t size)
 {
     GB_GPU_DEVICE_CHECK (false) ;   // fail if invalid GPU
-    GB_Global.gpu_properties[device].max_pool_size = size ;
+    GB_Global.gpu_properties [device].max_pool_size = size ;
     return (true) ; 
 }
 
 bool GB_Global_gpu_device_memory_resource_set (int device, void *resource)
 {
     GB_GPU_DEVICE_CHECK (false) ;   // fail if invalid GPU
-    GB_Global.gpu_properties[device].memory_resource = resource;
+    GB_Global.gpu_properties [device].memory_resource = resource ;
     return (true) ; 
 }
 
 void* GB_Global_gpu_device_memory_resource_get (int device)
 {
-    GB_GPU_DEVICE_CHECK (false) ;   // fail if invalid GPU
+    GB_GPU_DEVICE_CHECK (NULL) ;   // fail if invalid GPU
     return  (GB_Global.gpu_properties [device].memory_resource) ;
     // NOTE: this returns a void*, needs to be cast to be used
 }

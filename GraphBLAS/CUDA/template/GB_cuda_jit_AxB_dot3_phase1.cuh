@@ -157,9 +157,8 @@ __global__ void GB_jit_AxB_dot3_phase1_kernel
             //------------------------------------------------------------------
 
             // get the pM and k value of Mi,Mx [pM]
-            int64_t pM ;    // = pfirst + pdelta
-            int64_t k = GB_cuda_ek_slice_entry<GB_Mp_TYPE> (&pM, pdelta, pfirst, Mp, mnvec1,
-                kfirst, slope) ;
+            int64_t pM = pfirst + pdelta ;
+            int64_t k = GB_cuda_ek_slice_entry<GB_Mp_TYPE> (pM, pdelta, Mp, mnvec1, kfirst, slope) ;
 
             //------------------------------------------------------------------
             // get C(i,j): zombie if A(:,i) and B(:,j) are empty or M(i,j) false

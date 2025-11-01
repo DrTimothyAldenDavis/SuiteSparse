@@ -2,7 +2,7 @@
 # SuiteSparse/ParU/CMakeLists.txt:  cmake for ParU
 #-------------------------------------------------------------------------------
 
-# ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+# ParU, Copyright (c) 2022-2025, Mohsen Aznaveh and Timothy A. Davis,
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "FIXME, 2025" )
+set ( PARU_DATE "Nov 1, 2025" )
 set ( PARU_VERSION_MAJOR  1 CACHE STRING "" FORCE )
 set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
 set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )

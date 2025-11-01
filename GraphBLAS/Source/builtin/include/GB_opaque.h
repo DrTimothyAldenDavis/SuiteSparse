@@ -374,6 +374,7 @@ struct GB_Type_opaque       // content of GrB_Type
     size_t defn_size ;      // allocated size of the definition
     uint64_t hash ;         // if 0, type is builtin.
                             // if UINT64_MAX, the type cannot be JIT'd.
+    GxB_print_function print_function ; // for printing user-defined types
 } ;
 
 struct GB_UnaryOp_opaque    // content of GrB_UnaryOp
@@ -469,6 +470,8 @@ struct GB_Descriptor_opaque // content of GrB_Descriptor
     int val_list ;          // how to use the value list, X
 } ;
 
+#define GB_MAX_NGPUS 1024
+
 struct GB_Context_opaque    // content of GxB_Context
 {
     int64_t magic ;         // for detecting uninitialized objects
@@ -479,10 +482,12 @@ struct GB_Context_opaque    // content of GxB_Context
     // ---------------------//
     // OpenMP thread(s):
     double chunk ;          // chunk size for # of threads for small problems
-    int nthreads_max ;      // max # threads to use in this call to GraphBLAS
-    // GPU:
-    int gpu_id ;            // if negative: use the CPU only; do not use a GPU
-                            // if >= 0: then use GPU gpu_id
+    int32_t nthreads_max ;  // max # threads to use in this call to GraphBLAS
+    // GPU(s):
+    int32_t ngpus ;         // # of GPUs available to use in this context
+                            // (in range 0 to GB_MAX_NGPUS)
+    uint16_t gpu_ids [GB_MAX_NGPUS] ;   // using GPUs gpu_ids [0..ngpus-1],
+                            // or no GPU if ngpus == 0.
 } ;
 
 //------------------------------------------------------------------------------

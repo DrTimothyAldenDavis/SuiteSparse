@@ -15,10 +15,10 @@ static GB_cuda_stream_pool pool ;   // a global variable limited to this file
 #define GB_FREE_ALL ;
 
 //------------------------------------------------------------------------------
-// GB_cuda_release_stream
+// GB_cuda_stream_pool_release
 //------------------------------------------------------------------------------
 
-GrB_Info GB_cuda_release_stream (cudaStream_t *stream)
+GrB_Info GB_cuda_stream_pool_release (cudaStream_t *stream)
 {
 
     //--------------------------------------------------------------------------
@@ -34,6 +34,9 @@ GrB_Info GB_cuda_release_stream (cudaStream_t *stream)
     int device = 0 ;
     CUDA_OK (cudaGetDevice (&device)) ;
     CUDA_OK (cudaStreamSynchronize (*stream)) ;
+
+    // FIXME:  assert that device == return value from
+    // cudaStreamGetDevice.
 
     ASSERT (device < pool.streams.size()) ;
     cudaError_t cuda_error1 = cudaSuccess ;
@@ -71,10 +74,10 @@ GrB_Info GB_cuda_release_stream (cudaStream_t *stream)
 }
 
 //------------------------------------------------------------------------------
-// GB_cuda_acquire_stream
+// GB_cuda_stream_pool_acquire
 //------------------------------------------------------------------------------
 
-GrB_Info GB_cuda_acquire_stream (cudaStream_t *stream)
+GrB_Info GB_cuda_stream_pool_acquire (cudaStream_t *stream)
 {
 
     //--------------------------------------------------------------------------
@@ -127,13 +130,18 @@ GrB_Info GB_cuda_acquire_stream (cudaStream_t *stream)
 
 GrB_Info GB_cuda_stream_pool_init (void)
 {
+    // get the current device
+    int original_device = 0 ;
+    CUDA_OK (cudaGetDevice (&original_device)) ;
+    #undef  GB_FREE_ALL
+    #define GB_FREE_ALL cudaSetDevice (original_device) ;
+
     int ngpus = GB_Global_gpu_count_get ( ) ;
     for (int device = 0 ; device < ngpus ; device++)
     {
         pool.nstreams_avail.push_back (0) ;
         pool.streams.push_back (std::array<cudaStream_t, STREAMS_PER_DEVICE>()) ;
         CUDA_OK (cudaSetDevice (device)) ;
-
         for (int k = 0 ; k < STREAMS_PER_DEVICE ; k++)
         {
             cudaStream_t tmp ;
@@ -142,6 +150,11 @@ GrB_Info GB_cuda_stream_pool_init (void)
             pool.nstreams_avail[device]++ ;
         }
     }
+
+    // restore to the original device
+    #undef  GB_FREE_ALL
+    #define GB_FREE_ALL ;
+    CUDA_OK (cudaSetDevice (original_device)) ;
 
     return GrB_SUCCESS ;
 }

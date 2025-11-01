@@ -70,7 +70,7 @@ GrB_Info GB_cuda_init (void)
     }
 
     GB_cuda_set_device (0) ;            // make GPU 0 the default device
-    GB_Context_gpu_id_set (NULL, 0) ;   // set GxB_CONTEXT_WORLD->gpu_id to 0
+    GB_Context_gpu_ids_set (NULL, NULL, 0) ; // set global default to GPU 0
 
     // also check for jit cache, pre-load library of common kernels ...
     return (GrB_SUCCESS) ;

@@ -827,7 +827,6 @@ GrB_Info GB_jit_kernel_select_bitmap                                        \
     const GB_void *ythunk,                                                  \
     cudaStream_t stream,                                                    \
     int32_t gridsz,                                                         \
-    int32_t blocksz,                                                        \
     const GB_callback_struct *restrict my_callback                          \
 )                                                                           \
 
@@ -839,7 +838,6 @@ GrB_Info GB_jit_kernel_select_sparse                                        \
     const GB_void *ythunk,                                                  \
     cudaStream_t stream,                                                    \
     int32_t gridsz,                                                         \
-    int32_t blocksz,                                                        \
     const GB_callback_struct *restrict my_callback                          \
 )
 

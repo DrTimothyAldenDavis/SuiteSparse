@@ -1013,6 +1013,22 @@ void gb_mycx_cmplx_imag (gb_mycx *z, const double *x)
 #define U (GxB_unary_function)
 #define B (GxB_binary_function)
 
+int64_t gb_mycx_print
+(
+    // output:
+    char *string,           // value is printed to the string
+    // input:
+    size_t string_size,     // size of the string array
+    const void *value,      // value to print
+    int verbose             // if >0, print verbosely; else tersely
+)
+{
+    gb_mycx *x = (gb_mycx *) value ;
+    return ((int64_t) snprintf (string, string_size,
+            verbose ? "(real: %.16g, imag: %.16g)" : "(real: %g, imag: %g)",
+            x->re, x->im)) ;
+}
+
 GrB_Info Complex_init (bool builtin_complex)
 {
 
@@ -1032,7 +1048,10 @@ GrB_Info Complex_init (bool builtin_complex)
         // create the user-defined type
         // Normally, the typename should be "GxB_FC64_t",
         // but the C type GxB_FC64_t is already defined.
-        OK (GxB_Type_new (&Complex, sizeof (GxB_FC64_t), "gb_mycx", MYCX_DEFN)) ;
+        OK (GxB_Type_new (&Complex, sizeof (GxB_FC64_t), "gb_mycx", MYCX_DEFN));
+        // register the function to print a single gb_mycx scalar
+        OK (GrB_Type_set_VOID (Complex, &gb_mycx_print, GxB_PRINT_FUNCTION,
+            sizeof (&gb_mycx_print))) ;
     }
 
     //--------------------------------------------------------------------------

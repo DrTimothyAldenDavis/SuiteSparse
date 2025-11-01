@@ -56,8 +56,6 @@ FUTURE plans for GraphBLAS:
         * check if vectorization of GrB_mxm is effective when using clang
         * see how HNSW vector search could be implemented in GraphBLAS
 
-    printing user-defined types
-
     Support for COO / Tuple formats:
 
         The Container method could be extended to the COO / Tuples format.  It

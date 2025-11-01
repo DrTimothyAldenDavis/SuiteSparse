@@ -214,7 +214,6 @@
 #define GB_clog1p GM_clog1p
 #define GB_clog2f GM_clog2f
 #define GB_clog2 GM_clog2
-#define GB_code_check GM_code_check
 #define GB_code_name_get GM_code_name_get
 #define GB_code_size GM_code_size
 #define GB_code_string GM_code_string
@@ -241,9 +240,9 @@
 #define GB_Context_chunk_set GM_Context_chunk_set
 #define GB_Context_disengage GM_Context_disengage
 #define GB_Context_engage GM_Context_engage
-#define GB_Context_gpu_id_get GM_Context_gpu_id_get
-#define GB_Context_gpu_id GM_Context_gpu_id
-#define GB_Context_gpu_id_set GM_Context_gpu_id_set
+#define GB_Context_gpu_ids_get GM_Context_gpu_ids_get
+#define GB_Context_gpu_ids GM_Context_gpu_ids
+#define GB_Context_gpu_ids_set GM_Context_gpu_ids_set
 #define GB_Context_nthreads_max_get GM_Context_nthreads_max_get
 #define GB_Context_nthreads_max GM_Context_nthreads_max
 #define GB_Context_nthreads_max_set GM_Context_nthreads_max_set
@@ -872,6 +871,10 @@
 #define GB_JITpackage_353 GM_JITpackage_353
 #define GB_JITpackage_354 GM_JITpackage_354
 #define GB_JITpackage_355 GM_JITpackage_355
+#define GB_JITpackage_356 GM_JITpackage_356
+#define GB_JITpackage_357 GM_JITpackage_357
+#define GB_JITpackage_358 GM_JITpackage_358
+#define GB_JITpackage_359 GM_JITpackage_359
 #define GB_JITpackage_35 GM_JITpackage_35
 #define GB_JITpackage_36 GM_JITpackage_36
 #define GB_JITpackage_37 GM_JITpackage_37
@@ -1270,6 +1273,7 @@
 #define GB_subassign_24 GM_subassign_24
 #define GB_subassign_25 GM_subassign_25
 #define GB_subassign_26 GM_subassign_26
+#define GB_subassign_27 GM_subassign_27
 #define GB_subassigner GM_subassigner
 #define GB_subassigner_method GM_subassigner_method
 #define GB_subassign GM_subassign

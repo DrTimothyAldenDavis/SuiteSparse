@@ -10,7 +10,7 @@
 #define GB_FREE_ALL                                         \
 {                                                           \
     GB_FREE_WORKSPACE                                       \
-    GB_cuda_release_stream (&stream) ;                      \
+    GB_cuda_stream_pool_release (&stream) ;                      \
 }
 
 #define BLOCK_SIZE 512
@@ -37,7 +37,7 @@ GrB_Info GB_cuda_apply_unop
     if (anz == 0) return (GrB_SUCCESS) ;
 
     // get a stream on the current device
-    GB_OK (GB_cuda_acquire_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_acquire (&stream)) ;
 
     // FIXME: make this a CUDA helper function
     if (ythunk != NULL && op != NULL && op->ytype != NULL)
@@ -63,7 +63,7 @@ GrB_Info GB_cuda_apply_unop
         ythunk_cuda, stream, gridsz, BLOCK_SIZE)) ;
 
     GB_FREE_WORKSPACE ;
-    GB_OK (GB_cuda_release_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_release (&stream)) ;
     return GrB_SUCCESS ;
 }
 

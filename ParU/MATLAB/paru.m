@@ -74,7 +74,7 @@ function [x,stats] = paru (A,b,opts)    %#ok
 %
 % See also paru_make, paru_demo, paru_many, paru_tiny, mldivide, amd, colamd.
 %
-% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% ParU, Copyright (c) 2022-2025, Mohsen Aznaveh and Timothy A. Davis,
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 

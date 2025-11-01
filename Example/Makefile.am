@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/Example/Makefile
+# SuiteSparse/Example/Makefile.am
 #-------------------------------------------------------------------------------
 
 # Example: Copyright (c) 2023, Timothy A. Davis, All Rights Reserved.

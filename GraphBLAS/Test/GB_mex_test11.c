@@ -595,11 +595,6 @@ if (jit_enabled)
     double chunk = 0 ;
     OK (GxB_Context_get (context1, GxB_CHUNK, &chunk)) ;
     CHECK (chunk == GB_CHUNK_DEFAULT) ;
-    int id1 = 0 ;
-    OK (GxB_Context_set (context1, GxB_GPU_ID, 3)) ;
-    OK (GxB_Context_get (context1, GxB_GPU_ID, &id1)) ;
-    int id2 = GB_Context_gpu_id ( ) ;
-    CHECK (id1 == id2) ;
 
     int nth ;
     OK (GxB_Context_set_INT32 (context1, GxB_CONTEXT_NTHREADS, 33)) ;
@@ -609,9 +604,6 @@ if (jit_enabled)
     OK (GxB_Context_set_FP64 (context1, GxB_CONTEXT_CHUNK, 1234)) ;
     OK (GxB_Context_get_FP64 (context1, GxB_CONTEXT_CHUNK, &chunk)) ;
     CHECK (chunk == 1234) ;
-
-    OK (GxB_Context_set_INT32 (context1, GxB_CONTEXT_GPU_ID, 40)) ;
-    OK (GxB_Context_get_INT32 (context1, GxB_CONTEXT_GPU_ID, &id1)) ;
 
     OK (GxB_Context_disengage (NULL)) ;
     GrB_free (&context1) ;

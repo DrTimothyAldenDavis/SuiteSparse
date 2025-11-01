@@ -31,6 +31,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cstring>
 
 //------------------------------------------------------------------------------
 // RMM_Wrap_Handle: a global object containing the RMM context
@@ -346,10 +347,20 @@ int rmm_wrap_initialize_all_same
             std::stringstream check1;
             check1 << cuda_visible_devices;
             std::string intermediate;
-            while(getline(check1, intermediate, ','))
+            for (int i = 0; getline(check1, intermediate, ','); ++i)
             {
-
                 intermediate.erase(std::remove_if(intermediate.begin(), intermediate.end(), ::isspace), intermediate.end());
+
+                // GPUs represented by UUIDs from "nvidia-smi -L" or MIG
+                if (std::strncmp("GPU-", intermediate.c_str(), 4) == 0 ||
+                    std::strncmp("MIG-GPU-", intermediate.c_str(), 8) == 0)
+                {
+                    // device IDs must work with cudaSetDevice() and
+                    // as indices for rmm_wrap_context[]
+                    devices.push_back(i);
+                    continue;
+                }
+
                 uint32_t device_id = static_cast<uint32_t>(stoi(intermediate));
                 std::cout << "Found device_id " << device_id << std::endl;
                 devices.push_back(device_id);

@@ -10,7 +10,7 @@
 #define GB_FREE_ALL                                         \
 {                                                           \
     GB_FREE_WORKSPACE ;                                     \
-    GB_cuda_release_stream (&stream) ;                      \
+    GB_cuda_stream_pool_release (&stream) ;                      \
 }
 
 #define BLOCK_SIZE 512
@@ -31,7 +31,7 @@ GrB_Info GB_cuda_apply_binop
     size_t scalarx_cuda_size = 0 ;
 
     cudaStream_t stream = nullptr ;
-    GB_OK (GB_cuda_acquire_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_acquire (&stream)) ;
 
     ASSERT (scalarx != NULL) ;
     // make a copy of scalarx to ensure it's not on the CPU stack
@@ -74,6 +74,6 @@ GrB_Info GB_cuda_apply_binop
     }
 
     GB_FREE_WORKSPACE ;
-    GB_OK (GB_cuda_release_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_release (&stream)) ;
     return GrB_SUCCESS ; 
 }

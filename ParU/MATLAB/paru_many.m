@@ -7,7 +7,7 @@ function paru_many
 %
 % See also paru, paru_make, paru_demo, paru_tiny, mldivide, ssget, umfpack.
 
-% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% ParU, Copyright (c) 2022-2025, Mohsen Aznaveh and Timothy A. Davis,
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 

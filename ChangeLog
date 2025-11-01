@@ -1,8 +1,13 @@
-TODO, 2025: version 7.12.0
+Nov 1, 2025: version 7.12.0
 
     * UMFPACK 6.3.7: workaround for an Intel icx 2025.2 compiler bug
-    * LAGraph 1.2.1: bug fix for experimental maxflow method (FIXME IN PROGRESS)
+    * LAGraph 1.2.1: bug fix for experimental maxflow method
     * ParU 1.1.0: performance improvements, minor revisions for benchmarking
+    * GraphBLAS 10.2.0: printing user-defined types, GrB_assign performance
+    * SPQR 4.3.6: better handling of complex types for BLAS/LAPACK
+    * SuiteSparse_config 7.12.0: better handling of complex types for
+        BLAS/LAPACK
+    * Mongoose 3.3.6: minor change to build system
     * Package versions in this release: (* denotes a new version)
         SuiteSparse_config 7.12.0   *
         AMD 3.3.4
@@ -14,15 +19,15 @@ TODO, 2025: version 7.12.0
         CSparse 4.3.2
         CXSparse 4.4.2
         Example 1.8.10              *
-        GraphBLAS 10.1.1
+        GraphBLAS 10.2.0            *
         KLU 2.3.6
         LDL 3.3.3
-        LAGraph 1.2.1               *   FIXME IN PROGRESS
-        SuiteSparse_Mongoose 3.3.5
+        LAGraph 1.2.1               *
+        SuiteSparse_Mongoose 3.3.6  *
         ParU 1.1.0                  *
         RBio 4.3.5
         SPEX 3.2.4
-        SPQR 4.3.5
+        SPQR 4.3.6                  *
         UMFPACK 6.3.7               *
 
 July 25, 2025: version 7.11.0

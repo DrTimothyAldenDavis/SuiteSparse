@@ -3711,18 +3711,18 @@ void mexFunction
 
     printf ("\n-------------- GB_entry_check:\n") ;
 
-    Werk->where = "GB_entry_check (type, x, pr, f)" ;
+    Werk->where = "GB_entry_check (type, x, pr, f, &string, &string_size)" ;
 
     expected = GrB_NULL_POINTER ;
 
-    ERR (GB_entry_check (NULL, NULL, 5, NULL)) ;
-    ERR (GB_entry_check (NULL, X, 5, NULL)) ;
-    OK (GB_entry_check (GrB_FP64, X, 5, NULL)) ;
+    ERR (GB_entry_check (NULL, NULL, 5, NULL, NULL, NULL)) ;
+    ERR (GB_entry_check (NULL, X, 5, NULL, NULL, NULL)) ;
+    OK (GB_entry_check (GrB_FP64, X, 5, NULL, NULL, NULL)) ;
     printf ("\n") ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
-    ERR (GB_entry_check (Tcrud, X, 5, NULL)) ;
+    ERR (GB_entry_check (Tcrud, X, 5, NULL, NULL, NULL)) ;
     printf ("\nAll GB_entry_check tests passed (errors expected)\n") ;
 
     //--------------------------------------------------------------------------

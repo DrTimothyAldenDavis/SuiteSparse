@@ -5,19 +5,16 @@
 #define GB_FREE_ALL                         \
 {                                           \
     GB_phybix_free (C) ;                    \
-    GB_cuda_release_stream (&stream) ;      \
+    GB_cuda_stream_pool_release (&stream) ; \
 }
-
-#define BLOCK_SIZE 512
-#define LOG2_BLOCK_SIZE 9
 
 GrB_Info GB_cuda_select_sparse
 (
-    GrB_Matrix C,
+    GrB_Matrix C,               // C is jumbled if A is jumbled
     const bool C_iso,
     const GrB_IndexUnaryOp op,
     const bool flipij,
-    const GrB_Matrix A,
+    const GrB_Matrix A,         // A can be jumbled, in all cases
     const GB_void *athunk,
     const GB_void *ythunk,
     GB_Werk Werk
@@ -29,13 +26,21 @@ GrB_Info GB_cuda_select_sparse
     ASSERT (C != NULL && !(C->header_size == 0)) ;
     ASSERT (A != NULL && !(A->header_size == 0)) ;
 
-    cudaStream_t stream = nullptr ;
-    GB_OK (GB_cuda_acquire_stream (&stream)) ;
+    GBURBLE ("(select sparse on cuda) ") ;
+    printf ("\nblockdim1: %d chunksize1: %d\n", 
+        GB_CUDA_SELECT_SPARSE_BLOCKDIM1,
+        GB_CUDA_SELECT_SPARSE_CHUNKSIZE1) ;
+    printf ("blockdim2: %d chunksize2: %d\n", 
+        GB_CUDA_SELECT_SPARSE_BLOCKDIM2,
+        GB_CUDA_SELECT_SPARSE_CHUNKSIZE2) ;
 
-    GrB_Index anz = GB_nnz_held (A) ;
+    cudaStream_t stream = nullptr ;
+    GB_OK (GB_cuda_stream_pool_acquire (&stream)) ;
+
+    int64_t anz = GB_nnz_held (A) ;
 
     int32_t number_of_sms = GB_Global_gpu_sm_get (0) ;
-    int64_t raw_gridsz = GB_ICEIL (anz, BLOCK_SIZE) ;
+    int64_t raw_gridsz = GB_ICEIL (anz, GB_CUDA_SELECT_SPARSE_CHUNKSIZE1) ;
     int32_t gridsz = std::min (raw_gridsz, (int64_t) (number_of_sms * 256)) ;
     gridsz = std::max (gridsz, 1) ;
 
@@ -53,7 +58,6 @@ GrB_Info GB_cuda_select_sparse
         csparsity, A->hyper_switch, /* C->plen: revised later: */ 1,
         Cp_is_32, Cj_is_32, Ci_is_32)) ;
 
-    C->jumbled = A->jumbled ;
     C->iso = C_iso ;
 
     CUDA_OK (cudaGetLastError ( )) ;    //FIXME: remove
@@ -63,9 +67,9 @@ GrB_Info GB_cuda_select_sparse
     CUDA_OK (cudaGetLastError ( )) ;    //FIXME: remove
 
     GB_OK (GB_cuda_select_sparse_jit (C, A,
-        flipij, ythunk, op, stream, gridsz, BLOCK_SIZE)) ;
+        flipij, ythunk, op, stream, gridsz)) ;
 
-    GB_OK (GB_cuda_release_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_release (&stream)) ;
 
     ASSERT (C->x != NULL) ;
 

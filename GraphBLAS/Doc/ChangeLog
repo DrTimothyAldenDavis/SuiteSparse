@@ -1,3 +1,9 @@
+Nov 1, 2025, version 10.2.0
+
+    * printing of user-defined types: get/set with GxB_PRINT_FUNCTION
+    * doc: documentation of GrB_Matrix_import/export was backwards
+    * performance: new GrB_assign kernel for C<C,struct> += A added
+
 July 25, 2025: version 10.1.1
 
     * gcc can now be used the Power or s390:  workaround added;

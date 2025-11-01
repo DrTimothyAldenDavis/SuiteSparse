@@ -66,8 +66,8 @@ __global__ void GB_cuda_colscale_kernel
 
                 for (int64_t pdelta = threadIdx.x ; pdelta < my_chunk_size ; pdelta += blockDim.x)
                 {
-                    int64_t p ;
-                    int64_t k = GB_cuda_ek_slice_entry<GB_Ap_TYPE> (&p, pdelta, pfirst, Ap, anvec_sub1, kfirst, slope) ;
+                    int64_t p = pfirst + pdelta ;
+                    int64_t k = GB_cuda_ek_slice_entry<GB_Ap_TYPE> (p, pdelta, Ap, anvec_sub1, kfirst, slope) ;
                     int64_t j = GBh_A (Ah, k) ;
 
                     GB_DECLAREB (djj) ;

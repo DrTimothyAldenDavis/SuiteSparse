@@ -3,11 +3,8 @@
 #undef  GB_FREE_ALL
 #define GB_FREE_ALL                                         \
 {                                                           \
-    GB_cuda_release_stream (&stream) ;                      \
+    GB_cuda_stream_pool_release (&stream) ;                 \
 }
-
-#define BLOCK_SIZE 512
-#define LOG2_BLOCK_SIZE 9
 
 GrB_Info GB_cuda_select_bitmap
 (
@@ -20,18 +17,21 @@ GrB_Info GB_cuda_select_bitmap
 {
     GrB_Info info ;
 
-    cudaStream_t stream = nullptr ;
-    GB_OK (GB_cuda_acquire_stream (&stream)) ;
+    GBURBLE (" (select bitmap on cuda)") ;
 
-    GrB_Index anz = GB_nnz_held (A) ;
+    cudaStream_t stream = nullptr ;
+    GB_OK (GB_cuda_stream_pool_acquire (&stream)) ;
+
+    int64_t anz = GB_nnz_held (A) ;
 
     int32_t number_of_sms = GB_Global_gpu_sm_get (0) ;
-    int64_t raw_gridsz = GB_ICEIL (anz, BLOCK_SIZE) ;
+    int64_t raw_gridsz = GB_ICEIL (anz, GB_CUDA_SELECT_BITMAP_BLOCKDIM) ;
     int32_t gridsz = std::min (raw_gridsz, (int64_t) (number_of_sms * 256)) ;
+    gridsz = std::max (gridsz, 1) ;
 
     GB_OK (GB_cuda_select_bitmap_jit (C, A,
-        flipij, ythunk, op, stream, gridsz, BLOCK_SIZE)) ;
+        flipij, ythunk, op, stream, gridsz)) ;
 
-    GB_OK (GB_cuda_release_stream (&stream)) ;
+    GB_OK (GB_cuda_stream_pool_release (&stream)) ;
     return GrB_SUCCESS ;
 }
