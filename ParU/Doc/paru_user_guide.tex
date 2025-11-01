@@ -1835,7 +1835,7 @@ analysis and factorization of the matrix:
 \end{itemize}
 
 %-------------------------------------------------------------------------------
-\section{Requirements and Availability}
+\section{Requirements, Availability, and Performance Considerations}
 \label{summary}
 %-------------------------------------------------------------------------------
 
@@ -1851,16 +1851,17 @@ is strongly recommended, such as the Intel MKL, the AMD ACML, OpenBLAS, FLAME
 nested parallelism, by making parallel calls to the BLAS, each of which can
 themselves be parallel.  This is supported by the Intel MKL BLAS library with
 an Intel-specific method (\verb'mkl_set_num_threads_local') and by an OpenBLAS
-method (\verb'openblas_set_num_threads_local', in v0.3.27 or late) to tell the
+method (\verb'openblas_set_num_threads_local', in v0.3.27 or later) to tell the
 BLAS how many threads to use.  As a result, for best performance, the Intel MKL
-BLAS or OpenBLAS (v0.3.27 or later) is required.  However, do NOT use the
+BLAS or OpenBLAS (v0.3.27 or later) is required.
+If a different BLAS library is used, it should be a single-threaded library,
+since ParU will call it from many of its own threads, simultaneously.
+
+Do NOT use the
 \verb'OMP_PLACES' environment variable if using the Intel MKL BLAS.  Leave it
 unset.  Otherwise, using it with ParU will lead to only a single thread
 employed inside the BLAS, even when ParU expects it to be multithreaded,
 and performance will suffer as a result.
-
-If a different BLAS library is used, it should be a single-threaded library,
-since ParU will call it from many of its own threads, simultaneously.
 
 ParU also relies heavily on OpenMP tasking to factorize multiple frontal
 matrices at the same time, where each frontal matrix can also be factorized by
