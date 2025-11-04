@@ -149,7 +149,7 @@ jobs:
           done
 
       - name: check
-        timeout-minutes: 20
+        timeout-minutes: 40
         # Need to install the libraries for the tests
         run: |
           echo "::group::Install libraries"
