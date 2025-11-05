@@ -40,9 +40,12 @@ if ( NOT ( ${CMAKE_SYSTEM} MATCHES ${CMAKE_HOST_SYSTEM} ) )
 
     if ( ${BLA_VENDOR} STREQUAL "OpenBLAS" )
         # check if OpenBLAS has openblas_set_num_threads_local (Apr 2024 or later)
+        get_filename_component ( ABS_SOURCE_PATH
+            ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_openblas_Apr2024.c
+            ABSOLUTE )
         try_compile ( OPENBLAS_2024_COMPILES
             ${CMAKE_CURRENT_BINARY_DIR}
-            ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_openblas_Apr2024.c
+            ${ABS_SOURCE_PATH}
             LINK_OPTIONS    ${BLAS_LINKER_FLAGS}
             LINK_LIBRARIES  ${BLAS_LIBRARIES} )
         if ( ${OPENBLAS_2024_COMPILES} )
@@ -69,9 +72,12 @@ if ( is_Intel )
     # determine if MKL is single-threaded or multi-threaded (info only)
     #---------------------------------------------------------------------------
 
+    get_filename_component ( ABS_SOURCE_PATH
+        ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_mkl.c
+        ABSOLUTE )
     try_run ( MKL_RUNS MKL_COMPILES
         ${CMAKE_CURRENT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_mkl.c
+        ${ABS_SOURCE_PATH}
         LINK_OPTIONS    ${BLAS_LINKER_FLAGS}
         LINK_LIBRARIES  ${BLAS_LIBRARIES}
         RUN_OUTPUT_VARIABLE MKL_OUTPUT )
@@ -99,9 +105,12 @@ endif ( )
 if ( ${BLA_VENDOR} STREQUAL "OpenBLAS" )
 
     # check if OpenBLAS has openblas_get_num_threads (Mar 2015 or later)
+    get_filename_component ( ABS_SOURCE_PATH
+        ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_openblas_Mar2015.c
+        ABSOLUTE )
     try_run ( OPENBLAS_2015_RUNS OPENBLAS_2015_COMPILES
         ${CMAKE_CURRENT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_openblas_Mar2015.c
+        ${ABS_SOURCE_PATH}
         LINK_OPTIONS    ${BLAS_LINKER_FLAGS}
         LINK_LIBRARIES  ${BLAS_LIBRARIES}
         RUN_OUTPUT_VARIABLE OPENBLAS_2015_OUTPUT )
@@ -115,9 +124,12 @@ if ( ${BLA_VENDOR} STREQUAL "OpenBLAS" )
     endif ( )
 
     # check if OpenBLAS has openblas_set_num_threads_local (Apr 2024 or later)
+    get_filename_component ( ABS_SOURCE_PATH
+        ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_openblas_Apr2024.c
+        ABSOLUTE )
     try_run ( OPENBLAS_2024_RUNS OPENBLAS_2024_COMPILES
         ${CMAKE_CURRENT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules/check_openblas_Apr2024.c
+        ${ABS_SOURCE_PATH}
         LINK_OPTIONS    ${BLAS_LINKER_FLAGS}
         LINK_LIBRARIES  ${BLAS_LIBRARIES}
         RUN_OUTPUT_VARIABLE OPENBLAS_2024_OUTPUT )
