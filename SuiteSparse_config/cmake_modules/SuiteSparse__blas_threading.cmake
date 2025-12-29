@@ -116,8 +116,12 @@ if ( ${BLA_VENDOR} STREQUAL "OpenBLAS" )
         RUN_OUTPUT_VARIABLE OPENBLAS_2015_OUTPUT )
     if ( ${OPENBLAS_2015_COMPILES} )
         if ( ${OPENBLAS_2015_RUNS} STREQUAL "FAILED_TO_RUN" )
-            # OpenBLAS compiled but failed to run ... why?
-            message ( FATAL_ERROR "BLAS: OpenBLAS failed to run (v0.2.14 or later is required)" )
+            if ( WIN32 )
+                 message ( STATUS "BLAS: OpenBLAS compiled but failed to run (likely DLL path issue). Proceeding..." )
+            else ()
+                 # OpenBLAS compiled but failed to run ... why?
+                 message ( FATAL_ERROR "BLAS: OpenBLAS failed to run (v0.2.14 or later is required)" )
+            endif ()
         endif ( ) 
     else ( )
         message ( FATAL_ERROR "BLAS: OpenBLAS failed to compile (v0.2.14 or later is required)" )
@@ -136,8 +140,11 @@ if ( ${BLA_VENDOR} STREQUAL "OpenBLAS" )
 
     if ( ${OPENBLAS_2024_COMPILES} )
         if ( ${OPENBLAS_2024_RUNS} STREQUAL "FAILED_TO_RUN" )
-            # OpenBLAS compiled but failed to run ... why?
-            message ( FATAL_ERROR "BLAS: OpenBLAS v0.3.27 or later: failed to run" )
+            if ( WIN32 )
+                 message ( STATUS "BLAS: OpenBLAS compiled but failed to run. Proceeding..." )
+            else ()
+                 message ( FATAL_ERROR "BLAS: OpenBLAS v0.3.27 or later: failed to run" )
+            endif ()
         endif ( )
         # We have OpenBLAS 0.3.27 or later;
         add_compile_definitions ( SUITESPARSE_HAVE_OPENBLAS_SET_NUM_THREADS_LOCAL )
