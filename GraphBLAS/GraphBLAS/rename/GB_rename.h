@@ -155,6 +155,7 @@
 #define GB_bitmap_expand_to_hyper GM_bitmap_expand_to_hyper
 #define GB_bitmap_M_scatter_whole GM_bitmap_M_scatter_whole
 #define GB_bitmap_subref GM_bitmap_subref
+#define GB_bitonic GM_bitonic
 #define GB_bitset_int16 GM_bitset_int16
 #define GB_bitset_int32 GM_bitset_int32
 #define GB_bitset_int64 GM_bitset_int64

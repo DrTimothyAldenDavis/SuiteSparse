@@ -42,7 +42,7 @@ using namespace cooperative_groups ;
 // subset of GraphBLAS.h
 //------------------------------------------------------------------------------
 
-#include "GraphBLAS_cuda.hpp"
+#include "include/GraphBLAS_cuda.hpp"
 
 //------------------------------------------------------------------------------
 // internal #include files
@@ -76,6 +76,7 @@ extern "C"
     #include "include/GB_omp_kernels.h"
 }
 
-#include "GB_cuda_error.hpp"
-#include "GB_cuda_atomics.cuh"
+#include "include/GB_cuda_error.hpp"
+#include "include/GB_cuda_atomics.cuh"
+#include "include/GB_cuda_timer.hpp"
 

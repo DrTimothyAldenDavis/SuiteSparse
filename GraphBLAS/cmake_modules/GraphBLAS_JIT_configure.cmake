@@ -73,11 +73,18 @@ if ( GRAPHBLAS_JIT_ENABLE_RELOCATE )
     # convert to -l flags to avoid relocation issues, i.e.: "-lgomp -lpthread -lm"
     set ( GB_C_LIBRARIES "" )
     foreach ( _lib ${GB_CMAKE_LIBRARIES} )
+
+        # skip CUDA::cuda_driver, etc
+        if ( ${_lib} MATCHES "CUDA::" )
+            continue ( )
+        endif ( )
+
         string ( FIND ${_lib} "." _pos REVERSE )
         if ( ${_pos} EQUAL "-1" )
             set ( GB_C_LIBRARIES "${GB_C_LIBRARIES} -l${_lib}" )
             continue ()
         endif ( )
+
         set ( _kinds "SHARED" "STATIC" )
         if ( WIN32 )
             list ( PREPEND _kinds "IMPORT" )
@@ -101,16 +108,20 @@ else ( )
     string ( REPLACE "." "\\." LIBSUFFIX2 ${CMAKE_STATIC_LIBRARY_SUFFIX} )
     set ( GB_C_LIBRARIES "" )
     foreach ( LIB_NAME ${GB_CMAKE_LIBRARIES} )
-        if (( LIB_NAME MATCHES ${LIBSUFFIX1} ) OR ( LIB_NAME MATCHES ${LIBSUFFIX2} ))
+        message ( STATUS "lib: ${LIB_NAME} " )
+        if ( LIB_NAME MATCHES "CUDA::" )
+            continue ( )
+        elseif (( LIB_NAME MATCHES ${LIBSUFFIX1} ) OR ( LIB_NAME MATCHES ${LIBSUFFIX2} ))
             string ( APPEND GB_C_LIBRARIES " " ${LIB_NAME} )
         else ( )
             string ( APPEND GB_C_LIBRARIES " -l" ${LIB_NAME} )
         endif ( )
+
     endforeach ( )
 
 endif ( )
 
-if ( GRAPHBLAS_USE_JIT OR GRAPHBLAS_USE_CUDA )
+if ( GRAPHBLAS_USE_JIT OR GRAPHBLAS_HAS_CUDA )
     message ( STATUS "------------------------------------------------------------------------" )
     message ( STATUS "JIT configuration:" )
     message ( STATUS "------------------------------------------------------------------------" )

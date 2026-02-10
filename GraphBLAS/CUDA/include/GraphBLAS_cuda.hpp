@@ -10,6 +10,9 @@
 extern "C"
 { 
     // definitions that modify GraphBLAS.h
+    #ifndef GBNCPUFEAT
+    #define GBNCPUFEAT
+    #endif
     #include "include/GB_dev.h"
     #include "include/GB_compiler.h"
     #include "include/GB_warnings.h"

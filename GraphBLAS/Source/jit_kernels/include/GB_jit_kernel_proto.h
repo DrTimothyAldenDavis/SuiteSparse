@@ -662,8 +662,7 @@ GrB_Info GB_jit_kernel_subref_sparse                                    \
     const int ntasks,                                                   \
     const int nthreads,                                                 \
     const bool post_sort,                                               \
-    const void *Ihead_input,                                            \
-    const void *Inext_input,                                            \
+    const GrB_Matrix R,                                                 \
     const void *Ap_start_input,                                         \
     const void *Ap_end_input,                                           \
     const int64_t nI,                                                   \

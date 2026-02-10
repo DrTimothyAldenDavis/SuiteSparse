@@ -75,7 +75,7 @@ static inline int GB_ngpus_to_use
     else if (gpu_hack == 1)
     {
         // always use all available GPU(s)
-        // Fixme for CUDA: allow 1 to gpu_count to be requested
+        // FIXME for CUDA: allow 1 to gpu_count to be requested
         return (gpu_count) ;
     }
     else

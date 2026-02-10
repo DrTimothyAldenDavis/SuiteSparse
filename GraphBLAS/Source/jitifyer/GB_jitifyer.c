@@ -1870,7 +1870,7 @@ GrB_Info GB_jitifyer_load2_worker
             break ;
 
         case GB_jit_subref_family  : 
-            method_code_digits = 6 ;
+            method_code_digits = 7 ;
             break ;
 
         case GB_jit_sort_family  : 
@@ -2580,18 +2580,19 @@ void GB_jitifyer_nvcc_compile
 
     // compile:
     "sh -c \""                          // execute with POSIX shell
-    // Fixme for CUDA: use GB_CUDA_COMPILER here:
+    // FIXME for CUDA: use GB_CUDA_COMPILER here:
     "nvcc --version ; "
     "nvcc "                             // compiler command
     "-forward-unknown-to-host-compiler "
     "-DGB_JIT_RUNTIME=1  "              // nvcc flags
-    // Fixme for CUDA: add GB_CUDA_INC here:
+    // FIXME for CUDA: add GB_CUDA_INC here:
     "-I/usr/local/cuda/include -std=c++17 " 
     " --gpu-architecture=compute_%d%d"  // major,minor
     " --gpu-code=sm_%d%d "              // major,minor
     " -fPIC " 
-    // Fixme for CUDA: add GB_CUDA_FLAGS here:
-    " -O3 "   // HACK Fixme for CUDA
+    // FIXME for CUDA: add GB_CUDA_FLAGS here:
+    " -O3 "   // HACK FIXME for CUDA
+    " -Wno-deprecated-gpu-targets "
     "-I'%s/src' "                       // include source directory
     "-I'%s/src/template' "
     "-I'%s/src/include' "
@@ -2604,6 +2605,7 @@ void GB_jitifyer_nvcc_compile
     "nvcc "                             // compiler
     "-DGB_JIT_RUNTIME=1  "              // nvcc flags
     "-I/usr/local/cuda/include -std=c++17 "
+    " -Wno-deprecated-gpu-targets "
     " --gpu-architecture=compute_%d%d"  // major,minor
     " --gpu-code=sm_%d%d "              // major,minor
     " -shared "

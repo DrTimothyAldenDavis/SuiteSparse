@@ -112,13 +112,12 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
 
     GB_CHECK_MAGIC (A) ;
 
-    GB_Ap_DECLARE  (Ap,   const) ; GB_Ap_PTR  (Ap,   A) ;
-    GB_Ah_DECLARE  (Ah,   const) ; GB_Ah_PTR  (Ah,   A) ;
-    GB_Ai_DECLARE  (Ai,   const) ; GB_Ai_PTR  (Ai,   A) ;
-    GB_AYp_DECLARE (A_Yp, const) ; GB_AYp_PTR (A_Yp, A) ;
-    GB_AYi_DECLARE (A_Yi, const) ; GB_AYi_PTR (A_Yi, A) ;
-    GB_AYx_DECLARE (A_Yx, const) ; GB_AYx_PTR (A_Yx, A) ;
-
+    GB_Ap_DECLARE  (Ap, const) ; GB_Ap_PTR  (Ap, A) ;
+    GB_Ah_DECLARE  (Ah, const) ; GB_Ah_PTR  (Ah, A) ;
+    GB_Ai_DECLARE  (Ai, const) ; GB_Ai_PTR  (Ai, A) ;
+    GB_MDECL (A_Yp, const, u) ; GB_GET_HYPER_PTR (A_Yp, A, p) ;
+    GB_MDECL (A_Yi, const, u) ; GB_GET_HYPER_PTR (A_Yi, A, i) ;
+    GB_MDECL (A_Yx, const, u) ; GB_GET_HYPER_PTR (A_Yx, A, x) ;
     const int8_t *restrict Ab = A->b ;
 
     //--------------------------------------------------------------------------

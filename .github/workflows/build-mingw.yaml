@@ -92,7 +92,7 @@ jobs:
             mpfr:p
 
       - name: checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -104,7 +104,7 @@ jobs:
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -173,7 +173,7 @@ jobs:
         # Save the cache after we are done building
         # This helps to retain the ccache even if the subsequent steps are failing.
         if: always() && (steps.build.outcome != 'skipped')
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}

@@ -5,12 +5,37 @@
 
 \begin{itemize}
 
-\item Nov 1, version 10.2.0
+\item Jan 21, 2026: version 10.3.1
 
     \begin{itemize}
-    \item printing of user-defined types: get/set with \verb'GxB_PRINT_FUNCTION'.
+    \item (67) bug fix:  incorrect JIT kernel constructed for R=masker(C,M,Z)
+        when R is hypersparse.  Found by Roi Lipman, FalkorDB.
+    \item (66) bug fix:  \verb'GB_bitonic' did not compile with the MS cl
+        compiler.  Found by Erik Welch, NVIDIA.
+    \end{itemize}
+
+\item Dec 3, 2025: version 10.3.0
+
+    \begin{itemize}
+    \item \verb'GrB_extract': performance improvement for \verb'C=A(I,J)' when
+        \verb'A' is very large and (typically) hypersparse, and \verb'I' is an
+        explicit list and also large.
+    \item \verb'GrB_(Matrix,Vector,Scalar)_dup':  pending work is now left
+        unfinished; any pending work in the input matrix will appear in the
+        copy.  In v10.2.0 and earlier, all pending work in the input matrix was
+        finished first.  To obtain the behavior in v10.2.0 and earlier, simply
+        call \verb'GrB_*_wait' on the input matrix before calling
+        \verb'GrB_*_dup'.
+    \end{itemize}
+
+\item Nov 1, 2025: version 10.2.0
+
+    \begin{itemize}
+    \item printing of user-defined types: get/set with
+        \verb'GxB_PRINT_FUNCTION'.
     \item doc: documentation of \verb'GrB_Matrix_import/export' was backwards.
-    \item performance: new \verb'GrB_assign' kernel for \verb'C<C,struct>+=A' added.
+    \item performance: new \verb'GrB_assign' kernel for \verb'C<C,struct>+=A'
+        added.
     \end{itemize}
 
 \item July 25, 2025: version 10.1.1
