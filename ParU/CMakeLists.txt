@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Nov 1, 2025" )
+set ( PARU_DATE "FIXME, 2026" )
 set ( PARU_VERSION_MAJOR  1 CACHE STRING "" FORCE )
 set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
-set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.
