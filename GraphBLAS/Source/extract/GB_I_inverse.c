@@ -120,7 +120,7 @@ GrB_Info GB_I_inverse           // invert the I list for C=A(I,:)
         // J_input
         I,                  // row indices are in I [0..nI-1]
         // S_input
-        S_input,            // values of R (iso-valued)
+        (const GB_void *) S_input,  // values of R (iso-valued)
         // S_iso
         true,               // R is iso-valued
         // nvals
