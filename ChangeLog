@@ -1,3 +1,34 @@
+FIXME, 2026: version 7.12.3
+
+    * github workflow: remove deprecated environments
+    * CHOLMOD 5.3.5: typo in user guide
+    * ParU 1.1.1: MATLAB mexFunction does not #include mkl.h on Intel systems
+    * GraphBLAS 10.4.0: added GxB_atfork_* methods.  GrB_*_extractElement no
+        longer calls GrB_wait if the entry can be found without finalizing
+        pending tuples.
+    * SuiteSparse_config 7.12.3: version update to match SuiteSparse
+    * Package versions in this release: (* denotes a new version)
+        SuiteSparse_config 7.12.3   *
+        AMD 3.3.4
+        BTF 2.3.3
+        CAMD 3.3.5
+        CCOLAMD 3.3.5
+        CHOLMOD 5.3.5               *
+        COLAMD 3.3.5
+        CSparse 4.3.2
+        CXSparse 4.4.2
+        Example 1.8.10
+        GraphBLAS 10.4.0            *
+        KLU 2.3.6
+        LDL 3.3.3
+        LAGraph 1.2.1
+        SuiteSparse_Mongoose 3.3.6
+        ParU 1.1.1                  *
+        RBio 4.3.5
+        SPEX 3.2.4
+        SPQR 4.3.6
+        UMFPACK 6.3.7
+
 Feb 5, 2026: version 7.12.2
 
     * GraphBLAS 10.3.1: bug and documentation fixes, performance improvements,

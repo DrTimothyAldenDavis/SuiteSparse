@@ -109,10 +109,10 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( SuiteSparse_config 7.12.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.3.4
+    find_package ( CHOLMOD 5.3.5
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT CHOLMOD_FOUND )
-        find_package ( CHOLMOD 5.3.4 REQUIRED )
+        find_package ( CHOLMOD 5.3.5 REQUIRED )
     endif ( )
 
     find_package ( UMFPACK 6.3.7
