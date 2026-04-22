@@ -105,7 +105,7 @@ jobs:
           category: ${{ matrix.group }}-64
 
 
-  mingw32:
+  mingw64:
     runs-on: windows-latest
 
     defaults:
@@ -134,7 +134,7 @@ jobs:
     env:
       CHERE_INVOKING: 1
 
-    name: CodeQL (mingw32, ${{ matrix.group }})
+    name: CodeQL (mingw64, ${{ matrix.group }})
 
     steps:
       - name: get CPU name
@@ -152,16 +152,16 @@ jobs:
 
           install: >-
             base-devel
-            mingw-w64-i686-autotools
-            mingw-w64-i686-cmake
-            mingw-w64-i686-cc
-            mingw-w64-i686-fc
-            mingw-w64-i686-openblas
-            mingw-w64-i686-omp
-            mingw-w64-i686-gmp
-            mingw-w64-i686-mpfr
+            mingw-w64-x86_64-autotools
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-cc
+            mingw-w64-x86_64-fc
+            mingw-w64-x86_64-openblas
+            mingw-w64-x86_64-omp
+            mingw-w64-x86_64-gmp
+            mingw-w64-x86_64-mpfr
 
-          msystem: MINGW32
+          msystem: MINGW64
 
       - name: checkout repository
         uses: actions/checkout@v6
@@ -202,4 +202,4 @@ jobs:
       - name: perform CodeQL analysis
         uses: github/codeql-action/analyze@v4
         with:
-          category: ${{ matrix.group }}-32
+          category: ${{ matrix.group }}-64
