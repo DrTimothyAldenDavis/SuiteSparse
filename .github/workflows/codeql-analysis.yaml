@@ -152,16 +152,18 @@ jobs:
 
           install: >-
             base-devel
-            mingw-w64-x86_64-autotools
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-cc
-            mingw-w64-x86_64-fc
-            mingw-w64-x86_64-openblas
-            mingw-w64-x86_64-omp
-            mingw-w64-x86_64-gmp
-            mingw-w64-x86_64-mpfr
 
-          msystem: MINGW64
+          pacboy: >-
+            autotools:p
+            cmake:p
+            cc:p
+            fc:p
+            openblas:p
+            omp:p
+            gmp:p
+            mpfr:p
+
+          msystem: UCRT64
 
       - name: checkout repository
         uses: actions/checkout@v6
