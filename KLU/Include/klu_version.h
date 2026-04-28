@@ -54,7 +54,10 @@
 // zl: complex int64_t
 #define KLU_scale klu_zl_scale
 #define KLU_solve klu_zl_solve
+#define KLU_solve_ws klu_zl_solve_ws
+#define KLU_solve_worksize klu_zl_solve_worksize
 #define KLU_tsolve klu_zl_tsolve
+#define KLU_tsolve_ws klu_zl_tsolve_ws
 #define KLU_free_numeric klu_zl_free_numeric
 #define KLU_factor klu_zl_factor
 #define KLU_refactor klu_zl_refactor
@@ -78,7 +81,10 @@
 // z: complex int32_t
 #define KLU_scale klu_z_scale
 #define KLU_solve klu_z_solve
+#define KLU_solve_ws klu_z_solve_ws
+#define KLU_solve_worksize klu_z_solve_worksize
 #define KLU_tsolve klu_z_tsolve
+#define KLU_tsolve_ws klu_z_tsolve_ws
 #define KLU_free_numeric klu_z_free_numeric
 #define KLU_factor klu_z_factor
 #define KLU_refactor klu_z_refactor
@@ -106,7 +112,10 @@
 // l: int64_t
 #define KLU_scale klu_l_scale
 #define KLU_solve klu_l_solve
+#define KLU_solve_ws klu_l_solve_ws
+#define KLU_solve_worksize klu_l_solve_worksize
 #define KLU_tsolve klu_l_tsolve
+#define KLU_tsolve_ws klu_l_tsolve_ws
 #define KLU_free_numeric klu_l_free_numeric
 #define KLU_factor klu_l_factor
 #define KLU_refactor klu_l_refactor
@@ -130,7 +139,10 @@
 // no prefix: int32_t
 #define KLU_scale klu_scale
 #define KLU_solve klu_solve
+#define KLU_solve_ws klu_solve_ws
+#define KLU_solve_worksize klu_solve_worksize
 #define KLU_tsolve klu_tsolve
+#define KLU_tsolve_ws klu_tsolve_ws
 #define KLU_free_numeric klu_free_numeric
 #define KLU_factor klu_factor
 #define KLU_refactor klu_refactor

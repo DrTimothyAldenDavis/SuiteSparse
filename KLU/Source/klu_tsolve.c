@@ -17,23 +17,20 @@
 
 #include "klu_internal.h"
 
-int KLU_tsolve
+/* Internal helper: identical to KLU_tsolve, but uses caller-supplied scratch
+ * Work in place of Numeric->Xwork.  Caller is responsible for input
+ * validation and for ensuring Work is non-NULL and large enough. */
+static int KLU_tsolve_core
 (
-    /* inputs, not modified */
     KLU_symbolic *Symbolic,
     KLU_numeric *Numeric,
-    Int d,                  /* leading dimension of B */
-    Int nrhs,               /* number of right-hand-sides */
-
-    /* right-hand-side on input, overwritten with solution to Ax=b on output */
-    double B [ ],           /* size n*nrhs, in column-oriented form, with
-                             * leading dimension d. */
+    Int d,
+    Int nrhs,
+    double B [ ],
 #ifdef COMPLEX
-    int conj_solve,         /* TRUE for conjugate transpose solve, FALSE for
-                             * array transpose solve.  Used for the complex
-                             * case only. */
+    int conj_solve,
 #endif
-    /* --------------- */
+    void *Work,
     KLU_common *Common
 )
 {
@@ -43,22 +40,6 @@ int KLU_tsolve
     Int *Q, *R, *Pnum, *Offp, *Offi, *Lip, *Uip, *Llen, *Ulen ;
     Unit **LUbx ;
     Int k1, k2, nk, k, block, pend, n, p, nblocks, chunk, nr, i ;
-
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
-
-    if (Common == NULL)
-    {
-        return (FALSE) ;
-    }
-    if (Numeric == NULL || Symbolic == NULL || d < Symbolic->n || nrhs < 0 ||
-        B == NULL)
-    {
-        Common->status = KLU_INVALID ;
-        return (FALSE) ;
-    }
-    Common->status = KLU_OK ;
 
     /* ---------------------------------------------------------------------- */
     /* get the contents of the Symbolic object */
@@ -88,7 +69,7 @@ int KLU_tsolve
     Udiag = Numeric->Udiag ;
 
     Rs = Numeric->Rs ;
-    X = (Entry *) Numeric->Xwork ;
+    X = (Entry *) Work ;
     ASSERT (KLU_valid (n, Offp, Offi, Offx)) ;
 
     /* ---------------------------------------------------------------------- */
@@ -468,4 +449,88 @@ int KLU_tsolve
         Bz  += d*4 ;
     }
     return (TRUE) ;
+}
+
+/* ========================================================================== */
+/* Public entry points                                                        */
+/* ========================================================================== */
+
+int KLU_tsolve
+(
+    /* inputs, not modified */
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    Int d,                  /* leading dimension of B */
+    Int nrhs,               /* number of right-hand-sides */
+
+    /* right-hand-side on input, overwritten with solution to Ax=b on output */
+    double B [ ],           /* size n*nrhs, in column-oriented form, with
+                             * leading dimension d. */
+#ifdef COMPLEX
+    int conj_solve,         /* TRUE for conjugate transpose solve, FALSE for
+                             * array transpose solve.  Used for the complex
+                             * case only. */
+#endif
+    /* --------------- */
+    KLU_common *Common
+)
+{
+    if (Common == NULL)
+    {
+        return (FALSE) ;
+    }
+    if (Numeric == NULL || Symbolic == NULL || d < Symbolic->n || nrhs < 0 ||
+        B == NULL)
+    {
+        Common->status = KLU_INVALID ;
+        return (FALSE) ;
+    }
+    Common->status = KLU_OK ;
+    return (KLU_tsolve_core (Symbolic, Numeric, d, nrhs, B,
+#ifdef COMPLEX
+        conj_solve,
+#endif
+        Numeric->Xwork, Common)) ;
+}
+
+/* Like KLU_tsolve, but uses caller-supplied scratch Work in place of
+ * Numeric->Xwork.  Work must be non-NULL and at least KLU_solve_worksize()
+ * bytes.  Safe to call concurrently from multiple threads against a single
+ * Numeric, provided each thread supplies its own Work buffer and Common. */
+int KLU_tsolve_ws
+(
+    /* inputs, not modified */
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    Int d,
+    Int nrhs,
+
+    /* right-hand-side on input, overwritten with solution to Ax=b on output */
+    double B [ ],
+#ifdef COMPLEX
+    int conj_solve,
+#endif
+
+    /* caller-owned scratch, size >= KLU_solve_worksize (Symbolic, Common) */
+    void *Work,
+
+    KLU_common *Common
+)
+{
+    if (Common == NULL)
+    {
+        return (FALSE) ;
+    }
+    if (Numeric == NULL || Symbolic == NULL || d < Symbolic->n || nrhs < 0 ||
+        B == NULL || Work == NULL)
+    {
+        Common->status = KLU_INVALID ;
+        return (FALSE) ;
+    }
+    Common->status = KLU_OK ;
+    return (KLU_tsolve_core (Symbolic, Numeric, d, nrhs, B,
+#ifdef COMPLEX
+        conj_solve,
+#endif
+        Work, Common)) ;
 }

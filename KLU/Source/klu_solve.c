@@ -17,18 +17,44 @@
 
 #include "klu_internal.h"
 
-int KLU_solve
+/* Returns the size, in bytes, of the workspace needed by KLU_solve_ws and
+ * KLU_tsolve_ws.  Returns 0 if Symbolic is NULL or the size would overflow.
+ * The result depends only on Symbolic->n and the Entry type (real vs
+ * complex), so it is the same for both solve and tsolve. */
+size_t KLU_solve_worksize
 (
-    /* inputs, not modified */
+    KLU_symbolic *Symbolic,
+    KLU_common *Common
+)
+{
+    size_t s ;
+    Int ok = TRUE ;
+    if (Symbolic == NULL)
+    {
+        if (Common != NULL) Common->status = KLU_INVALID ;
+        return (0) ;
+    }
+    /* solve uses Xwork of size 4*n Entry's */
+    s = KLU_mult_size_t ((size_t) Symbolic->n, 4 * sizeof (Entry), &ok) ;
+    if (!ok)
+    {
+        if (Common != NULL) Common->status = KLU_TOO_LARGE ;
+        return (0) ;
+    }
+    return (s) ;
+}
+
+/* Internal helper: identical to KLU_solve, but uses caller-supplied scratch
+ * Work in place of Numeric->Xwork.  Caller is responsible for input
+ * validation and for ensuring Work is non-NULL and large enough. */
+static int KLU_solve_core
+(
     KLU_symbolic *Symbolic,
     KLU_numeric *Numeric,
-    Int d,                  /* leading dimension of B */
-    Int nrhs,               /* number of right-hand-sides */
-
-    /* right-hand-side on input, overwritten with solution to Ax=b on output */
-    double B [ ],           /* size n*nrhs, in column-oriented form, with
-                             * leading dimension d. */
-    /* --------------- */
+    Int d,
+    Int nrhs,
+    double B [ ],
+    void *Work,
     KLU_common *Common
 )
 {
@@ -38,22 +64,6 @@ int KLU_solve
     Int *Q, *R, *Pnum, *Offp, *Offi, *Lip, *Uip, *Llen, *Ulen ;
     Unit **LUbx ;
     Int k1, k2, nk, k, block, pend, n, p, nblocks, chunk, nr, i ;
-
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
-
-    if (Common == NULL)
-    {
-        return (FALSE) ;
-    }
-    if (Numeric == NULL || Symbolic == NULL || d < Symbolic->n || nrhs < 0 ||
-        B == NULL)
-    {
-        Common->status = KLU_INVALID ;
-        return (FALSE) ;
-    }
-    Common->status = KLU_OK ;
 
     /* ---------------------------------------------------------------------- */
     /* get the contents of the Symbolic object */
@@ -83,7 +93,7 @@ int KLU_solve
     Udiag = Numeric->Udiag ;
 
     Rs = Numeric->Rs ;
-    X = (Entry *) Numeric->Xwork ;
+    X = (Entry *) Work ;
 
     ASSERT (KLU_valid (n, Offp, Offi, Offx)) ;
 
@@ -399,4 +409,74 @@ int KLU_solve
         Bz  += d*4 ;
     }
     return (TRUE) ;
+}
+
+/* ========================================================================== */
+/* Public entry points                                                        */
+/* ========================================================================== */
+
+int KLU_solve
+(
+    /* inputs, not modified */
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    Int d,                  /* leading dimension of B */
+    Int nrhs,               /* number of right-hand-sides */
+
+    /* right-hand-side on input, overwritten with solution to Ax=b on output */
+    double B [ ],           /* size n*nrhs, in column-oriented form, with
+                             * leading dimension d. */
+    /* --------------- */
+    KLU_common *Common
+)
+{
+    if (Common == NULL)
+    {
+        return (FALSE) ;
+    }
+    if (Numeric == NULL || Symbolic == NULL || d < Symbolic->n || nrhs < 0 ||
+        B == NULL)
+    {
+        Common->status = KLU_INVALID ;
+        return (FALSE) ;
+    }
+    Common->status = KLU_OK ;
+    return (KLU_solve_core (Symbolic, Numeric, d, nrhs, B,
+        Numeric->Xwork, Common)) ;
+}
+
+/* Like KLU_solve, but uses caller-supplied scratch Work in place of
+ * Numeric->Xwork.  Work must be non-NULL and at least KLU_solve_worksize()
+ * bytes.  This entry point performs no writes to Numeric, so it is safe to
+ * call concurrently from multiple threads against a single Numeric, provided
+ * each thread supplies its own Work buffer and its own Common. */
+int KLU_solve_ws
+(
+    /* inputs, not modified */
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    Int d,
+    Int nrhs,
+
+    /* right-hand-side on input, overwritten with solution to Ax=b on output */
+    double B [ ],
+
+    /* caller-owned scratch, size >= KLU_solve_worksize (Symbolic, Common) */
+    void *Work,
+
+    KLU_common *Common
+)
+{
+    if (Common == NULL)
+    {
+        return (FALSE) ;
+    }
+    if (Numeric == NULL || Symbolic == NULL || d < Symbolic->n || nrhs < 0 ||
+        B == NULL || Work == NULL)
+    {
+        Common->status = KLU_INVALID ;
+        return (FALSE) ;
+    }
+    Common->status = KLU_OK ;
+    return (KLU_solve_core (Symbolic, Numeric, d, nrhs, B, Work, Common)) ;
 }

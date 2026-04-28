@@ -392,6 +392,50 @@ int klu_zl_tsolve (klu_l_symbolic *, klu_l_numeric *,
 
 
 /* -------------------------------------------------------------------------- */
+/* klu_solve_ws / klu_tsolve_ws: thread-safe variants of klu_solve/klu_tsolve */
+/* that take caller-supplied scratch workspace instead of using Numeric->Work.*/
+/* These do not write to Numeric, so multiple threads may call them           */
+/* concurrently against a single Numeric, provided each thread supplies its   */
+/* own Work buffer and its own klu_common.                                    */
+/*                                                                            */
+/* Use klu_solve_worksize() to query the required size in bytes.  The size    */
+/* depends only on Symbolic->n and the entry type (real or complex), and is   */
+/* the same for solve and tsolve.                                             */
+/* -------------------------------------------------------------------------- */
+
+size_t klu_solve_worksize    (klu_symbolic *,   klu_common *) ;
+size_t klu_z_solve_worksize  (klu_symbolic *,   klu_common *) ;
+size_t klu_l_solve_worksize  (klu_l_symbolic *, klu_l_common *) ;
+size_t klu_zl_solve_worksize (klu_l_symbolic *, klu_l_common *) ;
+
+int klu_solve_ws (klu_symbolic *, klu_numeric *,
+    int32_t ldim, int32_t nrhs, double B [ ], void *Work, klu_common *) ;
+
+int klu_z_solve_ws (klu_symbolic *, klu_numeric *,
+    int32_t ldim, int32_t nrhs, double B [ ], void *Work, klu_common *) ;
+
+int klu_l_solve_ws (klu_l_symbolic *, klu_l_numeric *,
+    int64_t ldim, int64_t nrhs, double B [ ], void *Work, klu_l_common *) ;
+
+int klu_zl_solve_ws (klu_l_symbolic *, klu_l_numeric *,
+    int64_t ldim, int64_t nrhs, double B [ ], void *Work, klu_l_common *) ;
+
+int klu_tsolve_ws (klu_symbolic *, klu_numeric *,
+    int32_t ldim, int32_t nrhs, double B [ ], void *Work, klu_common *) ;
+
+int klu_z_tsolve_ws (klu_symbolic *, klu_numeric *,
+    int32_t ldim, int32_t nrhs, double B [ ], int conj_solve,
+    void *Work, klu_common *) ;
+
+int klu_l_tsolve_ws (klu_l_symbolic *, klu_l_numeric *,
+    int64_t ldim, int64_t nrhs, double B [ ], void *Work, klu_l_common *) ;
+
+int klu_zl_tsolve_ws (klu_l_symbolic *, klu_l_numeric *,
+    int64_t ldim, int64_t nrhs, double B [ ], int conj_solve,
+    void *Work, klu_l_common *) ;
+
+
+/* -------------------------------------------------------------------------- */
 /* klu_refactor: refactorizes matrix with same ordering as klu_factor */
 /* -------------------------------------------------------------------------- */
 
