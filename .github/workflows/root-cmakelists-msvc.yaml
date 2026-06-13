@@ -275,7 +275,7 @@ jobs:
         run: |
           printf "\033[0;32m==>\033[0m Installing libraries\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake --install .
+          cmake --install . --config Release
 
       - name: build example
         run: |
