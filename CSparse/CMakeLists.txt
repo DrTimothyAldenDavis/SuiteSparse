@@ -169,18 +169,18 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-add_executable ( cs_demo1 "Demo/cs_demo1.c" "Demo/cs_demo.c" )
-add_executable ( cs_demo2 "Demo/cs_demo2.c" "Demo/cs_demo.c" )
-add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
+add_executable ( csparse_demo1 "Demo/cs_demo1.c" "Demo/cs_demo.c" )
+add_executable ( csparse_demo2 "Demo/cs_demo2.c" "Demo/cs_demo.c" )
+add_executable ( csparse_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
 
 # Libraries required for Demo programs
 if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( cs_demo1 PUBLIC CSparse )
-    target_link_libraries ( cs_demo2 PUBLIC CSparse )
-    target_link_libraries ( cs_demo3 PUBLIC CSparse )
+    target_link_libraries ( csparse_demo1 PUBLIC CSparse )
+    target_link_libraries ( csparse_demo2 PUBLIC CSparse )
+    target_link_libraries ( csparse_demo3 PUBLIC CSparse )
 else ( )
-    target_link_libraries ( cs_demo1 PUBLIC CSparse_static )
-    target_link_libraries ( cs_demo2 PUBLIC CSparse_static )
-    target_link_libraries ( cs_demo3 PUBLIC CSparse_static )
+    target_link_libraries ( csparse_demo1 PUBLIC CSparse_static )
+    target_link_libraries ( csparse_demo2 PUBLIC CSparse_static )
+    target_link_libraries ( csparse_demo3 PUBLIC CSparse_static )
 endif ( )
 
