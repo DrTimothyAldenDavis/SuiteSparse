@@ -32,7 +32,7 @@ message ( STATUS "Building CSparse version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( csparse
+project ( CSparse
     VERSION "${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}"
     LANGUAGES C )
 
@@ -83,38 +83,39 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
-# dynamic csparse library properties
+# dynamic CSparse library properties
 #-------------------------------------------------------------------------------
 
 file ( GLOB CSPARSE_SOURCES "Source/*.c" )
 
 if ( BUILD_SHARED_LIBS )
-    add_library ( csparse SHARED ${CSPARSE_SOURCES} )
+    add_library ( CSparse SHARED ${CSPARSE_SOURCES} )
 
-    set_target_properties ( csparse PROPERTIES
+    set_target_properties ( CSparse PROPERTIES
         VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
+        OUTPUT_NAME csparse
         SOVERSION ${CSPARSE_VERSION_MAJOR}
         PUBLIC_HEADER "Include/cs.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# static csparse library properties
+# static CSparse library properties
 #-------------------------------------------------------------------------------
 
 if ( BUILD_STATIC_LIBS )
-    add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
+    add_library ( CSparse_static STATIC ${CSPARSE_SOURCES} )
 
-    set_target_properties ( csparse_static PROPERTIES
-        OUTPUT_NAME csparse
+    set_target_properties ( CSparse_static PROPERTIES
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
+        OUTPUT_NAME csparse
         PUBLIC_HEADER "Include/cs.h" )
 
     if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
-        set_target_properties ( csparse_static PROPERTIES
+        set_target_properties ( CSparse_static PROPERTIES
             OUTPUT_NAME csparse_static )
     endif ( )
 endif ( )
@@ -126,11 +127,11 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( csparse PRIVATE m )
+        target_link_libraries ( CSparse PRIVATE m )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         set ( CSPARSE_STATIC_LIBS "${CSPARSE_STATIC_LIBS} -lm" )
-        target_link_libraries ( csparse_static PUBLIC m )
+        target_link_libraries ( CSparse_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -174,12 +175,12 @@ add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
 
 # Libraries required for Demo programs
 if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( cs_demo1 PUBLIC csparse )
-    target_link_libraries ( cs_demo2 PUBLIC csparse )
-    target_link_libraries ( cs_demo3 PUBLIC csparse )
+    target_link_libraries ( cs_demo1 PUBLIC CSparse )
+    target_link_libraries ( cs_demo2 PUBLIC CSparse )
+    target_link_libraries ( cs_demo3 PUBLIC CSparse )
 else ( )
-    target_link_libraries ( cs_demo1 PUBLIC csparse_static )
-    target_link_libraries ( cs_demo2 PUBLIC csparse_static )
-    target_link_libraries ( cs_demo3 PUBLIC csparse_static )
+    target_link_libraries ( cs_demo1 PUBLIC CSparse_static )
+    target_link_libraries ( cs_demo2 PUBLIC CSparse_static )
+    target_link_libraries ( cs_demo3 PUBLIC CSparse_static )
 endif ( )
 
