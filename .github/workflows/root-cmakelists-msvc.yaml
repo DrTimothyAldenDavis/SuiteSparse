@@ -197,9 +197,7 @@ jobs:
           if [ ${{ matrix.cuda }} = 'with' ]; then
             _extra_config+=(-DCUDAToolkit_ROOT="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")")
             _extra_config+=(-DCMAKE_CUDA_COMPILER="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")/bin/nvcc.exe")
-            # MSVC 19.40 is still Visual Studio 2022.
-            # Suppress erroneous version check.
-            _extra_config+=(-DCMAKE_CUDA_FLAGS=-allow-unsupported-compiler)
+            _extra_config+=(-DSUITESPARSE_CUDA_ARCHITECTURES="75;80;86;89")
           fi
           if [[ ${{ matrix.cc }} == clang* ]]; then
             # Move away (old) clang/clang++ and clang-cl that would be in PATH
