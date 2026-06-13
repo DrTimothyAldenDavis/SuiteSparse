@@ -267,7 +267,8 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/build
           PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;C:/msys64/ucrt64/bin;${PATH}" \
-            ctest -C Release . || ctest -C Release . --rerun-failed --output-on-failure
+            ctest -C Release . --timeout 300 \
+              || ctest -C Release . --rerun-failed --output-on-failure --timeout 300
 
       - name: install
         run: |
