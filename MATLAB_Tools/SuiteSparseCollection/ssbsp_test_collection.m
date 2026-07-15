@@ -4,6 +4,7 @@ function results = ssbsp_test_collection (list, varargin)
 %   results = ssbsp_test_collection ;
 %   results = ssbsp_test_collection (list) ;
 %   results = ssbsp_test_collection (..., 'option', value, ...) ;
+%   ssbsp_test_collection ('check_problem', Problem, bspfile) ;
 %
 % This experiment loads each requested SuiteSparse Matrix Collection Problem
 % with ssget, writes it with sswrite(...,'BSP'), reads the resulting Binsparse
@@ -24,6 +25,12 @@ function results = ssbsp_test_collection (list, varargin)
 %   'MinFreeGB'            fail before a matrix if WorkDir has less free space
 %
 % BSP output requires the Binsparse MATLAB bindings on the MATLAB path.
+
+if (nargin == 3 && ischar (list) && strcmp (list, 'check_problem'))
+    check_problem (varargin{1}, varargin{2}) ;
+    results = [ ] ;
+    return
+end
 
 % SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
 % All Rights Reserved.
