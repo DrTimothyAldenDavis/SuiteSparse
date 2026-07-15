@@ -16,9 +16,11 @@
 %
 % To create the Matrix Market, Rutherford/Boeing, and Binsparse versions:
 %
-%   ssexport     - export to Matrix Market and Rutherford/Boeing formats
+%   ssexport     - export to Matrix Market, Rutherford/Boeing, or Binsparse
 %   ssread       - read a Problem in Matrix Market or Rutherford/Boeing format
 %   sswrite      - write a Problem in Matrix Market, Rutherford/Boeing, or Binsparse format
+%   ssbsp_check_problem - compare Binsparse output with a MATLAB Problem struct
+%   ssbsp_test_ssexport - test opt-in Binsparse collection export
 %   ssfull_read  - read a full matrix using a subset of Matrix Market format
 %   ssfull_write - write a full matrix using a subset of Matrix Market format
 %
@@ -31,4 +33,3 @@
 % SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
-
