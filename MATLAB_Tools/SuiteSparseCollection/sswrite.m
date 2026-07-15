@@ -125,18 +125,18 @@ function sswrite (Problem, Master, arg3, arg4)
 %
 % The primary matrix, explicit zero pattern, b, x, and numeric aux matrices are
 % written to a single Binsparse HDF5 file, with a .bsp.h5 extension.  Aux char
-% arrays are written as separate .txt files using the same naming convention as
-% the Matrix Market and Rutherford/Boeing formats.  BSP output requires the
-% Binsparse MATLAB bindings on the MATLAB path.
+% arrays and cell arrays of strings are written as root-level HDF5 string
+% datasets.  BSP output requires the Binsparse MATLAB bindings on the MATLAB
+% path.
 %
 % -----------------
 % for all formats:
 % -----------------
 %
 % A matrix Problem.aux.whatever is written out as name_whatever.xxx, without
-% the 'aux' part.  In BSP format, numeric matrices are groups in the single
-% name.bsp.h5 file; text components are sidecar .txt files.  If
-% Problem.aux.whatever is a char array, it is written as
+% the 'aux' part.  In BSP format, numeric matrices are groups and text
+% components are root-level string datasets in the single name.bsp.h5 file.  In
+% MM and RB formats, if Problem.aux.whatever is a char array, it is written as
 % the file name_whatever.txt, with one line per row of the char array (trailing
 % spaces in each line are not printed).  If aux.whatever is a cell array, each
 % entry aux.whatever{i} is written as the file name_whatever_<i>.xxx
@@ -277,9 +277,8 @@ end
 key = sprintf ('%d', Problem.id) ;
 
 if (BSP)
-    % write all numeric matrices in Binsparse form
+    % write the supported Problem data in Binsparse form
     write_bsp_problem ([probname '.bsp.h5'], Problem) ;
-    write_bsp_text_components (probname, Problem, auxfields) ;
     delete_if_exists (cfile) ;
     tar_problem (do_tar, probdir) ;
     return
@@ -435,7 +434,7 @@ end
 %-------------------------------------------------------------------------------
 
 function write_bsp_problem (filename, Problem)
-% write_bsp_problem: write the numeric Problem data to one Binsparse HDF5 file
+% write_bsp_problem: write the supported Problem data to one Binsparse HDF5 file
 compression = 9 ;
 Problem = expand_bsp_aux_cells (Problem) ;
 if (exist ('write_binsparse_from_matlab', 'file') == 3)
@@ -462,7 +461,7 @@ auxfields = fields (aux) ;
 for k = 1:length (auxfields)
     what = auxfields {k} ;
     X = aux.(what) ;
-    if (iscell (X))
+    if (iscell (X) && ~iscellstr (X))
         len = length (X) ;
         for i = 1:len
             aux2.(sprintf (fmt (i, len), what, i)) = X {i} ;
@@ -472,49 +471,6 @@ for k = 1:length (auxfields)
     end
 end
 Problem.aux = aux2 ;
-
-
-%-------------------------------------------------------------------------------
-% write_bsp_text_components
-%-------------------------------------------------------------------------------
-
-function write_bsp_text_components (probname, Problem, auxfields)
-% write_bsp_text_components: preserve aux char arrays as text sidecar files
-if (~isfield (Problem, 'aux'))
-    return
-end
-aux = Problem.aux ;
-for k = 1:length (auxfields)
-    what = auxfields {k} ;
-    X = aux.(what) ;
-    if (sscellstring (X) && Problem.id > 2776)
-        sstextwrite ([probname '_' what '.txt'], X) ;
-    elseif (iscell (X))
-        len = length (X) ;
-        for i = 1:len
-            write_bsp_text_component (probname, ...
-                sprintf (fmt (i, len), what, i), X {i}) ;
-        end
-    else
-        write_bsp_text_component (probname, what, X) ;
-    end
-end
-
-
-%-------------------------------------------------------------------------------
-% write_bsp_text_component
-%-------------------------------------------------------------------------------
-
-function write_bsp_text_component (probname, what, X)
-% write_bsp_text_component: write one char component for BSP output
-if (~ischar (X))
-    return
-end
-ff = fopen ([probname '_' what '.txt'], 'w') ;
-for i = 1:size (X,1)
-    fprintf (ff, '%s\n', deblank (X (i,:))) ;
-end
-fclose (ff) ;
 
 
 %-------------------------------------------------------------------------------
