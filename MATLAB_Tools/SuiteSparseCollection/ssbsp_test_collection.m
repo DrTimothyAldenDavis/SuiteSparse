@@ -594,6 +594,8 @@ if (isfield (bsp, 'is_iso') && bsp.is_iso)
 end
 switch (fmt)
     case 'DMAT'
+        actual = reshape (values, [bsp.ncols, bsp.nrows]).' ;
+    case 'DMATC'
         actual = reshape (values, [bsp.nrows, bsp.ncols]) ;
     case 'DVEC'
         actual = reshape (values, [bsp.nrows, 1]) ;
