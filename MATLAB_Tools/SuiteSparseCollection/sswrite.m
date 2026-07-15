@@ -186,6 +186,15 @@ if (RB && BSP)
     error ('only one output format can be selected') ;
 end
 
+if (isfield (Problem, 'aux'))
+    aux = Problem.aux ;
+    auxfields = fields (aux) ;
+else
+    aux = struct ;
+    auxfields = { } ;
+end
+validate_aux (auxfields, aux, BSP) ;
+
 Master = regexprep (Master, '[\/\\]', '/') ;
 if (~isempty (Master) && Master (end) ~= '/')
     Master = [Master '/'] ;
@@ -232,18 +241,12 @@ for k = 1:length(s)
 end
 fprintf (cf, '\n') ;
 if (isfield (Problem, 'aux'))
-    aux = Problem.aux ; 
     fprintf (cf, '%s aux:', prefix) ;
-    auxfields = fields (aux) ;
     for k = 1:length(auxfields)
 	fprintf (cf, ' %s', auxfields {k}) ;
     end
     fprintf (cf, '\n') ;
-else
-    aux = struct ;
-    auxfields = { } ;
 end
-validate_aux (auxfields, aux) ;
 fprintf (cf, '%s kind: %s\n', prefix, Problem.kind) ;
 print_separator (cf, prefix) ;
 if (isfield (Problem, 'notes'))
@@ -321,7 +324,7 @@ for k = 1:length(auxfields)
         sstextwrite ([probname '_' what '.txt'], X) ;
 
     elseif (iscell (X))
-	len = length (X) ;
+	len = numel (X) ;
 	for i = 1:len
 	    % this problem includes a sequence of matrices in the new
 	    % format (kind = 'sequence', and Problem.id > 1377).
@@ -462,7 +465,7 @@ for k = 1:length (auxfields)
     what = auxfields {k} ;
     X = aux.(what) ;
     if (iscell (X) && ~iscellstr (X))
-        len = length (X) ;
+        len = numel (X) ;
         for i = 1:len
             aux2.(sprintf (fmt (i, len), what, i)) = X {i} ;
         end
@@ -477,11 +480,18 @@ Problem.aux = aux2 ;
 % validate_aux
 %-------------------------------------------------------------------------------
 
-function validate_aux (auxfields, aux)
+function validate_aux (auxfields, aux, BSP)
 % validate_aux: ensure aux field names map unambiguously to filenames
 for k = 1:length (auxfields)
     what = auxfields {k} ;
     X = aux.(what) ;
+    if (BSP && (~iscell (X) || iscellstr (X)) && ...
+            any (strcmp (what, {'b', 'x', 'values', 'indices_0', ...
+            'indices_1', 'pointers_to_1'})))
+        % These names are written directly at the HDF5 root, where they would
+        % collide with a primary matrix dataset or a Problem.b/Problem.x group.
+        error (['invalid BSP aux component: ' what]) ;
+    end
     if (~iscell (X) && (strcmp (what, 'b') || strcmp (what, 'x')))
         % aux.b or aux.x would get written out with the same filename as the
         % Problem.b and Problem.x matrices, and read back in by ssread as
