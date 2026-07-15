@@ -1,7 +1,8 @@
 function sswrite (Problem, Master, arg3, arg4)
-%SSWRITE write a Problem in Matrix Market or Rutherford/Boeing format
-% containing a set of text files in either Matrix Market or Rutherford/Boeing
-% format.  The Problem can be read from the files back into MATLAB via SSread.
+%SSWRITE write a Problem in Matrix Market, Rutherford/Boeing, or Binsparse format
+% containing a set of files in Matrix Market, Rutherford/Boeing, or Binsparse
+% format.  The MM and RB formats can be read from the files back into MATLAB via
+% SSread.
 % See http://sparse.tamu.edu for the SuiteSparse Matrix Collection home page.
 % The Problem directory is optionally compressed via tar and gzip.  Arguments 3
 % and 4, below, are optional and can appear in any order.
@@ -14,9 +15,11 @@ function sswrite (Problem, Master, arg3, arg4)
 %    sswrite (Problem, Master)                 % Matrix Market, no tar
 %    sswrite (Problem, Master, 'MM')           % ditto
 %    sswrite (Problem, Master, 'RB')           % Rutherford/Boeing, no tar
+%    sswrite (Problem, Master, 'BSP')          % Binsparse, no tar
 %    sswrite (Problem, Master, 'tar')          % Matrix Market, with tar
 %    sswrite (Problem, Master, 'MM', 'tar')    % ditto
 %    sswrite (Problem, Master, 'RB', 'tar')    % Rutherford/Boeing, with tar
+%    sswrite (Problem, Master, 'BSP', 'tar')   % Binsparse, with tar
 %
 % Problem is a struct, in the SuiteSparse Matrix format (see below).  Master is
 % the top-level directory in which directory containing the problem will be
@@ -116,12 +119,24 @@ function sswrite (Problem, Master, arg3, arg4)
 % extension.  Additional Matrix Market files are created for b (as name_b),
 % x (as name_x), and each sparse or full matrix in aux.
 %
+% -------------------------------------
+% for Problems written in Binsparse format:
+% -------------------------------------
+%
+% The primary matrix, explicit zero pattern, b, x, and numeric aux matrices are
+% written to a single Binsparse HDF5 file, with a .bsp.h5 extension.  Aux char
+% arrays are written as separate .txt files using the same naming convention as
+% the Matrix Market and Rutherford/Boeing formats.  BSP output requires the
+% Binsparse MATLAB bindings on the MATLAB path.
+%
 % -----------------
-% for both formats:
+% for all formats:
 % -----------------
 %
 % A matrix Problem.aux.whatever is written out as name_whatever.xxx, without
-% the 'aux' part.  If Problem.aux.whatever is a char array, it is written as
+% the 'aux' part.  In BSP format, numeric matrices are groups in the single
+% name.bsp.h5 file; text components are sidecar .txt files.  If
+% Problem.aux.whatever is a char array, it is written as
 % the file name_whatever.txt, with one line per row of the char array (trailing
 % spaces in each line are not printed).  If aux.whatever is a cell array, each
 % entry aux.whatever{i} is written as the file name_whatever_<i>.xxx
@@ -137,7 +152,8 @@ function sswrite (Problem, Master, arg3, arg4)
 %   sswrite (Problem, 'MM') ;       % write a MM version in MM/HB/arc130
 %   sswrite (Problem, '', 'RB') ;   % write a RB version in current directory
 %
-% See also mwrite, mread, RBwrite, RBread, ssread, ssget, tar
+% See also mwrite, mread, RBwrite, RBread, ssread, ssget, tar,
+% write_binsparse_from_matlab
 
 % Optionally uses the CHOLMOD mwrite mexFunction, for writing Problems in
 % Matrix Market format.
@@ -165,6 +181,10 @@ arg4 = lower (arg4) ;
 
 do_tar = (strcmp (arg3, 'tar') | strcmp (arg4, 'tar')) ;
 RB = (strcmp (arg3, 'rb') | strcmp (arg4, 'rb')) ;
+BSP = (strcmp (arg3, 'bsp') | strcmp (arg4, 'bsp')) ;
+if (RB && BSP)
+    error ('only one output format can be selected') ;
+end
 
 Master = regexprep (Master, '[\/\\]', '/') ;
 if (~isempty (Master) && Master (end) ~= '/')
@@ -220,8 +240,10 @@ if (isfield (Problem, 'aux'))
     end
     fprintf (cf, '\n') ;
 else
+    aux = struct ;
     auxfields = { } ;
 end
+validate_aux (auxfields, aux) ;
 fprintf (cf, '%s kind: %s\n', prefix, Problem.kind) ;
 print_separator (cf, prefix) ;
 if (isfield (Problem, 'notes'))
@@ -234,7 +256,7 @@ end
 fclose(cf) ;
 
 %-------------------------------------------------------------------------------
-% write out the A and Z matrices to the RB or MM primary file
+% write out the A and Z matrices to the primary file
 %-------------------------------------------------------------------------------
 
 A = Problem.A ;
@@ -254,7 +276,14 @@ end
 % use the Problem.id number as the RB key
 key = sprintf ('%d', Problem.id) ;
 
-if (RB)
+if (BSP)
+    % write all numeric matrices in Binsparse form
+    write_bsp_problem ([probname '.bsp.h5'], Problem) ;
+    write_bsp_text_components (probname, Problem, auxfields) ;
+    delete_if_exists (cfile) ;
+    tar_problem (do_tar, probdir) ;
+    return
+elseif (RB)
     % write the files in Rutherford/Boeing form
     ptitle = [Problem.name '; ' Problem.date '; ' etal(Problem.author)] ;
     ptitle = [ptitle '; ed: ' etal(Problem.ed)] ;
@@ -287,19 +316,6 @@ for k = 1:length(auxfields)
     what = auxfields {k} ;
     X = aux.(what) ;
 
-    if (~iscell (X) && (strcmp (what, 'b') || strcmp (what, 'x')))
-	% aux.b or aux.x would get written out with the same filename as the
-	% Problem.b and Problem.x matrices, and read back in by ssread as
-	% Problem.b and Problem.x instead of aux.b and aux.x.
-	error (['invalid aux component: ' what]) ;
-    end
-
-    if (regexp (what, '_[0-9]*\>'))
-	% aux.whatever_42 would be written as the file name_whatever_42, which
-	% would be intrepretted as aux.whatever{42} when read back in by ssread.
-	error (['invalid aux component: ' what]) ;
-    end
-
     if (sscellstring (X) && Problem.id > 2776)
 
         % write out a cell array of strings as a single text file
@@ -330,15 +346,7 @@ end
 % tar up the result, if requested
 %-------------------------------------------------------------------------------
 
-if (do_tar)
-    try
-	tar ([probdir '.tar.gz'], probdir) ;
-	rmdir (probdir, 's') ;
-    catch
-	warning ('SuiteSparse:sswrite', ...
-	    'unable to create tar file; directly left uncompressed') ;
-    end
-end
+tar_problem (do_tar, probdir) ;
 
 
 
@@ -402,6 +410,144 @@ else
     fclose(cf) ;
     mwrite ([probname '_' what '.mtx'], X, cfile) ;
     delete (cfile) ;
+end
+
+
+%-------------------------------------------------------------------------------
+% tar_problem
+%-------------------------------------------------------------------------------
+
+function tar_problem (do_tar, probdir)
+% tar_problem: tar up the result, if requested
+if (do_tar)
+    try
+	tar ([probdir '.tar.gz'], probdir) ;
+	rmdir (probdir, 's') ;
+    catch
+	warning ('SuiteSparse:sswrite', ...
+	    'unable to create tar file; directly left uncompressed') ;
+    end
+end
+
+
+%-------------------------------------------------------------------------------
+% write_bsp_problem
+%-------------------------------------------------------------------------------
+
+function write_bsp_problem (filename, Problem)
+% write_bsp_problem: write the numeric Problem data to one Binsparse HDF5 file
+compression = 9 ;
+Problem = expand_bsp_aux_cells (Problem) ;
+if (exist ('write_binsparse_from_matlab', 'file') == 3)
+    write_binsparse_from_matlab (Problem, filename, 'COO', [ ], compression) ;
+elseif (exist ('generate_bsp_from_ssmc', 'file') == 2)
+    generate_bsp_from_ssmc (Problem, filename, 'COO', compression) ;
+else
+    error ('BSP output requires the Binsparse MATLAB bindings on the path') ;
+end
+
+
+%-------------------------------------------------------------------------------
+% expand_bsp_aux_cells
+%-------------------------------------------------------------------------------
+
+function Problem = expand_bsp_aux_cells (Problem)
+% expand_bsp_aux_cells: map aux.foo{i} to aux.foo_i using sswrite's names
+if (~isfield (Problem, 'aux'))
+    return
+end
+aux = Problem.aux ;
+aux2 = struct ;
+auxfields = fields (aux) ;
+for k = 1:length (auxfields)
+    what = auxfields {k} ;
+    X = aux.(what) ;
+    if (iscell (X))
+        len = length (X) ;
+        for i = 1:len
+            aux2.(sprintf (fmt (i, len), what, i)) = X {i} ;
+        end
+    else
+        aux2.(what) = X ;
+    end
+end
+Problem.aux = aux2 ;
+
+
+%-------------------------------------------------------------------------------
+% write_bsp_text_components
+%-------------------------------------------------------------------------------
+
+function write_bsp_text_components (probname, Problem, auxfields)
+% write_bsp_text_components: preserve aux char arrays as text sidecar files
+if (~isfield (Problem, 'aux'))
+    return
+end
+aux = Problem.aux ;
+for k = 1:length (auxfields)
+    what = auxfields {k} ;
+    X = aux.(what) ;
+    if (sscellstring (X) && Problem.id > 2776)
+        sstextwrite ([probname '_' what '.txt'], X) ;
+    elseif (iscell (X))
+        len = length (X) ;
+        for i = 1:len
+            write_bsp_text_component (probname, ...
+                sprintf (fmt (i, len), what, i), X {i}) ;
+        end
+    else
+        write_bsp_text_component (probname, what, X) ;
+    end
+end
+
+
+%-------------------------------------------------------------------------------
+% write_bsp_text_component
+%-------------------------------------------------------------------------------
+
+function write_bsp_text_component (probname, what, X)
+% write_bsp_text_component: write one char component for BSP output
+if (~ischar (X))
+    return
+end
+ff = fopen ([probname '_' what '.txt'], 'w') ;
+for i = 1:size (X,1)
+    fprintf (ff, '%s\n', deblank (X (i,:))) ;
+end
+fclose (ff) ;
+
+
+%-------------------------------------------------------------------------------
+% validate_aux
+%-------------------------------------------------------------------------------
+
+function validate_aux (auxfields, aux)
+% validate_aux: ensure aux field names map unambiguously to filenames
+for k = 1:length (auxfields)
+    what = auxfields {k} ;
+    X = aux.(what) ;
+    if (~iscell (X) && (strcmp (what, 'b') || strcmp (what, 'x')))
+        % aux.b or aux.x would get written out with the same filename as the
+        % Problem.b and Problem.x matrices, and read back in by ssread as
+        % Problem.b and Problem.x instead of aux.b and aux.x.
+        error (['invalid aux component: ' what]) ;
+    end
+    if (~isempty (regexp (what, '_[0-9]*\>', 'once')))
+        % aux.whatever_42 would be written as the file name_whatever_42, which
+        % would be intrepretted as aux.whatever{42} when read back in by ssread.
+        error (['invalid aux component: ' what]) ;
+    end
+end
+
+
+%-------------------------------------------------------------------------------
+% delete_if_exists
+%-------------------------------------------------------------------------------
+
+function delete_if_exists (filename)
+% delete_if_exists: delete a file if it exists
+if (exist (filename, 'file'))
+    delete (filename) ;
 end
 
 
