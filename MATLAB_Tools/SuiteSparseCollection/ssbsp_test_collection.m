@@ -8,9 +8,10 @@ function results = ssbsp_test_collection (list, varargin)
 %
 % This experiment loads each requested SuiteSparse Matrix Collection Problem
 % with ssget, writes it with sswrite(...,'BSP'), reads the resulting Binsparse
-% file back into MATLAB, and checks that the numeric and text contents match
-% the original Problem exactly.  BSP files are deleted after each matrix by
-% default.
+% file back into MATLAB with ssread, and checks that the complete reconstructed
+% Problem matches the original exactly.  Failures are recorded, reported with
+% stable warning identifiers, and do not stop the experiment by default.  BSP
+% files are deleted after each matrix by default.
 %
 % Options:
 %   'WorkDir'              directory for temporary BSP output
@@ -84,6 +85,10 @@ fprintf ('BSP collection experiment work dir: %s\n', opts.WorkDir) ;
 fprintf ('Log file: %s\n', opts.LogFile) ;
 fprintf ('Result file: %s\n', opts.ResultFile) ;
 
+n_ok = 0 ;
+n_skip = 0 ;
+n_fail = 0 ;
+
 for kk = 1:length (list)
 
     id = list (kk) ;
@@ -104,6 +109,7 @@ for kk = 1:length (list)
     t = tic ;
     fprintf ('%5d/%5d id %d %s\n', kk, length (list), id, requested_name) ;
 
+    phase = 'preflight' ;
     try
         if (index.nnz (id) > opts.MaxNnz)
             rec.status = 'skip' ;
@@ -113,17 +119,23 @@ for kk = 1:length (list)
         else
             check_free_space (opts) ;
 
-            Problem = ssget (id, index) ;                                  %#ok
+            phase = 'load' ;
+            Problem = ssget (id, index) ;
             rec.name = Problem.name ;
             rec.bspfile = bsp_filename (opts.WorkDir, Problem.name) ;
 
+            phase = 'write' ;
             sswrite (Problem, opts.WorkDir, 'BSP') ;
             info = dir (rec.bspfile) ;
             if (~isempty (info))
                 rec.bsp_bytes = info.bytes ;
             end
 
-            check_problem (Problem, rec.bspfile) ;
+            phase = 'read' ;
+            P2 = ssread (fileparts (rec.bspfile)) ;
+
+            phase = 'compare' ;
+            assert_problem_equal (Problem, P2) ;
             rec.status = 'ok' ;
         end
 
@@ -131,6 +143,14 @@ for kk = 1:length (list)
         rec.status = 'fail' ;
         rec.identifier = me.identifier ;
         rec.message = me.message ;
+        if (any (strcmp (phase, {'read', 'compare'})) && ...
+                ~isempty (rec.bspfile) && exist (rec.bspfile, 'file') == 2)
+            rec.message = sprintf ('%s; %s', rec.message, ...
+                diagnose_bsp_file (Problem, rec.bspfile)) ;
+        end
+        warning (phase_warning_identifier (phase), ...
+            'id %d %s failed during %s: %s (%s)', rec.id, rec.name, ...
+            phase, me.message, me.identifier) ;
     end
 
     rec.seconds = toc (t) ;
@@ -139,7 +159,15 @@ for kk = 1:length (list)
     save (opts.ResultFile, 'results', 'list', 'opts') ;
 
     cleanup_generated_files (opts, rec) ;
-    clear Problem
+    clear Problem P2
+
+    if (strcmp (rec.status, 'ok'))
+        n_ok = n_ok + 1 ;
+    elseif (strcmp (rec.status, 'skip'))
+        n_skip = n_skip + 1 ;
+    else
+        n_fail = n_fail + 1 ;
+    end
 
     if (strcmp (rec.status, 'fail') && opts.StopOnFailure)
         error ('ssbsp_test_collection:Failed', 'id %d %s failed: %s', ...
@@ -148,6 +176,13 @@ for kk = 1:length (list)
 end
 
 fprintf (fid, '# %s ssbsp_test_collection done\n', datestr (now, 31)) ;
+fprintf ('BSP collection results: %d ok, %d skipped, %d failed\n', ...
+    n_ok, n_skip, n_fail) ;
+if (n_fail > 0)
+    warning ('SuiteSparse:ssbsp_test_collection:Failures', ...
+        '%d BSP collection roundtrip(s) failed; see %s', ...
+        n_fail, opts.ResultFile) ;
+end
 
 
 %-------------------------------------------------------------------------------
@@ -206,12 +241,17 @@ end
 
 function require_experiment_functions
 
-required = {'ssget', 'sswrite', 'binsparse_read', ...
-            'write_binsparse_from_matlab'} ;
+required = {'ssget', 'sswrite', 'ssread', 'binsparse_read', ...
+            'convert_to_problem_struct'} ;
 for k = 1:length (required)
     if (exist (required{k}, 'file') == 0)
         error ('%s is required on the MATLAB path', required{k}) ;
     end
+end
+have_mex_writer = (exist ('write_binsparse_from_matlab', 'file') == 3) ;
+have_matlab_writer = (exist ('generate_bsp_from_ssmc', 'file') == 2) ;
+if (~have_mex_writer && ~have_matlab_writer)
+    error ('a Binsparse MATLAB writer is required on the MATLAB path') ;
 end
 
 
@@ -332,6 +372,90 @@ if (length (parts) >= 4)
             'only %.3g GB free in %s', free_gb, opts.WorkDir) ;
     end
 end
+
+
+function identifier = phase_warning_identifier (phase)
+
+switch (phase)
+    case 'preflight'
+        name = 'PreflightFailed' ;
+    case 'load'
+        name = 'LoadFailed' ;
+    case 'write'
+        name = 'WriteFailed' ;
+    case 'read'
+        name = 'ReadFailed' ;
+    case 'compare'
+        name = 'RoundtripMismatch' ;
+    otherwise
+        name = 'Failed' ;
+end
+identifier = ['SuiteSparse:ssbsp_test_collection:' name] ;
+
+
+function message = diagnose_bsp_file (Problem, bspfile)
+
+try
+    check_problem (Problem, bspfile) ;
+    message = ['direct BSP component check passed; failure is in ' ...
+        'the reader or Problem reconstruction'] ;
+catch me
+    message = sprintf ('direct BSP component check also failed: %s (%s)', ...
+        me.message, me.identifier) ;
+end
+
+
+function assert_problem_equal (expected, actual)
+
+assert_equal_value (expected, actual, 'Problem') ;
+
+
+function assert_equal_value (expected, actual, path)
+
+if (~strcmp (class (expected), class (actual)))
+    mismatch ('%s class differs: expected %s, actual %s', ...
+        path, class (expected), class (actual)) ;
+end
+if (~isequal (size (expected), size (actual)))
+    mismatch ('%s size differs: expected %s, actual %s', ...
+        path, mat2str (size (expected)), mat2str (size (actual))) ;
+end
+if (issparse (expected) ~= issparse (actual))
+    mismatch ('%s sparsity differs', path) ;
+end
+if ((isnumeric (expected) || islogical (expected)) && ...
+        isreal (expected) ~= isreal (actual))
+    mismatch ('%s complexity differs', path) ;
+end
+
+if (isstruct (expected))
+    expected_fields = sort (fieldnames (expected)) ;
+    actual_fields = sort (fieldnames (actual)) ;
+    if (~isequal (expected_fields, actual_fields))
+        mismatch ('%s fields differ: expected {%s}, actual {%s}', ...
+            path, strjoin (expected_fields, ', '), ...
+            strjoin (actual_fields, ', ')) ;
+    end
+    for p = 1:numel (expected)
+        for k = 1:numel (expected_fields)
+            field = expected_fields{k} ;
+            assert_equal_value (expected(p).(field), actual(p).(field), ...
+                sprintf ('%s(%d).%s', path, p, field)) ;
+        end
+    end
+elseif (iscell (expected))
+    for k = 1:numel (expected)
+        assert_equal_value (expected{k}, actual{k}, ...
+            sprintf ('%s{%d}', path, k)) ;
+    end
+elseif (~isequaln (expected, actual))
+    mismatch ('%s values differ', path) ;
+end
+
+
+function mismatch (message, varargin)
+
+error ('SuiteSparse:ssbsp_test_collection:Mismatch', message, varargin{:}) ;
 
 
 %-------------------------------------------------------------------------------
