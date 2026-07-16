@@ -210,7 +210,7 @@ if (nnz (expected) ~= 1)
     error ('SuiteSparse:ssexport:InvalidBinsparseArchive', ...
         'BSP archive for %s does not contain one expected file', Problem.name) ;
 end
-file = files(find (expected, 1)) ;
+file = files (expected) ;
 bspfile = fullfile (file.folder, file.name) ;
 
 

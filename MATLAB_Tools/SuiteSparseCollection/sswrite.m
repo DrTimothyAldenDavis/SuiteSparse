@@ -1,8 +1,8 @@
 function sswrite (Problem, Master, arg3, arg4)
 %SSWRITE write a Problem in Matrix Market, Rutherford/Boeing, or Binsparse format
 % containing a set of files in Matrix Market, Rutherford/Boeing, or Binsparse
-% format.  The MM and RB formats can be read from the files back into MATLAB via
-% SSread.
+% format.  All three formats can be read from the files back into MATLAB via
+% SSread (reading Binsparse requires the Binsparse MATLAB bindings).
 % See http://sparse.tamu.edu for the SuiteSparse Matrix Collection home page.
 % The Problem directory is optionally compressed via tar and gzip.  Arguments 3
 % and 4, below, are optional and can appear in any order.
@@ -282,7 +282,7 @@ key = sprintf ('%d', Problem.id) ;
 if (BSP)
     % write the supported Problem data in Binsparse form
     write_bsp_problem ([probname '.bsp.h5'], Problem) ;
-    delete_if_exists (cfile) ;
+    delete (cfile) ;    % the metadata is stored inside the .bsp.h5 file.
     tar_problem (do_tar, probdir) ;
     return
 elseif (RB)
@@ -503,17 +503,6 @@ for k = 1:length (auxfields)
         % would be intrepretted as aux.whatever{42} when read back in by ssread.
         error (['invalid aux component: ' what]) ;
     end
-end
-
-
-%-------------------------------------------------------------------------------
-% delete_if_exists
-%-------------------------------------------------------------------------------
-
-function delete_if_exists (filename)
-% delete_if_exists: delete a file if it exists
-if (exist (filename, 'file'))
-    delete (filename) ;
 end
 
 

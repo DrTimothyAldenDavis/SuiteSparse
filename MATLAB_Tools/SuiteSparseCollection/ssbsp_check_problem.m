@@ -295,8 +295,7 @@ if (~isequal (size (actual), size (expected)))
     return
 end
 
-if (isfloat (actual) || isfloat (expected) || ...
-        ~isinteger (actual) || ~isinteger (expected))
+if (~isinteger (actual) || ~isinteger (expected))
     ok = isequaln (double (actual), double (expected)) ;
 else
     ok = isequaln (actual, cast (expected, class (actual))) && ...
