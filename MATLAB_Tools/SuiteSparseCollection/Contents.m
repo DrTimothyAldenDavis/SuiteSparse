@@ -14,11 +14,12 @@
 %   sspages    - create images for each matrix in SuiteSparse Matrix Collection
 %   dsxy2figxy - Transform point or position from axis to figure coords
 %
-% To create the Matrix Market and Rutherford/Boeing versions of the collection:
+% To create the Matrix Market, Rutherford/Boeing, and Binsparse versions:
 %
-%   ssexport     - export to Matrix Market and Rutherford/Boeing formats
-%   ssread       - read a Problem in Matrix Market or Rutherford/Boeing format
-%   sswrite      - write a Problem in Matrix Market or Rutherford/Boeing format
+%   ssexport     - export to Matrix Market, Rutherford/Boeing, or Binsparse
+%   ssread       - read a Problem in Matrix Market, Rutherford/Boeing, or Binsparse format
+%   sswrite      - write a Problem in Matrix Market, Rutherford/Boeing, or Binsparse format
+%   ssbsp_check_problem - compare Binsparse output with a MATLAB Problem struct
 %   ssfull_read  - read a full matrix using a subset of Matrix Market format
 %   ssfull_write - write a full matrix using a subset of Matrix Market format
 %
@@ -31,5 +32,3 @@
 % SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
-
-

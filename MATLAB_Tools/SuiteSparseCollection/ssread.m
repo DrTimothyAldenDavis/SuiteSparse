@@ -1,7 +1,7 @@
 function Problem = ssread (directory, tmp)
-%SSREAD read a Problem in Matrix Market or Rutherford/Boeing format
-% containing a set of files created by sswrite, in either Matrix Market or
-% Rutherford/Boeing format. See sswrite for a description of the Problem struct.
+%SSREAD read a Problem in Matrix Market, Rutherford/Boeing, or Binsparse format
+% containing a set of files created by sswrite.  See sswrite for a description
+% of the Problem struct.
 %
 % Usage: Problem = ssread (directory)
 %
@@ -49,10 +49,13 @@ function Problem = ssread (directory, tmp)
 %
 % Note that ssget is much faster than ssread.  ssread is useful if you are
 % short on disk space, and want to have just one copy of the collection that
-% can be read by MATLAB (via ssread) and a non-MATLAB program (the MM or RB
-% versions of the collection).
+% can be read by MATLAB (via ssread) and a non-MATLAB program (the MM, RB, or
+% Binsparse versions of the collection).
 %
-% See also sswrite, mread, mwrite, RBread, RBread, ssget, untar, tempdir.
+% Reading Binsparse output requires binsparse_read and
+% convert_to_problem_struct from the Binsparse MATLAB bindings.
+%
+% See also sswrite, mread, mwrite, RBread, ssget, untar, tempdir.
 
 % Optionally uses the CHOLMOD mread mexFunction, for reading Problems in
 % Matrix Market format.
@@ -114,6 +117,14 @@ try
     %---------------------------------------------------------------------------
 
     masterfile = [directory '/' name] ;
+    bspfile = [masterfile '.bsp.h5'] ;
+    if (exist (bspfile, 'file') == 2)
+        Problem = read_bsp_problem (bspfile) ;
+        if (is_tar)
+            rmdir (tmpdir, 's') ;
+        end
+        return
+    end
     [Problem notes RB] = get_header (masterfile) ;
 
     %---------------------------------------------------------------------------
@@ -415,3 +426,101 @@ else
 
 end
 
+
+%-------------------------------------------------------------------------------
+% read_bsp_problem: read and convert one Binsparse SSMC problem
+%-------------------------------------------------------------------------------
+
+function Problem = read_bsp_problem (bspfile)
+
+reader = which ('binsparse_read') ;
+[~, ~, reader_extension] = fileparts (reader) ;
+if (isempty (reader) || ~strcmpi (reader_extension, ['.' mexext]))
+    error ('SuiteSparse:ssread:MissingBinsparseReader', ...
+        'BSP input requires the binsparse_read MEX function') ;
+end
+if (isempty (which ('convert_to_problem_struct')))
+    error ('SuiteSparse:ssread:MissingBinsparseConverter', ...
+        'BSP input requires convert_to_problem_struct') ;
+end
+
+try
+    descriptor_text = h5readatt (bspfile, '/', 'binsparse') ;
+    descriptor = jsondecode (char (descriptor_text)) ;
+catch me
+    error ('SuiteSparse:ssread:InvalidBinsparseMetadata', ...
+        'unable to read BSP metadata: %s', me.message) ;
+end
+if (~isstruct (descriptor) || ~isfield (descriptor, 'metadata') || ...
+        ~isstruct (descriptor.metadata))
+    error ('SuiteSparse:ssread:InvalidBinsparseMetadata', ...
+        'BSP file does not contain SuiteSparse problem metadata') ;
+end
+
+bsp_problem = struct ;
+bsp_problem.metadata = descriptor.metadata ;
+bsp_problem.A = binsparse_read (bspfile) ;
+
+info = h5info (bspfile, '/') ;
+for k = 1:numel (info.Groups)
+    component = bsp_component_name (info.Groups(k).Name) ;
+    value = binsparse_read (bspfile, component) ;
+    bsp_problem = add_bsp_component (bsp_problem, component, value) ;
+end
+
+reserved = {'values', 'indices_0', 'indices_1', 'pointers_to_1'} ;
+for k = 1:numel (info.Datasets)
+    component = info.Datasets(k).Name ;
+    if (any (strcmp (component, reserved)))
+        continue
+    end
+    value = h5read (bspfile, ['/' component]) ;
+    bsp_problem = add_bsp_component (bsp_problem, component, value) ;
+end
+
+Problem = convert_to_problem_struct (bsp_problem) ;
+
+
+%-------------------------------------------------------------------------------
+% bsp_component_name
+%-------------------------------------------------------------------------------
+
+function name = bsp_component_name (path)
+
+slash = find (path == '/', 1, 'last') ;
+if (isempty (slash))
+    name = path ;
+else
+    name = path (slash+1:end) ;
+end
+if (isempty (name) || ~isvarname (name))
+    error ('SuiteSparse:ssread:InvalidBinsparseComponent', ...
+        'invalid BSP component name: %s', path) ;
+end
+
+
+%-------------------------------------------------------------------------------
+% add_bsp_component
+%-------------------------------------------------------------------------------
+
+function bsp_problem = add_bsp_component (bsp_problem, name, value)
+
+if (~isvarname (name))
+    error ('SuiteSparse:ssread:InvalidBinsparseComponent', ...
+        'invalid BSP component name: %s', name) ;
+end
+if (strcmp (name, 'b') || strcmp (name, 'x'))
+    if (isfield (bsp_problem, name))
+        error ('SuiteSparse:ssread:DuplicateBinsparseComponent', ...
+            'duplicate BSP component: %s', name) ;
+    end
+    bsp_problem.(name) = value ;
+else
+    if (~isfield (bsp_problem, 'aux'))
+        bsp_problem.aux = struct ;
+    elseif (isfield (bsp_problem.aux, name))
+        error ('SuiteSparse:ssread:DuplicateBinsparseComponent', ...
+            'duplicate BSP component: %s', name) ;
+    end
+    bsp_problem.aux.(name) = value ;
+end
