@@ -2,11 +2,11 @@ function ssexport (list, check, tmp, formats, topdir)
 %SSEXPORT export to Matrix Market, Rutherford/Boeing, or Binsparse formats
 %
 % Example:
-%   ssexport ;                    % export the entire collection to MM and RB
-%   ssexport (list) ;             % export selected matrices to MM and RB
+%   ssexport ;                    % export the entire collection to MM, RB, BSP
+%   ssexport (list) ;             % export selected matrices to MM, RB, BSP
 %   ssexport (list, 'check') ;    % also read them back in, to check
-%   ssexport (list, 'check', '', {'BSP'}) ;
-%   ssexport (list, 'check', '', {'MM', 'RB', 'BSP'}) ;
+%   ssexport (list, 'check', '', {'BSP'}) ;             % just export to BSP
+%   ssexport (list, 'check', '', {'MM', 'RB', 'BSP'}) ; % export to all & check
 %
 % If the list is empty, all matrices in the collection are exported.
 % A 3rd argument tmp changes the tmp directory for ssread.
@@ -17,7 +17,7 @@ function ssexport (list, check, tmp, formats, topdir)
 %
 % See also ssget, sswrite, ssread, ssbsp_check_problem, RBio, mwrite.
 
-% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% SuiteSparseCollection, Copyright (c) 2006-2026, Timothy A Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
@@ -39,7 +39,7 @@ if (nargin < 3)
 end
 
 if (nargin < 4 || isempty (formats))
-    formats = {'MM', 'RB'} ;
+    formats = {'MM', 'RB', 'BSP'} ;
 elseif (ischar (formats))
     formats = {formats} ;
 elseif (~iscell (formats) || ~all (cellfun (@ischar, formats)))
