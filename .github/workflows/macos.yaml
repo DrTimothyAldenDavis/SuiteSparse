@@ -38,7 +38,7 @@ jobs:
           sysctl machdep
 
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: install dependencies
         # Homebrew's Python conflicts with the Python that comes pre-installed

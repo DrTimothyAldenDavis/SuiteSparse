@@ -92,7 +92,7 @@ jobs:
           echo "::endgroup::"
 
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: install cross-toolchain
         run: |
