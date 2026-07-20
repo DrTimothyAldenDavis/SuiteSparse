@@ -35,12 +35,9 @@ jobs:
       fail-fast: false
 
       matrix:
-        msystem: [MINGW64, MINGW32, UCRT64, CLANG64, CLANGARM64]
+        msystem: [MINGW64, UCRT64, CLANG64, CLANGARM64]
         include:
           - msystem: MINGW64
-            os: windows-latest
-            f77-package: fc
-          - msystem: MINGW32
             os: windows-latest
             f77-package: fc
           - msystem: UCRT64
