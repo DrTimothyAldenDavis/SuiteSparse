@@ -89,7 +89,7 @@ jobs:
             mpfr:p
 
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: prepare ccache
         # create key with human readable timestamp
