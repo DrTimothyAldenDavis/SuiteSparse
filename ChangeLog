@@ -1,21 +1,24 @@
-FIXME, 2026: version 7.12.3
+FIXME, 2026: version 7.13.0
 
     * github workflow: remove deprecated environments
-    * CHOLMOD 5.3.5: typo in user guide
+    * CHOLMOD 5.3.5: typo in user guide; fix API in cholmod.h
     * ParU 1.1.1: MATLAB mexFunction does not #include mkl.h on Intel systems
     * GraphBLAS 10.4.0: added GxB_atfork_* methods.  GrB_*_extractElement no
         longer calls GrB_wait if the entry can be found without finalizing
-        pending tuples.
-    * SuiteSparse_config 7.12.3: version update to match SuiteSparse
+        pending tuples. FIXME: add arena methods, GhB in MATLAB, ...
+    * SuiteSparse_config 7.13.0: version update to match SuiteSparse.
+        Require cmake 3.23 for CUDA -arch="all" parameter to nvcc.
+    * CSparse 4.4.2: minor fix to build system; sync version with CXSparse
+    * UMFPACK 6.3.8: sync definition and declaration of umf_row_search.
     * Package versions in this release: (* denotes a new version)
-        SuiteSparse_config 7.12.3   *
+        SuiteSparse_config 7.13.0   *
         AMD 3.3.4
         BTF 2.3.3
         CAMD 3.3.5
         CCOLAMD 3.3.5
         CHOLMOD 5.3.5               *
         COLAMD 3.3.5
-        CSparse 4.3.2
+        CSparse 4.4.2               *
         CXSparse 4.4.2
         Example 1.8.10
         GraphBLAS 10.4.0            *

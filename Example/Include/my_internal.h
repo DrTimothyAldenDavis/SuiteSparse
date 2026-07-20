@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,0)
-#error "This library requires SuiteSparse_config 7.12.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0)
+#error "This library requires SuiteSparse_config 7.13.0 or later"
 #endif
 
 #include "amd.h"
@@ -39,8 +39,8 @@
 #endif
 
 #include "cholmod.h"
-#if !defined (CHOLMOD__VERSION) || CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,4)
-#error "This library requires CHOLMOD 5.3.4 or later"
+#if !defined (CHOLMOD__VERSION) || CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,5)
+#error "This library requires CHOLMOD 5.3.5 or later"
 #endif
 
 #include "colamd.h"
@@ -55,9 +55,10 @@
 
 #if ! defined (NO_GRAPHBLAS)
     #include "GraphBLAS.h"
+    // FIXME: use 10.4.0
     #if !defined ( GxB_SUITESPARSE_GRAPHBLAS ) || \
-        GxB_IMPLEMENTATION < GxB_VERSION (10,2,0)
-    #error "This library requires SuiteSparse:GraphBLAS 10.2.0 or later"
+        GxB_IMPLEMENTATION < GxB_VERSION (10,3,1)
+    #error "This library requires SuiteSparse:GraphBLAS 10.3.1 or later"
     #endif
 #endif
 
@@ -94,8 +95,8 @@
 #endif
 
 #include "umfpack.h"
-#if !defined (UMFPACK__VERSION) || UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,7)
-#error "This library requires UMFPACK 6.3.7 or later"
+#if !defined (UMFPACK__VERSION) || UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,8)
+#error "This library requires UMFPACK 6.3.8 or later"
 #endif
 
 // SuiteSparse include files for C++:

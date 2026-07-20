@@ -74,23 +74,23 @@
  * below.
  */
 
-#define UMFPACK_DATE "Nov 1, 2025"
+#define UMFPACK_DATE "July FIXME, 2026"
 #define UMFPACK_MAIN_VERSION   6
 #define UMFPACK_SUB_VERSION    3
-#define UMFPACK_SUBSUB_VERSION 7
+#define UMFPACK_SUBSUB_VERSION 8
 
 #define UMFPACK_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define UMFPACK_VER UMFPACK_VER_CODE(6,3)
 
-#define UMFPACK__VERSION SUITESPARSE__VERCODE(6,3,7)
+#define UMFPACK__VERSION SUITESPARSE__VERCODE(6,3,8)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,0))
-#error "UMFPACK 6.3.7 requires SuiteSparse_config 7.12.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0))
+#error "UMFPACK 6.3.8 requires SuiteSparse_config 7.13.0 or later"
 #endif
 
 #if !defined (AMD__VERSION) || \
     (AMD__VERSION < SUITESPARSE__VERCODE(3,3,4))
-#error "UMFPACK 6.3.7 requires AMD 3.3.4 or later"
+#error "UMFPACK 6.3.8 requires AMD 3.3.4 or later"
 #endif
 
 // user code should not directly use GB_STR or GB_XSTR

@@ -60,18 +60,18 @@ typedef enum ParU_Info
 
 #define PARU__VERSION SUITESPARSE__VERCODE(1,1,1)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,0))
-#error "ParU 1.1.1 requires SuiteSparse_config 7.12.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0))
+#error "ParU 1.1.1 requires SuiteSparse_config 7.13.0 or later"
 #endif
 
 #if !defined (UMFPACK__VERSION) || \
-    (UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,7))
-#error "ParU 1.1.1 requires UMFPACK 6.3.7 or later"
+    (UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,8))
+#error "ParU 1.1.1 requires UMFPACK 6.3.8 or later"
 #endif
 
 #if !defined (CHOLMOD__VERSION) || \
-    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,4))
-#error "ParU 1.1.1 requires CHOLMOD 5.3.4 or later"
+    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,3,5))
+#error "ParU 1.1.1 requires CHOLMOD 5.3.5 or later"
 #endif
 
 //  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h

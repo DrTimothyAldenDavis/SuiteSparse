@@ -10,7 +10,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-FIXME, 2026, SuiteSparse VERSION 7.12.3
+FIXME, 2026, SuiteSparse VERSION 7.13.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -987,7 +987,7 @@ build type).  The static libraries will not be built (since
 
   A string, such as `"all"` or `"35;50;75;80"` that lists the CUDA
   architectures to use when compiling CUDA kernels with `nvcc`.  The `"all"`
-  option requires CMake 3.23 or later.  Default: `"52;75;80"`.
+  option requires CMake 3.23 or later.  Default: `"all"`.
 
 * `BLA_VENDOR`:
 

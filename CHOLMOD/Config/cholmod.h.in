@@ -309,8 +309,8 @@ int cholmod_l_version (int version [3]) ;
 
 #define CHOLMOD__VERSION SUITESPARSE__VERCODE(@CHOLMOD_VERSION_MAJOR@,@CHOLMOD_VERSION_MINOR@,@CHOLMOD_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,3))
-#error "CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ requires SuiteSparse_config 7.12.3 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0))
+#error "CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ requires SuiteSparse_config 7.13.0 or later"
 #endif
 
 //------------------------------------------------------------------------------
@@ -1515,8 +1515,8 @@ cholmod_sparse *cholmod_add     // return C = alpha*A + beta*B
     int sorted,         // ignored; C is now always returned as sorted
     cholmod_common *Common
 ) ;
-cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double *,
-    double *, int, int, cholmod_common *) ;
+cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double [2],
+    double [2], int, int, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
 // cholmod_sparse_xtype: change the xtype and/or dtype of a sparse matrix
@@ -2791,7 +2791,7 @@ int cholmod_factorize_p
     cholmod_factor *L,  // resulting factorization
     cholmod_common *Common
 ) ;
-int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *, size_t,
+int cholmod_l_factorize_p (cholmod_sparse *, double [2], int64_t *, size_t,
     cholmod_factor *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
@@ -2989,7 +2989,7 @@ int cholmod_rowfac
     cholmod_factor *L,
     cholmod_common *Common
 ) ;
-int cholmod_l_rowfac (cholmod_sparse *, cholmod_sparse *, double *, size_t,
+int cholmod_l_rowfac (cholmod_sparse *, cholmod_sparse *, double [2], size_t,
     size_t, cholmod_factor *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
@@ -3014,7 +3014,7 @@ int cholmod_rowfac_mask
     cholmod_factor *L,
     cholmod_common *Common
 ) ;
-int cholmod_l_rowfac_mask (cholmod_sparse *, cholmod_sparse *, double *,
+int cholmod_l_rowfac_mask (cholmod_sparse *, cholmod_sparse *, double [2],
     size_t, size_t, int64_t *, int64_t *, cholmod_factor *, cholmod_common *) ;
 
 int cholmod_rowfac_mask2
@@ -3033,7 +3033,7 @@ int cholmod_rowfac_mask2
     cholmod_factor *L,
     cholmod_common *Common
 ) ;
-int cholmod_l_rowfac_mask2 (cholmod_sparse *, cholmod_sparse *, double *,
+int cholmod_l_rowfac_mask2 (cholmod_sparse *, cholmod_sparse *, double [2],
     size_t, size_t, int64_t *, int64_t, int64_t *, cholmod_factor *,
     cholmod_common *) ;
 
@@ -3298,7 +3298,7 @@ int cholmod_sdmult
     cholmod_dense *Y,   // resulting dense matrix
     cholmod_common *Common
 ) ;
-int cholmod_l_sdmult (cholmod_sparse *, int, double *, double *,
+int cholmod_l_sdmult (cholmod_sparse *, int, double [2], double [2],
     cholmod_dense *, cholmod_dense *Y, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
@@ -3598,7 +3598,7 @@ int cholmod_rowadd_solve
     cholmod_dense *DeltaB,  // change in b, zero on output
     cholmod_common *Common
 ) ;
-int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double *,
+int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double [2],
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
@@ -3622,7 +3622,7 @@ int cholmod_rowadd_mark
     cholmod_dense *DeltaB,  // change in b, zero on output
     cholmod_common *Common
 ) ;
-int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double *, int64_t *,
+int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double [2], int64_t *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
@@ -3669,7 +3669,7 @@ int cholmod_rowdel_solve
     cholmod_dense *DeltaB,  // change in b, zero on output
     cholmod_common *Common
 ) ;
-int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double *,
+int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double [2],
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
@@ -3693,7 +3693,7 @@ int cholmod_rowdel_mark
     cholmod_dense *DeltaB,  // change in b, zero on output
     cholmod_common *Common
 ) ;
-int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *, int64_t *,
+int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double [2], int64_t *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 #endif
@@ -4023,7 +4023,7 @@ int cholmod_super_numeric
     cholmod_factor *L,  // factorization
     cholmod_common *Common
 ) ;
-int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double *,
+int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double [2],
     cholmod_factor *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------

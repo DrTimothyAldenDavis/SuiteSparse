@@ -35,10 +35,10 @@
 #                       GraphBLAS is false.
 #
 #   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
-#                       "35;50;75;80" that lists the CUDA architectures to use
+#                       "75;80" that lists the CUDA architectures to use
 #                       when compiling CUDA kernels with nvcc.  The "all"
 #                       option requires cmake 3.23 or later.
-#                       Default: "52;75;80".
+#                       Default: "all".
 #
 #   BLA_VENDOR and BLA_SIZEOF_INTEGER: By default, SuiteSparse searches for
 #                       the BLAS library in a specific order.  If you wish to
@@ -396,7 +396,7 @@ endif ( )
 
 if ( SUITESPARSE_HAS_CUDA )
     message ( STATUS "CUDA:             enabled" )
-    set ( SUITESPARSE_CUDA_ARCHITECTURES "52;75;80" CACHE STRING "CUDA architectures" )
+    set ( SUITESPARSE_CUDA_ARCHITECTURES "all" CACHE STRING "CUDA architectures" )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
 else ( )
     message ( STATUS "CUDA:             not enabled" )
