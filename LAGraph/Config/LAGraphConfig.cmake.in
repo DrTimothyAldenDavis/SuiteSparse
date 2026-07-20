@@ -41,9 +41,9 @@ include ( CMakeFindDependencyMacro )
 set ( _dependencies_found ON )
 
 if ( NOT TARGET GraphBLAS::GraphBLAS )
-    # Look GraphBLAS 
+    # Look for GraphBLAS 
     list ( PREPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR} )
-    find_dependency ( GraphBLAS @GraphBLAS_VERSION_MAJOR@.@GraphBLAS_VERSION_MINOR@ )
+    find_dependency ( GraphBLAS @GraphBLAS_VER_MAJOR@.@GraphBLAS_VER_MINOR@ )
 endif ( )
 
 if ( NOT GraphBLAS_FOUND )

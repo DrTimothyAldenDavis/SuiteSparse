@@ -163,8 +163,7 @@ else ( )
 #   message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
 
     # No package version is explicitly stated here; an arbitrary GraphBLAS
-    # library can have any version number.  For SuiteSparse:GraphBLAS, LAGraph
-    # requires v7.1.0 or later, which is checked in LAGraph.h.
+    # library can have any version number.
     message ( STATUS "Looking for GraphBLAS with FindGraphBLAS.cmake" )
     find_package ( GraphBLAS MODULE REQUIRED )
 
@@ -385,6 +384,25 @@ else ( )
         "LAGRAPH_USE_OPENMP; some LAGraph methods will be slow.)" )
     endif ( )
 endif ( )
+
+if ( GRAPHBLAS_VERSION )
+    if ( ${GRAPHBLAS_VERSION} MATCHES "([0-9]+).[0-9]+.[0-9]+" )
+        set ( GraphBLAS_VER_MAJOR ${CMAKE_MATCH_1} )
+    endif ( )
+    if ( ${GRAPHBLAS_VERSION} MATCHES "[0-9]+.([0-9]+).[0-9]+" )
+        set ( GraphBLAS_VER_MINOR ${CMAKE_MATCH_1} )
+    endif ( )
+    if ( ${GRAPHBLAS_VERSION} MATCHES "[0-9]+.[0-9]+.([0-9]+)" )
+        set ( GraphBLAS_VER_PATCH ${CMAKE_MATCH_1} )
+    endif ( )
+    if ( LAGRAPH_DUMP )
+        message ( STATUS "major: ${GraphBLAS_VER_MAJOR}" )
+        message ( STATUS "minor: ${GraphBLAS_VER_MINOR}" )
+        message ( STATUS "patch: ${GraphBLAS_VER_PATCH}" )
+    endif ( )
+endif ( )
+
+message (STATUS "Config with GraphBLAS version ${GraphBLAS_VER_MAJOR}.${GraphBLAS_VER_MINOR}.${GraphBLAS_VER_PATCH}" )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
