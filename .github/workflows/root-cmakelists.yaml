@@ -146,7 +146,6 @@ jobs:
                 -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                 -DBLA_VENDOR="OpenBLAS" \
-                "-DSUITESPARSE_ENABLE_PROJECTS=all;csparse" \
                 -DSUITESPARSE_DEMOS=OFF \
                 -DSUITESPARSE_USE_FORTRAN=ON \
                 -DBUILD_TESTING=OFF \
