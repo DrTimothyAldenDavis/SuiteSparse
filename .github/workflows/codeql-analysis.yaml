@@ -18,6 +18,11 @@ jobs:
   ubuntu:
     runs-on: ubuntu-latest
 
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
     strategy:
       fail-fast: false
       matrix:
@@ -42,6 +47,17 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v7
 
+      - name: initialize CodeQL
+        # Initialize the CodeQL tools for scanning.
+        # Run before installing dependencies to avoid network contention.
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          # If you wish to specify custom queries, you can do so here or in a config file.
+          # By default, queries listed here will override any specified in a config file.
+          # Prefix the list here with "+" to use these queries and those in the config file.
+          # queries: ./path/to/local/query, your-org/your-repo/queries@main
+
       - name: install dependencies
         run: |
           sudo apt -qq update
@@ -62,16 +78,6 @@ jobs:
           sudo mv ./libdl.a /usr/lib/x86_64-linux-gnu/libdl.a
           sudo mv ./librt.a /usr/lib/x86_64-linux-gnu/librt.a
           sudo mv ./libpthread.a /usr/lib/x86_64-linux-gnu/libpthread.a
-
-      - name: initialize CodeQL
-        # Initialize the CodeQL tools for scanning.
-        uses: github/codeql-action/init@v4
-        with:
-          languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
-          # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
       - name: build
         # The analysis with factory kernels of the GraphBLAS library is too
@@ -166,7 +172,7 @@ jobs:
           msystem: UCRT64
 
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: initialize CodeQL
         # Initialize the CodeQL tools for scanning.
@@ -204,4 +210,8 @@ jobs:
       - name: perform CodeQL analysis
         uses: github/codeql-action/analyze@v4
         with:
-          category: ${{ matrix.group }}-64
+#         was:
+#         category: ${{ matrix.group }}-64
+#         suggested by Markus:
+          category: ${{ matrix.group }}-win64
+

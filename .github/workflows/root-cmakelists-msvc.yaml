@@ -90,7 +90,7 @@ jobs:
 
       - name: cache conda packages
         id: conda-cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: C:/Miniconda/envs/test
           key: conda:netlib:msvc
@@ -106,7 +106,7 @@ jobs:
 
       - name: save conda cache
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: C:/Miniconda/envs/test
           key: ${{ steps.conda-cache.outputs.cache-primary-key }}
@@ -170,7 +170,7 @@ jobs:
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -258,7 +258,7 @@ jobs:
         # Save the cache after we are done building
         # This helps to retain the ccache even if the subsequent steps are failing.
         if: always() && (steps.build.outcome != 'skipped')
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
