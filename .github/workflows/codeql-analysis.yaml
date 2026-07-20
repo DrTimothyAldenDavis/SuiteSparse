@@ -210,8 +210,4 @@ jobs:
       - name: perform CodeQL analysis
         uses: github/codeql-action/analyze@v4
         with:
-#         was:
-#         category: ${{ matrix.group }}-64
-#         suggested by Markus:
           category: ${{ matrix.group }}-win64
-
