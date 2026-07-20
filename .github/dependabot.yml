@@ -6,3 +6,5 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every week
       interval: "weekly"
+    # all pull-requests should be opened for the dev2 branch
+    target-branch: "dev2"
