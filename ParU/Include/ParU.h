@@ -2,7 +2,7 @@
 // ======================= ParU.h =============================================/
 // ============================================================================/
 
-// ParU, Copyright (c) 2022-2025, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2026, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -53,15 +53,15 @@ typedef enum ParU_Info
     PARU_TOO_LARGE = -4         // problem too large for the BLAS
 } ParU_Info ;
 
-#define PARU_DATE "FIXME, 2026"
+#define PARU_DATE "July 31, 2026"
 #define PARU_VERSION_MAJOR  1
 #define PARU_VERSION_MINOR  1
 #define PARU_VERSION_UPDATE 1
 
 #define PARU__VERSION SUITESPARSE__VERCODE(1,1,1)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0))
-#error "ParU 1.1.1 requires SuiteSparse_config 7.13.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,3))
+#error "ParU 1.1.1 requires SuiteSparse_config 7.12.3 or later"
 #endif
 
 #if !defined (UMFPACK__VERSION) || \

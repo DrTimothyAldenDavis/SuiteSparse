@@ -2,7 +2,7 @@
 // SuiteSparse/Example/Include/my_internal.h
 //------------------------------------------------------------------------------
 
-// Copyright (c) 2022-2025, Timothy A. Davis, All Rights Reserved.
+// Copyright (c) 2022-2026, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
 //------------------------------------------------------------------------------
@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0)
-#error "This library requires SuiteSparse_config 7.13.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,3)
+#error "This library requires SuiteSparse_config 7.12.3 or later"
 #endif
 
 #include "amd.h"
@@ -55,17 +55,16 @@
 
 #if ! defined (NO_GRAPHBLAS)
     #include "GraphBLAS.h"
-    // FIXME: use 10.4.0
     #if !defined ( GxB_SUITESPARSE_GRAPHBLAS ) || \
-        GxB_IMPLEMENTATION < GxB_VERSION (10,3,1)
-    #error "This library requires SuiteSparse:GraphBLAS 10.3.1 or later"
+        GxB_IMPLEMENTATION < GxB_VERSION (10,3,2)
+    #error "This library requires SuiteSparse:GraphBLAS 10.3.2 or later"
     #endif
 #endif
 
 #if ! defined (NO_LAGRAPH)
     #include "LAGraph.h"
-    #if SUITESPARSE__VERCODE(LAGRAPH_VERSION_MAJOR,LAGRAPH_VERSION_MINOR,LAGRAPH_VERSION_UPDATE) < SUITESPARSE__VERCODE(1,2,1)
-    #error "This library requires LAGraph 1.2.1 or later"
+    #if SUITESPARSE__VERCODE(LAGRAPH_VERSION_MAJOR,LAGRAPH_VERSION_MINOR,LAGRAPH_VERSION_UPDATE) < SUITESPARSE__VERCODE(1,2,2)
+    #error "This library requires LAGraph 1.2.2 or later"
     #endif
 #endif
 

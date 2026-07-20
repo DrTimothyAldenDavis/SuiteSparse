@@ -1,4 +1,4 @@
-FIXME, 2026: version 5.3.5
+July 31, 2026: version 5.3.5
 
     * typo in user guide: cholmod_solve2 with Bset *non*-NULL causes L to
         be converted from supernodal to simplicial, not when NULL.

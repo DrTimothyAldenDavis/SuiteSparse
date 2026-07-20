@@ -36,13 +36,13 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 ) # LAGraph can be built stand-alone
+cmake_minimum_required ( VERSION 3.23 )
 
 # version of LAGraph
-set ( LAGraph_DATE "Sept 8, 2025" )
+set ( LAGraph_DATE "July 21, 2026" )
 set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( LAGraph_VERSION_SUB   1 CACHE STRING "" FORCE )
+set ( LAGraph_VERSION_SUB   2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building LAGraph version: v"
     ${LAGraph_VERSION_MAJOR}.
@@ -69,6 +69,17 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 include ( SuiteSparsePolicy )
 
 enable_language ( C )
+
+# check if stdalign.h exists
+include ( CheckIncludeFile )
+check_include_file ( stdalign.h HAVE_STDALIGN_H )
+if ( HAVE_STDALIGN_H )
+    set ( LAGraph_HAS_STDALIGN_H 1 )
+    message ( STATUS "stdalign.h is available" )
+else ( )
+    message ( STATUS "stdalign.h is not available" )
+    set ( LAGraph_HAS_STDALIGN_H 0 )
+endif ( )
 
 # configure LAGraph.h with the LAGraph date and version
 configure_file (

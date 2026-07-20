@@ -2,7 +2,7 @@
 // CHOLMOD/Include/cholmod.h: include file for CHOLMOD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Include/cholmod.h.  Copyright (C) 2005-2023, Timothy A. Davis.
+// CHOLMOD/Include/cholmod.h.  Copyright (C) 2005-2026, Timothy A. Davis.
 // All Rights Reserved.
 
 // Each Module of CHOLMOD has its own license, and a shared cholmod.h file.
@@ -246,7 +246,7 @@
 // version control
 //------------------------------------------------------------------------------
 
-#define CHOLMOD_DATE "FIXME, 2026"
+#define CHOLMOD_DATE "July 31, 2026"
 #define CHOLMOD_MAIN_VERSION   5
 #define CHOLMOD_SUB_VERSION    3
 #define CHOLMOD_SUBSUB_VERSION 5
@@ -309,8 +309,8 @@ int cholmod_l_version (int version [3]) ;
 
 #define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,3,5)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0))
-#error "CHOLMOD 5.3.5 requires SuiteSparse_config 7.13.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,3))
+#error "CHOLMOD 5.3.5 requires SuiteSparse_config 7.12.3 or later"
 #endif
 
 //------------------------------------------------------------------------------

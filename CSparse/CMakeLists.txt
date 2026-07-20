@@ -2,7 +2,7 @@
 # CSparse/CMakeLists.txt:  cmake for CSparse
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2006-2023, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2006-2026, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
 # CSparse/CMakeLists.txt is a standalone script, which can be used outside of
@@ -17,7 +17,7 @@
 
 cmake_minimum_required ( VERSION 3.23 )
 
-set ( CSPARSE_DATE "FIXME, 2026" )
+set ( CSPARSE_DATE "July 31, 2026" )
 set ( CSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( CSPARSE_VERSION_MINOR 4 CACHE STRING "" FORCE )
 set ( CSPARSE_VERSION_SUB   2 CACHE STRING "" FORCE )

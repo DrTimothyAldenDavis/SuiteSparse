@@ -2,7 +2,7 @@
 // UMFPACK/Include/umfpack.h: include file for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2024, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2026, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -40,7 +40,7 @@
 /* -------------------------------------------------------------------------- */
 
 #define UMFPACK_COPYRIGHT \
-"UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.\n"
+"UMFPACK:  Copyright (c) 2005-2026 by Timothy A. Davis.  All Rights Reserved.\n"
 
 #define UMFPACK_LICENSE_PART1 \
 "\nUMFPACK License: SPDX-License-Identifier: GPL-2.0+\n" \
@@ -74,7 +74,7 @@
  * below.
  */
 
-#define UMFPACK_DATE "July FIXME, 2026"
+#define UMFPACK_DATE "July 31, 2026"
 #define UMFPACK_MAIN_VERSION   6
 #define UMFPACK_SUB_VERSION    3
 #define UMFPACK_SUBSUB_VERSION 8
@@ -84,8 +84,8 @@
 
 #define UMFPACK__VERSION SUITESPARSE__VERCODE(6,3,8)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0))
-#error "UMFPACK 6.3.8 requires SuiteSparse_config 7.13.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,3))
+#error "UMFPACK 6.3.8 requires SuiteSparse_config 7.12.3 or later"
 #endif
 
 #if !defined (AMD__VERSION) || \

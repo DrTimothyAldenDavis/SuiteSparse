@@ -2,7 +2,7 @@
 # SuiteSparse/CHOLMOD/CMakeLists.txt:  cmake for CHOLMOD
 #-------------------------------------------------------------------------------
 
-# CHOLMOD: Copyright (c) 2005-2023, Timothy A. Davis.
+# CHOLMOD: Copyright (c) 2005-2026, Timothy A. Davis.
 # Copyright and license varies by module.
 
 #-------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.23 )
 
-set ( CHOLMOD_DATE "FIXME, 2026" )
+set ( CHOLMOD_DATE "July 31, 2026" )
 set ( CHOLMOD_VERSION_MAJOR 5 CACHE STRING "" FORCE )
 set ( CHOLMOD_VERSION_MINOR 3 CACHE STRING "" FORCE )
 set ( CHOLMOD_VERSION_SUB   5 CACHE STRING "" FORCE )
@@ -111,10 +111,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.13.0
+    find_package ( SuiteSparse_config 7.12.3
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.13.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.12.3 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.4

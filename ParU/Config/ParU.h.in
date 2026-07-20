@@ -2,7 +2,7 @@
 // ======================= ParU.h =============================================/
 // ============================================================================/
 
-// ParU, Copyright (c) 2022-2025, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2026, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -60,8 +60,8 @@ typedef enum ParU_Info
 
 #define PARU__VERSION SUITESPARSE__VERCODE(@PARU_VERSION_MAJOR@,@PARU_VERSION_MINOR@,@PARU_VERSION_UPDATE@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,13,0))
-#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@ requires SuiteSparse_config 7.13.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,12,3))
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@ requires SuiteSparse_config 7.12.3 or later"
 #endif
 
 #if !defined (UMFPACK__VERSION) || \

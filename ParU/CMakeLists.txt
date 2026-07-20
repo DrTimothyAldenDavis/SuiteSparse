@@ -2,7 +2,7 @@
 # SuiteSparse/ParU/CMakeLists.txt:  cmake for ParU
 #-------------------------------------------------------------------------------
 
-# ParU, Copyright (c) 2022-2025, Mohsen Aznaveh and Timothy A. Davis,
+# ParU, Copyright (c) 2022-2026, Mohsen Aznaveh and Timothy A. Davis,
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.23 )
 
-set ( PARU_DATE "FIXME, 2026" )
+set ( PARU_DATE "July 31, 2026" )
 set ( PARU_VERSION_MAJOR  1 CACHE STRING "" FORCE )
 set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
 set ( PARU_VERSION_UPDATE 1 CACHE STRING "" FORCE )
@@ -102,10 +102,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.13.0
+    find_package ( SuiteSparse_config 7.12.3
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.13.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.12.3 REQUIRED )
     endif ( )
 
     find_package ( CHOLMOD 5.3.5

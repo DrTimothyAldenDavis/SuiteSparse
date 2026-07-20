@@ -1,4 +1,4 @@
-// SuiteSparse:GraphBLAS @GraphBLAS_VERSION_MAJOR@.@GraphBLAS_VERSION_MINOR@.@GraphBLAS_VERSION_SUB@
+// SuiteSparse:GraphBLAS @GraphBLAS_VER_MAJOR@.@GraphBLAS_VER_MINOR@.@GraphBLAS_VER_SUB@
 //------------------------------------------------------------------------------
 // GraphBLAS.h: definitions for the GraphBLAS package
 //------------------------------------------------------------------------------
@@ -287,9 +287,9 @@
 // The version of this implementation, and the GraphBLAS API version:
 #define GxB_IMPLEMENTATION_NAME "SuiteSparse:GraphBLAS"
 #define GxB_IMPLEMENTATION_DATE "@GraphBLAS_DATE@"
-#define GxB_IMPLEMENTATION_MAJOR @GraphBLAS_VERSION_MAJOR@
-#define GxB_IMPLEMENTATION_MINOR @GraphBLAS_VERSION_MINOR@
-#define GxB_IMPLEMENTATION_SUB   @GraphBLAS_VERSION_SUB@
+#define GxB_IMPLEMENTATION_MAJOR @GraphBLAS_VER_MAJOR@
+#define GxB_IMPLEMENTATION_MINOR @GraphBLAS_VER_MINOR@
+#define GxB_IMPLEMENTATION_SUB   @GraphBLAS_VER_SUB@
 #define GxB_SPEC_DATE "@GraphBLAS_API_DATE@"
 #define GxB_SPEC_MAJOR @GraphBLAS_API_VERSION_MAJOR@
 #define GxB_SPEC_MINOR @GraphBLAS_API_VERSION_MINOR@
