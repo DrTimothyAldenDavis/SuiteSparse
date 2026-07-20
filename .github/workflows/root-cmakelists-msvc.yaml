@@ -41,16 +41,18 @@ jobs:
         cc: [clang-cl]
         cxx: [clang-cl]
         include:
-          - openmp: with
-            cuda: with
-            link: both
-            cc: clang-cl
-            cxx: clang-cl
-          - openmp: with
-            cuda: with
-            link: static
-            cc: clang-cl
-            cxx: clang-cl
+# CUDA is intermittently timing out, as of July 20, 2026, so it is
+# temporarily removed from this workflow:
+#         - openmp: with
+#           cuda: with
+#           link: both
+#           cc: clang-cl
+#           cxx: clang-cl
+#         - openmp: with
+#           cuda: with
+#           link: static
+#           cc: clang-cl
+#           cxx: clang-cl
           - openmp: without
             cuda: without
             link: both
