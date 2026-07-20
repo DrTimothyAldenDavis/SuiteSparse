@@ -172,7 +172,7 @@ jobs:
           msystem: UCRT64
 
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: initialize CodeQL
         # Initialize the CodeQL tools for scanning.
