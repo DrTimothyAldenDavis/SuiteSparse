@@ -3,8 +3,10 @@ MUMPS and SuperLU benchmarks, on the test matrices used for the ACM TOMS
 submission for ParU.  Linux is required.
 
 To get the matrices (in Matrix Market format) from the sparse.tamu.edu website,
-use the following:
+use the following, in this folder (assuming ~/SuiteSparse is in your home
+folder; revise the first command accordingly):
 
+    cd ~/SuiteSparse/ParU/Demo/Benchmarking
     chmod +x get_matrices
     ./get_matrices
 
@@ -16,7 +18,7 @@ Benchmarking ParU
 --------------------------------------------------------------------------------
 
     First, compile ParU and its demos/benchmark programs (where "SuiteSparse")
-    is your top-level SuiteSparse repository (suppose it is in your home
+    is your top-level SuiteSparse repository (assuming it is in your home
     directory):
 
         cd ~/SuiteSparse
@@ -24,8 +26,9 @@ Benchmarking ParU
         cd ParU
         make demos
 
-    Finally, run the benchmarks for ParU and UMFPACK, with:
+    Finally, run the benchmarks for ParU and UMFPACK in this folder, with:
 
+        cd ~/SuiteSparse/ParU/Demo/Benchmarking
         chmod +x run_benchmarks
         script
         ./run_benchmarks
@@ -36,7 +39,7 @@ Benchmarking ParU
 
     Note that we used the following scripts to benchmark ParU and UMFPACK for
     the ACM TOMS paper submission for ParU, but they are specific to our two
-    systems.  We include them for reference:
+    systems.  We include them for reference; they are optional:
 
         do_paru_and_umf_hyper
         do_paru_and_umf.slurm
@@ -49,8 +52,8 @@ Benchmarking MUMPS
     uncompressing the original MUMPS 5.7.3 into (say) a ~/MUMPS folder in your
     home directory, make the following modifications;
 
-        cp -f mumps_573_benchmarking/Makefile.inc MUMPS/
-        cp -f mumps_573_benchmarking/examples/* MUMPS/examples
+        cp -f mumps_573_benchmarking/Makefile.inc ~/MUMPS/
+        cp -f mumps_573_benchmarking/examples/* ~/MUMPS/examples
 
     Then edit your ~/MUMPS/Makefile.inc to select the appropriate libraries. 
     You will likely need to revise the location of the metis-5.1.0 library;
@@ -69,7 +72,7 @@ Benchmarking MUMPS
         ./run_mumps
 
 --------------------------------------------------------------------------------
-Benchmarking MUMPS
+Benchmarking SuperLU_MT
 --------------------------------------------------------------------------------
 
     To benchmark SuperLU_MT 4.0.1, first obtain a copy of superlu_mt_401 and
