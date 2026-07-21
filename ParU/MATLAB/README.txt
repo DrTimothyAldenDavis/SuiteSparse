@@ -11,21 +11,25 @@ Invalid MEX-file '/whatever/paru/SuiteSparse/ParU/MATLAB/paru.mexa64':
 /whatever/paru/SuiteSparse/ParU/MATLAB/paru.mexa64)
 
 then it means your version of MATLAB is using a different version of libstdc++
-than is available on your system.
+than is available on your system.  You are likely using a version of the gcc
+compiler not supported by MATLAB.
 
-To fix this, use one of these three fixes:
+To fix this, use one of these four fixes:
 
-(1) each time you launch MATLAB, preface it with a definition of LD_PRELOAD.
+(1) use a supported compiler.  See
+    https://www.mathworks.com/support/requirements/supported-compilers-linux.html
+
+(2) each time you launch MATLAB, preface it with a definition of LD_PRELOAD.
     In your terminal, use this to start up MATLAB, each time:
 
     LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab   
 
-(2) Add the following line to your ~/.bashrc or ~/.zshrc to set this
+(3) Add the following line to your ~/.bashrc or ~/.zshrc to set this
     environment variable permanently:
 
     export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
-(3) Edit MATLAB itself and remove the old libstdc++.so.6 file, and also
+(4) Edit MATLAB itself and remove the old libstdc++.so.6 file, and also
     libgcc_s.so.1 if it is also causing problems:
 
     cd /usr/local/MATLAB/R2026a/sys/os/glnxa64
