@@ -4,8 +4,9 @@ July 31, 2026: version 5.3.5
         be converted from supernodal to simplicial, not when NULL.
     * double [2] inputs:  cholmod_add and others use "double beta [2]"
         while cholmod_l_add used "double *"; latter changed to 'double[2]'
-        in cholmod.h for consistency.  Technically a change to the API but
-        inconsequential so the major/minor version remains 5.3.x.
+        in cholmod.h for consistency.  Not really a change to the API since
+        the user application code remains unchanged, the major/minor version
+        of CHOLMOD remains 5.3.x.
 
 July 25, 2025: version 5.3.4
 
