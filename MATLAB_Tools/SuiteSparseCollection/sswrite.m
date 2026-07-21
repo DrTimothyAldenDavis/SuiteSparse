@@ -1,8 +1,7 @@
 function sswrite (Problem, Master, arg3, arg4)
-%SSWRITE write a Problem in Matrix Market, Rutherford/Boeing, or Binsparse format
-% containing a set of files in Matrix Market, Rutherford/Boeing, or Binsparse
-% format.  All three formats can be read from the files back into MATLAB via
-% SSread (reading Binsparse requires the Binsparse MATLAB bindings).
+%SSWRITE write a Problem in Matrix Market or Rutherford/Boeing format
+% containing a set of text files in either Matrix Market or Rutherford/Boeing
+% format.  The Problem can be read from the files back into MATLAB via SSread.
 % See http://sparse.tamu.edu for the SuiteSparse Matrix Collection home page.
 % The Problem directory is optionally compressed via tar and gzip.  Arguments 3
 % and 4, below, are optional and can appear in any order.
@@ -15,11 +14,9 @@ function sswrite (Problem, Master, arg3, arg4)
 %    sswrite (Problem, Master)                 % Matrix Market, no tar
 %    sswrite (Problem, Master, 'MM')           % ditto
 %    sswrite (Problem, Master, 'RB')           % Rutherford/Boeing, no tar
-%    sswrite (Problem, Master, 'BSP')          % Binsparse, no tar
 %    sswrite (Problem, Master, 'tar')          % Matrix Market, with tar
 %    sswrite (Problem, Master, 'MM', 'tar')    % ditto
 %    sswrite (Problem, Master, 'RB', 'tar')    % Rutherford/Boeing, with tar
-%    sswrite (Problem, Master, 'BSP', 'tar')   % Binsparse, with tar
 %
 % Problem is a struct, in the SuiteSparse Matrix format (see below).  Master is
 % the top-level directory in which directory containing the problem will be
@@ -119,24 +116,12 @@ function sswrite (Problem, Master, arg3, arg4)
 % extension.  Additional Matrix Market files are created for b (as name_b),
 % x (as name_x), and each sparse or full matrix in aux.
 %
-% -------------------------------------
-% for Problems written in Binsparse format:
-% -------------------------------------
-%
-% The primary matrix, explicit zero pattern, b, x, and numeric aux matrices are
-% written to a single Binsparse HDF5 file, with a .bsp.h5 extension.  Aux char
-% arrays and cell arrays of strings are written as root-level HDF5 string
-% datasets.  BSP output requires the Binsparse MATLAB bindings on the MATLAB
-% path.
-%
 % -----------------
-% for all formats:
+% for both formats:
 % -----------------
 %
 % A matrix Problem.aux.whatever is written out as name_whatever.xxx, without
-% the 'aux' part.  In BSP format, numeric matrices are groups and text
-% components are root-level string datasets in the single name.bsp.h5 file.  In
-% MM and RB formats, if Problem.aux.whatever is a char array, it is written as
+% the 'aux' part.  If Problem.aux.whatever is a char array, it is written as
 % the file name_whatever.txt, with one line per row of the char array (trailing
 % spaces in each line are not printed).  If aux.whatever is a cell array, each
 % entry aux.whatever{i} is written as the file name_whatever_<i>.xxx
@@ -152,8 +137,7 @@ function sswrite (Problem, Master, arg3, arg4)
 %   sswrite (Problem, 'MM') ;       % write a MM version in MM/HB/arc130
 %   sswrite (Problem, '', 'RB') ;   % write a RB version in current directory
 %
-% See also mwrite, mread, RBwrite, RBread, ssread, ssget, tar,
-% write_binsparse_from_matlab
+% See also mwrite, mread, RBwrite, RBread, ssread, ssget, tar
 
 % Optionally uses the CHOLMOD mwrite mexFunction, for writing Problems in
 % Matrix Market format.
@@ -181,19 +165,6 @@ arg4 = lower (arg4) ;
 
 do_tar = (strcmp (arg3, 'tar') | strcmp (arg4, 'tar')) ;
 RB = (strcmp (arg3, 'rb') | strcmp (arg4, 'rb')) ;
-BSP = (strcmp (arg3, 'bsp') | strcmp (arg4, 'bsp')) ;
-if (RB && BSP)
-    error ('only one output format can be selected') ;
-end
-
-if (isfield (Problem, 'aux'))
-    aux = Problem.aux ;
-    auxfields = fields (aux) ;
-else
-    aux = struct ;
-    auxfields = { } ;
-end
-validate_aux (auxfields, aux, BSP) ;
 
 Master = regexprep (Master, '[\/\\]', '/') ;
 if (~isempty (Master) && Master (end) ~= '/')
@@ -241,11 +212,15 @@ for k = 1:length(s)
 end
 fprintf (cf, '\n') ;
 if (isfield (Problem, 'aux'))
+    aux = Problem.aux ; 
     fprintf (cf, '%s aux:', prefix) ;
+    auxfields = fields (aux) ;
     for k = 1:length(auxfields)
 	fprintf (cf, ' %s', auxfields {k}) ;
     end
     fprintf (cf, '\n') ;
+else
+    auxfields = { } ;
 end
 fprintf (cf, '%s kind: %s\n', prefix, Problem.kind) ;
 print_separator (cf, prefix) ;
@@ -259,7 +234,7 @@ end
 fclose(cf) ;
 
 %-------------------------------------------------------------------------------
-% write out the A and Z matrices to the primary file
+% write out the A and Z matrices to the RB or MM primary file
 %-------------------------------------------------------------------------------
 
 A = Problem.A ;
@@ -279,13 +254,7 @@ end
 % use the Problem.id number as the RB key
 key = sprintf ('%d', Problem.id) ;
 
-if (BSP)
-    % write the supported Problem data in Binsparse form
-    write_bsp_problem ([probname '.bsp.h5'], Problem) ;
-    delete (cfile) ;    % the metadata is stored inside the .bsp.h5 file.
-    tar_problem (do_tar, probdir) ;
-    return
-elseif (RB)
+if (RB)
     % write the files in Rutherford/Boeing form
     ptitle = [Problem.name '; ' Problem.date '; ' etal(Problem.author)] ;
     ptitle = [ptitle '; ed: ' etal(Problem.ed)] ;
@@ -318,13 +287,26 @@ for k = 1:length(auxfields)
     what = auxfields {k} ;
     X = aux.(what) ;
 
+    if (~iscell (X) && (strcmp (what, 'b') || strcmp (what, 'x')))
+	% aux.b or aux.x would get written out with the same filename as the
+	% Problem.b and Problem.x matrices, and read back in by ssread as
+	% Problem.b and Problem.x instead of aux.b and aux.x.
+	error (['invalid aux component: ' what]) ;
+    end
+
+    if (regexp (what, '_[0-9]*\>'))
+	% aux.whatever_42 would be written as the file name_whatever_42, which
+	% would be intrepretted as aux.whatever{42} when read back in by ssread.
+	error (['invalid aux component: ' what]) ;
+    end
+
     if (sscellstring (X) && Problem.id > 2776)
 
         % write out a cell array of strings as a single text file
         sstextwrite ([probname '_' what '.txt'], X) ;
 
     elseif (iscell (X))
-	len = numel (X) ;
+	len = length (X) ;
 	for i = 1:len
 	    % this problem includes a sequence of matrices in the new
 	    % format (kind = 'sequence', and Problem.id > 1377).
@@ -348,7 +330,15 @@ end
 % tar up the result, if requested
 %-------------------------------------------------------------------------------
 
-tar_problem (do_tar, probdir) ;
+if (do_tar)
+    try
+	tar ([probdir '.tar.gz'], probdir) ;
+	rmdir (probdir, 's') ;
+    catch
+	warning ('SuiteSparse:sswrite', ...
+	    'unable to create tar file; directly left uncompressed') ;
+    end
+end
 
 
 
@@ -412,97 +402,6 @@ else
     fclose(cf) ;
     mwrite ([probname '_' what '.mtx'], X, cfile) ;
     delete (cfile) ;
-end
-
-
-%-------------------------------------------------------------------------------
-% tar_problem
-%-------------------------------------------------------------------------------
-
-function tar_problem (do_tar, probdir)
-% tar_problem: tar up the result, if requested
-if (do_tar)
-    try
-	tar ([probdir '.tar.gz'], probdir) ;
-	rmdir (probdir, 's') ;
-    catch
-	warning ('SuiteSparse:sswrite', ...
-	    'unable to create tar file; directly left uncompressed') ;
-    end
-end
-
-
-%-------------------------------------------------------------------------------
-% write_bsp_problem
-%-------------------------------------------------------------------------------
-
-function write_bsp_problem (filename, Problem)
-% write_bsp_problem: write the supported Problem data to one Binsparse HDF5 file
-compression = 9 ;
-Problem = expand_bsp_aux_cells (Problem) ;
-if (exist ('write_binsparse_from_matlab', 'file') == 3)
-    write_binsparse_from_matlab (Problem, filename, 'COO', [ ], compression) ;
-elseif (exist ('generate_bsp_from_ssmc', 'file') == 2)
-    generate_bsp_from_ssmc (Problem, filename, 'COO', compression) ;
-else
-    error ('BSP output requires the Binsparse MATLAB bindings on the path') ;
-end
-
-
-%-------------------------------------------------------------------------------
-% expand_bsp_aux_cells
-%-------------------------------------------------------------------------------
-
-function Problem = expand_bsp_aux_cells (Problem)
-% expand_bsp_aux_cells: map aux.foo{i} to aux.foo_i using sswrite's names
-if (~isfield (Problem, 'aux'))
-    return
-end
-aux = Problem.aux ;
-aux2 = struct ;
-auxfields = fields (aux) ;
-for k = 1:length (auxfields)
-    what = auxfields {k} ;
-    X = aux.(what) ;
-    if (iscell (X) && ~iscellstr (X))
-        len = numel (X) ;
-        for i = 1:len
-            aux2.(sprintf (fmt (i, len), what, i)) = X {i} ;
-        end
-    else
-        aux2.(what) = X ;
-    end
-end
-Problem.aux = aux2 ;
-
-
-%-------------------------------------------------------------------------------
-% validate_aux
-%-------------------------------------------------------------------------------
-
-function validate_aux (auxfields, aux, BSP)
-% validate_aux: ensure aux field names map unambiguously to filenames
-for k = 1:length (auxfields)
-    what = auxfields {k} ;
-    X = aux.(what) ;
-    if (BSP && (~iscell (X) || iscellstr (X)) && ...
-            any (strcmp (what, {'b', 'x', 'values', 'indices_0', ...
-            'indices_1', 'pointers_to_1'})))
-        % These names are written directly at the HDF5 root, where they would
-        % collide with a primary matrix dataset or a Problem.b/Problem.x group.
-        error (['invalid BSP aux component: ' what]) ;
-    end
-    if (~iscell (X) && (strcmp (what, 'b') || strcmp (what, 'x')))
-        % aux.b or aux.x would get written out with the same filename as the
-        % Problem.b and Problem.x matrices, and read back in by ssread as
-        % Problem.b and Problem.x instead of aux.b and aux.x.
-        error (['invalid aux component: ' what]) ;
-    end
-    if (~isempty (regexp (what, '_[0-9]*\>', 'once')))
-        % aux.whatever_42 would be written as the file name_whatever_42, which
-        % would be intrepretted as aux.whatever{42} when read back in by ssread.
-        error (['invalid aux component: ' what]) ;
-    end
 end
 
 

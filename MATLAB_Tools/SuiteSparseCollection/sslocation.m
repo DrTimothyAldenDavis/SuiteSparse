@@ -6,7 +6,7 @@ function topdir = sslocation
 %
 % See also ssget.
 
-% SuiteSparseCollection, Copyright (c) 2006-2026, Timothy A Davis.
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
@@ -15,7 +15,4 @@ topdir = '/archive/davis/SuiteSparseCollection/' ;
 
 % on hypersparse.cse.tamu.edu:
 topdir = '/raid/archive/davis/SuiteSparseCollection/' ;
-
-% on puget
-topdir = '/raid/SuiteSparseCollection/html' ;
 

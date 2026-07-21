@@ -86,7 +86,7 @@ public class ssgui extends JFrame
 
     private matrix_Table_Model matrix_model = null ;
 
-    private File mat, MM, RB, BSP, iconDir ;
+    private File mat, MM, RB, iconDir ;
     private String [ ] Kinds, Groups ;
     private Object [ ][ ] Stats ;
 
@@ -111,8 +111,7 @@ public class ssgui extends JFrame
         real_yes_Button, real_no_Button, real_either_Button,
         shape_square_Button, shape_rect_Button, shape_either_Button ;
     private JLabel nselected_Label, progress_size_Label, icon_Label ;
-    private JCheckBox format_mat_Button, format_mm_Button, format_rb_Button,
-        format_bsp_Button ;
+    private JCheckBox format_mat_Button, format_mm_Button, format_rb_Button ;
     private JProgressBar progress1_Bar, progress2_Bar ;
     private JFileChooser chooser ;
     private JList Group_List, Kind_List ;
@@ -196,7 +195,6 @@ public class ssgui extends JFrame
         mat = CheckDir ("mat") ;
         MM = CheckDir ("MM") ;
         RB = CheckDir ("RB") ;
-        BSP = CheckDir ("BSP") ;
         iconDir = CheckDir ("files") ;
 
         //----------------------------------------------------------------------
@@ -318,8 +316,7 @@ public class ssgui extends JFrame
 
         format_mat_Button = new JCheckBox ("MATLAB (mat)") ;
         format_mm_Button = new JCheckBox ("Matrix Market (MM)") ;
-        format_rb_Button = new JCheckBox ("Rutherford/Boeing (RB)") ;
-        format_bsp_Button = new JCheckBox ("Binsparse (BSP)    ") ;
+        format_rb_Button = new JCheckBox ("Rutherford/Boeing (RB)    ") ;
 
         format_mat_Button.setSelected (true) ;
 
@@ -327,7 +324,6 @@ public class ssgui extends JFrame
         format_mm_Button.setToolTipText ("Download in Matrix Market.") ;
         format_rb_Button.setToolTipText
             ("Download in Rutherford/Boeing format.") ;
-        format_bsp_Button.setToolTipText ("Download in Binsparse format.") ;
 
         nselected = 0 ;
         nselected_Label = new JLabel ( ) ;
@@ -337,7 +333,6 @@ public class ssgui extends JFrame
         format_Panel.add (format_mat_Button) ;
         format_Panel.add (format_mm_Button) ;
         format_Panel.add (format_rb_Button) ;
-        format_Panel.add (format_bsp_Button) ;
         format_Panel.add (nselected_Label) ;
         format_Panel.setMaximumSize (new Dimension (0,0)) ;
 
@@ -901,23 +896,22 @@ public class ssgui extends JFrame
             30,     // 1:mat
             25,     // 2:MM
             25,     // 3:RB
-            30,     // 4:BSP
-            38,     // 5:id
-            110,    // 6:Group
-            150,    // 7:Name
-            70,     // 8:nrows
-            70,     // 9:ncols
-            70,     // 10:nentries
-            40,     // 11:isReal
-            40,     // 12:isBinary
-            40,     // 13:isND
-            40,     // 14:posdef
-            50,     // 15:psym
-            50,     // 16:nsym
-            200 } ; // 17:kind
+            38,     // 4:id
+            110,    // 5:Group
+            150,    // 6:Name
+            70,     // 7:nrows
+            70,     // 8:ncols
+            70,     // 9:nentries
+            40,     // 10:isReal
+            40,     // 11:isBinary
+            40,     // 12:isND
+            40,     // 13:posdef
+            50,     // 14:psym
+            50,     // 15:nsym
+            200 } ; // 16:kind
 
         TableColumn column = null ;
-        for (int col = 0 ; col < 18 ; col++)
+        for (int col = 0 ; col < 17 ; col++)
         {
             column = matrix_Table.getColumnModel ( ).getColumn (col) ;
             column.setPreferredWidth (columnwidth [col]) ;
@@ -937,7 +931,7 @@ public class ssgui extends JFrame
         // sort by id
         java.util.List <RowSorter.SortKey> sortKeys =
             new ArrayList<RowSorter.SortKey> ( ) ;
-        sortKeys.add (new RowSorter.SortKey (5, SortOrder.ASCENDING)) ;
+        sortKeys.add (new RowSorter.SortKey (4, SortOrder.ASCENDING)) ;
         (matrix_Table.getRowSorter ( )).setSortKeys (sortKeys) ; 
 
         matrix_Table.getTableHeader ( ).setReorderingAllowed (false) ;
@@ -1140,23 +1134,22 @@ public class ssgui extends JFrame
         "Click to select a matrix.  This is the only column you can edit.",
         "'x' if MAT format already downloaded",                 // 1:mat
         "'x' if MM format already downloaded",                  // 2:MM
-        "'x' if RB format already downloaded",                  // 3:RB
-        "'x' if BSP format already downloaded",                 // 4:BSP
-        "matrix id",                                        // 5:id
-        "matrix group (typically a person or organization)",// 6:Group
-        "matrix name (full name is Group/Name)",            // 7:Name
-        "# of rows in the matrix",                          // 8:nrows
-        "# of columns in the matrix",                       // 9:ncols
+        "'x' if RB format already downloaded",                  // 3:MM
+        "matrix id",                                        // 4:id
+        "matrix group (typically a person or organization)",// 5:Group
+        "matrix name (full name is Group/Name)",            // 6:Name
+        "# of rows in the matrix",                          // 7:nrows
+        "# of columns in the matrix",                       // 8:ncols
         "# of entries in the matrix (both nonzeros and explicit zeros)",
-                                                            // 10:nentries
-        "if the matrix is real (not complex)",              // 11:isReal
-        "if the matrix is binary",                          // 12:isBinary
-        "if the matrix arises from a 2D/3D discretization", // 13:isND
-        "if the matrix is symmetric positive definite",     // 14:posdef
-        // 15:psym:
+                                                            // 9:nentries
+        "if the matrix is real (not complex)",              // 10:isReal
+        "if the matrix is binary",                          // 11:isBinary
+        "if the matrix arises from a 2D/3D discretization", // 12:isND
+        "if the matrix is symmetric positive definite",     // 13:posdef
+        // 14:psym:
         "symmetry of pattern (0: none, 1: pattern(A)=pattern(A')",
-        "symmetry of nonzero values (0: none, 1: A=A'",     // 16:nsym
-        // 17:kind:
+        "symmetry of nonzero values (0: none, 1: A=A'",     // 15:nsym
+        // 16:kind:
         "the matrix 'kind' is the problem domain from which it arises" 
     } ;
 
@@ -1184,7 +1177,7 @@ public class ssgui extends JFrame
     {
         private String [ ] columnNames =
             {
-            "select", "mat", "MM", "RB", "BSP",
+            "select", "mat", "MM", "RB",
             "id", "Group", "Name", "# rows", "# cols", "# entries", "real",
             "binary", "2D/3D", "posdef", "psym", "nsym", "kind" } ;
 
@@ -1244,43 +1237,43 @@ public class ssgui extends JFrame
         public void load_data (Object [ ][ ] newstats)
         {
             // load the matrix table with all matrix statistics
-            data = new Object [newstats.length][18] ;
+            data = new Object [newstats.length][17] ;
             nselected = 0 ;
             for (int i = 0 ; i < newstats.length ; i++)
             {
                 // i and j are in terms of the view, but the table is not yet
                 // sorted because it is not yet visible
                 data [i][0] = false ;   // select column is false
-                for (int j = 1 ; j < 5 ; j++)
+                for (int j = 1 ; j < 4 ; j++)
                 {
-                    // mat, MM, RB, and BSP, which can change later:
+                    // mat, MM, and RB, which can change later:
                     data [i][j] = "-" ;
                 }
                 for (int j = 0 ; j < 13 ; j++)
                 {
                     // matrix stats, which do not change:
-                    // 5:id, 6:Group, 7:Name, 8:nrows, 9:ncols, 10:nentries,
-                    // 11:isreal, 12:isBinary, 13:isND, 14:posdef, 15: psym,
-                    // 16:nsym, 17:kind
+                    // 4:id, 5:Group, 6:Name, 7:nrows, 8:ncols, 9:nentries,
+                    // 10:isreal, 11:isBinary, 12:isND, 13:posdef, 14: psym,
+                    // 15:nsym, 16:kind
                     if (j >= 6 && j <= 9)
                     {
                         int k = (Integer) newstats [i][j] ;
                         if (k < 0)
                         {
-                            data [i][j+5] = " ?" ;
+                            data [i][j+4] = " ?" ;
                         }
                         else if (k == 0)
                         {
-                            data [i][j+5] = " no" ;
+                            data [i][j+4] = " no" ;
                         }
                         else
                         {
-                            data [i][j+5] = " yes" ;
+                            data [i][j+4] = " yes" ;
                         }
                     }
                     else
                     {
-                        data [i][j+5] = newstats [i][j] ;
+                        data [i][j+4] = newstats [i][j] ;
                     }
                 }
             }
@@ -1296,7 +1289,7 @@ public class ssgui extends JFrame
     {
         // id is in the range 1 to Stats.length.  The model index is id-1.
         // Convert this to the row index of the view and then get the data.
-        // j is in the range 0 to 17, and is the same in the view and the
+        // j is in the range 0 to 16, and is the same in the view and the
         // model, since column rearranging is never done.
 
         int i = matrix_Table.convertRowIndexToView (id-1) ;
@@ -1545,7 +1538,7 @@ public class ssgui extends JFrame
 
     private void CheckExistence ( )
     {
-        // check the existence all matrices in all 4 formats
+        // check the existence all matrices in all 3 formats
         fire_updates (false) ;
         for (int id = 1 ; id <= Stats.length ; id++)
         {
@@ -1556,19 +1549,19 @@ public class ssgui extends JFrame
 
     private boolean [ ] CheckExistence (int id)
     {
-        // check the existence of a single file (in all 4 formats)
-        boolean [ ] exists = new boolean [5] ;
-        boolean [ ] etable = new boolean [4] ;
+        // check the existence of a single file (in all 3 formats)
+        boolean [ ] exists = new boolean [4] ;
+        boolean [ ] etable = new boolean [3] ;
 
         String Group = (String) Stats [id-1][1] ;
         String Name  = (String) Stats [id-1][2] ;
 
-        for (int j = 0 ; j < 4 ; j++)
+        for (int j = 0 ; j < 3 ; j++)
         {
             etable [j] = (((String) get_table_value (id, j+1)).charAt (0) == 'x') ;
         }
 
-        for (int j = 0 ; j < 5 ; j++)
+        for (int j = 0 ; j < 4 ; j++)
         {
             exists [j] = false ;
         }
@@ -1587,29 +1580,22 @@ public class ssgui extends JFrame
             exists [1] = true ;
         }
 
-        // check for RB/HB/west0067.tar.gz
+        // check for MM/HB/west0067.tar.gz
         G = new File (RB, Group) ;
         if (G.isDirectory ( ) && (new File (G, Name + ".tar.gz")).exists ( ))
         {
             exists [2] = true ;
         }
 
-        // check for BSP/HB/west0067.bsp.h5
-        G = new File (BSP, Group) ;
-        if (G.isDirectory ( ) && (new File (G, Name + ".bsp.h5")).exists ( ))
-        {
-            exists [3] = true ;
-        }
-
         // check for files/HB/west0067.png
         G = new File (iconDir, Group) ;
         if (G.isDirectory ( ) && (new File (G, Name + ".png")).exists ( ))
         {
-            exists [4] = true ;
+            exists [3] = true ;
         }
 
-        // update the matrix table (mat, MM, RB, and BSP columns)
-        for (int j = 0 ; j < 4 ; j++)
+        // update the matrix table (mat, MM, and RB columns)
+        for (int j = 0 ; j < 3 ; j++)
         {
             if (etable [j] != exists [j])
             {
@@ -1908,7 +1894,7 @@ public class ssgui extends JFrame
                 // print the header
                 if (csv)
                 {
-                    print_out.println ("mat, MM, RB, BSP, id, Group, Name, rows, " +
+                    print_out.println ("mat, MM, RB, id, Group, Name, rows, " +
                         "cols, entries, real, binary, 2D/3D, posdef, psym, " +
                         "nsym, kind") ;
                 }
@@ -1945,11 +1931,11 @@ public class ssgui extends JFrame
                         // print the matrix stats in a single CSV line of text
                         print_out.println (
                             exists [0] + ", " + exists [1] + ", " +
-                            exists [2] + ", " + exists [3] + ", " + id + ", " +
-                            Group + ", " + Name + ", " + nrows + ", " +
-                            ncols + ", " + nentries + ", " + isReal + ", " +
-                            isBinary + ", " + isND + ", " + posdef + ", " +
-                            psym + ", " + nsym + ", " + kind) ;
+                            exists [2] + ", " + id + ", " + Group + ", " +
+                            Name + ", " + nrows + ", " + ncols + ", " +
+                            nentries + ", " + isReal + ", " + isBinary + ", " +
+                            isND + ", " + posdef + ", " + psym + ", " +
+                            nsym + ", " + kind) ;
                     }
                     else
                     {
@@ -2141,7 +2127,7 @@ public class ssgui extends JFrame
                 for (int id = 1 ; !cancel && id <= Stats.length ; id++)
                 {
                     boolean [ ] exists = CheckExistence (id) ;
-                    if (!exists [4])
+                    if (!exists [3])
                     {
                         icon_Label.setBorder (BorderFactory.createTitledBorder
                             ("downloading new matrix icons")) ;
@@ -2169,7 +2155,6 @@ public class ssgui extends JFrame
                 boolean format_mat = format_mat_Button.isSelected ( ) ;
                 boolean format_mm  = format_mm_Button.isSelected ( ) ;
                 boolean format_rb  = format_rb_Button.isSelected ( ) ;
-                boolean format_bsp = format_bsp_Button.isSelected ( ) ;
 
                 // start the overall progress bar
                 progress1_Bar.setValue (1) ;
@@ -2185,10 +2170,10 @@ public class ssgui extends JFrame
                     String Name  = (String) Stats [id-1][2] ;
                     String fullname = Group + "/" + Name ;
 
-                    // recheck to see if the matrix and icon exist
+                    // recheck to see if the matrix exists in the 4 formats
                     boolean [ ] exists = CheckExistence (id) ;
 
-                    if (!exists [4])
+                    if (!exists [3])
                     {
                         // always download the matrix icon if it doesn't exist
                         CheckDir ("files/" + Group) ;
@@ -2220,18 +2205,10 @@ public class ssgui extends JFrame
                         download_file ("RB/" + fullname + ".tar.gz") ;
                     }
 
-                    if (!exists [3] && format_bsp)
-                    {
-                        // download the matrix in Binsparse format
-                        update_icon (fullname) ;
-                        CheckDir ("BSP/" + Group) ;
-                        download_file ("BSP/" + fullname + ".bsp.h5") ;
-                    }
-
                     progress1_Bar.setValue (k+2) ;
                 }
 
-                // update the mat/MM/RB/BSP check boxes
+                // update the mat/MM/RB check boxes
                 for (int k = 0 ; k < download_ids.length ; k++)
                 {
                     int id = download_ids [k] ;
