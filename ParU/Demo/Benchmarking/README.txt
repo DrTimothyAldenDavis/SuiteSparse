@@ -65,11 +65,16 @@ Benchmarking MUMPS
 
     Place a copy in ~/metis-5.1.0 (for example), and revise your
     MUMPS/Makefile.inc file accordingly.  Then build MUMPS, following the MUMPS
-    instructions.  Next, use the following to run MUMPS on the test matrices:
+    instructions.  Next, use the following to run MUMPS on the test matrices
+    (again, assuming your top-level SuiteSparse folder with ParU is
+    ~/SuiteSparse):
 
         cd ~/SuiteSparse/ParU/Demo/Benchmarking/mumps_573_benchmarking
         script
         ./run_mumps
+
+    where the results will be in the file "typescript" created by the script
+    command.
 
 --------------------------------------------------------------------------------
 Benchmarking SuperLU_MT

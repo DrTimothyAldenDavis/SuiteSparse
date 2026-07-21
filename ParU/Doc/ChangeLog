@@ -1,4 +1,4 @@
-FIXME, 2026: version 1.1.1
+July 31, 2026: version 1.1.1
 
     * MATLAB on Intel systems: do not rely on mkl.h for the paru mexFunction
         since MathWorks does not distribute it with MATLAB.
