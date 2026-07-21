@@ -11,11 +11,43 @@
 # SuiteSparse interface to the Fortran BLAS library.
 # cmake 3.22 is required because BLA_SIZEOF_INTEGER is used.
 
+cmake_minimum_required ( VERSION 3.22 )
+
 # The Intel MKL BLAS is highly recommended.  It is free to download (but be
 # sure to check their license to make sure you accept it).   See:
-# https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.htm
+# https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.htm .
+# It includes an mkl_set_num_threads_local that ParU can use for best
+# performance.
 
-cmake_minimum_required ( VERSION 3.22 )
+# Otherwise, the OpenBLAS also gives excellent performance.  The main downside
+# of OpenBLAS is that its header (openblas_config.h) does not have an OpenBLAS
+# version that can be used for conditional compilation.  If OpenBLAS is used,
+# v0.2.14 or later is required, and v0.3.27 or later is most desirable.
+# OpenBLAS v0.3.27 and later includes openblas_set_num_threads_local.  If this
+# method is available, ParU uses it to obtain better performance, as compared
+# to BLAS packages that do not have this option.
+
+# No other BLAS packages include a method to control the number of threads on a
+# per-call basis to the BLAS.  As a result, this script prioritizes Intel MKL
+# and OpenBLAS over other BLAS libraries.
+
+# BLA_VENDOR may be set by the user before this script runs (see the comments
+# below on how to look for a specific BLAS library); in this case, only that
+# particular BLAS package is searched for, and if not found, it results in an
+# error.
+
+# If BLA_VENDOR is not set by the user, then this scripts sets it to one value
+# at a time, and searches for that particular BLAS library package.  If not
+# found, this script keeps looking, until it gives up looking for specific BLAS
+# libraries and simply unsets BLA_VENDOR to find any BLAS library.
+
+# BLA_VENDOR is only any input parameter to find_package ( BLAS ), not
+# an output.  However, on output, this script sets BLA_VENDOR to the specific
+# BLAS that was found, with one exception: if an unknown or generic BLAS
+# library is found, then BLA_VENDOR is set to GENERIC.  The BLA_VENDOR variable
+# is then used by SuiteSparse__blas_threading.cmake, SuiteSparseBLAS32.cmake,
+# SuiteSparseBLAS64.cmake, SuiteSparseLAPACK.cmake, to set other compile-time
+# definitions based on this final value of BLA_VENDOR.
 
 # To select a specific BLAS: set to the BLA_VENDOR options from FindBLAS.cmake
 if ( DEFINED ENV{BLA_VENDOR} )
@@ -121,6 +153,16 @@ if ( SUITESPARSE_USE_64BIT_BLAS )
         return ( )
     endif ( )
 
+    # Look for OpenBLAS with 64-bit integers
+    message ( STATUS "Looking for 64-bit OpenBLAS" )
+    set ( BLA_VENDOR OpenBLAS )
+    set ( BLA_SIZEOF_INTEGER 8 )
+    find_package ( BLAS )
+    if ( BLAS_FOUND )
+        include ( SuiteSparseBLAS64 )
+        return ( )
+    endif ( )
+
     # Look for ARM BLAS with 64-bit integers
     message ( STATUS "Looking for ARM 64-bit BLAS" )
     set ( BLA_VENDOR Arm_ilp64_mp )
@@ -141,16 +183,6 @@ if ( SUITESPARSE_USE_64BIT_BLAS )
         return ( )
     endif ( )
 
-    # Look for OpenBLAS with 64-bit integers
-    message ( STATUS "Looking for 64-bit OpenBLAS" )
-    set ( BLA_VENDOR OpenBLAS )
-    set ( BLA_SIZEOF_INTEGER 8 )
-    find_package ( BLAS )
-    if ( BLAS_FOUND )
-        include ( SuiteSparseBLAS64 )
-        return ( )
-    endif ( )
-
     # Look for any 64-bit BLAS
     unset ( BLA_VENDOR )
     message ( STATUS "Looking for any 64-bit BLAS" )
@@ -158,6 +190,7 @@ if ( SUITESPARSE_USE_64BIT_BLAS )
     find_package ( BLAS )
     if ( BLAS_FOUND )
         include ( SuiteSparseBLAS64 )
+        set ( BLA_VENDOR Generic )
         return ( )
     endif ( )
 
@@ -175,6 +208,16 @@ endif ( )
 # Look for Intel MKL BLAS with 32-bit integers (and 64-bit pointer)
 message ( STATUS "Looking for Intel 32-bit BLAS" )
 set ( BLA_VENDOR Intel10_64lp )
+set ( BLA_SIZEOF_INTEGER 4 )
+find_package ( BLAS )
+if ( BLAS_FOUND )
+    include ( SuiteSparseBLAS32 )
+    return ( )
+endif ( )
+
+# Look for OpenBLAS with 32-bit integers
+message ( STATUS "Looking for 32-bit OpenBLAS" )
+set ( BLA_VENDOR OpenBLAS )
 set ( BLA_SIZEOF_INTEGER 4 )
 find_package ( BLAS )
 if ( BLAS_FOUND )
@@ -212,16 +255,6 @@ if ( BLAS_FOUND )
     return ( )
 endif ( )
 
-# Look for OpenBLAS with 32-bit integers
-message ( STATUS "Looking for 32-bit OpenBLAS" )
-set ( BLA_VENDOR OpenBLAS )
-set ( BLA_SIZEOF_INTEGER 4 )
-find_package ( BLAS )
-if ( BLAS_FOUND )
-    include ( SuiteSparseBLAS32 )
-    return ( )
-endif ( )
-
 # Look for FLAME BLAS(32-bit only)
 message ( STATUS "Looking for 32-bit FLAME (BLIS) BLAS" )
 set ( BLA_VENDOR FLAME )
@@ -242,4 +275,5 @@ message ( STATUS "Looking for any 32-bit BLAS" )
 set ( BLA_SIZEOF_INTEGER 4 )
 find_package ( BLAS REQUIRED )
 include ( SuiteSparseBLAS32 )
+set ( BLA_VENDOR Generic )
 

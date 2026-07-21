@@ -589,7 +589,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
     ok = ok && ((sizeof (K) >= sizeof (k)) || ((int64_t)(K) == (int64_t)(k))) ;
 
 //------------------------------------------------------------------------------
-// SUITESPARSE_BLAS_SUFFIX: modify the name of a Fortran BLAS/LAPACK routine
+// BLAS64_SUFFIX: modify the name of a Fortran BLAS/LAPACK routine
 //------------------------------------------------------------------------------
 
 // OpenBLAS can be compiled by appending a suffix to each routine, so that the
@@ -605,6 +605,10 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 // following:
 
 //     cd build && cmake -DBLAS64_SUFFIX="_64" ..
+
+// Fedora compiles OpenBLAS with the "64_" suffix and should use:
+
+//     cd build && cmake -DBLAS64_SUFFIX="64_" ..
 
 // This setting could be used by the spack packaging of SuiteSparse when linked
 // with the spack-installed OpenBLAS with 64-bit integers.  See

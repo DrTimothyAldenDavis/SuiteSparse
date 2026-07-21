@@ -38,7 +38,12 @@ int paru_intersection(int64_t e, paru_element **elementList,
     // find the intersection between columns of e and
     int64_t intersection = 0;
     // conditions for early stop
-    if (el_colIndex[el->lac] > *stl_newColSet.end())
+// FIXED:
+    if (stl_newColSet.empty() || el_colIndex[el->lac] > *stl_newColSet.end())
+//  proposed on github:
+//  !stl_newColSet.empty() &&
+//  OLD:
+//  if (el_colIndex[el->lac] > *stl_newColSet.end())
     {
         return 0;
     }

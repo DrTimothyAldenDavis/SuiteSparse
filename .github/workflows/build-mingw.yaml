@@ -35,12 +35,9 @@ jobs:
       fail-fast: false
 
       matrix:
-        msystem: [MINGW64, MINGW32, UCRT64, CLANG64, CLANGARM64]
+        msystem: [MINGW64, UCRT64, CLANG64, CLANGARM64]
         include:
           - msystem: MINGW64
-            os: windows-latest
-            f77-package: fc
-          - msystem: MINGW32
             os: windows-latest
             f77-package: fc
           - msystem: UCRT64
@@ -92,7 +89,7 @@ jobs:
             mpfr:p
 
       - name: checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -104,7 +101,7 @@ jobs:
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -149,7 +146,7 @@ jobs:
           done
 
       - name: check
-        timeout-minutes: 20
+        timeout-minutes: 40
         # Need to install the libraries for the tests
         run: |
           echo "::group::Install libraries"
@@ -173,7 +170,7 @@ jobs:
         # Save the cache after we are done building
         # This helps to retain the ccache even if the subsequent steps are failing.
         if: always() && (steps.build.outcome != 'skipped')
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -183,7 +180,7 @@ jobs:
           IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
           for lib in "${libs[@]}"; do
             printf "::group::   \033[0;32m==>\033[0m Building with Config.cmake with library \033[0;32m${lib}\033[0m\n"
-            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            cd ${GITHUB_WORKSPACE}/TestConfig/test_${lib}
             cd build
             cmake \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \

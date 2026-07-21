@@ -14,14 +14,14 @@ V =
 # V = valgrind --leak-check=full --show-leak-kinds=all
 
 test:
-	(cd AMD/build                && $(CONFIG) && $(BUILD) && $(V) ./amd_demo && ./amd_demo_static )
-	(cd CAMD/build               && $(CONFIG) && $(BUILD) && $(V) ./camd_demo && ./camd_demo_static )
-	(cd CCOLAMD/build            && $(CONFIG) && $(BUILD) && $(V) ./ccolamd_demo && ./ccolamd_demo_static )
-	(cd CHOLMOD/build            && $(CONFIG) && $(BUILD) && $(V) ./cholmod_demo && ./cholmod_demo_static )
-	(cd COLAMD/build             && $(CONFIG) && $(BUILD) && $(V) ./colamd_demo && ./colamd_demo_static )
-	(cd ParU/build               && $(CONFIG) && $(BUILD) && $(V) ./paru_demo && ./paru_demo_static )
-	(cd UMFPACK/build            && $(CONFIG) && $(BUILD) && $(V) ./umfpack_demo && ./umfpack_demo_static )
-	(cd SuiteSparse_config/build && $(CONFIG) && $(BUILD) && $(V) ./config_demo && ./config_demo_static )
+	(cd test_AMD/build                && $(CONFIG) && $(BUILD) && $(V) ./amd_demo && ./amd_demo_static )
+	(cd test_CAMD/build               && $(CONFIG) && $(BUILD) && $(V) ./camd_demo && ./camd_demo_static )
+	(cd test_CCOLAMD/build            && $(CONFIG) && $(BUILD) && $(V) ./ccolamd_demo && ./ccolamd_demo_static )
+	(cd test_CHOLMOD/build            && $(CONFIG) && $(BUILD) && $(V) ./cholmod_demo && ./cholmod_demo_static )
+	(cd test_COLAMD/build             && $(CONFIG) && $(BUILD) && $(V) ./colamd_demo && ./colamd_demo_static )
+	(cd test_ParU/build               && $(CONFIG) && $(BUILD) && $(V) ./paru_demo && ./paru_demo_static )
+	(cd test_UMFPACK/build            && $(CONFIG) && $(BUILD) && $(V) ./umfpack_demo && ./umfpack_demo_static )
+	(cd test_SuiteSparse_config/build && $(CONFIG) && $(BUILD) && $(V) ./config_demo && ./config_demo_static )
 
 # Remove all files not in the original distribution
 distclean: purge

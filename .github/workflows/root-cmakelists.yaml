@@ -13,10 +13,6 @@ on:
 concurrency: ci-root-cmakelists-${{ github.ref }}
 
 env:
-  # string with name of libraries to be built
-  BUILD_LIBS: "SuiteSparse_config:AMD:CAMD:CCOLAMD:COLAMD:CHOLMOD:UMFPACK:ParU"
-  # string with name of libraries to be checked
-  CHECK_LIBS: "SuiteSparse_config:AMD:CAMD:CCOLAMD:COLAMD:CHOLMOD:UMFPACK:ParU"
   # string with name of libraries that are installed
   INSTALLED_LIBS: "SuiteSparse_config:AMD:CAMD:CCOLAMD:COLAMD:CHOLMOD:UMFPACK:ParU"
 
@@ -69,7 +65,7 @@ jobs:
         run: lscpu
 
       - name: checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: install dependencies
         run: |
@@ -92,7 +88,7 @@ jobs:
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -191,7 +187,7 @@ jobs:
         # Save the cache after we are done building
         # This helps to retain the ccache even if the subsequent steps are failing.
         if: always() && (steps.build.outcome != 'skipped')
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -212,7 +208,7 @@ jobs:
           IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
           for lib in "${libs[@]}"; do
             printf "::group::   \033[0;32m==>\033[0m Building Config.cmake with library \033[0;32m${lib}\033[0m\n"
-            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            cd ${GITHUB_WORKSPACE}/TestConfig/test_${lib}
             cd build
             cmake \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \

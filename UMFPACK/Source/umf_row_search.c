@@ -40,7 +40,7 @@ Int UMF_row_search
 				   either Wx or Wy */
 
     Int pivcol,			/* the candidate column being searched */
-    Int freebie [ ]
+    Int freebie [2]
 )
 {
 
