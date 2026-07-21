@@ -10,12 +10,12 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com (ParU subset)
 -----------------------------------------------------------------------------
 
-Nov 4, 2025, SuiteSparse VERSION 7.12.1
+July 31, 2026, SuiteSparse VERSION 7.12.3
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
 
-This meta-package is a subset of SuiteSparse 7.12.1, including ParU and all its
+This meta-package is a subset of SuiteSparse 7.12.3, including ParU and all its
 dependencies (`SuiteSparse_config`, AMD, CAMD, COLAMD, CCOLAMD, UMFPACK, and
 CHOLMOD).
 
@@ -587,7 +587,7 @@ build type).  The static libraries will not be built (since
 
   A string, such as `"all"` or `"35;50;75;80"` that lists the CUDA
   architectures to use when compiling CUDA kernels with `nvcc`.  The `"all"`
-  option requires CMake 3.23 or later.  Default: `"52;75;80"`.
+  option requires CMake 3.23 or later.  Default: `"all"`.
 
 * `BLA_VENDOR`:
 
