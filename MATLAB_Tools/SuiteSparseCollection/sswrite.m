@@ -4,8 +4,10 @@ function sswrite (Problem, Master, arg3, arg4)
 % format.  All three formats can be read from the files back into MATLAB via
 % SSread (reading Binsparse requires the Binsparse MATLAB bindings).
 % See http://sparse.tamu.edu for the SuiteSparse Matrix Collection home page.
-% The Problem directory is optionally compressed via tar and gzip.  Arguments 3
-% and 4, below, are optional and can appear in any order.
+% Matrix Market and Rutherford/Boeing Problem directories can optionally be
+% compressed via tar and gzip.  Binsparse output remains a standalone HDF5
+% file because HDF5 provides its own compression.  Arguments 3 and 4, below,
+% are optional and can appear in any order.
 %
 %    sswrite (Problem)          % Matrix Market format, no tar, use current dir.
 %
@@ -19,7 +21,6 @@ function sswrite (Problem, Master, arg3, arg4)
 %    sswrite (Problem, Master, 'tar')          % Matrix Market, with tar
 %    sswrite (Problem, Master, 'MM', 'tar')    % ditto
 %    sswrite (Problem, Master, 'RB', 'tar')    % Rutherford/Boeing, with tar
-%    sswrite (Problem, Master, 'BSP', 'tar')   % Binsparse, with tar
 %
 % Problem is a struct, in the SuiteSparse Matrix format (see below).  Master is
 % the top-level directory in which directory containing the problem will be
@@ -283,7 +284,6 @@ if (BSP)
     % write the supported Problem data in Binsparse form
     write_bsp_problem ([probname '.bsp.h5'], Problem) ;
     delete (cfile) ;    % the metadata is stored inside the .bsp.h5 file.
-    tar_problem (do_tar, probdir) ;
     return
 elseif (RB)
     % write the files in Rutherford/Boeing form
