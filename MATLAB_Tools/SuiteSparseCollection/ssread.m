@@ -47,6 +47,9 @@ function Problem = ssread (directory, tmp)
 % the tmp directory.  If tmp is not present, the output of the tempdir function
 % is used instead.
 %
+% A Binsparse Problem can instead be read from its Name.bsp.h5 file.  Either
+% the complete filename or the path without the .bsp.h5 extension is accepted.
+%
 % Note that ssget is much faster than ssread.  ssread is useful if you are
 % short on disk space, and want to have just one copy of the collection that
 % can be read by MATLAB (via ssread) and a non-MATLAB program (the MM, RB, or
@@ -74,6 +77,22 @@ if (isempty (t))
     name = directory ;
 else
     name = directory (t(end)+1:end) ;
+end
+
+%-------------------------------------------------------------------------------
+% read a standalone Binsparse file
+%-------------------------------------------------------------------------------
+
+is_bsp_file = (length (directory) >= 7 && ...
+    strcmpi (directory (end-6:end), '.bsp.h5')) ;
+if (exist (directory, 'file') == 2 && is_bsp_file)
+    Problem = read_bsp_problem (directory) ;
+    return
+end
+bspfile = [directory '.bsp.h5'] ;
+if (exist (bspfile, 'file') == 2)
+    Problem = read_bsp_problem (bspfile) ;
+    return
 end
 
 %-------------------------------------------------------------------------------

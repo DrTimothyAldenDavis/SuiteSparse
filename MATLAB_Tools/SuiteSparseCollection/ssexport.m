@@ -14,6 +14,7 @@ function ssexport (list, check, tmp, formats, topdir)
 % vector or a cell array containing 'MM', 'RB', and/or 'BSP'.  The default is
 % {'MM', 'RB'} for backwards compatibility.  The optional 5th argument changes
 % the output directory from sslocation, primarily for testing.
+% BSP files are stored as topdir/BSP/Group/Name.bsp.h5.
 %
 % See also ssget, sswrite, ssread, ssbsp_check_problem, RBio, mwrite.
 
@@ -174,9 +175,9 @@ function bspfile = bsp_check_file (topdir, Problem)
 % Locate the uncompressed BSP output.
 
 t = find (Problem.name == '/') ;
+group = Problem.name (1:t(end)-1) ;
 name = Problem.name (t(end)+1:end) ;
-probdir = fullfile (topdir, 'BSP', Problem.name) ;
-bspfile = fullfile (probdir, [name '.bsp.h5']) ;
+bspfile = fullfile (topdir, 'BSP', group, [name '.bsp.h5']) ;
 if (exist (bspfile, 'file') ~= 2)
     error ('SuiteSparse:ssexport:MissingBinsparseOutput', ...
         'unable to find BSP output for %s', Problem.name) ;
