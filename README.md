@@ -1012,12 +1012,12 @@ build type).  The static libraries will not be built (since
 
   GraphBLAS, LAGraph, and ParU will be vastly slower if OpenMP is not used.
   CHOLMOD will be somewhat slower without OpenMP (as long as it still has a
-  parallel BLAS/LAPACK).  Three packages (UMFPACK, CHOLMOD, and SPQR) rely
+  parallel BLAS/LAPACK).  Four packages (UMFPACK, CHOLMOD, SPQR, and ParU) rely
   heavily on parallel BLAS/LAPACK libraries and those libraries may use OpenMP
   internally.  If you wish to disable OpenMP in an entire application, select a
   single-threaded BLAS/LAPACK, or a parallel BLAS/LAPACK that does not use
   OpenMP (such as the Apple Accelerate Framework).  Using a single-threaded
-  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, and SPQR to be vastly
+  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, SPQR, and ParU to be vastly
   slower.
 
   WARNING: GraphBLAS may not be thread-safe if built without OpenMP or pthreads
