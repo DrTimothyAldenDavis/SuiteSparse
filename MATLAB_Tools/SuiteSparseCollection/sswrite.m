@@ -153,7 +153,7 @@ function sswrite (Problem, Master, arg3, arg4)
 %   sswrite (Problem, '', 'RB') ;   % write a RB version in current directory
 %
 % See also mwrite, mread, RBwrite, RBread, ssread, ssget, tar,
-% write_binsparse_from_matlab
+% generate_bsp_from_ssmc
 
 % Optionally uses the CHOLMOD mwrite mexFunction, for writing Problems in
 % Matrix Market format.
@@ -440,13 +440,10 @@ function write_bsp_problem (filename, Problem)
 % write_bsp_problem: write the supported Problem data to one Binsparse HDF5 file
 compression = 9 ;
 Problem = expand_bsp_aux_cells (Problem) ;
-if (exist ('write_binsparse_from_matlab', 'file') == 3)
-    write_binsparse_from_matlab (Problem, filename, 'COO', [ ], compression) ;
-elseif (exist ('generate_bsp_from_ssmc', 'file') == 2)
-    generate_bsp_from_ssmc (Problem, filename, 'COO', compression) ;
-else
+if (exist ('generate_bsp_from_ssmc', 'file') ~= 2)
     error ('BSP output requires the Binsparse MATLAB bindings on the path') ;
 end
+generate_bsp_from_ssmc (Problem, filename, 'COO', compression) ;
 
 
 %-------------------------------------------------------------------------------
