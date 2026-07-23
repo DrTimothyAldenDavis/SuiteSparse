@@ -53,7 +53,7 @@ function Problem = ssread (directory, tmp)
 % Binsparse versions of the collection).
 %
 % Reading Binsparse output requires binsparse_read and
-% convert_to_problem_struct from the Binsparse MATLAB bindings.
+% binsparse_to_ssmc_problem from the Binsparse MATLAB bindings.
 %
 % See also sswrite, mread, mwrite, RBread, ssget, untar, tempdir.
 
@@ -439,9 +439,9 @@ if (isempty (reader) || ~strcmpi (reader_extension, ['.' mexext]))
     error ('SuiteSparse:ssread:MissingBinsparseReader', ...
         'BSP input requires the binsparse_read MEX function') ;
 end
-if (isempty (which ('convert_to_problem_struct')))
+if (isempty (which ('binsparse_to_ssmc_problem')))
     error ('SuiteSparse:ssread:MissingBinsparseConverter', ...
-        'BSP input requires convert_to_problem_struct') ;
+        'BSP input requires binsparse_to_ssmc_problem') ;
 end
 
 try
@@ -478,7 +478,7 @@ for k = 1:numel (info.Datasets)
     bsp_problem = add_bsp_component (bsp_problem, component, value) ;
 end
 
-Problem = convert_to_problem_struct (bsp_problem) ;
+Problem = binsparse_to_ssmc_problem (bsp_problem) ;
 
 
 %-------------------------------------------------------------------------------

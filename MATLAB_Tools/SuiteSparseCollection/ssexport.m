@@ -60,7 +60,7 @@ if (numel (unique (formats)) ~= numel (formats))
 end
 
 if (any (strcmp (formats, 'BSP')))
-    have_bsp_writer = (exist ('generate_bsp_from_ssmc', 'file') == 2) ;
+    have_bsp_writer = (exist ('binsparse_write_ssmc_problem', 'file') == 2) ;
     if (~have_bsp_writer)
         error ('SuiteSparse:ssexport:MissingBinsparseWriter', ...
             'BSP export requires the Binsparse MATLAB bindings on the path') ;
