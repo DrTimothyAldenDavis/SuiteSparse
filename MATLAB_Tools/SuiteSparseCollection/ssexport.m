@@ -16,7 +16,7 @@ function ssexport (list, check, tmp, formats, topdir)
 % the output directory from sslocation, primarily for testing.
 % BSP files are stored as topdir/BSP/Group/Name.bsp.h5.
 %
-% See also ssget, sswrite, ssread, ssbsp_check_problem, RBio, mwrite.
+% See also ssget, sswrite, ssread, RBio, mwrite.
 
 % SuiteSparseCollection, Copyright (c) 2006-2026, Timothy A Davis.
 % All Rights Reserved.
@@ -73,6 +73,11 @@ if (any (strcmp (formats, 'BSP')))
                 ~strcmpi (reader_extension, ['.' mexext]))
             error ('SuiteSparse:ssexport:MissingBinsparseReader', ...
                 'checking BSP output requires the binsparse_read MEX function') ;
+        end
+        if (isempty (which ('binsparse_to_ssmc_problem')))
+            error ('SuiteSparse:ssexport:MissingBinsparseConverter', ...
+                ['checking BSP output requires binsparse_to_ssmc_problem ' ...
+                 'on the path']) ;
         end
     end
 end
@@ -131,13 +136,11 @@ for id = list
             format = formats{k} ;
             fprintf ('Reading %s format ...\n', format) ;
             if (strcmp (format, 'BSP'))
-                bspfile = bsp_check_file (topdir, Problem) ;
-                ssbsp_check_problem (Problem, bspfile) ;
-                fprintf ('Comparing MATLAB and BSP format ... OK.\n') ;
-                continue
+                problem_path = bsp_output_file (topdir, Problem) ;
+            else
+                problem_path = fullfile (topdir, format, Problem.name) ;
             end
             try
-                problem_path = fullfile (topdir, format, Problem.name) ;
                 if (isempty (tmp))
                     P2 = ssread (problem_path) ;
                 else
@@ -168,10 +171,10 @@ end
 
 
 %-------------------------------------------------------------------------------
-% bsp_check_file
+% bsp_output_file
 %-------------------------------------------------------------------------------
 
-function bspfile = bsp_check_file (topdir, Problem)
+function bspfile = bsp_output_file (topdir, Problem)
 % Locate the uncompressed BSP output.
 
 t = find (Problem.name == '/') ;
