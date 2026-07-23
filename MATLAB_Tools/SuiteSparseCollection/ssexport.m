@@ -162,6 +162,7 @@ for id = list
                 e = norm (Problem.A - P2.A, 1) ;
                 a = norm (Problem.A, 1) ;
                 fprintf ('norm (A1-A2,1): %g  relative: %g\n', e, e/a) ;
+                error ('die!') ;
             end
             clear P2
         end
