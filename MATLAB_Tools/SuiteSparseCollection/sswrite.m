@@ -4,13 +4,16 @@ function sswrite (Problem, Master, arg3, arg4)
 % format.  All three formats can be read from the files back into MATLAB via
 % SSread (reading Binsparse requires the Binsparse MATLAB bindings).
 % See http://sparse.tamu.edu for the SuiteSparse Matrix Collection home page.
-% The Problem directory is optionally compressed via tar and gzip.  Arguments 3
-% and 4, below, are optional and can appear in any order.
+% Matrix Market and Rutherford/Boeing Problem directories can optionally be
+% compressed via tar and gzip.  Binsparse output remains a standalone HDF5
+% file because HDF5 provides its own compression.  Arguments 3 and 4, below,
+% are optional and can appear in any order.
 %
 %    sswrite (Problem)          % Matrix Market format, no tar, use current dir.
 %
-% The following usages write the Problem into the Master/Group/Name directory,
-% where Problem.name = 'Group/Name' is given in the Problem.
+% Matrix Market and Rutherford/Boeing output is written into the
+% Master/Group/Name directory, where Problem.name = 'Group/Name'.  Binsparse
+% output is the single file Master/Group/Name.bsp.h5.
 %
 %    sswrite (Problem, Master)                 % Matrix Market, no tar
 %    sswrite (Problem, Master, 'MM')           % ditto
@@ -19,12 +22,11 @@ function sswrite (Problem, Master, arg3, arg4)
 %    sswrite (Problem, Master, 'tar')          % Matrix Market, with tar
 %    sswrite (Problem, Master, 'MM', 'tar')    % ditto
 %    sswrite (Problem, Master, 'RB', 'tar')    % Rutherford/Boeing, with tar
-%    sswrite (Problem, Master, 'BSP', 'tar')   % Binsparse, with tar
 %
 % Problem is a struct, in the SuiteSparse Matrix format (see below).  Master is
-% the top-level directory in which directory containing the problem will be
-% placed.  Master defaults to the current working directory if not present (an
-% empty string also means the current directory will be used).
+% the top-level output directory.  Master defaults to the current working
+% directory if not present (an empty string also means the current directory
+% will be used).
 %
 % The following fields are always present in a SuiteSparse Matrix Problem:
 %
@@ -126,8 +128,9 @@ function sswrite (Problem, Master, arg3, arg4)
 % The primary matrix, explicit zero pattern, b, x, and numeric aux matrices are
 % written to a single Binsparse HDF5 file, with a .bsp.h5 extension.  Aux char
 % arrays and cell arrays of strings are written as root-level HDF5 string
-% datasets.  BSP output requires the Binsparse MATLAB bindings on the MATLAB
-% path.
+% datasets.  The file is placed directly in its group directory as
+% Master/Group/Name.bsp.h5.  BSP output requires the Binsparse MATLAB bindings
+% on the MATLAB path.
 %
 % -----------------
 % for all formats:
@@ -140,10 +143,10 @@ function sswrite (Problem, Master, arg3, arg4)
 % the file name_whatever.txt, with one line per row of the char array (trailing
 % spaces in each line are not printed).  If aux.whatever is a cell array, each
 % entry aux.whatever{i} is written as the file name_whatever_<i>.xxx
-% (name_whatever_1.mtx, name_whatever_2.mtx, etc).  All files are placed in the
-% single directory, given by the Problem.name (Group/Name, or 'HB/arc130' for
-% example).  Each directory can only hold one MATLAB Problem struct of the
-% SuiteSparse Matrix Collection.
+% (name_whatever_1.mtx, name_whatever_2.mtx, etc).  MM and RB files are placed
+% in the single directory given by Problem.name (Group/Name, or 'HB/arc130'
+% for example).  Each such directory can only hold one MATLAB Problem struct.
+% A BSP Problem is instead stored in one Group/Name.bsp.h5 file.
 %
 % Example:
 %
@@ -151,9 +154,10 @@ function sswrite (Problem, Master, arg3, arg4)
 %   sswrite (Problem) ;             % write a MM version in current directory
 %   sswrite (Problem, 'MM') ;       % write a MM version in MM/HB/arc130
 %   sswrite (Problem, '', 'RB') ;   % write a RB version in current directory
+%   sswrite (Problem, 'BSP', 'BSP') ; % write BSP/HB/arc130.bsp.h5
 %
 % See also mwrite, mread, RBwrite, RBread, ssread, ssget, tar,
-% write_binsparse_from_matlab
+% binsparse_write_ssmc_problem
 
 % Optionally uses the CHOLMOD mwrite mexFunction, for writing Problems in
 % Matrix Market format.
@@ -208,13 +212,19 @@ t = find (Problem.name == '/') ;
 group = Problem.name (1:t-1) ;
 name = Problem.name (t+1:end) ;
 groupdir = [Master group] ;
-probdir = [groupdir '/' name] ;
-probname = [probdir '/' name] ;
+if (BSP)
+    probname = [groupdir '/' name] ;
+else
+    probdir = [groupdir '/' name] ;
+    probname = [probdir '/' name] ;
+end
 
 s = warning ('query', 'MATLAB:MKDIR:DirectoryExists') ;	    % get current state
 warning ('off', 'MATLAB:MKDIR:DirectoryExists') ;
 mkdir (groupdir) ;
-mkdir (probdir) ;
+if (~BSP)
+    mkdir (probdir) ;
+end
 warning (s) ;						    % restore state
 
 %-------------------------------------------------------------------------------
@@ -283,7 +293,6 @@ if (BSP)
     % write the supported Problem data in Binsparse form
     write_bsp_problem ([probname '.bsp.h5'], Problem) ;
     delete (cfile) ;    % the metadata is stored inside the .bsp.h5 file.
-    tar_problem (do_tar, probdir) ;
     return
 elseif (RB)
     % write the files in Rutherford/Boeing form
@@ -440,13 +449,10 @@ function write_bsp_problem (filename, Problem)
 % write_bsp_problem: write the supported Problem data to one Binsparse HDF5 file
 compression = 9 ;
 Problem = expand_bsp_aux_cells (Problem) ;
-if (exist ('write_binsparse_from_matlab', 'file') == 3)
-    write_binsparse_from_matlab (Problem, filename, 'COO', [ ], compression) ;
-elseif (exist ('generate_bsp_from_ssmc', 'file') == 2)
-    generate_bsp_from_ssmc (Problem, filename, 'COO', compression) ;
-else
+if (exist ('binsparse_write_ssmc_problem', 'file') ~= 2)
     error ('BSP output requires the Binsparse MATLAB bindings on the path') ;
 end
+binsparse_write_ssmc_problem (Problem, filename, 'COO', compression) ;
 
 
 %-------------------------------------------------------------------------------

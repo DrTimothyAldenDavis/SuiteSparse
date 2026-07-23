@@ -14,6 +14,7 @@ function ssexport (list, check, tmp, formats, topdir)
 % vector or a cell array containing 'MM', 'RB', and/or 'BSP'.  The default is
 % {'MM', 'RB'} for backwards compatibility.  The optional 5th argument changes
 % the output directory from sslocation, primarily for testing.
+% BSP files are stored as topdir/BSP/Group/Name.bsp.h5.
 %
 % See also ssget, sswrite, ssread, ssbsp_check_problem, RBio, mwrite.
 
@@ -60,9 +61,8 @@ if (numel (unique (formats)) ~= numel (formats))
 end
 
 if (any (strcmp (formats, 'BSP')))
-    have_mex_writer = (exist ('write_binsparse_from_matlab', 'file') == 3) ;
-    have_matlab_writer = (exist ('generate_bsp_from_ssmc', 'file') == 2) ;
-    if (~have_mex_writer && ~have_matlab_writer)
+    have_bsp_writer = (exist ('binsparse_write_ssmc_problem', 'file') == 2) ;
+    if (~have_bsp_writer)
         error ('SuiteSparse:ssexport:MissingBinsparseWriter', ...
             'BSP export requires the Binsparse MATLAB bindings on the path') ;
     end
@@ -113,7 +113,10 @@ for id = list
         format = formats{k} ;
         fprintf ('Exporting to %s format ...\n', format) ;
         outputdir = fullfile (topdir, format) ;
-        if (nnz (Problem.A) < 1e8)
+        if (strcmp (format, 'BSP'))
+            % Binsparse is already compressed within its HDF5 container.
+            sswrite (Problem, outputdir, format) ;
+        elseif (nnz (Problem.A) < 1e8)
             sswrite (Problem, outputdir, format, 'tar') ;
         else
             % the MATLAB tar has problems with huge files
@@ -128,10 +131,8 @@ for id = list
             format = formats{k} ;
             fprintf ('Reading %s format ...\n', format) ;
             if (strcmp (format, 'BSP'))
-                [bspfile, bsp_cleanup] = bsp_check_file (...
-                    topdir, Problem, tmp) ;                        %#ok<ASGLU>
+                bspfile = bsp_check_file (topdir, Problem) ;
                 ssbsp_check_problem (Problem, bspfile) ;
-                clear bsp_cleanup
                 fprintf ('Comparing MATLAB and BSP format ... OK.\n') ;
                 continue
             end
@@ -170,56 +171,14 @@ end
 % bsp_check_file
 %-------------------------------------------------------------------------------
 
-function [bspfile, cleanup] = bsp_check_file (topdir, Problem, tmp)
-% Locate uncompressed BSP output, or extract its archive for checking.
+function bspfile = bsp_check_file (topdir, Problem)
+% Locate the uncompressed BSP output.
 
 t = find (Problem.name == '/') ;
+group = Problem.name (1:t(end)-1) ;
 name = Problem.name (t(end)+1:end) ;
-probdir = fullfile (topdir, 'BSP', Problem.name) ;
-bspfile = fullfile (probdir, [name '.bsp.h5']) ;
-cleanup = [ ] ;
-if (exist (bspfile, 'file') == 2)
-    return
-end
-
-archive = [probdir '.tar.gz'] ;
-if (exist (archive, 'file') ~= 2)
+bspfile = fullfile (topdir, 'BSP', group, [name '.bsp.h5']) ;
+if (exist (bspfile, 'file') ~= 2)
     error ('SuiteSparse:ssexport:MissingBinsparseOutput', ...
         'unable to find BSP output for %s', Problem.name) ;
-end
-
-if (isempty (tmp))
-    extractdir = tempname ;
-else
-    if (~exist (tmp, 'dir'))
-        mkdir (tmp) ;
-    end
-    extractdir = tempname (tmp) ;
-end
-mkdir (extractdir) ;
-cleanup = onCleanup (@() remove_extract_dir (extractdir)) ;
-untar (archive, extractdir) ;
-
-files = dir (fullfile (extractdir, '**', '*.bsp.h5')) ;
-if (isempty (files))
-    error ('SuiteSparse:ssexport:InvalidBinsparseArchive', ...
-        'BSP archive for %s contains no .bsp.h5 file', Problem.name) ;
-end
-expected = strcmp ({files.name}, [name '.bsp.h5']) ;
-if (nnz (expected) ~= 1)
-    error ('SuiteSparse:ssexport:InvalidBinsparseArchive', ...
-        'BSP archive for %s does not contain one expected file', Problem.name) ;
-end
-file = files (expected) ;
-bspfile = fullfile (file.folder, file.name) ;
-
-
-%-------------------------------------------------------------------------------
-% remove_extract_dir
-%-------------------------------------------------------------------------------
-
-function remove_extract_dir (extractdir)
-% Remove temporary files created while checking a BSP archive.
-if (exist (extractdir, 'dir'))
-    rmdir (extractdir, 's') ;
 end

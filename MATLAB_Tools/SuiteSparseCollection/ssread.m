@@ -47,13 +47,16 @@ function Problem = ssread (directory, tmp)
 % the tmp directory.  If tmp is not present, the output of the tempdir function
 % is used instead.
 %
+% A Binsparse Problem can instead be read from its Name.bsp.h5 file.  Either
+% the complete filename or the path without the .bsp.h5 extension is accepted.
+%
 % Note that ssget is much faster than ssread.  ssread is useful if you are
 % short on disk space, and want to have just one copy of the collection that
 % can be read by MATLAB (via ssread) and a non-MATLAB program (the MM, RB, or
 % Binsparse versions of the collection).
 %
 % Reading Binsparse output requires binsparse_read and
-% convert_to_problem_struct from the Binsparse MATLAB bindings.
+% binsparse_to_ssmc_problem from the Binsparse MATLAB bindings.
 %
 % See also sswrite, mread, mwrite, RBread, ssget, untar, tempdir.
 
@@ -74,6 +77,22 @@ if (isempty (t))
     name = directory ;
 else
     name = directory (t(end)+1:end) ;
+end
+
+%-------------------------------------------------------------------------------
+% read a standalone Binsparse file
+%-------------------------------------------------------------------------------
+
+is_bsp_file = (length (directory) >= 7 && ...
+    strcmpi (directory (end-6:end), '.bsp.h5')) ;
+if (exist (directory, 'file') == 2 && is_bsp_file)
+    Problem = read_bsp_problem (directory) ;
+    return
+end
+bspfile = [directory '.bsp.h5'] ;
+if (exist (bspfile, 'file') == 2)
+    Problem = read_bsp_problem (bspfile) ;
+    return
 end
 
 %-------------------------------------------------------------------------------
@@ -439,9 +458,9 @@ if (isempty (reader) || ~strcmpi (reader_extension, ['.' mexext]))
     error ('SuiteSparse:ssread:MissingBinsparseReader', ...
         'BSP input requires the binsparse_read MEX function') ;
 end
-if (isempty (which ('convert_to_problem_struct')))
+if (isempty (which ('binsparse_to_ssmc_problem')))
     error ('SuiteSparse:ssread:MissingBinsparseConverter', ...
-        'BSP input requires convert_to_problem_struct') ;
+        'BSP input requires binsparse_to_ssmc_problem') ;
 end
 
 try
@@ -478,7 +497,7 @@ for k = 1:numel (info.Datasets)
     bsp_problem = add_bsp_component (bsp_problem, component, value) ;
 end
 
-Problem = convert_to_problem_struct (bsp_problem) ;
+Problem = binsparse_to_ssmc_problem (bsp_problem) ;
 
 
 %-------------------------------------------------------------------------------
