@@ -44,7 +44,7 @@ cmake_minimum_required ( VERSION 3.22 )
 # BLA_VENDOR is only any input parameter to find_package ( BLAS ), not
 # an output.  However, on output, this script sets BLA_VENDOR to the specific
 # BLAS that was found, with one exception: if an unknown or generic BLAS
-# library is found, then BLA_VENDOR is set to GENERIC.  The BLA_VENDOR variable
+# library is found, then BLA_VENDOR is set to Generic.  The BLA_VENDOR variable
 # is then used by SuiteSparse__blas_threading.cmake, SuiteSparseBLAS32.cmake,
 # SuiteSparseBLAS64.cmake, SuiteSparseLAPACK.cmake, to set other compile-time
 # definitions based on this final value of BLA_VENDOR.
@@ -64,7 +64,11 @@ option ( BLA_STATIC
 
 if ( DEFINED BLAS_LIBRARIES OR DEFINED BLAS_INCLUDE_DIRS )
     # User supplied variables for libraries and/or include directories.
-    # Use them as-is.
+    # Use them as-is.  You must also set BLA_VENDOR to define for SuiteSparse
+    # which BLAS library you are using.  This variable is not used by
+    # FindBLAS.cmake, but it is used to tell SuiteSparse which BLAS is being
+    # used so that it can be configured to exploit the particular properties
+    # of each vendor BLAS library (threading control, 32/64 bit integers, etc).
     if ( SUITESPARSE_USE_64BIT_BLAS )
         include ( SuiteSparseBLAS64 )
     else ( )

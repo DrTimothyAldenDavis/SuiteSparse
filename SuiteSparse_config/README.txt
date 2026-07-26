@@ -12,6 +12,10 @@ SuiteSparse_config contains configuration settings for all many of the software
 packages that I develop or co-author.  Note that older versions of some of
 these packages do not require SuiteSparse_config.
 
+For details on what cmake variables can be set to control the building of
+SuiteSparse packages, please see this file:
+SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake.
+
 Files in SuiteSparse_config:
 
     CMakeLists.txt              for compiling SuiteSparse_config
