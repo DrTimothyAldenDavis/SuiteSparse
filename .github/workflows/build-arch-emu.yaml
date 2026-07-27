@@ -57,7 +57,7 @@ jobs:
         run: lscpu
 
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         # shell: bash
 
       - name: install dependencies
@@ -101,7 +101,7 @@ jobs:
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           # location of the ccache of the chroot in the root file system
           path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
@@ -175,7 +175,7 @@ jobs:
         # Save the cache after we are done building
         # This helps to retain the ccache even if the subsequent steps are failing.
         if: always() && (steps.build.outcome != 'skipped')
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -216,7 +216,7 @@ jobs:
           INSTALLED_LIBS="${INSTALLED_LIBS}${{ matrix.extra-build-libs }}"
           for lib in ${INSTALLED_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Building with Config.cmake with library \033[0;32m${lib}\033[0m\n"
-            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            cd ${GITHUB_WORKSPACE}/TestConfig/test_${lib}
             cd build
             cmake \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
@@ -248,7 +248,7 @@ jobs:
           INSTALLED_LIBS="${INSTALLED_LIBS}${{ matrix.extra-build-libs }}"
           for lib in ${INSTALLED_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Building test with library \033[0;32m${lib}\033[0m\n"
-            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            cd ${GITHUB_WORKSPACE}/TestConfig/test_${lib}
             autoreconf -fi
             mkdir build-autotools && cd build-autotools
             PKG_CONFIG_PATH=${GITHUB_WORKSPACE}/lib/pkgconfig/ \

@@ -18,13 +18,13 @@ jobs:
         config:
         # if there are multiple items in this list, only use should
         # deployit=true for just one of them.
-         - {grb_version: 9.0.0, deployit: false}
-         - {grb_version: 10.1.0, deployit: true}
+        #- {grb_version: 9.0.0, deployit: false}
+         - {grb_version: 10.3.0, deployit: true}
 
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2.0.0
+      uses: actions/checkout@v7
 
     - name: Install tools for build
       run: |
@@ -68,19 +68,20 @@ jobs:
     strategy:
       matrix:
         config:
-         - {grb_version: 9.0.0}
-         - {grb_version: 10.1.0}
+         # - {grb_version: 9.0.0}
+         - {grb_version: 10.3.0}
 
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2.0.0
+      uses: actions/checkout@v7
 
     - name: Install dependencies
       run: |
         brew uninstall cmake
         brew tap-new libomp/cask
         brew extract --version=14.0.6 libomp libomp/cask
+        brew trust libomp/cask
         brew install libomp@14.0.6
 
     - name: Build GraphBLAS
@@ -99,5 +100,5 @@ jobs:
         cd build
         cmake ..
         JOBS=2 make
-        ctest .
+        ctest . --rerun-failed --output-on-failure
 

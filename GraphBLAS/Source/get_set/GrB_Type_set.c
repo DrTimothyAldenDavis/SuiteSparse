@@ -99,7 +99,7 @@ GrB_Info GrB_Type_set_VOID
     if (field == GxB_PRINT_FUNCTION && type->code == GB_UDT_code &&
         size == sizeof (GxB_print_function))
     { 
-        type->print_function = (GxB_print_function *) value ;
+        type->print_function = (GxB_print_function) value ;
         return (GrB_SUCCESS) ;
     }
 

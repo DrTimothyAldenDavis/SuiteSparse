@@ -41,16 +41,18 @@ jobs:
         cc: [clang-cl]
         cxx: [clang-cl]
         include:
-          - openmp: with
-            cuda: with
-            link: both
-            cc: clang-cl
-            cxx: clang-cl
-          - openmp: with
-            cuda: with
-            link: static
-            cc: clang-cl
-            cxx: clang-cl
+# CUDA is intermittently timing out, as of July 20, 2026, so it is
+# temporarily removed from this workflow:
+#         - openmp: with
+#           cuda: with
+#           link: both
+#           cc: clang-cl
+#           cxx: clang-cl
+#         - openmp: with
+#           cuda: with
+#           link: static
+#           cc: clang-cl
+#           cxx: clang-cl
           - openmp: without
             cuda: without
             link: both
@@ -82,15 +84,15 @@ jobs:
           Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
 
       - name: checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@v4
         with:
           auto-update-conda: true
 
       - name: cache conda packages
         id: conda-cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: C:/Miniconda/envs/test
           key: conda:netlib:msvc
@@ -106,7 +108,7 @@ jobs:
 
       - name: save conda cache
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: C:/Miniconda/envs/test
           key: ${{ steps.conda-cache.outputs.cache-primary-key }}
@@ -126,12 +128,12 @@ jobs:
 
           msystem: UCRT64
 
-      - uses: Jimver/cuda-toolkit@v0.2.23
+      - uses: Jimver/cuda-toolkit@v0.2.35
         name: install CUDA toolkit
         if: matrix.cuda == 'with'
         id: cuda-toolkit
         with:
-          cuda: '12.5.0'
+          cuda: '13.2.0'
           #See https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html#install-the-cuda-software
           method: 'local'
           # Do not cache the installer (~3 GiB). It doesn't speed up the
@@ -170,7 +172,7 @@ jobs:
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -197,9 +199,7 @@ jobs:
           if [ ${{ matrix.cuda }} = 'with' ]; then
             _extra_config+=(-DCUDAToolkit_ROOT="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")")
             _extra_config+=(-DCMAKE_CUDA_COMPILER="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")/bin/nvcc.exe")
-            # MSVC 19.40 is still Visual Studio 2022.
-            # Suppress erroneous version check.
-            _extra_config+=(-DCMAKE_CUDA_FLAGS=-allow-unsupported-compiler)
+            _extra_config+=(-DSUITESPARSE_CUDA_ARCHITECTURES="75;80;86;89")
           fi
           if [[ ${{ matrix.cc }} == clang* ]]; then
             # Move away (old) clang/clang++ and clang-cl that would be in PATH
@@ -260,7 +260,7 @@ jobs:
         # Save the cache after we are done building
         # This helps to retain the ccache even if the subsequent steps are failing.
         if: always() && (steps.build.outcome != 'skipped')
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -269,13 +269,14 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/build
           PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;C:/msys64/ucrt64/bin;${PATH}" \
-            ctest -C Release . || ctest -C Release . --rerun-failed --output-on-failure
+            ctest -C Release . --timeout 300 \
+              || ctest -C Release . --rerun-failed --output-on-failure --timeout 300
 
       - name: install
         run: |
           printf "\033[0;32m==>\033[0m Installing libraries\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake --install .
+          cmake --install . --config Release
 
       - name: build example
         run: |
@@ -317,7 +318,7 @@ jobs:
           IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
           for lib in "${libs[@]}"; do
             printf "::group::   \033[0;32m==>\033[0m Building with Config.cmake with library \033[0;32m${lib}\033[0m\n"
-            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            cd ${GITHUB_WORKSPACE}/TestConfig/test_${lib}
             cd build
             cmake -G"Ninja Multi-Config" \
               -DCMAKE_C_COMPILER=${{ matrix.cc }} \

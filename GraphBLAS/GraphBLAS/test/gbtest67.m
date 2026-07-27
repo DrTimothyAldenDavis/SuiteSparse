@@ -43,7 +43,7 @@ for k = 1:length (types)
         isequal (type, 'logical'))
         D1 = digraph (A) ;
     else
-        D1 = digraph (double (A)) ;
+        D1 = digraph (double (real (A))) ;
     end
 
     D2 = digraph (G) ;

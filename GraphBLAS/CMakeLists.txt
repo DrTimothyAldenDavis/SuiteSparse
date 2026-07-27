@@ -2,12 +2,12 @@
 # GraphBLAS/CMakeLists.txt:  cmake script for GraphBLAS
 #-------------------------------------------------------------------------------
 
-# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2025, All Rights Reserved.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2026, All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 # See the User Guide for details on how to compile SuiteSparse:GraphBLAS.
 
-cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
+cmake_minimum_required ( VERSION 3.23 )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -28,7 +28,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( GraphBLAS_version )
 
-set ( PROJECT_VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" )
+set ( PROJECT_VERSION "${GraphBLAS_VER_MAJOR}.${GraphBLAS_VER_MINOR}.${GraphBLAS_VER_SUB}" )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
@@ -385,9 +385,9 @@ if ( BUILD_SHARED_LIBS )
     add_library ( GraphBLAS SHARED ${GRAPHBLAS_SOURCES} )
 
     set_target_properties ( GraphBLAS PROPERTIES
-        VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+        VERSION ${GraphBLAS_VER_MAJOR}.${GraphBLAS_VER_MINOR}.${GraphBLAS_VER_SUB}
         OUTPUT_NAME graphblas
-        SOVERSION ${GraphBLAS_VERSION_MAJOR}
+        SOVERSION ${GraphBLAS_VER_MAJOR}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         PUBLIC_HEADER "Include/GraphBLAS.h"

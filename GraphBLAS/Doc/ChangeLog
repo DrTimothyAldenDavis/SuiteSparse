@@ -1,3 +1,8 @@
+July 21, 2026, version 10.3.2
+
+    * compiler port: changes required for recent clang compilers
+    * cmake: 3.23 now required; SuiteSparsePolicy.cmake revised.
+
 Jan 21, 2026, version 10.3.1
 
     * (67) bug fix:  incorrect JIT kernel constructed for R=masker(C,M,Z)

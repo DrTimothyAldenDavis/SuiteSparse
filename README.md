@@ -10,7 +10,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Feb 5, 2026, SuiteSparse VERSION 7.12.2
+July 31, 2026, SuiteSparse VERSION 7.12.3
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -987,7 +987,7 @@ build type).  The static libraries will not be built (since
 
   A string, such as `"all"` or `"35;50;75;80"` that lists the CUDA
   architectures to use when compiling CUDA kernels with `nvcc`.  The `"all"`
-  option requires CMake 3.23 or later.  Default: `"52;75;80"`.
+  option requires CMake 3.23 or later.  Default: `"all"`.
 
 * `BLA_VENDOR`:
 
@@ -1012,12 +1012,12 @@ build type).  The static libraries will not be built (since
 
   GraphBLAS, LAGraph, and ParU will be vastly slower if OpenMP is not used.
   CHOLMOD will be somewhat slower without OpenMP (as long as it still has a
-  parallel BLAS/LAPACK).  Three packages (UMFPACK, CHOLMOD, and SPQR) rely
+  parallel BLAS/LAPACK).  Four packages (UMFPACK, CHOLMOD, SPQR, and ParU) rely
   heavily on parallel BLAS/LAPACK libraries and those libraries may use OpenMP
   internally.  If you wish to disable OpenMP in an entire application, select a
   single-threaded BLAS/LAPACK, or a parallel BLAS/LAPACK that does not use
   OpenMP (such as the Apple Accelerate Framework).  Using a single-threaded
-  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, and SPQR to be vastly
+  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, SPQR, and ParU to be vastly
   slower.
 
   WARNING: GraphBLAS may not be thread-safe if built without OpenMP or pthreads

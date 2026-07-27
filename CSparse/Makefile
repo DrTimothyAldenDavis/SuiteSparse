@@ -52,17 +52,17 @@ all: library
 
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
-	- ./build/cs_demo1 < ./Matrix/t1
-	- ./build/cs_demo2 < ./Matrix/t1
-	- ./build/cs_demo2 < ./Matrix/ash219
-	- ./build/cs_demo2 < ./Matrix/bcsstk01
-	- ./build/cs_demo2 < ./Matrix/fs_183_1
-	- ./build/cs_demo2 < ./Matrix/mbeacxc
-	- ./build/cs_demo2 < ./Matrix/west0067
-	- ./build/cs_demo2 < ./Matrix/lp_afiro
-	- ./build/cs_demo2 < ./Matrix/bcsstk16
-	- ./build/cs_demo3 < ./Matrix/bcsstk01
-	- ./build/cs_demo3 < ./Matrix/bcsstk16
+	- ./build/csparse_demo1 < ./Matrix/t1
+	- ./build/csparse_demo2 < ./Matrix/t1
+	- ./build/csparse_demo2 < ./Matrix/ash219
+	- ./build/csparse_demo2 < ./Matrix/bcsstk01
+	- ./build/csparse_demo2 < ./Matrix/fs_183_1
+	- ./build/csparse_demo2 < ./Matrix/mbeacxc
+	- ./build/csparse_demo2 < ./Matrix/west0067
+	- ./build/csparse_demo2 < ./Matrix/lp_afiro
+	- ./build/csparse_demo2 < ./Matrix/bcsstk16
+	- ./build/csparse_demo3 < ./Matrix/bcsstk01
+	- ./build/csparse_demo3 < ./Matrix/bcsstk16
 
 install:
 	- echo 'CSparse is not installed; use CXSparse instead'

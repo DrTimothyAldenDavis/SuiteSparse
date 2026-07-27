@@ -1,0 +1,35 @@
+#!/bin/sh
+
+export OMP_MAX_ACTIVE_LEVELS=4
+export OMP_NUM_THREADS=32,32
+export OMP_DISPLAY_ENV=true
+printenv | grep OMP_
+
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b39_c30/TSOPF_RS_b39_c30.mtx
+../../build/paru_benchmark /tmp/matrices/twotone/twotone.mtx
+../../build/paru_benchmark /tmp/matrices/std1_Jac2/std1_Jac2.mtx
+../../build/paru_benchmark /tmp/matrices/mac_econ_fwd500/mac_econ_fwd500.mtx
+../../build/paru_benchmark /tmp/matrices/std1_Jac3/std1_Jac3.mtx
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b300_c1/TSOPF_RS_b300_c1.mtx
+../../build/paru_benchmark /tmp/matrices/lhr71/lhr71.mtx
+../../build/paru_benchmark /tmp/matrices/Zd_Jac2/Zd_Jac2.mtx
+../../build/paru_benchmark /tmp/matrices/av41092/av41092.mtx
+../../build/paru_benchmark /tmp/matrices/Zd_Jac6/Zd_Jac6.mtx
+../../build/paru_benchmark /tmp/matrices/crashbasis/crashbasis.mtx
+../../build/paru_benchmark /tmp/matrices/bbmat/bbmat.mtx
+../../build/paru_benchmark /tmp/matrices/Zd_Jac3/Zd_Jac3.mtx
+../../build/paru_benchmark /tmp/matrices/mc2depi/mc2depi.mtx
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b300_c2/TSOPF_RS_b300_c2.mtx
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b678_c1/TSOPF_RS_b678_c1.mtx
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b300_c3/TSOPF_RS_b300_c3.mtx
+../../build/paru_benchmark /tmp/matrices/Chebyshev4/Chebyshev4.mtx
+../../build/paru_benchmark /tmp/matrices/Hamrle3/Hamrle3.mtx
+../../build/paru_benchmark /tmp/matrices/pre2/pre2.mtx
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b2052_c1/TSOPF_RS_b2052_c1.mtx
+../../build/paru_benchmark /tmp/matrices/torso1/torso1.mtx
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b678_c2/TSOPF_RS_b678_c2.mtx
+../../build/paru_benchmark /tmp/matrices/TSOPF_RS_b2383/TSOPF_RS_b2383.mtx
+# might be too big:
+../../build/paru_benchmark /tmp/matrices/vas_stokes_4M/vas_stokes_4M.mtx
+../../build/paru_benchmark /tmp/matrices/stokes/stokes.mtx
+

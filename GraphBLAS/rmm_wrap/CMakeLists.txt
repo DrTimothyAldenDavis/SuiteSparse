@@ -48,9 +48,9 @@ include_directories ( ${RMM_INCLUDE_DIR} )
 add_library ( RMM_wrap rmm_wrap.cpp rmm_wrap.hpp rmm_wrap.h )
 
 set_target_properties ( RMM_wrap PROPERTIES
-    VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+    VERSION ${GraphBLAS_VER_MAJOR}.${GraphBLAS_VER_MINOR}.${GraphBLAS_VER_SUB}
     OUTPUT_NAME rmm_wrap
-    SOVERSION ${GraphBLAS_VERSION_MAJOR}
+    SOVERSION ${GraphBLAS_VER_MAJOR}
     PUBLIC_HEADER "rmm_wrap.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
