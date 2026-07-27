@@ -35,10 +35,10 @@
 #                       GraphBLAS is false.
 #
 #   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
-#                       "35;50;75;80" that lists the CUDA architectures to use
+#                       "75;80" that lists the CUDA architectures to use
 #                       when compiling CUDA kernels with nvcc.  The "all"
 #                       option requires cmake 3.23 or later.
-#                       Default: "52;75;80".
+#                       Default: "all".
 #
 #   BLA_VENDOR and BLA_SIZEOF_INTEGER: By default, SuiteSparse searches for
 #                       the BLAS library in a specific order.  If you wish to
@@ -310,22 +310,17 @@ if ( SUITESPARSE_USE_FORTRAN )
         set ( SUITESPARSE_HAS_FORTRAN ON )
         if ( NOT "${CMAKE_Fortran_COMPILER_ID}" STREQUAL "${CMAKE_C_COMPILER_ID}" OR
              NOT "${CMAKE_Fortran_COMPILER_ID}" STREQUAL "${CMAKE_CXX_COMPILER_ID}" )
-            message ( STATUS " " )
-            message ( STATUS "Incompatible Fortran/C/C++ compilers detected:" )
-            message ( STATUS "    Fortran:          ${CMAKE_Fortran_COMPILER}" )
-            message ( STATUS "    Fortran id:       ${CMAKE_Fortran_COMPILER_ID}" )
-            message ( STATUS "    C                 ${CMAKE_C_COMPILER}" )
-            message ( STATUS "    C       id:       ${CMAKE_C_COMPILER_ID}" )
-            message ( STATUS "    C++               ${CMAKE_CXX_COMPILER}" )
-            message ( STATUS "    C++     id:       ${CMAKE_CXX_COMPILER_ID}" )
             if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "IntelLLVM" )
+                message ( STATUS " " )
+                message ( STATUS "Incompatible Fortran/C/C++ compilers detected:" )
+                message ( STATUS "    Fortran:          ${CMAKE_Fortran_COMPILER}" )
+                message ( STATUS "    Fortran id:       ${CMAKE_Fortran_COMPILER_ID}" )
+                message ( STATUS "    C                 ${CMAKE_C_COMPILER}" )
+                message ( STATUS "    C       id:       ${CMAKE_C_COMPILER_ID}" )
+                message ( STATUS "    C++               ${CMAKE_CXX_COMPILER}" )
+                message ( STATUS "    C++     id:       ${CMAKE_CXX_COMPILER_ID}" )
                 # icx/icpx cannot be used with gfortran: this is a fatal error
                 message ( FATAL_ERROR "ERROR: Using Fortran with SuiteSparse requires that "
-                " it has the same compiler ID as the C/C++ compilers."
-                "  Use a compatible Fortran compiler, or set SUITESPARSE_USE_FORTRAN to OFF." )
-            else ( )
-                # other cases: just issue a warning and hope it works.
-                message ( WARNING "Warning: Using Fortran with SuiteSparse requires that "
                 " it has the same compiler ID as the C/C++ compilers."
                 "  Use a compatible Fortran compiler, or set SUITESPARSE_USE_FORTRAN to OFF." )
             endif ( )
@@ -401,7 +396,7 @@ endif ( )
 
 if ( SUITESPARSE_HAS_CUDA )
     message ( STATUS "CUDA:             enabled" )
-    set ( SUITESPARSE_CUDA_ARCHITECTURES "52;75;80" CACHE STRING "CUDA architectures" )
+    set ( SUITESPARSE_CUDA_ARCHITECTURES "all" CACHE STRING "CUDA architectures" )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
 else ( )
     message ( STATUS "CUDA:             not enabled" )

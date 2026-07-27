@@ -318,7 +318,7 @@ jobs:
           IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
           for lib in "${libs[@]}"; do
             printf "::group::   \033[0;32m==>\033[0m Building with Config.cmake with library \033[0;32m${lib}\033[0m\n"
-            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            cd ${GITHUB_WORKSPACE}/TestConfig/test_${lib}
             cd build
             cmake -G"Ninja Multi-Config" \
               -DCMAKE_C_COMPILER=${{ matrix.cc }} \

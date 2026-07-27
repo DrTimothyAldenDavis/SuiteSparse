@@ -3346,7 +3346,7 @@ you should always re-acquire the pointers to their internal data ({\tt X->x}
 for example) after calling {\tt cholmod\_solve2}, since they may change.  They
 normally will not change except in the first call to this function.
 
-On the first call to {\tt cholmod\_solve2} when {\tt Bset} is NULL, the
+On the first call to {\tt cholmod\_solve2} when {\tt Bset} is non-NULL, the
 factorization is converted from supernodal to simplicial, if needed.  The
 inverse permutation is also computed and stored in the factorization object,
 {\tt L}.  This can take a modest amount of time.  Subsequent calls to {\tt

@@ -37,10 +37,11 @@
 // See also the LAGraph_Version utility method, which returns these values.
 // These definitions are derived from LAGraph/CMakeLists.txt.
 
-#define LAGRAPH_DATE "Sept 8, 2025"
+#define LAGRAPH_DATE "July 21, 2026"
 #define LAGRAPH_VERSION_MAJOR  1
 #define LAGRAPH_VERSION_MINOR  2
-#define LAGRAPH_VERSION_UPDATE 1
+#define LAGRAPH_VERSION_UPDATE 2
+#define LAGRAPH_HAS_STDALIGN_H 1
 
 //==============================================================================
 // include files and helper macros
@@ -104,8 +105,8 @@
 
 #if ( !LAGRAPH_VANILLA ) && defined ( GxB_SUITESPARSE_GRAPHBLAS )
     // use SuiteSparse, and its GxB* extensions
-    #if GxB_IMPLEMENTATION < GxB_VERSION (9,0,0)
-    #error "If using SuiteSparse::GraphBLAS, version 9.0.0 or later is required"
+    #if GxB_IMPLEMENTATION < GxB_VERSION (10,0,0)
+    #error "SuiteSparse::GraphBLAS v10.0.0 or later is required"
     #endif
     #define LAGRAPH_SUITESPARSE 1
 #else
@@ -2410,11 +2411,11 @@ int LAGr_SingleSourceShortestPath
 ) ;
 
 //------------------------------------------------------------------------------
-// LAGr_Betweenness: betweeness centrality metric
+// LAGr_Betweenness: betweenness centrality metric
 //------------------------------------------------------------------------------
 
-/** LAGr_Betweenness: betweeness centrality metric.  This methods computes an
- * approximation of the betweeness-centrality metric of all nodes in the graph.
+/** LAGr_Betweenness: betweenness centrality metric.  This methods computes an
+ * approximation of the betweenness-centrality metric of all nodes in the graph.
  * Only a few given source nodes are used for the approximation.  This is an
  * Advanced algorithm (G->AT is required).
  *
@@ -2442,7 +2443,7 @@ LAGRAPH_PUBLIC
 int LAGr_Betweenness
 (
     // output:
-    GrB_Vector *centrality,     // centrality(i): betweeness centrality of i
+    GrB_Vector *centrality,     // centrality(i): betweenness centrality of i
     // input:
     const LAGraph_Graph G,      // input graph
     const GrB_Index *sources,   // source vertices to compute shortest paths

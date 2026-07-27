@@ -18,7 +18,22 @@
 #if defined ( BLAS_Intel10 )
     extern "C"
     {
-        #include "mkl.h"
+        #ifdef MATLAB_MEX_FILE
+            // MathWorks does not distribute mkl.h with MATLAB, so define the
+            // mkl_* methods that ParU uses here, without relying on mkl.h:
+            #define mkl_set_num_threads_local mkl_serv_set_num_threads_local
+            #define mkl_set_num_threads       mkl_serv_set_num_threads
+            #define mkl_get_max_threads       mkl_serv_get_max_threads
+            #define mkl_get_dynamic           mkl_serv_get_dynamic
+            #define mkl_set_dynamic           mkl_serv_set_dynamic
+            int mkl_set_num_threads_local (int nthreads) ;
+            int mkl_set_num_threads (int nthreads) ;
+            int mkl_get_max_threads (void) ;
+            int mkl_get_dynamic (void) ;
+            void mkl_set_dynamic (int dynamic) ;
+        #else
+            #include "mkl.h"
+        #endif
     }
 #endif
 

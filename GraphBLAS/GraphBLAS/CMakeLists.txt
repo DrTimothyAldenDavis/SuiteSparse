@@ -25,7 +25,7 @@ include ( GraphBLAS_version )
 #-------------------------------------------------------------------------------
 
 project ( graphblas_matlab
-    VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" LANGUAGES C )
+    VERSION "${GraphBLAS_VER_MAJOR}.${GraphBLAS_VER_MINOR}.${GraphBLAS_VER_SUB}" LANGUAGES C )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
@@ -243,8 +243,8 @@ endif ( )
 
 add_library ( graphblas_matlab SHARED ${GRAPHBLAS_SOURCES} )
 set_target_properties ( graphblas_matlab PROPERTIES
-    VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
-    SOVERSION ${GraphBLAS_VERSION_MAJOR}
+    VERSION ${GraphBLAS_VER_MAJOR}.${GraphBLAS_VER_MINOR}.${GraphBLAS_VER_SUB}
+    SOVERSION ${GraphBLAS_VER_MAJOR}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
     PUBLIC_HEADER "../Include/GraphBLAS.h" )
