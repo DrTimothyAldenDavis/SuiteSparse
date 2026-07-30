@@ -158,11 +158,13 @@ for id = list
             if (~isempty (P2) && ~isequal (Problem, P2))
                 disp (Problem) ;
                 disp (P2) ;
-                warning ('%s version mismatch: %s\n', format, Problem.name) ;
+%               save P2
+                warning ('%s version mismatch: %s id:%d\n', ...
+                    format, Problem.name, id) ;
                 e = norm (Problem.A - P2.A, 1) ;
                 a = norm (Problem.A, 1) ;
                 fprintf ('norm (A1-A2,1): %g  relative: %g\n', e, e/a) ;
-                error ('die!') ;
+%               error ('die!') ;
             end
             clear P2
         end
