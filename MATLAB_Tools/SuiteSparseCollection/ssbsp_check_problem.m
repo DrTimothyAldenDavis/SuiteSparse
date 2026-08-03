@@ -83,13 +83,16 @@ ok = ischar (value) || iscellstr (value) || ...
 
 function check_text_dataset (bspfile, name, expected, label)
 
+% A text component is stored so that its MATLAB class survives: a char matrix
+% becomes a fixed-length HDF5 string dataset and a cellstr a variable-length
+% one.  Both classes therefore come back exactly, and the comparison here is
+% exact as well.
 dataset = ['/' name] ;
 try
-    actual = h5read (bspfile, dataset) ;
+    actual = binsparse_read_string_dataset (bspfile, dataset) ;
 catch me
     error ('missing text dataset %s for %s: %s', dataset, label, me.message) ;
 end
-actual = h5_text_to_cellstr (actual) ;
 expected = expected_text (expected) ;
 if (~isequal (actual, expected))
     error ('text mismatch for %s', label) ;
@@ -98,44 +101,22 @@ end
 
 function value = expected_text (value)
 
+% Map the value onto the two classes the writer stores, char and cellstr.
 if (ischar (value))
-    if (isempty (value) && size (value, 1) == 0)
-        value = {''} ;
-    else
-        chars = value ;
-        value = cell (size (chars, 1), 1) ;
-        for k = 1:size (chars, 1)
-            value{k} = chars (k, :) ;
-        end
-    end
+    return
 elseif (iscellstr (value))
     value = value (:) ;
+    for k = 1:numel (value)
+        value{k} = reshape (char (value{k}), 1, [ ]) ;
+    end
 elseif (exist ('isstring', 'builtin') && isstring (value))
-    value = cellstr (value (:)) ;
+    if (isscalar (value))
+        value = char (value) ;
+    else
+        value = cellstr (value (:)) ;
+    end
 else
     error ('unexpected text type') ;
-end
-value = normalize_text_cells (value) ;
-
-
-function value = h5_text_to_cellstr (value)
-
-if (iscell (value))
-    value = value (:) ;
-elseif (ischar (value))
-    value = expected_text (value) ;
-elseif (exist ('isstring', 'builtin') && isstring (value))
-    value = cellstr (value (:)) ;
-else
-    error ('unexpected HDF5 text type') ;
-end
-value = normalize_text_cells (value) ;
-
-
-function value = normalize_text_cells (value)
-
-for k = 1:numel (value)
-    value{k} = reshape (char (value{k}), 1, [ ]) ;
 end
 
 

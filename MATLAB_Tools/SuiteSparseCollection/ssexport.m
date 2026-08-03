@@ -79,6 +79,11 @@ if (any (strcmp (formats, 'BSP')))
                 ['checking BSP output requires binsparse_to_ssmc_problem ' ...
                  'on the path']) ;
         end
+        if (exist ('binsparse_read_string_dataset', 'file') ~= 3)
+            error ('SuiteSparse:ssexport:MissingBinsparseStringReader', ...
+                ['checking BSP output requires the ' ...
+                 'binsparse_read_string_dataset MEX function']) ;
+        end
     end
 end
 
