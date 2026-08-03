@@ -128,7 +128,9 @@ function sswrite (Problem, Master, arg3, arg4)
 % The primary matrix, explicit zero pattern, b, x, and numeric aux matrices are
 % written to a single Binsparse HDF5 file, with a .bsp.h5 extension.  Aux char
 % arrays and cell arrays of strings are written as root-level HDF5 string
-% datasets.  The file is placed directly in its group directory as
+% datasets: a char array as a fixed-length dataset whose width is the array's
+% own, and a cell array of strings as a variable-length one, so that ssread can
+% tell the two apart.  The file is placed directly in its group directory as
 % Master/Group/Name.bsp.h5.  BSP output requires the Binsparse MATLAB bindings
 % on the MATLAB path.
 %

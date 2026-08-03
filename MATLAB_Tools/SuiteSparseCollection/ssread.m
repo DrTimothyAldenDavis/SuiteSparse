@@ -55,8 +55,9 @@ function Problem = ssread (directory, tmp)
 % can be read by MATLAB (via ssread) and a non-MATLAB program (the MM, RB, or
 % Binsparse versions of the collection).
 %
-% Reading Binsparse output requires binsparse_read and
-% binsparse_to_ssmc_problem from the Binsparse MATLAB bindings.
+% Reading Binsparse output requires binsparse_read,
+% binsparse_read_string_dataset, and binsparse_to_ssmc_problem from the
+% Binsparse MATLAB bindings.
 %
 % See also sswrite, mread, mwrite, RBread, ssget, untar, tempdir.
 
@@ -462,6 +463,10 @@ if (isempty (which ('binsparse_to_ssmc_problem')))
     error ('SuiteSparse:ssread:MissingBinsparseConverter', ...
         'BSP input requires binsparse_to_ssmc_problem') ;
 end
+if (exist ('binsparse_read_string_dataset', 'file') ~= 3)
+    error ('SuiteSparse:ssread:MissingBinsparseStringReader', ...
+        'BSP input requires the binsparse_read_string_dataset MEX function') ;
+end
 
 try
     descriptor_text = h5readatt (bspfile, '/', 'binsparse') ;
@@ -493,7 +498,7 @@ for k = 1:numel (info.Datasets)
     if (any (strcmp (component, reserved)))
         continue
     end
-    value = h5read (bspfile, ['/' component]) ;
+    value = binsparse_read_string_dataset (bspfile, ['/' component]) ;
     bsp_problem = add_bsp_component (bsp_problem, component, value) ;
 end
 
