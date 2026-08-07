@@ -23,6 +23,8 @@
 #include "monoid/GB_Monoid_new.h"
 #include "jitifyer/GB_jitifyer.h"
 
+#define GB_FREE_ALL ;
+
 GrB_Info GB_Monoid_new          // create a monoid
 (
     GrB_Monoid *monoid,         // handle of monoid to create
@@ -30,6 +32,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     const void *identity,       // identity value, if any
     const void *terminal,       // terminal value, if any (may be NULL)
     GB_Type_code idcode,        // identity and terminal type code
+    const int header_arena,
     GB_Werk Werk
 )
 {
@@ -38,10 +41,12 @@ GrB_Info GB_Monoid_new          // create a monoid
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
     GB_RETURN_IF_NULL (monoid) ;
     (*monoid) = NULL ;
     GB_RETURN_IF_NULL (identity) ;
     GB_RETURN_IF_NULL_OR_FAULTY (op) ;
+    GB_OK (GB_check_arena (header_arena)) ;
 
     ASSERT_BINARYOP_OK (op, "op for monoid", GB0) ;
     ASSERT (idcode <= GB_UDT_code) ;
@@ -88,9 +93,10 @@ GrB_Info GB_Monoid_new          // create a monoid
     //--------------------------------------------------------------------------
 
     // allocate the monoid
-    size_t header_size ;
-    (*monoid) = GB_MALLOC_MEMORY (1, sizeof (struct GB_Monoid_opaque),
-        &header_size) ;
+    uint64_t mem = GB_mem (header_arena, 0) ;
+    uint64_t header_mem = mem ;
+    (*monoid) = GB_CALLOC_MEMORY (1, sizeof (struct GB_Monoid_opaque),
+        &header_mem) ;
     if (*monoid == NULL)
     { 
         // out of memory
@@ -100,15 +106,12 @@ GrB_Info GB_Monoid_new          // create a monoid
     // initialize the monoid
     GrB_Monoid mon = *monoid ;
     mon->magic = GB_MAGIC ;
-    mon->header_size = header_size ;
-    mon->user_name = NULL ;                 // user_name for GrB_get/GrB_set
-    mon->user_name_size = 0 ;
+    mon->header_mem = header_mem ;
+    mon->user_name = NULL ; mon->user_name_mem = 0 ;
     mon->op = op ;
     size_t zsize = op->ztype->size ;
-    mon->identity = NULL ;                  // defined below (if present)
-    mon->terminal = NULL ;                  // defined below (if present)
-    mon->identity_size = 0 ;
-    mon->terminal_size = 0 ;
+    mon->identity = NULL ; mon->identity_mem = mem ;
+    mon->terminal = NULL ; mon->terminal_mem = mem ;
     bool builtin = false ;  // set true below if using a builtin binary op
     mon->hash = 0 ;         // builtin monoids have a hash value of 0
 
@@ -119,12 +122,12 @@ GrB_Info GB_Monoid_new          // create a monoid
     // allocate the identity value
     #define GB_ALLOC_IDENTITY                                               \
     {                                                                       \
-        mon->identity = GB_MALLOC_MEMORY (1, zsize, &(mon->identity_size)) ; \
+        mon->identity = GB_MALLOC_MEMORY (1, zsize, &(mon->identity_mem)) ; \
         if (mon->identity == NULL)                                          \
         {                                                                   \
             /* out of memory */                                             \
-            GB_FREE_MEMORY (&(mon->terminal), mon->terminal_size) ;                \
-            GB_FREE_MEMORY (monoid, header_size) ;                                 \
+            GB_FREE_MEMORY (&(mon->terminal), mon->identity_mem) ;          \
+            GB_FREE_MEMORY (monoid, header_mem) ;                           \
             return (GrB_OUT_OF_MEMORY) ;                                    \
         }                                                                   \
     }
@@ -132,12 +135,12 @@ GrB_Info GB_Monoid_new          // create a monoid
     // allocate the terminal value
     #define GB_ALLOC_TERMINAL                                               \
     {                                                                       \
-        mon->terminal = GB_MALLOC_MEMORY (1, zsize, &(mon->terminal_size)) ; \
+        mon->terminal = GB_MALLOC_MEMORY (1, zsize, &(mon->terminal_mem)) ; \
         if (mon->terminal == NULL)                                          \
         {                                                                   \
             /* out of memory */                                             \
-            GB_FREE_MEMORY (&(mon->identity), mon->identity_size) ;                \
-            GB_FREE_MEMORY (monoid, header_size) ;                                 \
+            GB_FREE_MEMORY (&(mon->identity), mon->identity_mem) ;          \
+            GB_FREE_MEMORY (monoid, header_mem) ;                           \
             return (GrB_OUT_OF_MEMORY) ;                                    \
         }                                                                   \
     }
