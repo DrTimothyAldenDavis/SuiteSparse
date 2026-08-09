@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GB_dup: make a deep copy of a sparse matrix
+// GB_dup: make a deep copy of a matrix
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2025, All Rights Reserved.
@@ -26,14 +26,16 @@
 
 // A is the new copy and B is the old copy.  Each should be freed when done.
 
-#include "GB.h"
+// The p/j/i integers in the output C are identical to the p/j/i ints in A.
 
-#define GB_FREE_ALL ;
+#include "GB.h"
 
 GrB_Info GB_dup             // make an exact copy of a matrix
 (
     GrB_Matrix *Chandle,    // handle of output matrix to create
     const GrB_Matrix A,     // input matrix to copy
+    const int header_arena,
+    const int data_arena,
     GB_Werk Werk
 )
 { 
@@ -42,6 +44,7 @@ GrB_Info GB_dup             // make an exact copy of a matrix
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
     ASSERT (Chandle != NULL) ;
     ASSERT_MATRIX_OK (A, "A to duplicate", GB0) ;
     (*Chandle) = NULL ;
@@ -51,6 +54,9 @@ GrB_Info GB_dup             // make an exact copy of a matrix
     //--------------------------------------------------------------------------
 
     GB_BURBLE_MATRIX (A, "(%sdup) ", A->iso ? "iso " : "") ;
-    return (GB_dup_worker (Chandle, A->iso, A, true, NULL)) ;
+    return (GB_dup_worker (Chandle, A->iso, A, /* numeric: */ true,
+        /* C->type is the same as A->type: */ NULL,
+        /* C has the same ints as A: */ A->p_is_32, A->j_is_32, A->i_is_32,
+        header_arena, data_arena, Werk)) ;
 }
 

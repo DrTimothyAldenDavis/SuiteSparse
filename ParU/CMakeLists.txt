@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.23 )
 
-set ( PARU_DATE "July 31, 2026" )
+set ( PARU_DATE "Aug 3, 2026" )
 set ( PARU_VERSION_MAJOR  1 CACHE STRING "" FORCE )
 set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
-set ( PARU_VERSION_UPDATE 1 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.

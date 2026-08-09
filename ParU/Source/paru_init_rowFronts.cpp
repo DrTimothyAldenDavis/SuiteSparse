@@ -439,8 +439,7 @@ ParU_Info paru_init_rowFronts
     // copying Diag_map
     if (Diag_map)
     {
-        #pragma omp taskloop default(none) \
-            shared(Sym, Diag_map, inv_Diag_map) grainsize(512)
+        #pragma omp taskloop shared(Diag_map, inv_Diag_map) grainsize(512)
         for (int64_t i = 0; i < Sym->n; i++)
         {
             Diag_map[i] = Sym->Diag_map[i];

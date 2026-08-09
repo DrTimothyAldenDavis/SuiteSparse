@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# GraphBLASConfig.cmake, Copyright (c) 2017-2025, Timothy A. Davis.  All Rights
+# GraphBLASConfig.cmake, Copyright (c) 2017-2026, Timothy A. Davis.  All Rights
 # Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
@@ -30,7 +30,7 @@
 
 @PACKAGE_INIT@
 
-set ( GRAPHBLAS_DATE "@GraphBLAS_DATE@" )
+set ( GRAPHBLAS_DATE "@GraphBLAS_VER_DATE@" )
 set ( GRAPHBLAS_VERSION_MAJOR @GraphBLAS_VER_MAJOR@ )
 set ( GRAPHBLAS_VERSION_MINOR @GraphBLAS_VER_MINOR@ )
 set ( GRAPHBLAS_VERSION_PATCH @GraphBLAS_VER_SUB@ )
