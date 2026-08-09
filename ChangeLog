@@ -1,6 +1,6 @@
-FIXME, 2026: version 7.13.0
+Aug 10, 2026: version 7.13.0
 
-    * GraphBLAS 10.4.0: memory arenas, faster GhB MATLAB/Octave interface
+    * GraphBLAS 10.4.1: memory arenas, faster GhB MATLAB/Octave interface
     * ParU 1.1.2: backport to gcc 7.5.0
     * SuiteSparse_config 7.13.0: version update to match SuiteSparse.
     * Package versions in this release: (* denotes a new version)
@@ -14,7 +14,7 @@ FIXME, 2026: version 7.13.0
         CSparse 4.4.2
         CXSparse 4.4.2
         Example 1.8.12              *
-        GraphBLAS 10.4.0            *
+        GraphBLAS 10.4.1            *
         KLU 2.3.6
         LDL 3.3.3
         LAGraph 1.2.2
