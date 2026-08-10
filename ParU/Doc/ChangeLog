@@ -1,3 +1,8 @@
+Aug 3, 2026: version 1.1.2
+
+    * minor fix for gcc 7.5.0: remove "shared(Sym," from an omp pragma;
+        gcc 7.5.0 has OpenMP 4.5 but uses the 3.1 data sharing model.
+
 July 31, 2026: version 1.1.1
 
     * MATLAB on Intel systems: do not rely on mkl.h for the paru mexFunction
