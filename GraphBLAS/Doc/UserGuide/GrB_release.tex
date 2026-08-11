@@ -5,6 +5,19 @@
 
 \begin{itemize}
 
+\item Aug 12, 2026, version 10.5.0
+
+    \begin{itemize}
+    \item \verb'GrB_Matrix_resize', \verb'GrB_Vector_resize': no longer call
+        \verb'GrB_wait' if the matrix/vector is sparse/hypersparse, and both
+        dimensions are not decreasing.
+    \item \verb'GrB_Matrix_build' and \verb'GrB_Vector_build': no longer do a
+        post-iso check; they leave the matrix in non-iso format even if all the
+        entries are the same.
+    \item (70) bug fix:  potential buffer overflow in eWiseUnion when using
+        builting 1st, 2nd, or positional operators.
+    \end{itemize}
+
 \item Aug 8, 2026, version 10.4.1
 
     \begin{itemize}
