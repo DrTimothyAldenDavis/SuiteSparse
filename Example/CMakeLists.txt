@@ -53,10 +53,10 @@ message ( STATUS "MY prefix path:    ${CMAKE_PREFIX_PATH}" )
 #-------------------------------------------------------------------------------
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Aug 10, 2026" )
+set ( MY_DATE "Aug 12, 2026" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 8 )
-set ( MY_VERSION_PATCH 12 )
+set ( MY_VERSION_PATCH 13 )
 
 message ( STATUS "Building MY library version: v"
     ${MY_VERSION_MAJOR}.
@@ -88,7 +88,7 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
-find_package ( SuiteSparse_config 7.13.0 REQUIRED )
+find_package ( SuiteSparse_config 7.13.1 REQUIRED )
 find_package ( AMD 3.3.4 REQUIRED )
 find_package ( BTF 2.3.3 REQUIRED )
 find_package ( CAMD 3.3.5 REQUIRED )
@@ -96,7 +96,7 @@ find_package ( CCOLAMD 3.3.5 REQUIRED )
 find_package ( CHOLMOD 5.3.5 REQUIRED )
 find_package ( COLAMD 3.3.5 REQUIRED )
 find_package ( CXSparse 4.4.2 REQUIRED )
-find_package ( GraphBLAS 10.4.1 )
+find_package ( GraphBLAS 10.5.0 )
 find_package ( KLU 2.3.6 REQUIRED )
 find_package ( KLU_CHOLMOD 2.3.6 REQUIRED )
 find_package ( LAGraph 1.2.2 )
