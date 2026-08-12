@@ -485,16 +485,16 @@ bsp_problem = struct ;
 bsp_problem.metadata = descriptor.metadata ;
 bsp_problem.A = binsparse_read (bspfile) ;
 
-info = h5info (bspfile, '/') ;
-for k = 1:numel (info.Groups)
-    component = bsp_component_name (info.Groups(k).Name) ;
+[groups, datasets] = bsp_root_members (bspfile) ;
+for k = 1:numel (groups)
+    component = bsp_component_name (groups {k}) ;
     value = binsparse_read (bspfile, component) ;
     bsp_problem = add_bsp_component (bsp_problem, component, value) ;
 end
 
 reserved = {'values', 'indices_0', 'indices_1', 'pointers_to_1'} ;
-for k = 1:numel (info.Datasets)
-    component = info.Datasets(k).Name ;
+for k = 1:numel (datasets)
+    component = datasets {k} ;
     if (any (strcmp (component, reserved)))
         continue
     end
@@ -503,6 +503,52 @@ for k = 1:numel (info.Datasets)
 end
 
 Problem = binsparse_to_ssmc_problem (bsp_problem) ;
+
+
+%-------------------------------------------------------------------------------
+% bsp_root_members: list the groups and datasets in the root of a BSP file
+%-------------------------------------------------------------------------------
+
+function [groups, datasets] = bsp_root_members (bspfile)
+
+% h5info is deliberately not used here.  It describes every object in the
+% file, and the description of a dataset includes the size of its datatype,
+% which h5info builds an array for.  A fixed-length HDF5 string is one such
+% datatype, and its size is the whole width of the text, so a single wide
+% string is enough to make h5info fail with MATLAB:pmaxsize ("Requested array
+% exceeds the maximum possible variable size") no matter how much memory the
+% machine has.  The threshold is 2GB, and SuiteSparse problems reach it: the
+% aux.names of Sybrandt/AGATHA_2015 is one 3.2GB row of text.  The low-level
+% interface below reports only names and object types, so it reads such a
+% file without ever sizing the datatype.
+
+groups = { } ;
+datasets = { } ;
+
+file = H5F.open (bspfile, 'H5F_ACC_RDONLY', 'H5P_DEFAULT') ;
+closefile = onCleanup (@ ( ) H5F.close (file)) ;
+root = H5G.open (file, '/') ;
+closeroot = onCleanup (@ ( ) H5G.close (root)) ;
+
+is_group = H5ML.get_constant_value ('H5O_TYPE_GROUP') ;
+is_dataset = H5ML.get_constant_value ('H5O_TYPE_DATASET') ;
+
+info = H5G.get_info (root) ;
+for k = 0:double (info.nlinks) - 1
+    name = H5L.get_name_by_idx (root, '.', 'H5_INDEX_NAME', 'H5_ITER_INC', ...
+        k, 'H5P_DEFAULT') ;
+    object = H5O.open_by_idx (root, '.', 'H5_INDEX_NAME', 'H5_ITER_INC', ...
+        k, 'H5P_DEFAULT') ;
+    closeobject = onCleanup (@ ( ) H5O.close (object)) ;
+    object_info = H5O.get_info (object) ;
+    kind = object_info.type ;
+    clear closeobject
+    if (kind == is_group)
+        groups {end+1} = name ;                                     %#ok<AGROW>
+    elseif (kind == is_dataset)
+        datasets {end+1} = name ;                                   %#ok<AGROW>
+    end
+end
 
 
 %-------------------------------------------------------------------------------
