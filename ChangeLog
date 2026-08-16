@@ -1,9 +1,9 @@
-Aug 12, 2026: version 7.13.1
+Aug 16, 2026: version 7.14.0
 
     * GraphBLAS 10.5.0: faster resize, post-iso check revised, and a bug fix
-    * SuiteSparse_config 7.13.1: version update to match SuiteSparse.
+    * SuiteSparse_config 7.14.0: version update to match SuiteSparse.
     * Package versions in this release: (* denotes a new version)
-        SuiteSparse_config 7.13.1   *
+        SuiteSparse_config 7.14.0   *
         AMD 3.3.4
         BTF 2.3.3
         CAMD 3.3.5
