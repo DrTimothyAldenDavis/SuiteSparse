@@ -9,9 +9,8 @@
 #-------------------------------------------------------------------------------
 
 # SuiteSparse interface to the Fortran BLAS library.
-# cmake 3.22 is required because BLA_SIZEOF_INTEGER is used.
 
-cmake_minimum_required ( VERSION 3.22 )
+cmake_minimum_required ( VERSION 3.23 )
 
 # The Intel MKL BLAS is highly recommended.  It is free to download (but be
 # sure to check their license to make sure you accept it).   See:

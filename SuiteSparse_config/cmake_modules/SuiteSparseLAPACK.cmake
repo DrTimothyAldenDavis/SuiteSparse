@@ -9,7 +9,6 @@
 #-------------------------------------------------------------------------------
 
 # SuiteSparse interface to the Fortran LAPACK library.
-# cmake 3.22 is required because BLA_SIZEOF_INTEGER is used.
 
 # The Intel MKL BLAS is highly recommended.  It is free to download (but be
 # sure to check their license to make sure you accept it).   See:
@@ -18,7 +17,7 @@
 # The use of this package must be preceded with:
 # include ( SuiteSparseBLAS )
 
-cmake_minimum_required ( VERSION 3.22 )
+cmake_minimum_required ( VERSION 3.23 )
 
 if ( DEFINED LAPACK_LIBRARIES OR DEFINED LAPACK_INCLUDE_DIRS )
     # User supplied variables for libraries and/or include directories.
