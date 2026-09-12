@@ -1,3 +1,8 @@
+Sept 12, 2026, version 10.5.1
+
+    * (71) bug fix: GrB_Matrix_resize in 10.5.0 fails if an n-by-1 matrix is
+        resized to an n-by-k matrix with k>1 when pending tuples appear.
+
 Aug 12, 2026, version 10.5.0
 
     * GrB_Matrix_resize, GrB_Vector_resize: no longer call GrB_wait if the
