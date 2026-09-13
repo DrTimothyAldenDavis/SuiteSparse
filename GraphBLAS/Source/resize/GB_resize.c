@@ -83,7 +83,14 @@ GrB_Info GB_resize              // change the size of a matrix
     //--------------------------------------------------------------------------
 
     if ((GB_IS_SPARSE (A) || GB_IS_HYPERSPARSE (A)) &&
-        (vdim_new >= vdim_old) && (vlen_new >= vlen_old))
+        (vdim_new >= vdim_old) && (vlen_new >= vlen_old)
+        // If vdim_old is <= 1, then the list of Pending tuples does not have
+        // the Pending->j component.  If the new vdim is > 1, Pending->j is
+        // required, so the matrix cannot be resized without revising the
+        // Pending tuples, or assembling them first.  In this case, do not
+        // use this special case.  Instead, use the general case below.
+        && (! (vdim_old <= 1 && vdim_new > 1 && A->Pending != NULL))
+        )
     { 
 
         GBURBLE ("(sparse/hyper and dims not shrinking; no wait required) ") ;
