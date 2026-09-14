@@ -1,3 +1,28 @@
+Sept 12, 2026: version 7.14.1
+
+    * GraphBLAS 10.5.1: bug fix
+    * SuiteSparse_config 7.14.1: version update
+        SuiteSparse_config 7.14.1   *
+        AMD 3.3.4
+        BTF 2.3.3
+        CAMD 3.3.5
+        CCOLAMD 3.3.5
+        CHOLMOD 5.3.5
+        COLAMD 3.3.5
+        CSparse 4.4.2
+        CXSparse 4.4.2
+        Example 1.8.13
+        GraphBLAS 10.5.1            *
+        KLU 2.3.6
+        LDL 3.3.3
+        LAGraph 1.2.2
+        SuiteSparse_Mongoose 3.3.6
+        ParU 1.1.2
+        RBio 4.3.5
+        SPEX 3.2.4
+        SPQR 4.3.6
+        UMFPACK 6.3.8
+
 Aug 16, 2026: version 7.14.0
 
     * GraphBLAS 10.5.0: faster resize, post-iso check revised, and a bug fix
