@@ -26,6 +26,8 @@ SPEX_info SPEX_transpose
 (
     SPEX_matrix *C_handle,      // C = A'
     SPEX_matrix A,              // Matrix to be transposed
+    const bool numeric,        // True if user wants to transpose pattern and
+                               // numbers, false if only pattern
     const SPEX_options option
 )
 {
@@ -53,7 +55,7 @@ SPEX_info SPEX_transpose
 
     // Declare workspace
     w = (int64_t*) SPEX_calloc(m, sizeof(int64_t));
-    if (!w)
+    if (!w | !C)
     {
         SPEX_FREE_ALL;
         return SPEX_OUT_OF_MEMORY;
@@ -67,38 +69,53 @@ SPEX_info SPEX_transpose
     // Compute row pointers
     spex_cumsum (C->p, w, m);
     // Populate C
-    for (j = 0 ; j < n ; j++)
+    
+    if(numeric)
     {
-        for (p = A->p [j] ; p < A->p [j+1] ; p++)
+        for (j = 0 ; j < n ; j++)
         {
-            q = w [A->i [p]]++;
-            C->i [q] = j ;                 // place A(i,j) as entry C(j,i)
+            for (p = A->p [j] ; p < A->p [j+1] ; p++)
+            {
+                q = w [A->i [p]]++;
+                C->i [q] = j ;                 // place A(i,j) as entry C(j,i)
 
-            // assign C->x[q] = A->x[p]
-            if (A->type == SPEX_MPZ)
-            {
-                SPEX_MPZ_SET(C->x.mpz[q], A->x.mpz[p]);
+                // assign C->x[q] = A->x[p]
+                if (A->type == SPEX_MPZ)
+                {
+                    SPEX_MPZ_SET(C->x.mpz[q], A->x.mpz[p]);
+                }
+                else if (A->type == SPEX_MPQ)
+                {
+                    SPEX_MPQ_SET(C->x.mpq[q], A->x.mpq[p]);
+                }
+                else if (A->type == SPEX_MPFR)
+                {
+                    SPEX_MPFR_SET(C->x.mpfr[q], A->x.mpfr[p],
+                        SPEX_OPTION_ROUND(option));
+                }
+                else if (A->type == SPEX_INT64)
+                {
+                    C->x.int64[q] = A->x.int64[p];
+                }
+                else
+                {
+                    C->x.fp64[q] = A->x.fp64[p];
+                }
             }
-            else if (A->type == SPEX_MPQ)
+        }
+        SPEX_MPQ_SET(C->scale, A->scale);
+    }
+    else
+    {
+        for (j = 0 ; j < n ; j++)
+        {
+            for (p = A->p [j] ; p < A->p [j+1] ; p++)
             {
-                SPEX_MPQ_SET(C->x.mpq[q], A->x.mpq[p]);
-            }
-            else if (A->type == SPEX_MPFR)
-            {
-                SPEX_MPFR_SET(C->x.mpfr[q], A->x.mpfr[p],
-                    SPEX_OPTION_ROUND(option));
-            }
-            else if (A->type == SPEX_INT64)
-            {
-                C->x.int64[q] = A->x.int64[p];
-            }
-            else
-            {
-                C->x.fp64[q] = A->x.fp64[p];
+                q = w [A->i [p]]++;
+                C->i [q] = j ;                 
             }
         }
     }
-    SPEX_MPQ_SET(C->scale, A->scale);
 
     (*C_handle) = C;
     SPEX_FREE_WORK;

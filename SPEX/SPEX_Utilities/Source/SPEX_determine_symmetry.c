@@ -61,7 +61,7 @@ SPEX_info SPEX_determine_symmetry
     // Declare matrices T and R. T = A' and R = T' = A''
     SPEX_matrix T = NULL, R = NULL ;
     // T = A'
-    SPEX_CHECK( SPEX_transpose(&T, A, option) );
+    SPEX_CHECK( SPEX_transpose(&T, A, true, option) );
 
     // Check if the number of nonzeros in the columns
     // of A are equal to the number of nonzeros in
@@ -83,7 +83,7 @@ SPEX_info SPEX_determine_symmetry
     }
 
     // Set R = T'
-    SPEX_CHECK( SPEX_transpose(&R, T, option) );
+    SPEX_CHECK( SPEX_transpose(&R, T,true, option) );
 
     // Check whether A[i][j] = A[j][i] in both pattern and numerics
     for (j = 0; j < R->p[R->n]; j++)

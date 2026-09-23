@@ -23,9 +23,9 @@ SPEX_info SPEX_version
 
     if (version != NULL)
     {
-        version [0] = SPEX_VERSION_MAJOR ;
-        version [1] = SPEX_VERSION_MINOR ;
-        version [2] = SPEX_VERSION_SUB ;
+        version [0] = atoi(SPEX_VERSION_MAJOR) ;
+        version [1] = atoi(SPEX_VERSION_MINOR) ;
+        version [2] = atoi(SPEX_VERSION_SUB) ;
     }
 
     if (date != NULL)

@@ -65,6 +65,10 @@ demos:
 	./build/spex_demo_ldl_extended      f ExampleMats/494_bus.mat.txt   ExampleMats/494_bus.rhs.txt
 	./build/spex_demo_threaded          f ExampleMats/10teams.mat.txt   ExampleMats/10teams.rhs.txt
 	./build/spex_demo_backslash         f ExampleMats/Trefethen_500.mat.txt ExampleMats/Trefethen_500.rhs.txt
+	./build/spex_demo_qr_simple 		f ExampleMats/LF10.mat.txt ExampleMats/LF10.rhs.txt
+	./build/spex_demo_qr_extended 		f ExampleMats/smallZeros.mat.txt ExampleMats/smallZeros.rhs.txt
+	./build/spex_demo_qr_cluster 		f ExampleMats/smallZeros.mat.txt ExampleMats/smallZeros.rhs.txt
+	./build/spex_demo_qr
 
 cov:
 	( cd Tcov && $(MAKE) )
@@ -89,7 +93,7 @@ clean:
 	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex*
 	- $(RM) Tcov/*.o Tcov/*.bbg Tcov/*.da Tcov/*.gcov Tcov/*.gcda Tcov/*gcno
 	- $(RM) Tcov/tcov_for_lu  Tcov/spex_demo_lu_extended Tcov/*.out Tcov/*.a Tcov/out Tcov/tcov_for_lu2 Tcov/tcov_for_other
-	- $(RM) Tcov/tcov_for_update Tcov/out Tcov/Mats4Tcov/SPEX_Update/mat.txt
+	- $(RM) Tcov/tcov_for_update Tcov/out Tcov/Mats4Tcov/SPEX_Update/mat.txt Tcov/tcov_for_qr
 	- $(RM) -r Tcov/SPEX_*.c Tcov/spex_*.c Tcov/*.dSYM
 	- $(RM) -r Tcov/tcov_for_cholesky
 

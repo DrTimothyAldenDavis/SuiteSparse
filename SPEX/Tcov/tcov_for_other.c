@@ -89,12 +89,28 @@ int main (int argc, char *argv [])
     }
     OK (SPEX_mpfr_clear (x)) ;
 
+    // Free a null string to trigger an if
+    SPEX_mpfr_free_str(NULL);
+
+    //--------------------------------------------------------------------------
+    // other tcov tests
+    //--------------------------------------------------------------------------
+
+    // Hit thread initialize and finalize
+    SPEX_thread_initialize();
+    SPEX_thread_finalize();
+
     //--------------------------------------------------------------------------
     // finalize the tests
     //--------------------------------------------------------------------------
 
     SPEX_FREE_ALL ;
     OK (SPEX_finalize ( )) ;
+
+    // Call a method after finalize and hit panic
+    ERR( SPEX_thread_initialize(), SPEX_PANIC);
+    ERR( SPEX_thread_finalize(), SPEX_PANIC);
+
     SPEX_FREE (option) ;
 
     printf ("%s: all tests passed\n\n", __FILE__) ;

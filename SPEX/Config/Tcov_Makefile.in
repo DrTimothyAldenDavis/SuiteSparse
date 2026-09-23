@@ -2,7 +2,7 @@
 # SPEX/Tcov/Makefile: compile and run SPEX test coverage
 #-------------------------------------------------------------------------------
 
-# SPEX: (c) 2019-2024, Chris Lourenco, Jinhao Chen,
+# SPEX: (c) 2019-2026, Chris Lourenco, Jinhao Chen,
 # Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
@@ -13,14 +13,25 @@ default: cov
 
 SUITESPARSE ?= $(realpath $(CURDIR)/../..)
 
-
 ################################################################################
+
+# Ask the OS what it is to determine the shared library extension and linker flags
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+    EXT = dylib
+    # Mac requires a separate -rpath flag for every single directory
+    RPATH_FLAGS = -Wl,-rpath,$(SUITESPARSE_CONFIG_PATH) -Wl,-rpath,$(AMD_PATH) -Wl,-rpath,$(COLAMD_PATH) -Wl,-rpath,$(GMP_PATH) -Wl,-rpath,$(MPFR_PATH)
+else
+    EXT = so
+    # Linux allows stringing them together with colons
+    RPATH_FLAGS = -Wl,-rpath=$(SUITESPARSE_CONFIG_PATH):$(AMD_PATH):$(COLAMD_PATH):$(GMP_PATH):$(MPFR_PATH)
+endif
 
 # configured by CMake:
 INC = @SPEX_INCS@
-LIBS = ../../SuiteSparse_config/build/libsuitesparseconfig.so \
-    ../../AMD/build/libamd.so \
-    ../../COLAMD/build/libcolamd.so \
+LIBS = ../../SuiteSparse_config/build/libsuitesparseconfig.$(EXT) \
+    ../../AMD/build/libamd.$(EXT) \
+    ../../COLAMD/build/libcolamd.$(EXT) \
     @SPEX_LIBS@
 
 SUITESPARSE_CONFIG_PATH = @SUITESPARSE_CONFIG_PATH@
@@ -36,7 +47,7 @@ MPFR_PATH = @MPFR_PATH@
     JOBS ?= 8
 
     LDFLAGS = --coverage
-    LDFLAGS += -Wl,-rpath=$(SUITESPARSE_CONFIG_PATH):$(AMD_PATH):$(COLAMD_PATH):$(GMP_PATH):$(MPFR_PATH)
+    LDFLAGS += $(RPATH_FLAGS)
 
     # remove object files, but keep compiled libraries via 'make clean'
     CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d \
@@ -68,7 +79,7 @@ CFLAGS = -g -fprofile-arcs -ftest-coverage \
 cov: runtests
 	./covall
 
-all: tcov_for_lu spex_demo_lu_extended tcov_for_cholesky tcov_for_lu2 \
+all: tcov_for_lu spex_demo_lu_extended tcov_for_cholesky tcov_for_lu2 tcov_for_qr \
     tcov_for_other
 
 #-------------------------------------------------------------------------------
@@ -82,26 +93,32 @@ $(OBJ_Tcov): tcov_utilities.h
 # link and compile each .c file in SPEX_Utilities/Source
 
 OBJ_Util = \
-    SPEX_version.o \
+    spex_amd.o \
     SPEX_calloc.o \
     spex_cast_array.o \
     spex_cast_matrix.o \
+    spex_colamd.o \
     SPEX_create_default_options.o \
     spex_create_mpfr_array.o \
     spex_create_mpq_array.o \
     spex_create_mpz_array.o \
-    spex_free_mpfr_array.o \
-    spex_free_mpq_array.o \
-    spex_free_mpz_array.o \
     spex_cumsum.o \
+    SPEX_determine_symmetry.o \
+    spex_dot_product.o \
     spex_expand_double_array.o \
     spex_expand_mpfr_array.o \
     spex_expand_mpq_array.o \
+    SPEX_factorization_free.o \
     SPEX_finalize.o \
+    spex_free_mpfr_array.o \
+    spex_free_mpq_array.o \
+    spex_free_mpz_array.o \
     SPEX_free.o \
     SPEX_gmp.o \
+    spex_history_update.o \
     SPEX_initialize.o \
     SPEX_initialize_expert.o \
+    spex_ipge_update.o \
     SPEX_malloc.o \
     SPEX_matrix_allocate.o \
     SPEX_matrix_check.o \
@@ -114,31 +131,19 @@ OBJ_Util = \
     spex_sparse_collapse.o \
     spex_sparse_realloc.o \
     SPEX_symbolic_analysis_free.o \
-    SPEX_factorization_free.o \
-    SPEX_determine_symmetry.o \
+    SPEX_thread_finalize.o \
+    SPEX_thread_initialize.o \
     SPEX_transpose.o \
-    spex_amd.o \
-    spex_colamd.o
+    SPEX_version.o
 
 $(OBJ_Util): ../Include/SPEX.h ../SPEX_Utilities/Source/spex_util_internal.h
-
-.PRECIOUS: SPEX_%.c spex_%.c
-
-SPEX_%.c:
-	- ln -s ../SPEX_Utilities/Source/$@
-
-spex_%.c:
-	- ln -s ../SPEX_Utilities/Source/$@
 
 #-------------------------------------------------------------------------------
 # link and compile each .c file in SPEX_LU/Source
 
 OBJ_LU = \
-    SPEX_lu_analyze.o \
-    SPEX_lu_backslash.o \
     spex_left_lu_back_sub.o \
     spex_left_lu_dfs.o \
-    SPEX_lu_factorize.o \
     spex_left_lu_forward_sub.o \
     spex_left_lu_get_largest_pivot.o \
     spex_left_lu_get_nonzero_pivot.o \
@@ -146,14 +151,21 @@ OBJ_LU = \
     spex_left_lu_get_smallest_pivot.o \
     spex_left_lu_reach.o \
     spex_left_lu_ref_triangular_solve.o \
+    SPEX_lu_analyze.o \
+    SPEX_lu_backslash.o \
+    SPEX_lu_factorize.o \
+    spex_lu_rank_factorize.o \
+    SPEX_lu_rank.o \
     SPEX_lu_solve.o
+
+$(OBJ_LU): ../Include/SPEX.h ../SPEX_LU/Source/spex_lu_internal.h
 
 .PRECIOUS: SPEX_lu_%.c SPEX_lu_%.c spex_left_lu_%.c 
 
 SPEX_lu_%.c:
 	- ln -s ../SPEX_LU/Source/$@
 
-SPEX_lu_%.c:
+spex_lu_%.c:
 	- ln -s ../SPEX_LU/Source/$@
 
 spex_left_lu_%.c:
@@ -167,7 +179,9 @@ DEMO_SRC = \
     ../Demo/Utilities/spex_demo_determine_error.c \
     ../Demo/Utilities/spex_demo_process_command_line.c \
     ../Demo/Utilities/spex_demo_read_dense.c \
-    ../Demo/Utilities/spex_demo_tripread.c
+    ../Demo/Utilities/spex_demo_tripread.c \
+    ../Demo/Utilities/spex_scatter.c \
+    ../Demo/Utilities/spex_sparse_matrix_multiply.c
 
 #-------------------------------------------------------------------------------
 # link and compile each .c file in SPEX_Cholesky/Source
@@ -175,12 +189,19 @@ DEMO_SRC = \
 OBJ_Cholesky = \
     SPEX_cholesky_analyze.o \
     SPEX_cholesky_backslash.o \
+    SPEX_cholesky_factorize.o \
+    SPEX_cholesky_solve.o \
+    SPEX_ldl_analyze.o \
+    SPEX_ldl_backslash.o \
+    SPEX_ldl_factorize.o \
+    SPEX_ldl_solve.o \
     spex_symmetric_analyze.o \
+    spex_symmetric_backslash.o \
     spex_symmetric_backward_sub.o \
     spex_symmetric_counts.o \
     spex_symmetric_ereach.o \
     spex_symmetric_etree.o \
-    SPEX_cholesky_factorize.o \
+    spex_symmetric_factor.o \
     spex_symmetric_forward_sub.o \
     spex_symmetric_leaf.o \
     spex_symmetric_left_factor.o \
@@ -189,18 +210,12 @@ OBJ_Cholesky = \
     spex_symmetric_post.o \
     spex_symmetric_pre_left_factor.o \
     spex_symmetric_preorder.o \
-    SPEX_cholesky_solve.o \
-    spex_symmetric_symbolic_analysis.o \
-    spex_symmetric_backslash.o \
-    spex_symmetric_factor.o \
     spex_symmetric_solve.o \
+    spex_symmetric_symbolic_analysis.o \
     spex_symmetric_tdfs.o \
     spex_symmetric_up_factor.o \
     spex_symmetric_up_triangular_solve.o \
-    SPEX_ldl_analyze.o \
-    SPEX_ldl_factorize.o \
-    SPEX_ldl_solve.o \
-    SPEX_ldl_backslash.o \
+
 
 $(OBJ_Cholesky): ../Include/SPEX.h ../SPEX_Cholesky/Source/spex_cholesky_internal.h
 
@@ -219,6 +234,46 @@ SPEX_ldl_%.c:
 #	- ln -s ../SPEX_Cholesky/Demo/$@
 
 #-------------------------------------------------------------------------------
+# link and compile each .c file in SPEX_QR/Source
+
+OBJ_QR = \
+    SPEX_qr_analyze.o \
+    spex_qr_back_sub.o \
+    SPEX_qr_backslash.o \
+    spex_qr_counts.o \
+    spex_qr_etree.o \
+    SPEX_qr_factorize.o \
+    spex_qr_ipgs.o \
+    spex_qr_nonzero_structure.o \
+    spex_qr_permute_A.o \
+    spex_qr_preorder.o \
+    SPEX_qr_rank.o \
+    SPEX_qr_solve.o \
+    spex_qr_standard_backslash.o \
+    spex_qr_transpose_backslash.o \
+    spex_qr_transpose_forward_sub.o \
+    spex_qr_transpose_solve.o
+
+$(OBJ_QR): ../Include/SPEX.h ../SPEX_QR/Source/spex_qr_internal.h
+
+.PRECIOUS: SPEX_qr_%.c spex_qr_%.c 
+
+SPEX_qr_%.c:
+	- ln -s ../SPEX_QR/Source/$@
+
+spex_qr_%.c:
+	- ln -s ../SPEX_QR/Source/$@
+
+
+.PRECIOUS: SPEX_%.c spex_%.c
+
+SPEX_%.c:
+	- ln -s ../SPEX_Utilities/Source/$@
+
+spex_%.c:
+	- ln -s ../SPEX_Utilities/Source/$@
+
+#-------------------------------------------------------------------------------
 
 tcov_for_lu: $(OBJ_Tcov) $(OBJ_Util) $(OBJ_LU)  tcov_for_lu.c
 	$(CC) $(LDFLAGS) tcov_for_lu.c $(CFLAGS) -o tcov_for_lu $(OBJ_Tcov) $(OBJ_Util) $(OBJ_LU)  $(LIBS)
@@ -231,6 +286,9 @@ spex_demo_lu_extended: $(OBJ_Util) $(OBJ_LU)  ../Demo/spex_demo_lu_extended.c $(
 
 tcov_for_cholesky: $(OBJ_Tcov) $(OBJ_Util) $(OBJ_Cholesky) tcov_for_cholesky.c simple_rand.c simple_rand.h $(DEMO_SRC)
 	$(CC) $(LDFLAGS) $(CFLAGS) tcov_for_cholesky.c simple_rand.c $(DEMO_SRC) -o tcov_for_cholesky $(OBJ_Tcov) $(OBJ_Util) $(OBJ_Cholesky) $(LIBS)
+	
+tcov_for_qr: $(OBJ_Tcov) $(OBJ_Util) $(OBJ_Cholesky) $(OBJ_QR) tcov_for_qr.c simple_rand.c simple_rand.h $(DEMO_SRC)
+	$(CC) $(LDFLAGS) $(CFLAGS) tcov_for_qr.c simple_rand.c $(DEMO_SRC) -o tcov_for_qr $(OBJ_Tcov) $(OBJ_Util) $(OBJ_Cholesky) $(OBJ_QR) $(LIBS)
 
 tcov_for_other: $(OBJ_Tcov) $(OBJ_Util) $(OBJ_LU)  tcov_for_other.c
 	$(CC) $(LDFLAGS) tcov_for_other.c $(CFLAGS) -o tcov_for_other $(OBJ_Tcov) $(OBJ_Util) $(OBJ_LU)  $(LIBS)
@@ -238,7 +296,7 @@ tcov_for_other: $(OBJ_Tcov) $(OBJ_Util) $(OBJ_LU)  tcov_for_other.c
 #-------------------------------------------------------------------------------
 
 # run all statement coverage tests
-runtests: runtests4llu runtests4chol
+runtests: runtests4llu runtests4chol runtests4qr
 
 # only run test for SPEX_LU
 runtests4llu: all
@@ -249,12 +307,16 @@ runtests4llu: all
 	./spex_demo_lu_extended f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu4.out
 	./tcov_for_lu > test_for_lu.out
 	./tcov_for_lu 0 1 1 > lu5.out
-	./tcov_for_lu2 ../ExampleMats/Trefethen_500.mat.txt ../ExampleMats/Trefethen_500.rhs.txt > test_for_lu2.out
+	./tcov_for_lu2 > test_for_lu2.out
 
 
 # only run test for SPEX_Cholesky
 runtests4chol: all
-	./tcov_for_cholesky ../ExampleMats/mesh1e1.mat.txt ../ExampleMats/mesh1e1.rhs.txt > test_for_cholesky.out
+	- ./tcov_for_cholesky ../ExampleMats/mesh1e1.mat.txt ../ExampleMats/mesh1e1.rhs.txt > test_for_cholesky.out
+	
+# only run test for SPEX_QR
+runtests4qr: all
+	- ./tcov_for_qr ../ExampleMats/LF10.mat.txt ../ExampleMats/LF10.rhs.txt > test_for_qr.out
 
 #-------------------------------------------------------------------------------
 
@@ -274,21 +336,25 @@ vtests4llu: all
 	$(V) ./spex_demo_lu_extended f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu4.out
 	$(V) ./tcov_for_lu > test_for_lu.out
 	$(V) ./tcov_for_lu 0 1 1 > lu5.out
-	$(V) ./tcov_for_lu2 ../ExampleMats/Trefethen_500.mat.txt ../ExampleMats/Trefethen_500.rhs.txt > test_for_lu2.out
+	$(V) ./tcov_for_lu2 > test_for_lu2.out
+	$(V) ./tcov_for_qr ../ExampleMats/LF10.mat.txt ../ExampleMats/LF10.rhs.txt > test_for_qr.out
 
 vtest2: all
-	$(V) ./tcov_for_lu2 ../ExampleMats/Trefethen_500.mat.txt ../ExampleMats/Trefethen_500.rhs.txt > test_for_lu2.out
+	$(V) ./tcov_for_lu2 > test_for_lu2.out
 
 # run test for SPEX_Cholesky with valgrind
 vtests4chol: all
 	$(V) ./tcov_for_cholesky ../ExampleMats/mesh1e1.mat.txt ../ExampleMats/mesh1e1.rhs.txt > test_for_cholesky.out
+
+vtests4qr: all
+	- $(V) ./tcov_for_qr ../ExampleMats/LF10.mat.txt ../ExampleMats/LF10.rhs.txt > test_for_qr.out
 
 #-------------------------------------------------------------------------------
 
 # remove all files not in the original distribution, including symbolic links
 clean:
 	- $(RM) *.o *.bbg *.da *.gcov *.gcda *gcno
-	- $(RM) tcov_for_lu  spex_demo_lu_extended *.out *.a out tcov_for_lu2 tcov_for_other
+	- $(RM) tcov_for_lu  spex_demo_lu_extended *.out *.a out tcov_for_lu2 tcov_for_other tcov_for_qr
 	- $(RM) -r SPEX_*.c spex_*.c *.dSYM
 	- $(RM) -r tcov_for_cholesky 
 

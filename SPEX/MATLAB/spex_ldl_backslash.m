@@ -1,5 +1,5 @@
 function x = spex_ldl_backslash (A,b,option)
-%SPEX_LDL_BACKSLASH solve Ax=b via sparse integer-preserving ldl
+% SPEX_LDL_BACKSLASH solve Ax=b via sparse integer-preserving ldl
 % spex_ldl_backslash computes the exact solution to the sparse linear system
 % Ax = b where A and b are stored as doubles. A must be stored as a sparse
 % matrix and be SPD. b must be stored as a dense set of right hand side

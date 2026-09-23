@@ -37,7 +37,7 @@ SPEX_info spex_colamd
 
     int64_t anz; // Number of nonzeros in A
     SPEX_CHECK (SPEX_matrix_nnz(&anz, A, option));
-    int64_t i, n = A->n;
+    int64_t i, n = A->n, m = A->m;
 
     int pr = SPEX_OPTION_PRINT_LEVEL(option);
 
@@ -50,7 +50,7 @@ SPEX_info spex_colamd
     }
 
     // determine workspace required for COLAMD
-    int64_t Alen = colamd_l_recommended (anz, n, n) + 2*n ;
+    int64_t Alen = colamd_l_recommended (anz, m, n) + 2*n ;
     A2 = (int64_t*) SPEX_malloc (Alen*sizeof(int64_t));
     if (!A2)
     {
@@ -73,7 +73,7 @@ SPEX_info spex_colamd
     
     // find the colamd ordering
     int64_t stats[COLAMD_STATS];
-    int64_t colamd_result = colamd_l (n, n, Alen, A2, perm,
+    int64_t colamd_result = colamd_l (m, n, Alen, A2, perm,
         (double *) NULL, stats);
     if (!colamd_result)
     {

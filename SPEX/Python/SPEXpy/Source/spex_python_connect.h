@@ -28,3 +28,13 @@ SPEX_info spex_python
      bool charOut     // True if char ** output, false if double
 );
 
+SPEX_info spex_python_rank
+(
+     int64_t *rank_out, // Output: rank of A
+     int64_t *Ap,       // column pointers of A
+     int64_t *Ai,       // row indices of A
+     double *Ax,        // values of A
+     int m,             // rows of A
+     int n,             // columns of A
+     int nz             // number of nonzeros in A
+);

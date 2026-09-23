@@ -13,10 +13,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPEX_DATE "July 25, 2025" )
+set ( SPEX_DATE "Oct FIXME, 2025" )
 set ( SPEX_VERSION_MAJOR 3 CACHE STRING "" FORCE )
-set ( SPEX_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( SPEX_VERSION_SUB   4 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_MINOR 4 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
@@ -113,7 +113,7 @@ configure_file ( "Config/SPEX_version.tex.in"
 
 include_directories ( Include
     SPEX_Backslash/Source SPEX_Cholesky/Source SPEX_LU/Source
-    SPEX_Utilities/Source
+    SPEX_Utilities/Source SPEX_QR/Source
     ${SUITESPARSE_CONFIG_INCLUDE_DIR}
     ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR}
     ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} )
@@ -506,6 +506,10 @@ if ( SUITESPARSE_DEMOS )
     add_executable ( spex_demo_lu_simple1        "Demo/spex_demo_lu_simple1.c"        ${SPEX_DEMO_SOURCES} )
     add_executable ( spex_demo_lu_simple2        "Demo/spex_demo_lu_simple2.c"        ${SPEX_DEMO_SOURCES} )
     add_executable ( spex_demo_threaded          "Demo/spex_demo_threaded.c"          ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_qr                "Demo/spex_demo_qr.c"                ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_qr_simple         "Demo/spex_demo_qr_simple.c"         ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_qr_extended       "Demo/spex_demo_qr_extended.c"       ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_qr_cluster        "Demo/spex_demo_qr_cluster.c"        ${SPEX_DEMO_SOURCES} )
 
     # Libraries required for Demo programs
     if ( BUILD_SHARED_LIBS )
@@ -519,6 +523,10 @@ if ( SUITESPARSE_DEMOS )
         target_link_libraries ( spex_demo_lu_simple1        PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
         target_link_libraries ( spex_demo_lu_simple2        PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
         target_link_libraries ( spex_demo_threaded          PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( spex_demo_qr                PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( spex_demo_qr_simple         PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( spex_demo_qr_extended       PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( spex_demo_qr_cluster        PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES} SuiteSparse::AMD SuiteSparse::COLAMD )
     else ( )
         target_link_libraries ( spex_demo_backslash         PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_cholesky_extended PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
@@ -530,6 +538,10 @@ if ( SUITESPARSE_DEMOS )
         target_link_libraries ( spex_demo_lu_simple1        PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_lu_simple2        PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
         target_link_libraries ( spex_demo_threaded          PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
+        target_link_libraries ( spex_demo_qr                PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
+        target_link_libraries ( spex_demo_qr_simple         PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
+        target_link_libraries ( spex_demo_qr_extended       PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
+        target_link_libraries ( spex_demo_qr_cluster        PUBLIC SPEX_static SuiteSparse::AMD_static SuiteSparse::COLAMD_static )
     endif ( )
 
     if ( SPEX_HAS_OPENMP )

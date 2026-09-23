@@ -11,6 +11,7 @@
 
 import ctypes
 import numpy as np
+import sys
 from numpy.ctypeslib import ndpointer
 from .SPEX_error import *
 
@@ -21,7 +22,11 @@ def spex_connect( A, b, order, charOut, algorithm ):
     ##--------------------------------------------------------------------------
     ## Load the library with the "C bridge code"
     ##--------------------------------------------------------------------------
-    lib = ctypes.CDLL('../build/libspexpython.so')
+    # Check if we are on a Mac ('darwin') or Linux/Windows
+    ext = '.dylib' if sys.platform == 'darwin' else '.so'
+    lib_path = f'../build/libspexpython{ext}'
+
+    lib = ctypes.CDLL(lib_path)
     c_backslash = lib.spex_python
 
     ##--------------------------------------------------------------------------
@@ -40,19 +45,19 @@ def spex_connect( A, b, order, charOut, algorithm ):
                             ctypes.c_bool]
     c_backslash.restype = ctypes.c_int
 
-    n=A.shape[0] #number of columns/rows of A
+    m,n=A.shape #number of columns/rows of A
 
     x_v = (ctypes.c_void_p*n)()
 
     ##--------------------------------------------------------------------------
-    ## Solve Ax=b using REF Sparse Cholesky Factorization
+    ## Solve Ax=b using REF Sparse  Factorization
     ##--------------------------------------------------------------------------
     ok=c_backslash(x_v,
                 A.indptr.astype(np.int64), #without the cast it would be int32 and it would not be compatible with the C method
                 A.indices.astype(np.int64),
                 A.data.astype(np.float64),
                 b,
-                n,
+                m,
                 n,
                 A.nnz,
                 order,
@@ -78,3 +83,41 @@ def spex_connect( A, b, order, charOut, algorithm ):
             x.append(val[0]) ##this can also be changed to be a numpy array instead of a list
 
     return np.array(x)
+
+def spex_connect_rank(A):
+    ## Load the library
+    # Check if we are on a Mac ('darwin') or Linux/Windows
+    ext = '.dylib' if sys.platform == 'darwin' else '.so'
+    lib_path = f'../build/libspexpython{ext}'
+
+    lib = ctypes.CDLL(lib_path)
+    c_rank = lib.spex_python_rank
+
+    ## Specify parameter types
+    c_rank.argtypes = [
+        ctypes.POINTER(ctypes.c_int64),                  # rank_out
+        ndpointer(dtype=np.int64, ndim=1, flags=None),   # Ap
+        ndpointer(dtype=np.int64, ndim=1, flags=None),   # Ai
+        ndpointer(dtype=np.float64, ndim=1, flags=None), # Ax
+        ctypes.c_int,                                    # m
+        ctypes.c_int,                                    # n
+        ctypes.c_int                                     # nz
+        ]
+    c_rank.restype = ctypes.c_int
+
+    m,n = A.shape
+    rank_out = ctypes.c_int64(0) # Prepare a C integer to hold the answer
+
+    ## Call the C function
+    ok = c_rank(
+        ctypes.byref(rank_out),
+        A.indptr.astype(np.int64),
+        A.indices.astype(np.int64),
+        A.data.astype(np.float64),
+        m, n, A.nnz
+    )
+
+    if ok != 0:
+        raise SPEX_error(determine_error(ok))
+
+    return rank_out.value

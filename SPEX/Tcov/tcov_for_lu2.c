@@ -28,6 +28,26 @@
         TEST_ABORT (info5) ;                                            \
     }                                                                   \
 }
+
+#define NTRIAL_MAX 100000 // needs to be at least 149362 (this takes an hour)
+
+#define BRUTAL(method)                                           \
+    {                                                            \
+        int64_t trial = 0;                                       \
+        SPEX_info info2 = SPEX_OUT_OF_MEMORY;                    \
+        while (info2 != SPEX_OK)                                 \
+        {                                                        \
+            trial++;                                             \
+            malloc_count = trial;                                \
+            info2 = (method);                                    \
+            if (info2 != SPEX_OUT_OF_MEMORY)                     \
+                break;                                           \
+        }                                                        \
+        if (info2 != SPEX_OK)                                    \
+            TEST_ABORT(info2);                                   \
+        malloc_count = INT64_MAX;                               \
+        printf("\nBrutal LU trials %ld: tests passed\n", trial); \
+    }
 //------------------------------------------------------------------------------
 // read_test_matrix: read in a matrix from a file
 //------------------------------------------------------------------------------
@@ -40,6 +60,21 @@ void read_test_matrix (SPEX_matrix *A_handle, char *filename)
     OK (f == NULL ? SPEX_PANIC : SPEX_OK);
     OK (spex_demo_tripread (A_handle, f, SPEX_FP64, NULL));
     fclose (f);
+}
+
+void generate_test_matrix(SPEX_matrix *A_handle, const char *triplets);
+
+// Helper to instantly build a matrix from a string in memory
+void generate_test_matrix(SPEX_matrix *A_handle, const char *triplets)
+{
+    // tmpfile() creates a temporary file in RAM that auto-deletes when closed
+    FILE *f = tmpfile();
+    fprintf(f, "%s", triplets);
+    rewind(f); // send the reader back to the beginning of the file
+
+    // Read it using your existing tripread function
+    OK(spex_demo_tripread(A_handle, f, SPEX_FP64, NULL));
+    fclose(f);
 }
 
 //------------------------------------------------------------------------------
@@ -108,16 +143,9 @@ int main (int argc, char *argv [])
     // start SPEX
     //--------------------------------------------------------------------------
 
-    SPEX_matrix A = NULL, b = NULL, x = NULL ;
+    SPEX_matrix A = NULL, A2 = NULL, b = NULL, x = NULL ;
     SPEX_symbolic_analysis S = NULL ;
-    //SPEX_factorization F = NULL, F2 = NULL ;
     SPEX_options option = NULL ;
-
-    if (argc < 2)
-    {
-        printf ("usage: tcov_for_cholesky matrixfilename\n");
-        TEST_ABORT (SPEX_INCORRECT_INPUT);
-    }
 
     OK (SPEX_initialize_expert (tcov_malloc, tcov_calloc, tcov_realloc,
         tcov_free));
@@ -132,7 +160,7 @@ int main (int argc, char *argv [])
     // load the test matrix and create the right-hand-side
     //--------------------------------------------------------------------------
 
-    read_test_matrix (&A, argv [1]);
+    read_test_matrix (&A, "../ExampleMats/10teams.mat.txt");
     int64_t n = A->n ;
     int64_t m = A->m ;
     int64_t anz = -1 ;
@@ -153,6 +181,20 @@ int main (int argc, char *argv [])
     option->order = SPEX_COLAMD ;
     option->print_level = 3 ;
     printf ("LU backslash, AMD ordering, no malloc testing:\n");
+    OK (spex_test_lu_backslash (A, b, option));
+    option->print_level = 0 ;
+
+    option->pivot = SPEX_DEFAULT ;
+    option->order = SPEX_NO_ORDERING ;
+    option->print_level = 3 ;
+    printf ("LU backslash, No ordering, no malloc testing:\n");
+    OK (spex_test_lu_backslash (A, b, option));
+    option->print_level = 0 ;
+
+    option->pivot = SPEX_DEFAULT ;
+    option->order = SPEX_DEFAULT ;
+    option->print_level = 3 ;
+    printf ("LU backslash, Default ordering, no malloc testing:\n");
     OK (spex_test_lu_backslash (A, b, option));
     option->print_level = 0 ;
 
@@ -188,16 +230,74 @@ int main (int argc, char *argv [])
     ERR( SPEX_lu_analyze( &S, A, option), SPEX_INCORRECT_ALGORITHM);
     
     // Give an incorrect algorithm to spex lu factorize
-    SPEX_factorization F;
+    SPEX_factorization F = NULL;
     option->algo = SPEX_ALGORITHM_DEFAULT;
     OK( SPEX_lu_analyze( &S, A, option));
     option->algo = 99;
     ERR( SPEX_lu_factorize( &F, A, S, option), SPEX_INCORRECT_ALGORITHM);
     OK (SPEX_symbolic_analysis_free (&S, option));
+    OK (SPEX_matrix_free (&A, option));
 
+    //--------------------------------------------------------------------------
+    // Test SPEX_lu_rank (Full Rank, Rank Deficient, and Error Cases)
+    //--------------------------------------------------------------------------
+    // Reset the algorithm flag after the previous error tests
+    option->algo = SPEX_ALGORITHM_DEFAULT;
+    printf("Testing LU Rank...\n");
+    int64_t lu_rank;
+
+    // 1. Square Full Rank (3x3 Diagonal Matrix)
+    const char *full_rank_str =
+        "3 3 3\n"
+        "1 1 1\n"
+        "2 2 1\n"
+        "3 3 1\n";
+    generate_test_matrix(&A2, full_rank_str);
+    OK(SPEX_lu_rank(&lu_rank, A2, option));
+    BRUTAL(SPEX_lu_rank(&lu_rank, A2, option));
+    OK(SPEX_matrix_free(&A2, option));
+
+    // 2. Square Rank Deficient (3x3, Column 3 is entirely empty)
+    const char *rank_def_str =
+        "3 3 2\n"
+        "1 1 1\n"
+        "2 2 1\n";
+    generate_test_matrix(&A2, rank_def_str);
+    OK(SPEX_lu_rank(&lu_rank, A2, option));
+    BRUTAL(SPEX_lu_rank(&lu_rank, A2, option));
+    OK(SPEX_matrix_free(&A2, option));
+
+    // 3. ERROR CASE: Matrix is not square (A->m != A->n)
+    // 2 rows, 3 columns
+    const char *rect_str =
+        "2 3 2\n"
+        "1 1 1\n"
+        "2 2 1\n";
+    generate_test_matrix(&A2, rect_str);
+    ERR(SPEX_lu_rank(&lu_rank, A2, option), SPEX_INCORRECT_INPUT);
+    OK(SPEX_matrix_free(&A2, option));
+
+    // 5. ERROR CASE: NULL Matrix Input
+    ERR(SPEX_lu_rank(&lu_rank, NULL, option), SPEX_INCORRECT_INPUT);
+
+    // 6. ERROR CASE: Wrong algorithm
+    generate_test_matrix(&A2, full_rank_str);
+    option->algo = SPEX_LDL_LEFT;
+    ERR(SPEX_lu_rank(&lu_rank, A2, option), SPEX_INCORRECT_ALGORITHM);
+
+
+    // Give an incorrect algorithm to LU
+    option->order = 99;
+    option->algo = 99;
+    ERR(SPEX_lu_analyze(&S, A, option), SPEX_INCORRECT_ALGORITHM);
+    option->order = SPEX_DEFAULT_ORDERING;
+    option->algo = SPEX_ALGORITHM_DEFAULT;
+    OK(SPEX_matrix_free(&A2, option));
     SPEX_FREE_ALL;
     OK (SPEX_finalize ( )) ;
     SPEX_FREE (option) ;
+
+
 
     printf ("%s: all tests passed\n\n", __FILE__);
     fprintf (stderr, "%s: all tests passed\n\n", __FILE__);
