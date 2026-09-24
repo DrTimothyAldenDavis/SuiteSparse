@@ -99,6 +99,8 @@ SPEX_info spex_qr_nonzero_structure
     // Assert here just for fun!
     ASSERT (R != NULL);
 
+    // FIXME: cannot allocate O(mn) space
+
     Qi = (int64_t *)SPEX_malloc((n * m) * sizeof(int64_t));
     Qp = (int64_t *)SPEX_malloc((m + 1) * sizeof(int64_t));
     w = (int64_t *)SPEX_malloc((n + m2) * sizeof(int64_t));
@@ -187,6 +189,9 @@ SPEX_info spex_qr_nonzero_structure
         }
         while (len > 0)
             s[--top] = s[--len]; /* push path on stack */
+
+        // FIXME check if size of Qi will run out here ... (need += (n-top+1) entries
+        // realloc Qi if needed HERE
 
         for (p = top; p < n; p++) /* for each i in pattern of Q(:,k) */
         {

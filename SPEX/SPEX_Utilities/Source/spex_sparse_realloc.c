@@ -42,7 +42,6 @@ SPEX_info spex_sparse_realloc
         SPEX_realloc (2*nzmax, nzmax, sizeof (int64_t), A->i, &oki);
     if (!oki || !okx)
     {
-        printf("here\n");
         return (SPEX_OUT_OF_MEMORY);
     }
 
