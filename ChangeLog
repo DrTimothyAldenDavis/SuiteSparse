@@ -1,6 +1,8 @@
 Oct 14, 2026: version 7.14.2
 
     * GraphBLAS 10.5.2: bug fix
+    * SuiteSparse_Mongoose 3.3.7: remove tests that require downloads
+        from SuiteSparse Matrix Collection
     * SuiteSparse_config 7.14.2: version update
         SuiteSparse_config 7.14.2   *
         AMD 3.3.4
@@ -16,7 +18,7 @@ Oct 14, 2026: version 7.14.2
         KLU 2.3.6
         LDL 3.3.3
         LAGraph 1.2.2
-        SuiteSparse_Mongoose 3.3.6
+        SuiteSparse_Mongoose 3.3.7  *
         ParU 1.1.2
         RBio 4.3.5
         SPEX 3.2.4

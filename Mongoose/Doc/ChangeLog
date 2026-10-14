@@ -1,3 +1,7 @@
+Oct 14, 2026: version 3.3.7
+
+    * remove tests requiring downloads from SuiteSparse Matrix Collection
+
 Nov 1, 2025: version 3.3.6
 
     * minor updates to build system
