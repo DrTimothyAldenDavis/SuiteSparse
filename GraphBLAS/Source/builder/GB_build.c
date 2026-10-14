@@ -280,6 +280,7 @@ GrB_Info GB_build               // build matrix
         // TODO: should be able to construct T with C->type
         info = GB_cuda_builder (
             &T,         // create T using a dynamic header
+            data_arena, // arena of T
             ttype,      // the type of T
             C->vlen,    // T->vlen = C->vlen
             C->vdim,    // T->vdim = C->vdim

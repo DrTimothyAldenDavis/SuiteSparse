@@ -41,8 +41,8 @@ if ( NOT BUILD_SHARED_LIBS )
 endif ( )
 
 # CUDA is under development for now, and not deployed in production:
-  set ( GRAPHBLAS_USE_CUDA OFF )    # turn CUDA off in production
-# set ( GRAPHBLAS_USE_CUDA ON )     # use this for CUDA development only
+# set ( GRAPHBLAS_USE_CUDA OFF )    # turn CUDA off in production
+  set ( GRAPHBLAS_USE_CUDA ON )     # use this for CUDA development only
 
 include ( SuiteSparsePolicy )
 
@@ -60,7 +60,7 @@ endif ( )
 
 if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
-    set ( GRAPHBLAS_COMPACT ON )
+    # set ( GRAPHBLAS_COMPACT ON )  # FIXME for CUDA
     message ( STATUS "GraphBLAS CUDA JIT: enabled")
     set ( CMAKE_CXX_STANDARD 17 )
     enable_language ( CXX CUDA )
@@ -92,8 +92,6 @@ if ( GRAPHBLAS_HAS_CUDA )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC" )
     message ( STATUS "C++ flags for CUDA: ${CMAKE_CXX_FLAGS}" )
     message ( STATUS "CUDA toolkit inc: " ${CUDAToolkit_INCLUDE_DIRS} )
-
-    include_directories ( "rmm_wrap" )
 
     message ( STATUS "------------------------------ Fetching rmm:" )
 
@@ -185,7 +183,11 @@ endif ( )
 if ( NOT GBNCPUFEAT )
     # default: enable Google's cpu_features package
     message ( STATUS "cpu_features (by google.com): enabled " )
-    include_directories ( "cpu_features/include" "cpu_features" "cpu_features/src" "cpu_features/include/internal" )
+    include_directories (
+        "cpu_features/include"
+        "cpu_features"
+        "cpu_features/src"
+        "cpu_features/include/internal" )
 else ( )
     # disable Google's cpu_features package
     message ( STATUS "cpu_features (by google.com): disabled" )
@@ -286,7 +288,7 @@ configure_file ( "Config/README.md.in"
 #-------------------------------------------------------------------------------
 
 include_directories ( ${PROJECT_SOURCE_DIR} Source Include Config
-    xxHash lz4 zstd zstd/zstd_subset JITpackage Demo/Include rmm_wrap
+    xxHash lz4 zstd zstd/zstd_subset JITpackage Demo/Include
     # include all Source/* folders that have include/ or template/ subfolders:
     Source/add
     Source/apply
@@ -322,23 +324,28 @@ include_directories ( ${PROJECT_SOURCE_DIR} Source Include Config
     Source/transpose
     Source/type
     Source/wait
-    Source/werk
+    Source/werk )
+
+if ( GRAPHBLAS_HAS_CUDA )
     # include all CUDA/* folders that have include/ or template/ subfolders:
+    include_directories (
     CUDA
     CUDA/apply
+    CUDA/builder
     CUDA/cumsum
     CUDA/device
+    CUDA/extractTuples
     CUDA/include
     CUDA/init
     CUDA/matrix
     CUDA/monoid
     CUDA/mxm
     CUDA/reduce
+    CUDA/rmm
     CUDA/select
     CUDA/slice
-    CUDA/type
-    ${OpenMP}
-    )
+    CUDA/type )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # compiler options
@@ -352,7 +359,6 @@ include ( GraphBLAS_compiler_options )
 
 if ( GRAPHBLAS_HAS_CUDA )
     file ( GLOB GRAPHBLAS_SOURCES
-        "rmm_wrap/rmm_wrap.cpp"
         "CUDA/*/*.cu" "CUDA/*/*.c" "CUDA/*/*.cpp"
         "PreJIT/*.c" "Config/*.c" "Source/*/*.c" )
 else ( )
@@ -421,9 +427,6 @@ if ( BUILD_SHARED_LIBS )
 
     if ( GRAPHBLAS_HAS_CUDA )
         target_compile_definitions ( GraphBLAS PRIVATE "GRAPHBLAS_HAS_CUDA" )
-#       target_include_directories ( GraphBLAS PRIVATE "${RMM_WRAP_INCLUDES}" )
-# required for rmm 25.10:
-#       target_compile_definitions ( GraphBLAS PRIVATE "LIBCUDACXX_ENABLE_EXPERIMENTAL_MEMORY_RESOURCE" )
     endif ( )
 
     if ( WIN32 )
@@ -477,9 +480,6 @@ if ( BUILD_STATIC_LIBS )
 
     if ( GRAPHBLAS_HAS_CUDA )
         target_compile_definitions ( GraphBLAS_static PRIVATE "GRAPHBLAS_HAS_CUDA" )
-# required for rmm 25.10:
-#       target_compile_definitions ( GraphBLAS_static PRIVATE "LIBCUDACXX_ENABLE_EXPERIMENTAL_MEMORY_RESOURCE" )
-#       target_include_directories ( GraphBLAS_static PRIVATE "${RMM_WRAP_INCLUDES}" )
     endif ( )
 
     if ( WIN32 )

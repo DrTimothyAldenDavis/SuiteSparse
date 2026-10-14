@@ -7,8 +7,10 @@
 
 //------------------------------------------------------------------------------
 
-// fixme: this method is currently unused, it was only used in
+// This method is currently unused, it was only used in
 // CUDA/select/template/GB_jit_kernel_cuda_select_sparse_OLD.cu.
+
+#if 0
 
 #ifndef GB_CUDA_CUMSUM
 #define GB_CUDA_CUMSUM
@@ -65,7 +67,6 @@ __host__ GrB_Info GB_cuda_cumsum    // compute the cumulative sum of an array
                 in, out, n, stream) ;
     }
 
-//  CUDA_OK (cudaMalloc (&d_temp_storage, temp_storage_bytes)) ;
     printf ("sizeof (size_t): %d\n", (int) sizeof (size_t)) ;
     printf ("SIZE_MAX: %zu\n", SIZE_MAX) ;
     printf ("cumsum temp space: (%zu) %g GB for n %g\n", temp_storage_bytes,
@@ -90,9 +91,11 @@ __host__ GrB_Info GB_cuda_cumsum    // compute the cumulative sum of an array
                 in, out, n, stream) ;
     }
 
-//  cudaFree (d_temp_storage) ;
     GB_FREE_MEMORY (&d_temp_storage, tsize) ;
     
     return GrB_SUCCESS;
 }
 #endif
+
+#endif
+

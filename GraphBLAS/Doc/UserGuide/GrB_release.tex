@@ -5,11 +5,23 @@
 
 \begin{itemize}
 
+\item Oct 14, 2026, version 10.5.2
+
+    \begin{itemize}
+    \item (74) bug fix: performance bug in \verb'GxB_*_sort'; see Issue 461.
+    \item (73) bug fix: \verb'GxB_Matrix_reshape' fails when dimensions change
+        from less than $2^{32}$ to larger than $2^{32}$.  See Issue 462 on
+        github.
+    \item (72) bug fix: \verb'GrB_select' fails when using built-in VALUE*
+        operators whose type differs from A.  See PR 463 on github.
+        Found and fixed by Erik Welch, NVIDIA.
+    \end{itemize}
+
 \item Sept 12, 2026, version 10.5.1
 
     \begin{itemize}
     \item (71) bug fix: \verb'GrB_Matrix_resize' in 10.5.0 fails if an n-by-1
-        matrix is resized to an n-by-k matrix with k>1 when pending tuples
+        matrix is resized to an n-by-k matrix with $k>1$ when pending tuples
         appear.
     \end{itemize}
 
