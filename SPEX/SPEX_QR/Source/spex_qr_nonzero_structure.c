@@ -83,7 +83,7 @@ SPEX_info spex_qr_nonzero_structure
 
     int64_t *w = NULL, *s = NULL, *leftmost = NULL;
     int64_t *Qi = NULL, *Qp = NULL;
-    int64_t top, k, len, i, p, n = A->n, m = A->m, m2 = m, rnz, qnz, j, h, len2, col, q;
+    int64_t top, k, len, i, p, n = A->n, m = A->m, m2 = m, rnz, qnz, j, h, len2, col, q, temp_qnz;
     SPEX_matrix R = NULL, Q = NULL;
     SPEX_matrix QT = NULL, RT = NULL;
     ASSERT(n >= 0);
@@ -99,9 +99,9 @@ SPEX_info spex_qr_nonzero_structure
     // Assert here just for fun!
     ASSERT (R != NULL);
 
-    // FIXME: cannot allocate O(mn) space
-
-    Qi = (int64_t *)SPEX_malloc((n * m) * sizeof(int64_t));
+    // Aproximate nnz of Q with nnz of R (this is sure to be too small)
+    temp_qnz = S->rnz;
+    Qi = (int64_t *)SPEX_malloc((temp_qnz) * sizeof(int64_t));
     Qp = (int64_t *)SPEX_malloc((m + 1) * sizeof(int64_t));
     w = (int64_t *)SPEX_malloc((n + m2) * sizeof(int64_t));
     leftmost = (int64_t *)SPEX_malloc(m * sizeof(int64_t));
@@ -165,7 +165,10 @@ SPEX_info spex_qr_nonzero_structure
 
     bool ok = true ;
     R->i = (int64_t *)SPEX_realloc(rnz, S->rnz, sizeof(int64_t), R->i, &ok);
-    // FIXME: check if OK
+    if (!ok)
+    {
+        return (SPEX_OUT_OF_MEMORY);
+    }
 
     SPEX_CHECK(SPEX_transpose(&RT, R, true, NULL));
 
@@ -190,13 +193,26 @@ SPEX_info spex_qr_nonzero_structure
         while (len > 0)
             s[--top] = s[--len]; /* push path on stack */
 
-        // FIXME check if size of Qi will run out here ... (need += (n-top+1) entries
-        // realloc Qi if needed HERE
+        //----------------------------------------------------------------------
+        // Reallocate memory if necessary
+        // need += (n-top+1) entries, Q might need to expand to accomodate new nonzeros.
+        // To do so, we double the size of the Qi
+        //----------------------------------------------------------------------
+        if (qnz + n - top + 1 > temp_qnz)
+        {
+            // Double the size of Q
+            Qi = (int64_t *)
+                SPEX_realloc(2 * temp_qnz, temp_qnz, sizeof(int64_t), Qi, &ok);
+            if (!ok)
+            {
+                return (SPEX_OUT_OF_MEMORY);
+            }
+            temp_qnz = 2*temp_qnz;
+        }
 
         for (p = top; p < n; p++) /* for each i in pattern of Q(:,k) */
         {
             i = s[p]; /* Q(i,k) is nonzero */
-            // printf("qnz %ld\n",qnz);
             Qi[qnz++] = i; /* Q(i,k) = x(i) */
         }
     }
@@ -208,7 +224,10 @@ SPEX_info spex_qr_nonzero_structure
     // But again, we assert
     ASSERT(QT != NULL);
     Qi = (int64_t *)SPEX_realloc(qnz, (n * m), sizeof(int64_t), Qi, &ok);
-    // FIXME: check if OK
+    if (!ok)
+    {
+        return (SPEX_OUT_OF_MEMORY);
+    }
     memcpy(QT->p, Qp, (m + 1) * sizeof(int64_t));
     memcpy(QT->i, Qi, (qnz) * sizeof(int64_t));
 

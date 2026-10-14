@@ -28,7 +28,7 @@
 SPEX_info spex_qr_etree
 (
     // Output
-    int64_t **tree_handle,      // On output: contains the column elimination 
+    int64_t **tree_handle,      // On output: contains the column elimination
                                 // tree of A
                                 // On input: undefined.
     // Input

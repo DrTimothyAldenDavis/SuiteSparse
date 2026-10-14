@@ -40,7 +40,8 @@
 
 #include "spex_qr_internal.h"
 
-SPEX_info spex_qr_ipgs(
+SPEX_info spex_qr_ipgs
+(
     // Input/Output
     SPEX_matrix R,    // Right triangular matrix
     SPEX_matrix Q,    // Pair-wise orthogonal matrix

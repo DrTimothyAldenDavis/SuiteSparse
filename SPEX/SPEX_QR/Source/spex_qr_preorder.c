@@ -108,7 +108,7 @@ SPEX_info spex_qr_preorder
         // ---AMD ordering is used---
         // S->q is set to AMD's column ordering on ATA.
         // The number of nonzeros in R is given as AMD's computed
-        // number of nonzeros in the Cholesky factor L of ATA 
+        // number of nonzeros in the Cholesky factor L of ATA
         {
             SPEX_CHECK( spex_amd(&(S->Q_perm),&(S->rnz),A,option));
         }
@@ -143,7 +143,7 @@ SPEX_info spex_qr_preorder
     // too small for R. In this case, this block of code ensures that the
     // estimates on nnz(R) are at least n and no more than n*n.
     //--------------------------------------------------------------------------
-    
+
     // estimate exceeds max number of nnz in A
     if (S->rnz > (double) n*n)
     {

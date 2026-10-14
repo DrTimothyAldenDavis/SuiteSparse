@@ -48,7 +48,8 @@
 
 #include "spex_qr_internal.h"
 
-SPEX_info SPEX_qr_factorize(
+SPEX_info SPEX_qr_factorize
+(
     // Output
     SPEX_factorization *F_handle, // QR factorization struct
     // Input
