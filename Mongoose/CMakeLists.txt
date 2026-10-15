@@ -360,12 +360,12 @@ if ( BUILD_TESTING )
 #           COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -t performance -i 21 39 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 -p )
 
         if ( WIN32 AND BUILD_SHARED_LIBS )
-            set_tests_properties ( Mongoose_IO_Test
-                Mongoose_Edge_Separator_Test Mongoose_Edge_Separator_Test_2 Mongoose_Weighted_Edge_Separator_Test Mongoose_Target_Split_Test
-                Mongoose_Memory_Test
-                Mongoose_Performance_Test Mongoose_Performance_Test_2
-                PROPERTIES
-                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Mongoose>;PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::SuiteSparseConfig>" )
+#           set_tests_properties ( Mongoose_IO_Test
+#               Mongoose_Edge_Separator_Test Mongoose_Edge_Separator_Test_2 Mongoose_Weighted_Edge_Separator_Test Mongoose_Target_Split_Test
+#               Mongoose_Memory_Test
+#               Mongoose_Performance_Test Mongoose_Performance_Test_2
+#               PROPERTIES
+#               ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Mongoose>;PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::SuiteSparseConfig>" )
         endif ( )
     endif ( )
 
