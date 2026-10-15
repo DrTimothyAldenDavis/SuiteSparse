@@ -317,8 +317,13 @@ int main (void)
         OK_JIT
     }
 
-    OK (GrB_Type_set_VOID (Gauss, &gauss_print, GxB_PRINT_FUNCTION,
-        sizeof (gauss))) ;
+    // allow GraphBLAS to print the Gauss type
+    fprintf (stderr, "size of GxB_print_function: %d\n",
+        (int) sizeof (GxB_print_function)) ;
+    fprintf (stderr, "size of gauss: %d\n",
+        (int) sizeof (gauss)) ;
+    OK (GrB_Type_set_VOID (Gauss, (GxB_print_function) &gauss_print,
+        GxB_PRINT_FUNCTION, sizeof (GxB_print_function))) ;
 
     printf ("JIT: off\n") ;
     OK (GrB_Global_set_INT32 (GrB_GLOBAL, GxB_JIT_OFF, GxB_JIT_C_CONTROL)) ;
