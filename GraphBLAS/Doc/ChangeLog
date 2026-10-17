@@ -5,7 +5,7 @@ Oct 14, 2026, version 10.5.2
         than 2^32 to larger than 2^32.  See Issue 462.
     * (72) bug fix: GrB_select fails when using built-in VALUE*
         operators whose type differs from A.  See PR 463.
-        Found and fixed by Erik Welch, NVIDIA.
+        Found and fixed by Erik Welch.
 
 Sept 12, 2026, version 10.5.1
 
