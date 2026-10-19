@@ -5,9 +5,11 @@
 
 \begin{itemize}
 
-\item Oct 14, 2026, version 10.5.2
+\item Oct 20, 2026, version 10.5.2
 
     \begin{itemize}
+    \item (75) bug fix: \verb'GxB_*_import' (historical method).  Check for
+        size of incoming Ax was incorrect.  Found and fixed by Erik Welch.
     \item (74) bug fix: performance bug in \verb'GxB_*_sort'; see Issue 461.
     \item (73) bug fix: \verb'GxB_Matrix_reshape' fails when dimensions change
         from less than $2^{32}$ to larger than $2^{32}$.  See Issue 462 on

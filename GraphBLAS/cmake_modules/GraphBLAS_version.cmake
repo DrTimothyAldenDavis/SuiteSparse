@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_VER_DATE "Oct 14, 2026" )
+set ( GraphBLAS_VER_DATE "Oct 20, 2026" )
 set ( GraphBLAS_VER_MAJOR 10 CACHE STRING "" FORCE )
 set ( GraphBLAS_VER_MINOR 5 CACHE STRING "" FORCE )
 set ( GraphBLAS_VER_SUB   2 CACHE STRING "" FORCE )
