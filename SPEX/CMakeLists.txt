@@ -2,7 +2,7 @@
 # SuiteSparse/SPEX/CMakeLists.txt:  cmake for SPEX
 #-------------------------------------------------------------------------------
 
-# SPEX: (c) 2019-2024, Chris Lourenco (US Naval Academy), Jinhao Chen,
+# SPEX: (c) 2019-2026, Chris Lourenco (US Naval Academy), Jinhao Chen,
 # Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis, Texas A&M.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
@@ -11,9 +11,9 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.22 )
+cmake_minimum_required ( VERSION 3.23 )
 
-set ( SPEX_DATE "Oct FIXME, 2025" )
+set ( SPEX_DATE "Oct 23, 2026" )
 set ( SPEX_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_MINOR 4 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_SUB   0 CACHE STRING "" FORCE )
@@ -74,10 +74,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.11.0
+    find_package ( SuiteSparse_config 7.15.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.11.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.15.0 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.4
@@ -105,6 +105,9 @@ configure_file ( "Config/SPEX.h.in"
     NEWLINE_STYLE LF )
 configure_file ( "Config/SPEX_version.tex.in"
     "${PROJECT_SOURCE_DIR}/Doc/SPEX_version.tex"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/setup.py.in"
+    "${PROJECT_SOURCE_DIR}/Python/setup.py"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------

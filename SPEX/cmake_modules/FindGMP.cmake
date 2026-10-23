@@ -40,14 +40,14 @@ if ( PKG_CONFIG_FOUND )
         set ( GMP_PC_OPTIONS "gmp" )
     endif ( )
     if ( GMP_FIND_REQUIRED )
-        # FIXME: Are there installations without pkg-config file?
+        # Fixme: Are there installations without pkg-config file?
         # list ( APPEND GMP_PC_OPTIONS REQUIRED )
     endif ( )
     pkg_check_modules ( GMP ${GMP_PC_OPTIONS} )
 
     if ( GMP_FOUND )
         # assume first is the actual library
-        # FIXME: Would it be possible to return all libraries in that variable?
+        # Fixme: Would it be possible to return all libraries in that variable?
         list ( GET GMP_LINK_LIBRARIES 0 GMP_LIBRARY )
         set ( GMP_INCLUDE_DIR ${GMP_INCLUDEDIR} )
     endif ( )

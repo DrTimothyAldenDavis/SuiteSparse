@@ -71,6 +71,7 @@ void read_test_matrix(SPEX_matrix *A_handle, char *filename)
 }
 
 // Helper to instantly build a matrix from a string in memory
+void generate_test_matrix(SPEX_matrix *A_handle, const char *triplets) ;
 void generate_test_matrix(SPEX_matrix *A_handle, const char *triplets)
 {
     // tmpfile() creates a temporary file in RAM that auto-deletes when closed
@@ -202,7 +203,6 @@ int main(int argc, char *argv[])
         TEST_ABORT(SPEX_INCORRECT_INPUT);
     }
 
-    SPEX_info info;
     OK(SPEX_initialize_expert(tcov_malloc, tcov_calloc, tcov_realloc,
                               tcov_free));
 
@@ -221,7 +221,8 @@ int main(int argc, char *argv[])
     int64_t m = A->m;
     int64_t anz = -1;
     OK(SPEX_matrix_nnz(&anz, A, option));
-    printf("\nInput matrix: %lld-by-%lld with %lld entries\n", n, m, anz);
+    printf("\nInput matrix: %g-by-%g with %g entries\n",
+        (double) n, (double) m, (double) anz);
     OK((n != m) ? SPEX_PANIC : SPEX_OK);
     create_test_rhs(&b, A->m);
     option->algo = SPEX_QR_GS;

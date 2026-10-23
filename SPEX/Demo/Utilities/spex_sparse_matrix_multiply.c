@@ -23,8 +23,8 @@ SPEX_info spex_sparse_matrix_multiply
 {
     SPEX_info info;
     //Declare variables
-    int64_t p, j, nz = 0, anz, *Cp, *Ci, *Bp, m, n, bnz, *w, values, *Bi ;
-    SPEX_matrix x, Bx, Cx, C=NULL;
+    int64_t p, j, nz = 0, anz, m, n, bnz, *w, values ;
+    SPEX_matrix x, C=NULL;
     mpz_t one;
 
 

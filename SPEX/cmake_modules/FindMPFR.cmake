@@ -40,7 +40,7 @@ if ( PKG_CONFIG_FOUND )
         set ( MPFR_PC_OPTIONS "mpfr" )
     endif ( )
     if ( MPFR_FIND_REQUIRED )
-        # FIXME: Are there installations without pkg-config file?
+        # Fixme: Are there installations without pkg-config file?
         # list ( APPEND MPFR_PC_OPTIONS REQUIRED )
     endif ( )
     pkg_check_modules ( MPFR ${MPFR_PC_OPTIONS} )

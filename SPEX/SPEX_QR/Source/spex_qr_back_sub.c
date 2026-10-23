@@ -47,8 +47,8 @@ SPEX_info spex_qr_back_sub // performs sparse REF backward substitution
     mpz_t *Rx = R->x.mpz;
     int64_t *Ri = R->i;
     int64_t *Rp = R->p;
-    int64_t n = R->n;
-    int64_t extra;
+    // int64_t n = R->n;
+    // int64_t extra;
 
     // Loop through all RHS vectors
     for (int64_t k = 0; k < bx->n; k++)

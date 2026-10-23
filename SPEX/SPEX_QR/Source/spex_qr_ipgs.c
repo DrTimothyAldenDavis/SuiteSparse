@@ -58,8 +58,8 @@ SPEX_info spex_qr_ipgs
 )
 {
     SPEX_info info;
-    int64_t m = A->m, n = A->n;
-    ASSERT(m >= n); // A should be transposed if not true
+    // int64_t m = A->m, n = A->n;
+    ASSERT(A->m >= A->n); // A should be transposed if not true
     ASSERT(A != NULL);
     ASSERT(A->type == SPEX_MPZ);
     ASSERT(A->kind == SPEX_CSC);
@@ -67,9 +67,8 @@ SPEX_info spex_qr_ipgs
     ASSERT(Q != NULL);
 
     // Declare variables
-    int64_t p, pQ, pR, iR, top, x, l, prev, iQ, k, i;
+    int64_t pQ, pR, prev, iQ, k, i;
     int sgn;
-    size_t size;
     *isZeros = true; // start by assuming column of Q is linearly dependent
 
     //--------------------------------------------------------------------------

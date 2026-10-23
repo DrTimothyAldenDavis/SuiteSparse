@@ -33,7 +33,6 @@ SPEX_info spex_demo_check_solution
     // check inputs. Input are also checked by the two callers
     //--------------------------------------------------------------------------
 
-    SPEX_info info;
     /*SPEX_REQUIRE (A, SPEX_CSC,   SPEX_MPZ);
     SPEX_REQUIRE (x, SPEX_DENSE, SPEX_MPQ);
     SPEX_REQUIRE (b, SPEX_DENSE, SPEX_MPZ);*/

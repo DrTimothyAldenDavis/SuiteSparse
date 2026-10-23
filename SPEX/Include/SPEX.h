@@ -102,7 +102,7 @@
 //------------------------------------------------------------------------------
 
 // Current version of the code
-#define SPEX_DATE "Oct FIXME, 2025"
+#define SPEX_DATE "Oct 23, 2026"
 #define SPEX_VERSION_STRING "3.4.0"
 #define SPEX_VERSION_MAJOR 3
 #define SPEX_VERSION_MINOR 4
@@ -192,13 +192,13 @@ SPEX_info SPEX_version
 // macro calls a single SPEX method and then takes corrected action based on a
 // user-defined macro SPEX_CATCH.
 
-#define SPEX_TRY(method)            \
-{                                   \
-    SPEX_info info = (method) ;     \
-    if (info != SPEX_OK)            \
-    {                               \
-        SPEX_CATCH (info) ;         \
-    }                               \
+#define SPEX_TRY(method)                \
+{                                       \
+    SPEX_info spex_info = (method) ;    \
+    if (spex_info != SPEX_OK)           \
+    {                                   \
+        SPEX_CATCH (spex_info) ;        \
+    }                                   \
 }
 
 // A typical example user application might #define SPEX_CATCH as follows.

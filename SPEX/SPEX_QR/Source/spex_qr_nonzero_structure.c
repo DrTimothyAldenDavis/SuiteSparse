@@ -83,7 +83,7 @@ SPEX_info spex_qr_nonzero_structure
 
     int64_t *w = NULL, *s = NULL, *leftmost = NULL;
     int64_t *Qi = NULL, *Qp = NULL;
-    int64_t top, k, len, i, p, n = A->n, m = A->m, m2 = m, rnz, qnz, j, h, len2, col, q, temp_qnz;
+    int64_t top, k, len, i, p, n = A->n, m = A->m, m2 = m, rnz, qnz, col, q, temp_qnz;
     SPEX_matrix R = NULL, Q = NULL;
     SPEX_matrix QT = NULL, RT = NULL;
     ASSERT(n >= 0);
@@ -100,7 +100,7 @@ SPEX_info spex_qr_nonzero_structure
     ASSERT (R != NULL);
 
     // Aproximate nnz of Q with nnz of R (this is sure to be too small)
-    temp_qnz = max (S->rnz, 256);
+    temp_qnz = SPEX_MAX (S->rnz, 256);
     Qi = (int64_t *)SPEX_malloc((temp_qnz) * sizeof(int64_t));
     Qp = (int64_t *)SPEX_malloc((m + 1) * sizeof(int64_t));
     w = (int64_t *)SPEX_malloc((n + m2) * sizeof(int64_t));

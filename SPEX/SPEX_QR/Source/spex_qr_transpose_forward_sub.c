@@ -57,7 +57,6 @@ SPEX_info spex_qr_transpose_forward_sub
     //--------------------------------------------------------------------------
 
     int64_t i, hx, k, j, jnew;
-    int sgn ;
 
     // Build the history matrix
     SPEX_matrix h = NULL ;

@@ -75,7 +75,7 @@ SPEX_info SPEX_qr_analyze
     SPEX_matrix AQ = NULL;
     SPEX_symbolic_analysis S = NULL;
     // Declare local variables for symbolic analysis
-    int64_t n = A->n, m = A->m;
+    int64_t n = A->n ;
     int64_t *post = NULL;
 
     //--------------------------------------------------------------------------

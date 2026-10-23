@@ -1,10 +1,11 @@
-Oct 14, 2026: version 7.14.2
+Oct 23, 2026: version 7.15.0
 
+    * SPEX 3.4.0: with a new exact sparse QR factorization
     * GraphBLAS 10.5.2: bug fix
     * SuiteSparse_Mongoose 3.3.7: remove tests that require downloads
         from SuiteSparse Matrix Collection
-    * SuiteSparse_config 7.14.2: version update
-        SuiteSparse_config 7.14.2   *
+    * SuiteSparse_config 7.15.0: version update
+        SuiteSparse_config 7.15.0   *
         AMD 3.3.4
         BTF 2.3.3
         CAMD 3.3.5
@@ -21,7 +22,7 @@ Oct 14, 2026: version 7.14.2
         SuiteSparse_Mongoose 3.3.7  *
         ParU 1.1.2
         RBio 4.3.5
-        SPEX 3.2.4
+        SPEX 3.4.0                  *
         SPQR 4.3.6
         UMFPACK 6.3.8
 

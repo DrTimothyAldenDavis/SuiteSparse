@@ -85,7 +85,7 @@ SPEX_info SPEX_qr_factorize
         return SPEX_INCORRECT_ALGORITHM;
     }
     // Declare variables
-    int64_t n = A->n, m = A->m, k, i, pQ, p, iQ, pR;
+    int64_t n = A->n, m = A->m, k, pQ, iQ ;
     SPEX_factorization F = NULL;
     SPEX_matrix RT = NULL, Q = NULL, rhos = NULL;
     SPEX_matrix RTPi = NULL;

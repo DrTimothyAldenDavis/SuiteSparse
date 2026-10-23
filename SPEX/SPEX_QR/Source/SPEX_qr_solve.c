@@ -71,7 +71,6 @@ SPEX_info SPEX_qr_solve
     int64_t index;
     int64_t *Qinv_perm = NULL;
     int64_t n = F->Q->n;
-    int sgn;
     // b->new has Q->n rows and b->n columns
     SPEX_CHECK(SPEX_matrix_allocate(&b_new, SPEX_DENSE, SPEX_MPZ, b->m, b->n, 0,
                                     false, true, NULL));
