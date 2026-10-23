@@ -26,8 +26,8 @@ SPEX_info SPEX_transpose
 (
     SPEX_matrix *C_handle,      // C = A'
     SPEX_matrix A,              // Matrix to be transposed
-    const bool numeric,        // True if user wants to transpose pattern and
-                               // numbers, false if only pattern
+    const bool numeric,         // True if user wants to transpose pattern and
+                                // numbers, false if only pattern
     const SPEX_options option
 )
 {
@@ -69,8 +69,8 @@ SPEX_info SPEX_transpose
     // Compute row pointers
     spex_cumsum (C->p, w, m);
     // Populate C
-    
-    if(numeric)
+
+    if (numeric)
     {
         for (j = 0 ; j < n ; j++)
         {
@@ -112,7 +112,7 @@ SPEX_info SPEX_transpose
             for (p = A->p [j] ; p < A->p [j+1] ; p++)
             {
                 q = w [A->i [p]]++;
-                C->i [q] = j ;                 
+                C->i [q] = j ;
             }
         }
     }
