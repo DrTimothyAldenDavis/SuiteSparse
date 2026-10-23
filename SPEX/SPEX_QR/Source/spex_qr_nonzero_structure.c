@@ -100,7 +100,7 @@ SPEX_info spex_qr_nonzero_structure
     ASSERT (R != NULL);
 
     // Aproximate nnz of Q with nnz of R (this is sure to be too small)
-    temp_qnz = S->rnz;
+    temp_qnz = max (S->rnz, 256);
     Qi = (int64_t *)SPEX_malloc((temp_qnz) * sizeof(int64_t));
     Qp = (int64_t *)SPEX_malloc((m + 1) * sizeof(int64_t));
     w = (int64_t *)SPEX_malloc((n + m2) * sizeof(int64_t));
