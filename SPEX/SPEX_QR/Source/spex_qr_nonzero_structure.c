@@ -26,6 +26,15 @@
         SPEX_matrix_free(&Q, NULL);  \
     }
 
+#define CHECK(ok,info)                  \
+{                                       \
+    if (!(ok))                          \
+    {                                   \
+        SPEX_FREE_ALL ;                 \
+        return (SPEX_OUT_OF_MEMORY) ;   \
+    }                                   \
+}
+
 #include "spex_qr_internal.h"
 
 /* Purpose: This function performs a symbolic sparse triangular solve for
@@ -100,17 +109,14 @@ SPEX_info spex_qr_nonzero_structure
     ASSERT (R != NULL);
 
     // Aproximate nnz of Q with nnz of R (this is sure to be too small)
-    temp_qnz = SPEX_MAX (S->rnz, 256);
+    temp_qnz = SPEX_MAX (S->rnz, 64);
     Qi = (int64_t *)SPEX_malloc((temp_qnz) * sizeof(int64_t));
     Qp = (int64_t *)SPEX_malloc((m + 1) * sizeof(int64_t));
     w = (int64_t *)SPEX_malloc((n + m2) * sizeof(int64_t));
     leftmost = (int64_t *)SPEX_malloc(m * sizeof(int64_t));
     s = w + n;
-    if (!w | !leftmost | !Qi | !Qp)
-    {
-        SPEX_FREE_ALL;
-        return SPEX_OUT_OF_MEMORY;
-    }
+    CHECK (w != NULL && leftmost != NULL && Qi != NULL && Qp != NULL,
+        SPEX_OUT_OF_MEMORY) ;
 
     R->i[0] = 0;
 
@@ -163,12 +169,10 @@ SPEX_info spex_qr_nonzero_structure
     // Finalize R->p
     R->p[n] = rnz;
 
+    // descrease the size of R->i to match the actual size; this "cannot" fail
     bool ok = true ;
     R->i = (int64_t *)SPEX_realloc(rnz, S->rnz, sizeof(int64_t), R->i, &ok);
-    if (!ok)
-    {
-        return (SPEX_OUT_OF_MEMORY);
-    }
+    CHECK (ok, SPEX_OUT_OF_MEMORY) ;
 
     SPEX_CHECK(SPEX_transpose(&RT, R, true, NULL));
 
@@ -203,10 +207,7 @@ SPEX_info spex_qr_nonzero_structure
             // Double the size of Q
             Qi = (int64_t *)
                 SPEX_realloc(2 * temp_qnz, temp_qnz, sizeof(int64_t), Qi, &ok);
-            if (!ok)
-            {
-                return (SPEX_OUT_OF_MEMORY);
-            }
+            CHECK (ok, SPEX_OUT_OF_MEMORY) ;
             temp_qnz = 2*temp_qnz;
         }
 
@@ -223,11 +224,10 @@ SPEX_info spex_qr_nonzero_structure
     // SPEX_CHECK automatically will free memory if matrix allocate fails
     // But again, we assert
     ASSERT(QT != NULL);
-    Qi = (int64_t *)SPEX_realloc(qnz, (n * m), sizeof(int64_t), Qi, &ok);
-    if (!ok)
-    {
-        return (SPEX_OUT_OF_MEMORY);
-    }
+
+    // decrease the size of Qi to match the final size; this "cannot" fail
+    Qi = (int64_t *)SPEX_realloc(qnz, temp_qnz, sizeof(int64_t), Qi, &ok);
+    CHECK (ok, SPEX_OUT_OF_MEMORY) ;
     memcpy(QT->p, Qp, (m + 1) * sizeof(int64_t));
     memcpy(QT->i, Qi, (qnz) * sizeof(int64_t));
 
