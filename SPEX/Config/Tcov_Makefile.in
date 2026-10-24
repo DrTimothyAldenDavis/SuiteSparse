@@ -160,7 +160,7 @@ OBJ_LU = \
 
 $(OBJ_LU): ../Include/SPEX.h ../SPEX_LU/Source/spex_lu_internal.h
 
-.PRECIOUS: SPEX_lu_%.c SPEX_lu_%.c spex_left_lu_%.c 
+.PRECIOUS: SPEX_lu_%.c SPEX_lu_%.c spex_left_lu_%.c spex_lu_%.c
 
 SPEX_lu_%.c:
 	- ln -s ../SPEX_LU/Source/$@
