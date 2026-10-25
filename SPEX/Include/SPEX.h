@@ -117,7 +117,7 @@
 
 #define SPEX__VERSION SUITESPARSE__VERCODE(3,4,0)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,11,0))
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,15,0))
 #error "SPEX 3.4.0 requires SuiteSparse_config 7.11.0 or later"
 #endif
 
