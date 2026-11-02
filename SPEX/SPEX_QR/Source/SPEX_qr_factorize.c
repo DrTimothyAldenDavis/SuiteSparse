@@ -70,13 +70,19 @@ SPEX_info SPEX_qr_factorize
     // Check inputs for NULL
     if (!F_handle || !A || !S)
     {
-        return (SPEX_INCORRECT_INPUT);
+        return SPEX_INCORRECT_INPUT;
     }
 
     // Ensure inputs are in the correct format
     if (A->kind != SPEX_CSC || A->type != SPEX_MPZ || S->kind != SPEX_QR_FACTORIZATION)
     {
-        return (SPEX_INCORRECT_INPUT);
+        return SPEX_INCORRECT_INPUT;
+    }
+
+    // Make sure matrix is appropriate dimension
+    if (A->n <= 0 || A->m <= 0)
+    {
+        return SPEX_INCORRECT_INPUT;
     }
 
     SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
@@ -226,7 +232,15 @@ SPEX_info SPEX_qr_factorize
         ldCols[k] = true;
         rank--;
         SPEX_MPZ_SET_UI(RT->x.mpz[RT->p[n] - 1], 0);
-        SPEX_MPZ_SET(rhos->x.mpz[n - 1], rhos->x.mpz[n - 2]);
+        // If one passes in a matrix of size 1 by 1
+        if (n > 1)
+        {
+            SPEX_MPZ_SET(rhos->x.mpz[n - 1], rhos->x.mpz[n - 2]);
+        }
+        else
+        {
+            SPEX_MPZ_SET_UI(rhos->x.mpz[n - 1], 1);
+        }
     }
     else
     {

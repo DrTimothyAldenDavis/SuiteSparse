@@ -1,220 +1,241 @@
 //------------------------------------------------------------------------------
-// SPEX/Python/spex_connect.c: use SPEX in Python
+// SPEX/Python/SPEXpy/Source/spex_python_connect.c: use SPEX from Python
 //------------------------------------------------------------------------------
-
-// SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
+// SPEX: (c) 2022-2026, Christopher Lourenco, Jinhao Chen,
 // Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
-
 //------------------------------------------------------------------------------
 
 #include "spex_python_connect.h"
 #include "spex_cholesky_internal.h"
+#include <stdlib.h>
+#include <string.h>
 
-#define FREE_WORKSPACE                  \
-{                                       \
-    SPEX_matrix_free(&A, option);       \
-    SPEX_matrix_free(&b, option);       \
-    SPEX_matrix_free(&x, option);       \
-    SPEX_matrix_free(&A_in, option);    \
-    SPEX_matrix_free(&b_in, option);    \
-    SPEX_FREE(option);                  \
-    SPEX_finalize();                    \
+// Every non-NULL sol_void[i] is allocated with malloc().  Python must copy
+// the value, then call this function to release the returned buffer.  Freeing
+// inside the same shared library also works with separate C runtimes.
+void spex_python_free_output(void *ptr)
+{
+    free(ptr);
 }
 
+// SPEX_CHECK returns immediately, which is inappropriate when both SPEX
+// objects and partially constructed Python output buffers need cleanup.
+// Keep a single cleanup path instead.
+#define PY_CHECK(method)                     \
+    do                                       \
+    {                                        \
+        info = (method);                     \
+        if (info != SPEX_OK) goto cleanup;   \
+    } while (0)
 
 SPEX_info spex_python
 (
-     //output
-     void **sol_void, // solution
-     //input
-     int64_t *Ap,     // column pointers of A, an array size is n+1
-     int64_t *Ai,     // row indices of A, of size nzmax.
-     double *Ax,      // values of A
-     double *bx,      // values of b
-     int m,           // Number of rows of A
-     int n,           // Number of columns of A
-     int nz,          // Number of nonzeros in A
-     int ordering,    // type of ordering: 0-none, 1-colamd, 2-amd,
-     int algorithm,   // 1-backslash, 2-left lu, 3-cholesky
-     bool charOut     // True if char ** output, false if double
+    void **sol_void,  // n output pointers; Python frees each non-NULL entry
+    int64_t *Ap,      // CSC column pointers (n+1 entries)
+    int64_t *Ai,      // CSC row indices (nz entries)
+    double *Ax,       // CSC entries (nz entries)
+    double *bx,       // dense right-hand side (m entries)
+    int m,            // number of rows of A
+    int n,            // number of columns of A
+    int nz,           // number of stored entries in A
+    int ordering,     // Python values: 0=none, 1=COLAMD, 2=AMD, 3=default
+    int algorithm,    // 1=automatic, 2=LU, 3=Cholesky, 4=LDL, 5=QR
+    bool charOut      // true: rational strings; false: doubles
 )
 {
-    // this function will make the SPEX_matrix A, b and x and call
-    // spex_cholesky_backslash
-    SPEX_info info;
-
-    //--------------------------------------------------------------------------
-    // Prior to using SPEX Chol, its environment must be initialized. This is
-    // done by calling the SPEX_initialize() function.
-    //--------------------------------------------------------------------------
-    SPEX_initialize();
-
-    //--------------------------------------------------------------------------
-    // Validate Inputs
-    //--------------------------------------------------------------------------
-
-    if (!Ap || !Ai || !Ax || !bx)
-    {
-        return SPEX_INCORRECT_INPUT;
-    }
-
-    // ordering must be acceptable
-    if (ordering != 0 && ordering != 1 && ordering != 2)
-    {
-        return SPEX_INCORRECT_INPUT;
-    }
-
-    if (n == 0 || m == 0)
-    {
-        return SPEX_INCORRECT_INPUT;
-    }
-
-    //--------------------------------------------------------------------------
-    // Declare our data structures
-    //--------------------------------------------------------------------------
-    SPEX_matrix A_in = NULL;       //input matrix
-    SPEX_matrix b_in = NULL;       //input rhs
-    SPEX_matrix A = NULL;          //copy of input matrix in CSC MPZ
-    SPEX_matrix b = NULL;          //copy of input rhs in CSC MPZ
-    SPEX_matrix x = NULL;          //solution
-
+    SPEX_info info = SPEX_OK;
+    SPEX_matrix A_in = NULL, b_in = NULL, A = NULL, b = NULL;
+    SPEX_matrix x = NULL, x2 = NULL;
     SPEX_options option = NULL;
-    SPEX_create_default_options(&option);
-    option->order = ordering;
+    char *formatted = NULL;
+    bool initialized = false;
 
-    //--------------------------------------------------------------------------
-    // Allocate memory, populate in A and b
-    //--------------------------------------------------------------------------
+    // Validate before initializing SPEX; a failed initialization must not be
+    // followed by a call to SPEX_finalize().
+    if (!sol_void || !Ap || !Ai || !Ax || !bx ||
+        m <= 0 || n <= 0 || nz < 0 ||
+        ordering < 0 || ordering > 3 || algorithm < 1 || algorithm > 5)
+    {
+        return SPEX_INCORRECT_INPUT;
+    }
 
-    SPEX_matrix_allocate(&A_in, SPEX_CSC, SPEX_FP64, m, n, nz, true, true,
-        option);
-    SPEX_matrix_allocate(&b_in, SPEX_DENSE, SPEX_FP64, n, 1, n, true, true,
-        option);
+    // This also makes partial allocation failure safe to clean up.
+    for (int i = 0; i < n; i++)
+    {
+        sol_void[i] = NULL;
+    }
 
-    A_in->p=Ap;
-    A_in->i=Ai;
-    A_in->x.fp64=Ax;
+    info = SPEX_initialize();
+    if (info != SPEX_OK) return info;
+    initialized = true;
 
-    b_in->x.fp64=bx;
+    PY_CHECK(SPEX_create_default_options(&option));
 
-    // At this point, A_in is a shallow double CSC matrix. We make a copy of it
-    // with A.  A is a CSC matrix with mpz entries
+    // Do not copy the Python integer directly into the C enum.  Existing
+    // Options.py uses 0=none, 1=COLAMD, 2=AMD, unlike the C enum values.
+    switch (ordering)
+    {
+        case 0: option->order = SPEX_NO_ORDERING;      break;
+        case 1: option->order = SPEX_COLAMD;           break;
+        case 2: option->order = SPEX_AMD;              break;
+        case 3: option->order = SPEX_DEFAULT_ORDERING; break;
+    }
 
-    SPEX_matrix_copy(&A, SPEX_CSC, SPEX_MPZ, A_in, option);
-    // b is a dense matrix with mpz entries
-    SPEX_matrix_copy(&b, SPEX_DENSE, SPEX_MPZ, b_in, option);
+    // These matrices are shallow: the CSC arrays and RHS belong to NumPy.
+    PY_CHECK(SPEX_matrix_allocate(&A_in, SPEX_CSC, SPEX_FP64,
+                                  m, n, nz, true, true, option));
+    A_in->p = Ap;
+    A_in->i = Ai;
+    A_in->x.fp64 = Ax;
 
-    //--------------------------------------------------------------------------
-    // solve Ax=b
-    //-------------------------------------------------------------------------
-    switch(algorithm)
+    // The RHS has m rows, not n.  nzmax for a dense matrix is ignored.
+    PY_CHECK(SPEX_matrix_allocate(&b_in, SPEX_DENSE, SPEX_FP64,
+                                  m, 1, m, true, true, option));
+    b_in->x.fp64 = bx;
+
+    PY_CHECK(SPEX_matrix_copy(&A, SPEX_CSC, SPEX_MPZ, A_in, option));
+    PY_CHECK(SPEX_matrix_copy(&b, SPEX_DENSE, SPEX_MPZ, b_in, option));
+
+    switch (algorithm)
     {
         case 1:
-            SPEX_CHECK( SPEX_backslash(&x, SPEX_MPQ, A, b, option));
+            PY_CHECK(SPEX_backslash(&x, SPEX_MPQ, A, b, option));
             break;
         case 2:
-            SPEX_CHECK( SPEX_lu_backslash(&x, SPEX_MPQ, A, b, option));
+            PY_CHECK(SPEX_lu_backslash(&x, SPEX_MPQ, A, b, option));
             break;
         case 3:
-            SPEX_CHECK( SPEX_cholesky_backslash(&x, SPEX_MPQ, A, b, option));
+            PY_CHECK(SPEX_cholesky_backslash(&x, SPEX_MPQ, A, b, option));
             break;
         case 4:
-            SPEX_CHECK( SPEX_ldl_backslash(&x, SPEX_MPQ, A, b, option));
+            PY_CHECK(SPEX_ldl_backslash(&x, SPEX_MPQ, A, b, option));
             break;
         case 5:
-            SPEX_CHECK( SPEX_qr_backslash(&x, SPEX_MPQ, A, b, option));
+            PY_CHECK(SPEX_qr_backslash(&x, SPEX_MPQ, A, b, option));
             break;
-        default:
-            return SPEX_INCORRECT_INPUT;
     }
 
-    //--------------------------------------------------------------------------
-    // Return output as desired type
-    //-----------------------------------------------------------------------
-    if(charOut)
+    if (x == NULL || x->kind != SPEX_DENSE || x->type != SPEX_MPQ ||
+        x->m != n || x->n != 1)
     {
-        //solution as string
-        for (int i = 0; i < n; ++i)
+        info = SPEX_INCORRECT_INPUT;
+        goto cleanup;
+    }
+
+    // Allocate output buffers independently of SPEX's matrices.  On any
+    // failure, cleanup frees all buffers already created.
+    if (charOut)
+    {
+        for (int i = 0; i < n; i++)
         {
-            char *s ;
-            int status = SPEX_mpfr_asprintf (&s, "%Qd", x->x.mpq [i]);
-            if (status < 0)
+            PY_CHECK(SPEX_mpfr_asprintf(&formatted, "%Qd", x->x.mpq[i]));
+            if (formatted == NULL)
             {
-                printf("error converting x to string");
+                info = SPEX_OUT_OF_MEMORY;
+                goto cleanup;
             }
-            //check string size
-            int sizeStr;
-            sizeStr=strlen(s)+1;
-            //allocate sol_char[i]
-             sol_void[i] = malloc (sizeStr + 1);  // +1 for NULL terminator
-            //copy s into sol_char[i]
-            strcpy(sol_void[i],s);
+            size_t length = strlen(formatted) + 1;
+            sol_void[i] = malloc(length);
+            if (sol_void[i] == NULL)
+            {
+                info = SPEX_OUT_OF_MEMORY;
+                goto cleanup;
+            }
+            memcpy(sol_void[i], formatted, length);
+            SPEX_mpfr_free_str(formatted);
+            formatted = NULL;
         }
     }
     else
     {
-        //solution as double
-        SPEX_matrix x2 = NULL ;
-        SPEX_matrix_copy(&x2, SPEX_DENSE, SPEX_FP64, x, option);
-        /*for (int i = 0; i < n; ++i)
+        PY_CHECK(SPEX_matrix_copy(&x2, SPEX_DENSE, SPEX_FP64, x, option));
+        for (int i = 0; i < n; i++)
         {
-            sol_doub[i]=x2->x.fp64[i];
-        }*/
-        for (int i = 0; i < n; ++i)
-        {
-            (sol_void[i])=&(x2->x.fp64[i]);
+            sol_void[i] = malloc(sizeof(double));
+            if (sol_void[i] == NULL)
+            {
+                info = SPEX_OUT_OF_MEMORY;
+                goto cleanup;
+            }
+            *((double *) sol_void[i]) = x2->x.fp64[i];
         }
     }
 
-    FREE_WORKSPACE;
-    return SPEX_OK;
-}
+cleanup:
+    if (formatted != NULL)
+    {
+        SPEX_mpfr_free_str(formatted);
+    }
 
+    if (info != SPEX_OK && sol_void != NULL)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            free(sol_void[i]);
+            sol_void[i] = NULL;
+        }
+    }
+
+    // Free the borrowed-array headers (not the NumPy-owned arrays), exact
+    // matrices, converted output, options, and initialized SPEX environment.
+    if (initialized)
+    {
+        SPEX_matrix_free(&x2, option);
+        SPEX_matrix_free(&x, option);
+        SPEX_matrix_free(&b, option);
+        SPEX_matrix_free(&A, option);
+        SPEX_matrix_free(&b_in, option);
+        SPEX_matrix_free(&A_in, option);
+        SPEX_FREE(option);
+        SPEX_finalize();
+    }
+    return info;
+}
 
 SPEX_info spex_python_rank
 (
-     int64_t *rank_out, // Output: rank of A
-     int64_t *Ap,       // column pointers of A
-     int64_t *Ai,       // row indices of A
-     double *Ax,        // values of A
-     int m,             // rows of A
-     int n,             // columns of A
-     int nz             // number of nonzeros in A
+    int64_t *rank_out,
+    int64_t *Ap,
+    int64_t *Ai,
+    double *Ax,
+    int m,
+    int n,
+    int nz
 )
 {
-    SPEX_info info;
-    SPEX_initialize();
+    SPEX_info info = SPEX_OK;
+    SPEX_matrix A_in = NULL, A = NULL;
+    SPEX_options option = NULL;
+    bool initialized = false;
 
-    if (!Ap || !Ai || !Ax || !rank_out)
+    if (!rank_out || !Ap || !Ai || !Ax || m <= 0 || n <= 0 || nz < 0)
     {
         return SPEX_INCORRECT_INPUT;
     }
 
-    SPEX_matrix A_in = NULL;
-    SPEX_matrix A = NULL;
-    SPEX_options option = NULL;
-    SPEX_create_default_options(&option);
+    info = SPEX_initialize();
+    if (info != SPEX_OK) return info;
+    initialized = true;
 
-    // Allocate a shallow double CSC matrix pointing to Python's memory
-    SPEX_matrix_allocate(&A_in, SPEX_CSC, SPEX_FP64, m, n, nz, true, true,
-        option);
-    A_in->p=Ap;
-    A_in->i=Ai;
-    A_in->x.fp64=Ax;
+    PY_CHECK(SPEX_create_default_options(&option));
+    PY_CHECK(SPEX_matrix_allocate(&A_in, SPEX_CSC, SPEX_FP64,
+                                  m, n, nz, true, true, option));
+    A_in->p = Ap;
+    A_in->i = Ai;
+    A_in->x.fp64 = Ax;
 
-    // Copy to exact MPZ matrix
-    SPEX_matrix_copy(&A, SPEX_CSC, SPEX_MPZ, A_in, option);
+    PY_CHECK(SPEX_matrix_copy(&A, SPEX_CSC, SPEX_MPZ, A_in, option));
+    PY_CHECK(SPEX_rank(rank_out, A, option));
 
-    // Compute rank based on the algorithm (2 = LU, 5 = QR)
-    info = SPEX_rank(rank_out, A, option);
-
-    // Free memory
-    SPEX_matrix_free(&A, option);
-    SPEX_matrix_free(&A_in, option);
-    SPEX_FREE(option);
-    SPEX_finalize();
-
+cleanup:
+    if (initialized)
+    {
+        SPEX_matrix_free(&A, option);
+        SPEX_matrix_free(&A_in, option);
+        SPEX_FREE(option);
+        SPEX_finalize();
+    }
     return info;
 }

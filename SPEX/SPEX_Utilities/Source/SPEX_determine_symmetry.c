@@ -30,14 +30,14 @@ SPEX_info SPEX_determine_symmetry
 (
     bool *is_symmetric,         // true if matrix is symmetric, false otherwise
     const SPEX_matrix A,        // Input matrix to be checked for symmetry
-    const SPEX_options option   // Command options
+    const SPEX_options option   // Command options, if NULL default values are used
 )
 {
 
     SPEX_info info;
 
     // Check for null pointers
-    if (!A || !option || !is_symmetric)
+    if (!A || !is_symmetric)
     {
         return SPEX_INCORRECT_INPUT;
     }

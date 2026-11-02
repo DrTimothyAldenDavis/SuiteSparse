@@ -60,7 +60,7 @@ SPEX_info SPEX_qr_solve
     }
 
     // Check the inputs
-    if (!x_handle || b->type != SPEX_MPZ || b->kind != SPEX_DENSE || F->kind != SPEX_QR_FACTORIZATION)
+    if (!x_handle || !b || !F || b->type != SPEX_MPZ || b->kind != SPEX_DENSE || F->kind != SPEX_QR_FACTORIZATION)
     {
         return SPEX_INCORRECT_INPUT;
     }
@@ -68,6 +68,26 @@ SPEX_info SPEX_qr_solve
     SPEX_matrix b_new = NULL, x = NULL;
     int64_t k, p, i, j, qi, qj;
     int64_t rank = F->rank; // when matrix is full rank, rank=n
+
+    // The mathematical logic of this function assumes that A has rank >= 1. In the case that the matrix
+    // has rank 0, such as if a user passes in a matrix of all 0s accidentally, the mathematical code
+    // below will segfault. To avoid this, we do a quick check on the rank of the matrix. If the rank
+    // is indeed 0, then we just allocate x as a matrix of all zeros and return it to the user.
+    if (F->rank == 0)
+    {
+        info = SPEX_matrix_allocate(&x, SPEX_DENSE, SPEX_MPQ,
+                                F->R->n, b->n, 0,
+                                false, true, option);
+
+        if (info != SPEX_OK)
+        {
+            return info;
+        }
+
+        (*x_handle) = x;
+        return SPEX_OK;
+    }
+
     int64_t index;
     int64_t *Qinv_perm = NULL;
     int64_t n = F->Q->n;
@@ -106,7 +126,7 @@ SPEX_info SPEX_qr_solve
             }
             // F->rhos->x.mpz[F->R->n-1] is the determinant
             SPEX_MPZ_MUL(SPEX_2D(b_new, qj, k, mpz), SPEX_2D(b_new, qj, k, mpz),
-                         F->rhos->x.mpz[F->rank - 1]);
+                        F->rhos->x.mpz[F->rank - 1]);
         }
     }
 

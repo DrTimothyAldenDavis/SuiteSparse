@@ -343,8 +343,8 @@ typedef SPEX_vector_struct *SPEX_vector ;
 //------------------------------------------------------------------------------
 
 // SPEX uses a single matrix data type, SPEX_matrix, which can be held in
-// one of four kinds of formats:  sparse CSC (compressed sparse column),
-// sparse triplet, dense, and sparse dynamic CSC.
+// one of three kinds of formats:  sparse CSC (compressed sparse column),
+// sparse triplet, and dense
 
 typedef enum
 {
@@ -502,7 +502,7 @@ typedef SPEX_matrix_struct *SPEX_matrix ;
 SPEX_info SPEX_matrix_allocate
 (
     SPEX_matrix *A_handle,  // matrix to allocate
-    SPEX_kind kind,         // CSC, triplet, dense (and a future dynamic CSC)
+    SPEX_kind kind,         // CSC, triplet, dense
     SPEX_type type,         // mpz, mpq, mpfr, int64, or double
     int64_t m,              // # of rows
     int64_t n,              // # of columns
@@ -511,7 +511,7 @@ SPEX_info SPEX_matrix_allocate
     bool shallow,           // if true, matrix is shallow.  A->p, A->i, A->j,
                             // A->x are all returned as NULL and must be set
                             // by the caller.  All A->*_shallow are returned
-                            // as true. Ignored if kind is dynamic_CSC.
+                            // as true.
     bool init,              // If true, and the data types are mpz, mpq, or
                             // mpfr, the entries are initialized (using the
                             // appropriate SPEX_mp*_init function). If false,
@@ -566,7 +566,6 @@ SPEX_info SPEX_matrix_copy
     SPEX_matrix *C_handle,  // matrix to create (never shallow)
     // inputs, not modified:
     SPEX_kind C_kind,       // C->kind: CSC, triplet, dense,
-                            // (or future dynamic CSC)
     SPEX_type C_type,       // C->type: mpz_t, mpq_t, mpfr_t, int64_t, or double
     const SPEX_matrix A,    // matrix to make a copy of (may be shallow)
     const SPEX_options option

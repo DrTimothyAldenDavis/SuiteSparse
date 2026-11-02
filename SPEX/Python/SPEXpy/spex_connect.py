@@ -64,25 +64,25 @@ def spex_connect( A, b, order, charOut, algorithm ):
                 algorithm,
                 charOut)
 
-    if ok!=0:
-        raise SPEX_error(determine_error(ok))
-
-    ##--------------------------------------------------------------------------
-    ## Cast solution into correct type (string or double)
-    ##--------------------------------------------------------------------------
-    if charOut:
-        val = ctypes.cast(x_v, ctypes.POINTER(ctypes.c_char_p))
-        x=[]
-        for i in range(n):
-            x.append(val[i])
-    else:
-        #x = ctypes.cast(x_v, ctypes.POINTER(ctypes.c_double))
-        x=[]
-        for i in range(n):
-            val=ctypes.cast(x_v[i], ctypes.POINTER(ctypes.c_double))
-            x.append(val[0]) ##this can also be changed to be a numpy array instead of a list
-
-    return np.array(x)
+    # The C bridge owns n independently malloc-allocated output buffers.
+    # Python copies the values, then releases those buffers in all cases.
+    c_free = lib.spex_python_free_output
+    c_free.argtypes = [ctypes.c_void_p]
+    c_free.restype = None
+    try:
+        if ok != 0:
+            raise SPEX_error(determine_error(ok))
+        if charOut:
+            # Preserve the original interface's bytes-string array output.
+            x = [ctypes.string_at(ptr) for ptr in x_v]
+            return np.array(x)
+        x = [ctypes.cast(ptr, ctypes.POINTER(ctypes.c_double))[0]
+             for ptr in x_v]
+        return np.array(x, dtype=np.float64)
+    finally:
+        for ptr in x_v:
+            if ptr:
+                c_free(ptr)
 
 def spex_connect_rank(A):
     ## Load the library

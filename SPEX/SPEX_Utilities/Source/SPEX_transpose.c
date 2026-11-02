@@ -28,7 +28,7 @@ SPEX_info SPEX_transpose
     SPEX_matrix A,              // Matrix to be transposed
     const bool numeric,         // True if user wants to transpose pattern and
                                 // numbers, false if only pattern
-    const SPEX_options option
+    const SPEX_options option   // Command options, if NULL default values are used
 )
 {
 

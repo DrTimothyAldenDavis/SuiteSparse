@@ -13,7 +13,7 @@
 
 cmake_minimum_required ( VERSION 3.23 )
 
-set ( SPEX_DATE "Oct 23, 2026" )
+set ( SPEX_DATE "Nov 6, 2026" )
 set ( SPEX_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_MINOR 4 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_SUB   0 CACHE STRING "" FORCE )

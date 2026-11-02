@@ -63,7 +63,7 @@ SPEX_info SPEX_qr_analyze
         return SPEX_INCORRECT_INPUT;
     }
 
-    if (A->n > A->m || A->m <= 0)
+    if (A->n > A->m || A->m <= 0 || A->n <= 0)
     {
         return SPEX_INCORRECT_INPUT;
     }

@@ -38,3 +38,6 @@ SPEX_info spex_python_rank
      int n,             // columns of A
      int nz             // number of nonzeros in A
 );
+
+// Releases one output pointer allocated by spex_python (malloc/free pair).
+void spex_python_free_output(void *ptr);

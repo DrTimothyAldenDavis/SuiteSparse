@@ -47,7 +47,7 @@
     }                                                                       \
     if (info2 != SPEX_OK) TEST_ABORT (info2) ;                              \
     malloc_count = INT64_MAX ;                                              \
-    printf ("\nBrutal Cholesky trials %ld: tests passed\n", trial);         \
+    printf ("\nBrutal Cholesky trials %lld: tests passed\n", trial);         \
 }
 
 //------------------------------------------------------------------------------
@@ -336,7 +336,7 @@ int main (int argc, char *argv [])
     int64_t m = A->m ;
     int64_t anz = -1 ;
     OK (SPEX_matrix_nnz (&anz, A, option));
-    printf ("\nInput matrix: %ld-by-%ld with %ld entries\n", n, m, anz);
+    printf ("\nInput matrix: %lld-by-%lld with %lld entries\n", n, m, anz);
     OK ((n != m) ? SPEX_PANIC : SPEX_OK);
     create_test_rhs (&b, A->n);
 

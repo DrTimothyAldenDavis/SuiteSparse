@@ -68,6 +68,11 @@ SPEX_info SPEX_qr_backslash
         return SPEX_INCORRECT_INPUT;
     }
 
+    if (!A || !b)
+    {
+        return SPEX_INCORRECT_INPUT;
+    }
+
     if (A->n <= 0 || A-> m <= 0)
     {
         return SPEX_INCORRECT_INPUT;

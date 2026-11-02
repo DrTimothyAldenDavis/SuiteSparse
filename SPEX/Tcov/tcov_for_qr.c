@@ -53,7 +53,7 @@
         if (info2 != SPEX_OK)                                    \
             TEST_ABORT(info2);                                   \
         malloc_count = INT64_MAX;                               \
-        printf("\nBrutal QR trials %ld: tests passed\n", trial); \
+        printf("\nBrutal QR trials %lld: tests passed\n", trial); \
     }
 
 //------------------------------------------------------------------------------
@@ -496,6 +496,34 @@ int main(int argc, char *argv[])
     OK(SPEX_matrix_free(&b, option));
     OK(SPEX_matrix_free(&x, option));
 
+
+    // Matrix of rank 0, testing SPEX QR factorize and QR solve
+    const char *zero_str =
+        "3 3 3\n"
+        "1 1 0\n"
+        "2 2 0\n"
+        "3 3 0\n";
+
+    generate_test_matrix(&A, zero_str);
+    create_test_rhs(&b, A->m);
+    BRUTAL(spex_test_qr_backslash(A, b, option));
+    OK(SPEX_matrix_free(&A, option));
+    OK(SPEX_matrix_free(&b, option));
+    OK(SPEX_matrix_free(&x, option));
+
+    // One-column zero matrix, testing the n == 1 rank-zero case
+    const char *one_entry_str =
+        "1 1 1\n"
+        "1 1 0\n";
+
+    generate_test_matrix(&A, one_entry_str);
+    create_test_rhs(&b, A->m);
+    BRUTAL(spex_test_qr_backslash(A, b, option));
+    OK(SPEX_matrix_free(&A, option));
+    OK(SPEX_matrix_free(&b, option));
+    OK(SPEX_matrix_free(&x, option));
+
+
     //--------------------------------------------------------------------------
     // solve Ax=b with SPEX_qr_[analyze,factorize,solve]; check solution
     //--------------------------------------------------------------------------
@@ -590,9 +618,24 @@ int main(int argc, char *argv[])
     //--------------------------------------------------------------------------
 
     generate_test_matrix(&A, sq_str);
+    // Brutal Testing on S
     BRUTAL(SPEX_qr_analyze(&S, A, option));
+
+    // Pass in a matrix with n or m = 0
+    A->m = 0;
+    ERR(SPEX_qr_factorize(&F2, A, S, option), SPEX_INCORRECT_INPUT);
+
     OK(SPEX_symbolic_analysis_free(&S, option));
     OK(SPEX_matrix_free(&A, option));
+
+    // Passing in a NULL to create default options
+    ERR(SPEX_create_default_options(NULL), SPEX_INCORRECT_INPUT);
+
+    // Passing in a NULL A or b to SPEX_qr_backslash
+    ERR(SPEX_qr_backslash(&x, SPEX_MPQ, NULL, NULL, NULL), SPEX_INCORRECT_INPUT);
+
+    // Pass in a NULL A to SPEX_qr_rank
+    ERR(SPEX_qr_rank(&qr_rank, NULL, NULL), SPEX_INCORRECT_INPUT);
 
     // NULL String Free
     SPEX_mpfr_free_str(NULL);
@@ -611,6 +654,7 @@ int main(int argc, char *argv[])
     ERR(SPEX_qr_solve(NULL, NULL, NULL, NULL), SPEX_PANIC);
     ERR(SPEX_qr_backslash(NULL, SPEX_MPQ, NULL, NULL, NULL), SPEX_PANIC);
     ERR(SPEX_qr_rank(NULL, NULL, NULL), SPEX_PANIC);
+
 
     // Properly revive the environment before freeing everything
     SPEX_initialize_expert(tcov_malloc, tcov_calloc, tcov_realloc, tcov_free);

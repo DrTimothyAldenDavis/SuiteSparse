@@ -61,11 +61,6 @@
  * option:       command options
  */
 
-// Sorting function
-static inline int compare(const void *a, const void *b)
-{
-    return (*(int64_t *)a - *(int64_t *)b);
-}
 
 SPEX_info spex_qr_nonzero_structure
 (

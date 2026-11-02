@@ -52,6 +52,11 @@ SPEX_info SPEX_qr_rank
     if (!spex_initialized())
         return (SPEX_PANIC);
 
+    if (!A || !rank)
+    {
+        return SPEX_INCORRECT_INPUT;
+    }
+
     // A must be the appropriate dimension
     if (A->n == 0 || A->m == 0 )
     {
