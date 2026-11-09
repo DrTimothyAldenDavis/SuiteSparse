@@ -123,6 +123,7 @@ ParU_Info ParU_C_Factorize
     {
         return (PARU_INVALID) ;
     }
+    (*Num_handle_C) = NULL ;
 
     ParU_Control Control = (Control_C == NULL) ? NULL :
         static_cast<ParU_Control>(Control_C->control_handle) ;
@@ -135,9 +136,9 @@ ParU_Info ParU_C_Factorize
     }
 
     ParU_Info info;
-    ParU_Numeric Num ;
+    ParU_Numeric Num = NULL ;
     info = ParU_Factorize(A, Sym, &Num, Control);
-    if (info != PARU_SUCCESS)
+    if (Num == NULL)
     {
         PARU_FREE (1, ParU_C_Numeric_struct, Num_C);
         return info;
