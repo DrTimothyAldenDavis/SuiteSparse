@@ -1091,12 +1091,8 @@ template <typename Entry, typename Int> Int SuiteSparseQR
     // extract permutations, if requested, from the QR factors
     // -------------------------------------------------------------------------
 
-    if (getE)
-    {
-        // preserve Q1fill if E has been requested
-        E = QR->Q1fill ;
-        QR->Q1fill = NULL ;
-    }
+    E = QR->Q1fill ;
+    QR->Q1fill = NULL ;
 
     if (getH)
     {
@@ -1203,6 +1199,11 @@ template <typename Entry, typename Int> Int SuiteSparseQR
     {
         // return E of size n+bncols (NULL if ordering == SPQR_ORDERING_FIXED)
         *p_E = E ;
+    }
+    else
+    {
+        // E (Q1fill or Qtrap) was not requested
+        spqr_free <Int> (n+bncols, sizeof (Int), E, cc) ;
     }
 
     double t3 = SUITESPARSE_TIME ;
