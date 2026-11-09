@@ -1092,7 +1092,7 @@ ParU_Info ParU_Analyze
 
     Sp = Sym->Sp = PARU_CALLOC (m + 1 - n1, int64_t);
     Sleft = Sym->Sleft = PARU_MALLOC (n + 2 - n1, int64_t);
-    Pinv = PARU_MALLOC (m + 1, int64_t);
+    Pinv = Sym->Pinv = PARU_MALLOC (m + 1, int64_t);
 
     if (Sp == NULL || Sleft == NULL || Pinv == NULL)
     {
@@ -1101,7 +1101,6 @@ ParU_Info ParU_Analyze
         FREE_WORK;
         return (PARU_OUT_OF_MEMORY) ;
     }
-    Sym->Pinv = Pinv;
 
     //-------- computing the inverse permutation for P and Diag_map
 #pragma omp taskloop default(none) shared(m, Pinv, Pinit) grainsize(512)
