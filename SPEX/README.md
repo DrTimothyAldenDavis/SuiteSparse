@@ -16,18 +16,17 @@ Files and folders in this distribution:
                     starting point for the SPEX software package.
                     SPEX_Backslash will automatically determine the
                     appropriate factorization algorithm for use in
-                    solving your problem A x = b (Developmental)
+                    solving your problem A x = b
 
     SPEX_Cholesky   Sparse integer-preserving SPEX_Cholesky
                     factorization for exactly solving SPD
-                    linear systems (Developmental)
+                    linear systems
 
     SPEX_LU         Sparse left-looking integer-preserving
                     LU factorization for exactly solve
-                    sparse linear systems. (Release)
+                    sparse linear systems.
 
     SPEX_QR         Sparse integer-preserving QR factorization
-                    (Developmental)
 
     SPEX_Update     Sparse column replacement and rank 1 updates
                     for the SPEX factorizations

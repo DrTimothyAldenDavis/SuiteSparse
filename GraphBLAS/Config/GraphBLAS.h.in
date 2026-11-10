@@ -435,10 +435,6 @@ typedef enum    // GrB_Mode
 {
     GrB_NONBLOCKING = 0,        // methods may return with pending computations
     GrB_BLOCKING = 1,           // no computations are ever left pending
-    #ifndef GRAPHBLAS_VANILLA
-    GxB_NONBLOCKING_GPU = 7099, // non-blocking mode, allow use of GPU(s)
-    GxB_BLOCKING_GPU = 7098,    // blocking mode, allow use of GPU(s)
-    #endif
 }
 GrB_Mode ;
 
@@ -560,6 +556,12 @@ typedef struct GB_Scalar_opaque *GxB_Scalar ;       // use GrB_Scalar
 // arena control
 #define GxB_ARENA_DATA   7105
 #define GxB_ARENA_HEADER 7106
+
+// arena 0: default arena, initialized by GrB_init / GxB_init
+// arena 1 to 7: may be initialized by GxB_arena_init
+// arena 8 to 71: 64 arenas reserved for GPUs (one per GPU device)
+#define GxB_NARENAS_GPU 64  /* max number of GPU arenas */
+#define GxB_NARENAS 8       /* max number of CPU arenas */
 #endif
 
 typedef enum    // GrB_Desc_Field ;
@@ -2985,8 +2987,6 @@ GrB_Info GxB_finalized      // determine if GraphBLAS is finalized
 
 #ifndef GRAPHBLAS_VANILLA
 
-#define GxB_NARENAS 8       /* max number of arenas */
-
 GrB_Info GxB_arena_init     // create a new arena
 (
     // input
@@ -3002,7 +3002,7 @@ GrB_Info GxB_arena_initialized  // determine if arena has been initialized
     // output
     int *flag,              // returns true if the arena has been initialized
     // input
-    int arena               // 0 to GxB_NARENAS-1
+    int arena               // 0 to (GxB_NARENAS+GxB_NARENAS_GPU)-1
 ) ;
 
 // GxB_[Matrix,Vector,Scalar]_set_arenas: change the header and data arena:
@@ -8585,6 +8585,10 @@ GrB_Info GxB_Vector_iso (bool *, const GrB_Vector) ;
 
 // GxB_INDEX_MAX: use GrB_INDEX_MAX+1 instead
 #define GxB_INDEX_MAX ((uint64_t) (1ULL << 60))
+
+// no longer used:
+#define GxB_NONBLOCKING_GPU GrB_NONBLOCKING
+#define GxB_BLOCKING_GPU    GrB_BLOCKING
 
 // GxB_Desc*get/set and GrB_Descriptor_set: use GrB_get/set instead.
 GrB_Info GrB_Descriptor_set (GrB_Descriptor, int, int) ;

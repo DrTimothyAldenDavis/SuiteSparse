@@ -6,7 +6,7 @@ function spex_mex_test
 % See also spex_backslash, spex_lu_backslash, spex_cholesky_backslash,
 %   spex_ldl_backslash, spex_mex_install, spex_mex_demo.
 
-% Copyright (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
+% Copyright (c) 2022-2026, Christopher Lourenco, Jinhao Chen,
 % Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
@@ -105,6 +105,7 @@ for n = [1 10 100]
                 end
             end
         end
+        fprintf ('\n') ;
     end
 end
 
@@ -263,6 +264,113 @@ if (maxerr < 1e-6)
     fprintf('\nSPEX Backslash tests\n')
 else
     error ('SPEX_backslash:test', '\nTesting failure!  error too high. Please reinstall\n')
+end
+
+%-------------------------------------------------------------------------------
+% Test SPEX QR cases with some random matrices
+%-------------------------------------------------------------------------------
+
+fprintf ('Testing SPEX QR and SPEX Rank: ') ;
+
+%% SPEX QR exact solutions of square full rank matrices
+% If A is square and full rank, SPEX QR returns the same solution as an LU
+% or Cholesky solver. In this case, it is recommended to use LU or Cholesky
+% instead; however, QR can return exact solutions.
+A = rand(50);
+b = ones(50,1);
+x = spex_qr_backslash(A,b);
+x2 = spex_lu_backslash(A,b);
+% This should be zero because both methods return the same solution
+err = norm(x-x2);
+maxerr = max (maxerr, err) ;
+
+%% SPEX QR solving rectangular systems with m > n
+% If m is larger than n, we obtain an exact least squares solution if A is
+% full column rank and a basic solution otherwise. 
+for n = [10 30 50 100]
+    for m = [10 30 50 100]
+        if (m >= n)
+            fprintf ('.') ;
+            A = rand(m,n); b = ones(m,1);
+            x = spex_qr_backslash(A,b);
+            x3 = A\b;
+            err = norm(x-x3);
+            maxerr = max (maxerr, err) ;
+            % Now we will modify A to be rank deficient
+            A(:,[2 5 7]) = ones(m,3);
+            % This will return a basic solution
+            x = spex_qr_backslash(A,b);
+            % Backslash will not give a basic solution if A is square so only
+            % do this part if A is rectangular
+            if (m ~= n)
+                x2 = A\b;
+                err = norm(x-x2);
+                maxerr = max (maxerr, err) ;
+            end
+        end
+    end
+end
+
+%% SPEX QR solving rectangular systems with n > m
+% If n is larger than m, SPEX will return a minimum norm solution. This is
+% different than the solution returned by matlab backslash, however since
+% it has full row rank, we do have Ax = b
+for n = [10 30 50 75 100 150]
+    m = ceil(n/2);
+    fprintf ('.') ;
+    A = rand(m,n); b = ones(m,1);
+    x = spex_qr_backslash(A,b);
+    err = norm(A*x-b);
+    maxerr = max (maxerr, err) ;
+end
+
+%-------------------------------------------------------------------------------
+% Test SPEX rank cases with some random matrices
+%-------------------------------------------------------------------------------
+
+%% SPEX Rank computing the exact rank of different matrices
+% For simple well conditioned matrices, spex rank will return the same
+% rank as matlab. For example, consider the following full rank and rank
+% deficient matrices.
+fprintf ('.') ;
+A = rand(50);
+r = spex_rank(A);
+r2 = rank( full (A));
+err = r-r2;
+maxerr = max (maxerr, err) ;
+
+fprintf ('.') ;
+A = rand(25,50);
+r = spex_rank(A);
+r2 = rank( full (A));
+err = r - r2;
+maxerr = max (maxerr, err) ;
+
+% Matrix of rank 1
+fprintf ('.') ;
+u = rand(100,1);
+u = ceil(u*10);
+A = u*u';
+r = spex_rank(A);
+r2 = rank( full (A));
+err = r-r2;
+maxerr = max (maxerr, err) ;
+
+% However, if A is very poorly conditioned, the MATLAB rank and spex rank
+% can be different.
+fprintf ('.') ;
+A = eye(100) - triu(ones(100), 1);
+r = spex_rank(A);
+r2 = rank(full (A));
+if r == r2
+    fprintf("\nRank calculation mistake")
+end
+
+maxerr
+if (maxerr < 1e-6)
+    fprintf('\nSPEX QR and Rank tests complete\n')
+else
+    error ('SPEX_QR and Rank:test', '\nTesting failure!  error too high. Please reinstall\n')
 end
 
 fprintf("\nAll testing complete, ready to go!\n");

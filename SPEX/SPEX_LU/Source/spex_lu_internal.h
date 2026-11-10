@@ -3,7 +3,7 @@
 // SPEX_LU
 //------------------------------------------------------------------------------
 
-// SPEX_LU: (c) 2019-2024, Christopher Lourenco, Jinhao Chen,,
+// SPEX_LU: (c) 2019-2026, Christopher Lourenco, Jinhao Chen,,
 // Erick Moreno-Centeno, and Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
@@ -178,6 +178,18 @@ SPEX_info spex_left_lu_ref_triangular_solve // sparse REF triangular solve
     int64_t *h,               // history vector
     SPEX_matrix x             // solution of system ==> kth column of L and U
 ) ;
+
+/* Purpose: Compute the rank of a square A using SPEX LU factorization*/
+
+SPEX_info spex_lu_rank_factorize
+(
+    // output:
+    int64_t *rank,                  // rank of A
+    // input:
+    const SPEX_matrix A,            // matrix to be factored
+    const SPEX_symbolic_analysis S, // symbolic analysis
+    const SPEX_options option       // command options
+);
 
 #endif
 

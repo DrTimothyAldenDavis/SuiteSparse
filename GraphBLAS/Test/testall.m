@@ -121,8 +121,11 @@ F100 = {4,4,0,0} ;
 set_malloc_debug (mdebug, 1) ;
 
 % < 1 second: debug_on
-logstat ('test308'    ,t, J4   , F1   ) ; % resize, special case
 logstat ('test01'     ,t, J40  , F10  ) ; % error handling
+logstat ('test311'    ,t, J4   , F1   ) ; % reshape, large matrices
+logstat ('test310'    ,t, J4   , F1   , [0:3]) ; % reshape, use 0:3 pji control
+logstat ('test309'    ,t, J40  , F11  ) ; % select with VALUE* typecast
+logstat ('test308'    ,t, J4   , F1   ) ; % resize, special case
 logstat ('test307'    ,t, J4   , F1   ) ; % arenas
 logstat ('test306'    ,t, J0   , F0   ) ; % arenas
 logstat ('test305'    ,t, J0   , F0   ) ; % arenas
@@ -132,8 +135,7 @@ logstat ('test277'    ,t, J0   , F1   ) ; % context get/set
 logstat ('test303'    ,t, J4   , F1   ) ; % C=A(I,J), method 6
 logstat ('test300'    ,t, J0   , F0   ) ; % print function for a type
 logstat ('test301'    ,t, J40  , F11  ) ; % assign method27, C<C,struct>+=A
-% logstat ('test302'    ,t, J0   , F0   ) ; % GPU controls
-logstat ('test155'    ,t, J40  , F10  , [0 2 4]) ; % setElement, removeElement
+logstat ('test155'    ,t, J40  , F10  , [0 4]) ; % setElement, removeElement
 
 % < 1 second: debug_off
 set_malloc_debug (mdebug, 0) ;

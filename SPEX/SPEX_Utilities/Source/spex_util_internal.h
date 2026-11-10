@@ -642,6 +642,43 @@ SPEX_info spex_amd
     const SPEX_options option
 ) ;
 
+SPEX_info spex_dot_product
+(
+    // Output
+    mpz_t prod,
+    // Input
+    const SPEX_matrix A,
+    const int64_t k,           // column number for A A(:,k)
+    const SPEX_matrix B,
+    const int64_t j,           // column number for B B(:,j)
+    const SPEX_options option
+) ;
+
+SPEX_info spex_ipge_update
+(
+    SPEX_matrix A,              // Matrix to be updated
+    SPEX_matrix B,              // Matrix B
+    const SPEX_matrix rhos,     // Sequence of pivots
+    const int64_t a,            // Index for the element in A to be updated
+    const int64_t b,            // Index for matrix B
+    const int64_t i,            // Index for the dividing pivot
+    const int64_t j,            // Index for the multiplying pivot
+    const int64_t k,            // Index for matrix A
+    const SPEX_options option   // Command options
+) ;
+
+SPEX_info spex_history_update
+(
+    SPEX_matrix A,              // Matrix to be updated
+    const SPEX_matrix rhos,     // sequence of pivots
+    const int64_t a,            // Index of element in A to be updated
+    const int64_t i,            // Index of current pivot
+    const int64_t j,            // History value
+    const int64_t k,            // Index of last updated pivot
+    const int64_t thres,        // Threshold after which division must be performed
+    const SPEX_options option   // Command options
+) ;
+
 // (void *) pointer to the values of A.  A must be non-NULL with a valid type
 #define SPEX_X(A)                                                           \
     ((A->type == SPEX_MPZ  ) ? (void *) A->x.mpz   :                        \

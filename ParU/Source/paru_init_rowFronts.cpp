@@ -332,6 +332,7 @@ ParU_Info paru_init_rowFronts
                 PRLEVEL(1, ("ParU: Matrix is singular, row " LD
                     " is zero\n", k));
                 Num->res = PARU_SINGULAR;
+                FREE_WORK;
                 return PARU_SINGULAR;
             }
         }

@@ -188,6 +188,7 @@ int UMF_cholmod
     CHOLMOD_free_sparse (&AT, &cm) ;
     if (L == NULL)
     {
+        CHOLMOD_finish (&cm) ;
         return (FALSE) ;
     }
 
