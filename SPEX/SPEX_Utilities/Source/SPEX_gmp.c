@@ -1060,7 +1060,7 @@ SPEX_info SPEX_mpz_mul
 
 /* Purpose: Safely set an mpz number += product of two mpz numbers,
  * i.e., x = x + y*z */
-#if 0
+
 SPEX_info SPEX_mpz_addmul
 (
     mpz_t x,
@@ -1073,7 +1073,6 @@ SPEX_info SPEX_mpz_addmul
     SPEX_GMP_WRAPPER_FINISH ;
     return (SPEX_OK);
 }
-#endif
 
 //------------------------------------------------------------------------------
 // SPEX_mpz_sub
@@ -1766,6 +1765,23 @@ SPEX_info SPEX_mpq_sgn
 {
     SPEX_GMP_WRAPPER_START ;
     *sgn = mpq_sgn (x);
+    SPEX_GMP_WRAPPER_FINISH ;
+    return (SPEX_OK);
+}
+
+//------------------------------------------------------------------------------
+// SPEX_mpq_canonicalize
+//------------------------------------------------------------------------------
+
+/* Purpose: Compute the GCD of numerator and demoninator and divide. no output */
+
+SPEX_info SPEX_mpq_canonicalize
+(
+    mpq_t x
+)
+{
+    SPEX_GMP_WRAPPER_START ;
+    mpq_canonicalize (x);
     SPEX_GMP_WRAPPER_FINISH ;
     return (SPEX_OK);
 }

@@ -12,6 +12,8 @@
 from .backslash import backslash
 from .cholesky_backslash import cholesky_backslash
 from .lu_backslash import lu_backslash
+from .rank import rank
+from .qr_backslash import qr_backslash
 
 from .spex_connect import spex_connect
 from .spex_matrix_from_file import spex_matrix_from_file
@@ -22,6 +24,8 @@ __all__=[
     'backslash',
     'cholesky_backslash',
     'lu_backslash',
+    'rank',
+    'qr_backslash',
 
     'spex_connect.py',
     'spex_matrix_from_file',

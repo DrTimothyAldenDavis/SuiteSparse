@@ -32,33 +32,33 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-24.04]
         compiler: [gcc]
         cuda: [with]
         openmp: [with]
         link: [both]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: gcc
             cuda: with
             openmp: with
             link: both
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: gcc
             cuda: without
             openmp: with
             link: both
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: gcc
             cuda: without
             openmp: without
             link: both
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: clang
             cuda: with
             openmp: with
             link: both
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: gcc
             cuda: with
             openmp: with

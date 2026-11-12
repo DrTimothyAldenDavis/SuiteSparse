@@ -1,3 +1,7 @@
+Oct 23, 2026: version 3.4.0
+
+    * added exact sparse QR factorization
+
 July 25, 2025: version 3.2.4
 
     * minor updates to build system

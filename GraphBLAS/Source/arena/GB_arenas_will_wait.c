@@ -23,13 +23,11 @@
         not in a data_arena on the GPU
     }
 
-    // the CUDA kernel will now work; but it must ensure it can access the data:
-    if (GB_arenas_will_wait (A))
-    {
-        // wait on all data arenas to ensure they are in an arena the
-        // GPU can access
-        GB_wait_arenas (A)
-    }
+    // the CUDA kernel will now work; but it must ensure it can access the
+    // data: wait on all data arenas to ensure they are in an arena the GPU can
+    // access:
+    GB_wait_arenas (A) ;
+
     GrB_Matrix A_alias = NULL ;
     if (GB_arena (A->header_mem) != arena that can be accessed by the GPU)
     {

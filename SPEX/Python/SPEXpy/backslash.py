@@ -28,9 +28,9 @@ def backslash( A, b):#, options=Options('double')):
         raise SPEX_error(determine_error(3))
     ## If the sparse input matrix is not in csc form, convert it into csc form
     if not isspmatrix_csc(A):
-        A.tocsc()
+        A = A.tocsc()
     # Check input shape
-    if A.shape[1]!=b.shape[0]:
+    if A.shape[0]!=b.shape[0]:
         raise SPEX_error(determine_error(3))
 
     ##--------------------------------------------------------------------------

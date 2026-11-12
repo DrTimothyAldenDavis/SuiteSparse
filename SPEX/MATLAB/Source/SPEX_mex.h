@@ -127,5 +127,12 @@ void spex_mex_error
     char *message
 ) ;
 
+void spex_mex_get_A
+(
+    SPEX_matrix *A_handle,      // Internal SPEX Mat stored in CSC
+    const mxArray* pargin[],    // The input A matrix
+    SPEX_options option
+);
+
 #endif
 

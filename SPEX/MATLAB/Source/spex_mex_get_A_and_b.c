@@ -59,10 +59,6 @@ void spex_mex_get_A_and_b
     nA = (int64_t) mxGetN (pargin[0]);
     mA = (int64_t) mxGetM (pargin[0]);
     Anz = Ap[nA];
-    if (nA != mA)
-    {
-        spex_mex_error (1, "A must be square");
-    }
 
     // check the values of A
     bool A_has_int64_values = spex_mex_check_for_inf (Ax, Anz);

@@ -124,7 +124,7 @@ GrB_Info GB_resize              // change the size of a matrix
         }
 
         GB_OK (GB_conform (A, Werk)) ;
-        ASSERT_MATRIX_OK (A, "A final resized", GB0) ;
+        ASSERT_MATRIX_OK (A, "A final resized (quick)", GB0) ;
         return (GrB_SUCCESS) ;
     }
 

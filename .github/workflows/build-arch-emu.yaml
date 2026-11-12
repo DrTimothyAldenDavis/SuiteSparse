@@ -22,7 +22,7 @@ jobs:
 
   alpine:
     # Run armv7 on aarch64 runners
-    runs-on: ${{ matrix.arch == 'armv7' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.arch == 'armv7' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
 
     defaults:
       run:

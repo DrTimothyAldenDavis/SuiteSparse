@@ -55,7 +55,7 @@ GrB_Info GxB_Context_new_arena      // create a new Context in given arena
     // initialize the Context with the same settings as GxB_CONTEXT_WORLD
     Context->nthreads_max = GB_Context_nthreads_max_get (NULL) ;
     Context->chunk = GB_Context_chunk_get (NULL) ;
-    int32_t gpu_ids [GB_MAX_NGPUS] ;
+    int32_t gpu_ids [GxB_NARENAS_GPU] ;
     int32_t ngpus = GB_Context_gpu_ids_get (NULL, gpu_ids) ;
     GB_OK (GB_Context_gpu_ids_set (Context, gpu_ids, ngpus)) ;
 
