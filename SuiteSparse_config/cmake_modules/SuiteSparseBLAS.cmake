@@ -77,6 +77,51 @@ if ( DEFINED BLAS_LIBRARIES OR DEFINED BLAS_INCLUDE_DIRS )
 endif ( )
 
 #-------------------------------------------------------------------------------
+# If BLA_VENDOR is "OpenBLAS", look for the OpenBLAS CMake package first.
+# Package managers (Conan, vcpkg, Spack, Homebrew, ...) export
+# OpenBLASConfig.cmake, which defines an imported target with its include
+# directories and transitive link dependencies.  CMake's FindBLAS module
+# cannot find that package (it only searches for files named BLASConfig.cmake
+# or blas-config.cmake) and instead returns a bare library path with no
+# include directories, which are required by the OpenBLAS version probes in
+# SuiteSparse__blas_threading.cmake below.  If the OpenBLAS CMake package is
+# not found, fall through to the FindBLAS search below; behavior is then
+# identical to that of a build without OpenBLASConfig.cmake on the search
+# path.
+#
+# OpenBLAS includes LAPACK, so both BLAS_LIBRARIES and LAPACK_LIBRARIES are
+# set, and SuiteSparseLAPACK.cmake will then use them as-is.  This block only
+# handles the default 32-bit integers; a 64-bit OpenBLAS is sought via
+# FindBLAS below.
+#-------------------------------------------------------------------------------
+
+if ( ( BLA_VENDOR STREQUAL "OpenBLAS" ) AND
+     ( NOT SUITESPARSE_USE_64BIT_BLAS ) AND
+     ( NOT TARGET OpenBLAS::OpenBLAS ) )
+    find_package ( OpenBLAS CONFIG QUIET )
+    if ( OpenBLAS_FOUND )
+        message ( STATUS "Found the OpenBLAS CMake package" )
+        set ( BLA_SIZEOF_INTEGER 4 )
+        set ( BLAS_LIBRARIES OpenBLAS::OpenBLAS )
+        set ( LAPACK_LIBRARIES OpenBLAS::OpenBLAS )
+        set ( BLAS_INCLUDE_DIRS "${OpenBLAS_INCLUDE_DIRS}" )
+        set ( LAPACK_INCLUDE_DIRS "${OpenBLAS_INCLUDE_DIRS}" )
+        set ( BLAS_FOUND TRUE )
+        # the threading probes below link against the imported target, which
+        # is defined only for a specific configuration on single-config
+        # generators (package configs rarely set a generic location)
+        if ( CMAKE_BUILD_TYPE )
+            set ( CMAKE_TRY_COMPILE_CONFIGURATION ${CMAKE_BUILD_TYPE} )
+        endif ( )
+        # adds the BLAS_OpenBLAS definition and runs the threading probes
+        include ( SuiteSparseBLAS32 )
+        # return ( ) so the FindBLAS search below does not overwrite
+        # BLAS_LIBRARIES with a bare library path
+        return ( )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # look for a specific BLAS library
 #-------------------------------------------------------------------------------
 
