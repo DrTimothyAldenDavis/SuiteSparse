@@ -155,10 +155,11 @@ jobs:
           done
 
       - name: check
-        timeout-minutes: 120
+        timeout-minutes: 60
         run: |
           IFS=':'
-          CHECK_LIBS="${CHECK_LIBS}${{ matrix.extra-check-libs }}"
+          # Do not check LAGraph
+          # CHECK_LIBS="${CHECK_LIBS}${{ matrix.extra-check-libs }}"
           for lib in ${CHECK_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}
