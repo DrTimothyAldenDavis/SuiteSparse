@@ -224,7 +224,7 @@ GrB_Info GB_convert_int     // convert the integers of a matrix
     { 
         bool zombies = (A->nzombies > 0) ;
         GB_Type_code zombie32  = zombies     ? GB_INT32_code  : GB_UINT32_code ;
-        GB_Type_code zombie64  = zombies     ? GB_INT32_code  : GB_UINT64_code ;
+        GB_Type_code zombie64  = zombies     ? GB_INT64_code  : GB_UINT64_code ;
         GB_Type_code icode_new = i_is_32_new ? zombie32       : zombie64       ;
         GB_Type_code icode     = i_is_32     ? zombie32       : zombie64       ;
         GB_Type_code ucode_new = i_is_32_new ? GB_UINT32_code : GB_UINT64_code ;
