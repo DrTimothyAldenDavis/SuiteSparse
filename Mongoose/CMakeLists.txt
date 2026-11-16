@@ -258,27 +258,29 @@ endif ( )
 
 #-------------------------------------------------------------------------------
 
-# Build the Mongoose executable
-add_executable ( mongoose_exe ${EXE_FILES} )
-set_target_properties ( mongoose_exe PROPERTIES
-        OUTPUT_NAME suitesparse_mongoose )
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( mongoose_exe PRIVATE Mongoose )
-else ( )
-    target_link_libraries ( mongoose_exe PRIVATE Mongoose_static )
+if ( SUITESPARSE_DEMOS )
+    add_executable ( mongoose_exe ${EXE_FILES} )
+    set_target_properties ( mongoose_exe PROPERTIES
+            OUTPUT_NAME suitesparse_mongoose )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( mongoose_exe PRIVATE Mongoose )
+    else ( )
+        target_link_libraries ( mongoose_exe PRIVATE Mongoose_static )
+    endif ( )
+    target_link_libraries ( mongoose_exe PRIVATE SuiteSparse::SuiteSparseConfig )
 endif ( )
-target_link_libraries ( mongoose_exe PRIVATE SuiteSparse::SuiteSparseConfig )
 
-# Build the Demo executable
-add_executable ( demo_exe ${DEMO_FILES} )
-set_target_properties ( demo_exe PROPERTIES
-        OUTPUT_NAME demo )
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( demo_exe Mongoose )
-else ( )
-    target_link_libraries ( demo_exe Mongoose_static )
+if ( SUITESPARSE_DEMOS )
+    add_executable ( demo_exe ${DEMO_FILES} )
+    set_target_properties ( demo_exe PROPERTIES
+            OUTPUT_NAME demo )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( demo_exe Mongoose )
+    else ( )
+        target_link_libraries ( demo_exe Mongoose_static )
+    endif ( )
+    target_link_libraries ( demo_exe SuiteSparse::SuiteSparseConfig )
 endif ( )
-target_link_libraries ( demo_exe SuiteSparse::SuiteSparseConfig )
 
 # Coverage and Unit Testing Setup
 include ( CTest )
@@ -583,8 +585,10 @@ if ( BUILD_STATIC_LIBS )
         NAMESPACE SuiteSparse::
         DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SuiteSparse_Mongoose )
 endif ( )
-install ( TARGETS mongoose_exe
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+if ( SUITESPARSE_DEMOS )
+    install ( TARGETS mongoose_exe
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+endif ( )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
