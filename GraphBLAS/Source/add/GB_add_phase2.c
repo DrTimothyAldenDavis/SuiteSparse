@@ -52,7 +52,7 @@
 
 GrB_Info GB_add_phase2      // C=A+B, C<M>=A+B, or C<!M>=A+B
 (
-    GrB_Matrix C,           // output matrix, existing header
+    GrB_Matrix C,           // output matrix, existing header with no content
     const GrB_Type ctype,   // type of output matrix C
     const bool C_is_csc,    // format of output matrix C
     const GrB_BinaryOp op,  // op to perform C = op (A,B)
@@ -369,6 +369,8 @@ GrB_Info GB_add_phase2      // C=A+B, C<M>=A+B, or C<!M>=A+B
         // pattern of C = set union of pattern of A and B.
         // eWiseAdd and eWiseUnion are identical since no numerical values
         // are used, and the operator is not used.
+        #undef  GB_C_ISO
+        #define GB_C_ISO 1
         #define GB_ISO_ADD
         #define GB_IS_EWISEUNION 0
         #include "add/template/GB_add_template.c"
@@ -493,12 +495,12 @@ GrB_Info GB_add_phase2      // C=A+B, C<M>=A+B, or C<!M>=A+B
 
         // C(i,j) = (ctype) A(i,j), located in Ax [pA]
         #undef  GB_COPY_A_to_C
-        #define GB_COPY_A_to_C(Cx,pC,Ax,pA,A_iso)                             \
+        #define GB_COPY_A_to_C(Cx,pC,Ax,pA,A_iso)                           \
         cast_A_to_C (Cx +((pC)*csize), Ax +((A_iso) ? 0: (pA)*asize), asize) ;
 
         // C(i,j) = (ctype) B(i,j), located in Bx [pB]
         #undef  GB_COPY_B_to_C
-        #define GB_COPY_B_to_C(Cx,pC,Bx,pB,B_iso)                             \
+        #define GB_COPY_B_to_C(Cx,pC,Bx,pB,B_iso)                           \
         cast_B_to_C (Cx +((pC)*csize), Bx +((B_iso) ? 0: (pB)*bsize), bsize) ;
 
         // declare aij as xtype

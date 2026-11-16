@@ -21,7 +21,7 @@ env:
 jobs:
 
   cross-compile:
-    runs-on: ${{ matrix.arch == 'armhf' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.arch == 'armhf' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
 
     defaults:
       run:

@@ -19,7 +19,8 @@ SPEX_info SPEX_create_default_options (SPEX_options *option_handle)
 {
 
     if (!spex_initialized ( )) return (SPEX_PANIC);
-
+    if (!option_handle)
+        return SPEX_INCORRECT_INPUT;
     //--------------------------------------------------------------------------
     // allocate the option struct
     //--------------------------------------------------------------------------

@@ -19,6 +19,9 @@ class Options:
 
     def default_chol(self):
         self.ordering="amd"
+        
+    def default_qr(self):
+        self.ordering="colamd"
 
     def order(self):
 

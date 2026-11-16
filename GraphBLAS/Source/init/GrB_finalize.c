@@ -36,20 +36,7 @@ GrB_Info GrB_finalize ( )
 
     GB_Global_lock_destroy ( ) ;
 
-    // clear all arenas
-    for (int arena = 0 ; arena < GxB_NARENAS ; arena++)
-    { 
-        GB_Global_malloc_function_set (NULL, arena) ;
-        GB_Global_calloc_function_set (NULL, arena) ;
-        GB_Global_realloc_function_set (NULL, arena) ;
-        GB_Global_free_function_set (NULL, arena) ;
-    }
-
-    // arena 0 default allocators:
-    GB_Global_malloc_function_set (malloc, GrB_DEFAULT) ;
-    GB_Global_calloc_function_set (calloc, GrB_DEFAULT) ;
-    GB_Global_realloc_function_set (realloc, GrB_DEFAULT) ;
-    GB_Global_free_function_set (free, GrB_DEFAULT) ;
+    GB_Global_default_arenas ( ) ;
 
     //--------------------------------------------------------------------------
     // GraphBLAS has now been finalized

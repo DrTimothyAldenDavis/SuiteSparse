@@ -8,3 +8,4 @@ tcov_for_cholesky
 tcov_for_lu
 tcov_for_lu2
 tcov_for_other
+tcov_for_qr

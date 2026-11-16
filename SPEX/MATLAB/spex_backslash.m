@@ -14,8 +14,20 @@ function x = spex_backslash(A, b, option)
 %   numerator and denominator are strings of decimal digits of arbitrary
 %   length.
 %
-% If A is SPD, an exact up-looking LDL factorization is applied. Otherwise,
-% an exact left-looking LU factorization is applied.
+% The behavior of spex_backslash depends on the structure of A:
+%   - If A is square and symmetric with nonzero leading principle minors,
+%     an exact up-looking LDL factorization is used
+%   - If A is square and unsymmetric, an exact left-looking LU is used
+%   - If A is rectangular with more rows than columns (i.e., A is a thin
+%     matrix) and has full column rank then the exact least squares 
+%     solution is returned. If A is thin and rank deficient, an 
+%     exact basic solution is returned.
+%   - If A is rectangular with more columns than rows (i.e., A is a wide
+%     matrix) and has full row rank then the exact minimum norm solution is
+%     returned. If A is wide and rank deficient, then the fact A is 
+%     singular is reported to the user and no solution is returned.
+%     Importantly, this is a drawback of thin QR factorization in general
+%     when applied to wide matrices.
 %
 % Usage:
 %
@@ -26,8 +38,8 @@ function x = spex_backslash(A, b, option)
 %   defaults.
 %
 %   option.order: Column ordering used.
-%       'default' (or if not present): use COLAMD for LU, or use AMD for
-%           Cholesky or LDL.
+%       'default' (or if not present): use COLAMD for LU and QR, or use
+%       AMD for Cholesky or LDL.
 %       'none': no column ordering; factorize the matrix A as-is
 %       'colamd': COLAMD
 %       'amd': AMD
@@ -123,7 +135,7 @@ if (~isnumeric(A) || ~isnumeric(b))
 end
 
 % SPEX Backslash expects sparse input.
-% So, if A is not sparse it is sprasified.
+% So, if A is not sparse it is made sparse.
 if (~issparse(A))
     A = sparse(A);
 end

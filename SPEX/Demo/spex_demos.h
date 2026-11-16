@@ -91,5 +91,22 @@ SPEX_info spex_demo_check_solution
     const SPEX_options option    // Command options
 );
 
+SPEX_info spex_scatter(
+    const SPEX_matrix A,
+    int64_t j,
+    mpz_t beta,
+    int64_t *w,
+    SPEX_matrix x,
+    int64_t mark,
+    SPEX_matrix C,
+    int64_t *nz);
+
+SPEX_info spex_sparse_matrix_multiply(
+    // Output
+    SPEX_matrix *C_handle,
+    // Input
+    const SPEX_matrix A,
+    const SPEX_matrix B);
+
 #endif
 

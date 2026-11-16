@@ -30,24 +30,24 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-24.04]
         compiler: [gcc]
         cuda: [with]
         link: [both]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: gcc
             cuda: with
             link: both
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: gcc
             cuda: without
             link: both
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: clang
             cuda: with
             link: both
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             compiler: gcc
             cuda: with
             link: static

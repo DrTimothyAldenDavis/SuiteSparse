@@ -7,10 +7,6 @@
 
 //------------------------------------------------------------------------------
 
-// Test for resizing an n-by-1 matrix to n-by-k with k>1, when pending tuples
-// exist.  This triggers a bug in GraphBLAS v10.5.0 (see
-// https://github.com/DrTimothyAldenDavis/GraphBLAS/issues/459 ).
-
 #include "GB_mex.h"
 #include "GB_mex_errors.h"
 
@@ -39,8 +35,12 @@ void mexFunction
     OK (GrB_set (GrB_GLOBAL, true, GxB_BURBLE)) ;
  
     //--------------------------------------------------------------------------
-    // test resize
+    // test resize: vector to matrix
     //--------------------------------------------------------------------------
+
+    // Test for resizing an n-by-1 matrix to n-by-k with k>1, when pending
+    // tuples exist.  This triggers a bug in GraphBLAS v10.5.0 (see
+    // https://github.com/DrTimothyAldenDavis/GraphBLAS/issues/459 ).
 
     GrB_Matrix A = NULL ;
     OK (GrB_Matrix_new (&A, GrB_BOOL, 8, 1)) ;
@@ -50,12 +50,32 @@ void mexFunction
     OK (GrB_Matrix_resize (A, 8, 2)) ;
     OK (GxB_Matrix_fprint (A, "after resize", 5, NULL)) ;
     OK (GrB_Matrix_wait (A, GrB_MATERIALIZE)) ;
-    FREE_ALL ;
+
+    //--------------------------------------------------------------------------
+    // test resize:  small to large
+    //--------------------------------------------------------------------------
+
+    uint64_t n = 2 * ((uint64_t) UINT32_MAX) ;
+    OK (GrB_Matrix_setElement_BOOL (A, true, 2, 1)) ;
+    OK (GrB_Matrix_resize (A, 4, n)) ;
+    OK (GxB_Matrix_fprint (A, "after 2nd resize", 5, NULL)) ;
+    OK (GrB_Matrix_wait (A, GrB_MATERIALIZE)) ;
+
+    OK (GrB_Matrix_setElement_BOOL (A, true, 3, 1)) ;
+    OK (GrB_Matrix_resize (A, n, 4)) ;
+    OK (GxB_Matrix_fprint (A, "after 3rd resize", 5, NULL)) ;
+    OK (GrB_Matrix_wait (A, GrB_MATERIALIZE)) ;
+
+    OK (GrB_Matrix_setElement_BOOL (A, true, n-1, 1)) ;
+    OK (GrB_Matrix_resize (A, n, n)) ;
+    OK (GxB_Matrix_fprint (A, "after 4th resize", 5, NULL)) ;
+    OK (GrB_Matrix_wait (A, GrB_MATERIALIZE)) ;
 
     //--------------------------------------------------------------------------
     // finalize GraphBLAS
     //--------------------------------------------------------------------------
 
+    FREE_ALL ;
     OK (GrB_set (GrB_GLOBAL, false, GxB_BURBLE)) ;
     GB_mx_put_global (true) ;
     printf ("GB_mex_test49:  all tests passed\n") ;

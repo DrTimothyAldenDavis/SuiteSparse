@@ -250,7 +250,7 @@ int main ( int argc, char *argv[])
             if (is_simple_test)
             {
                 spex_set_gmp_ntrials (gmp_ntrial_list[k]) ;
-                printf("initial spex_gmp_ntrials=%ld\n",spex_get_gmp_ntrials());
+                printf("initial spex_gmp_ntrials=%lld\n",spex_get_gmp_ntrials());
                 malloc_count=malloc_trials_list[kk];
                 printf("%"PRId64" out of %"PRId64", "
                     "initial malloc_count=%"PRId64"\n",
@@ -507,7 +507,7 @@ int main ( int argc, char *argv[])
                 //--------------------------------------------------------------
 
                 n = 4, nz = 11;
-                int64_t m1, n1, nz1;
+                int64_t m1, n1, nz1 = nz ;
                 int64_t I[11]={0, 1, 2, 2, 3, 1, 2, 3, 0, 1, 2};
                 int64_t J[11]={0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 3};
                 int64_t P[11]={0, 3, 5, 8, 11};
@@ -530,7 +530,6 @@ int main ( int argc, char *argv[])
                 {
                     m1 = nz1;
                     n1 = 1;
-                    nz1 = nz1;
                 }
                 TEST_ASSERT (Ax == NULL);
                 TEST_CHECK(SPEX_matrix_allocate(&Ax, (SPEX_kind) kind,
@@ -984,7 +983,7 @@ int main ( int argc, char *argv[])
         printf("least required malloc_count for Ab_type = 0~20 are ");
         for (int i = 0; i < 20; i++)
         {
-            printf("%ld ", malloc_count_list[i]);
+            printf("%lld ", malloc_count_list[i]);
         }
         printf("\nSPEX LU: brutal tests finished, tests passed\n");
     }

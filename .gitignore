@@ -34,7 +34,11 @@ my_*.out
 *.swp
 .DS_Store
 .nfs*
-.pyc
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*$py.class
 
 # ignore these specific programs in the Package/Demo directories
 AMD/Demo/amd_demo

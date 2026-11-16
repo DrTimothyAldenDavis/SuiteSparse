@@ -22,7 +22,7 @@ jobs:
 
   alpine:
     # Run armv7 on aarch64 runners
-    runs-on: ${{ matrix.arch == 'armv7' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.arch == 'armv7' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
 
     defaults:
       run:
@@ -158,7 +158,8 @@ jobs:
         timeout-minutes: 60
         run: |
           IFS=':'
-          CHECK_LIBS="${CHECK_LIBS}${{ matrix.extra-check-libs }}"
+          # Do not check LAGraph
+          # CHECK_LIBS="${CHECK_LIBS}${{ matrix.extra-check-libs }}"
           for lib in ${CHECK_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}

@@ -27,6 +27,15 @@ SPEX_info spex_demo_check_solution
     const SPEX_options option    // Command options
 )
 {
+    if (!SPEX_initialize()) return (SPEX_PANIC);
+
+    //--------------------------------------------------------------------------
+    // check inputs. Input are also checked by the two callers
+    //--------------------------------------------------------------------------
+
+    /*SPEX_REQUIRE (A, SPEX_CSC,   SPEX_MPZ);
+    SPEX_REQUIRE (x, SPEX_DENSE, SPEX_MPQ);
+    SPEX_REQUIRE (b, SPEX_DENSE, SPEX_MPZ);*/
 
     //--------------------------------------------------------------------------
     // Declare vars

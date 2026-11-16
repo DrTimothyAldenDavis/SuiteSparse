@@ -9,18 +9,13 @@
 
 //------------------------------------------------------------------------------
 
-// Allocate an m-by-n SPEX_matrix, in either dynamic_CSC x mpz or one of
-// 15 data structures:
+// Allocate an m-by-n SPEX_matrix, in one of 15 data structures:
 // (sparse CSC, sparse triplet, or dense) x
 // (mpz, mpq, mfpr, int64, or double).
 
-// If the matrix is not dynamic_CSC, then it may be created as 'shallow', in
+// The matrix may be created as 'shallow', in
 // which case A->p, A->i, A->j, and A->x are all returned as NULL, and all
 // A->*_shallow flags are returned as true.
-
-// If the matrix is dynamic_CSC, each column of the returned matrix will be
-// allocated as SPEX_vector with zero available entry. Additional reallocation
-// for each column will be needed.
 
 #define SPEX_FREE_ALL                       \
 {                                           \
@@ -41,7 +36,7 @@
 SPEX_info SPEX_matrix_allocate
 (
     SPEX_matrix *A_handle,  // matrix to allocate
-    SPEX_kind kind,         // CSC, triplet, dense, dynamic_CSC
+    SPEX_kind kind,         // CSC, triplet, dense
     SPEX_type type,         // mpz, mpq, mpfr, int64, or double
     int64_t m,              // # of rows
     int64_t n,              // # of columns
@@ -50,7 +45,7 @@ SPEX_info SPEX_matrix_allocate
     bool shallow,           // if true, matrix is shallow.  A->p, A->i, A->j,
                             // A->x are all returned as NULL and must be set
                             // by the caller.  All A->*_shallow are returned
-                            // as true. Ignored if kind is dynamic_CSC.
+                            // as true.
     bool init,              // If true, and the data types are mpz, mpq, or
                             // mpfr, the entries are initialized (using the
                             // appropriate SPEX_mp*_init function). If false,
@@ -148,7 +143,7 @@ SPEX_info SPEX_matrix_allocate
                 ok = (A->i != NULL && A->j != NULL);
                 break ;
 
-            default: //SPEX_DENSE or SPEX_DYNAMIC_CSC
+            default: //SPEX_DENSE
                 ;// nothing to do
 
         }

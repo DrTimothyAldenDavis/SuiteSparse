@@ -15,3 +15,5 @@
 %   spex_mex_demo           - a demo of the SPEX MATLAB interface
 %   spex_mex_install        - install and test the MATLAB interface to SPEX MATLAB
 %   spex_mex_test           - run a set of tests for SPEX matlab interface
+%   spex_qr_backslash       - solve Ax=b via sparse integer-preserving QR
+%   spex_rank               - compute the exact rank of A

@@ -1,6 +1,8 @@
 #!/bin/bash
         ./gcovs SPEX_*.c spex_*.c 2>&1 > gcovs.out
+        rm -f math.h.gcov
         ./covs > covs.out
         echo -n "statements not yet tested: "
-        grep "#####" *.*.gcov | wc -l
+        # Count ##### but ignore lines that are just a closing or opening brace
+        grep "#####" *.*.gcov | grep -v "[:[:space:]]*[{}]" | wc -l
         ./cover *.*.gcov > cover.out
