@@ -111,13 +111,13 @@ GrB_Info GB_AXB_SAXPY_GENERIC_METHOD
 
     // scalar workspace: because of typecasting, the x/y types need not
     // be the same as the size of the A and B types.
-    // GB_GENERIC_FLIPXY false: aik = (xtype) A(i,k) and bkj = (ytype) B(k,j)
-    // GB_GENERIC_FLIPXY true:  aik = (ytype) A(i,k) and bkj = (xtype) B(k,j)
-    size_t aiksize = GB_GENERIC_FLIPXY ? ysize : xsize ;
-    size_t bkjsize = GB_GENERIC_FLIPXY ? xsize : ysize ;
+    // Both ordinary and indexed flipped operators receive B as x and A as y.
+    // Their workspace sizes and casts must follow the same operand order.
+    size_t aiksize = (GB_GENERIC_FLIPXY || GB_GENERIC_IDX_FLIPXY) ? ysize : xsize ;
+    size_t bkjsize = (GB_GENERIC_FLIPXY || GB_GENERIC_IDX_FLIPXY) ? xsize : ysize ;
 
     GB_cast_function cast_A, cast_B ;
-    #if GB_GENERIC_FLIPXY
+    #if GB_GENERIC_FLIPXY || GB_GENERIC_IDX_FLIPXY
     { 
         // A is typecasted to y, and B is typecasted to x
         cast_A = A_is_pattern ? NULL : 

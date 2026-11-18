@@ -67,6 +67,11 @@ For example, to sort a \verb'GrB_FP64' matrix in ascending order,
 use \verb'GrB_LT_FP64' as the \verb'op', and to sort in descending order,
 use \verb'GrB_GT_FP64'.
 
+The format of the output matrix \verb'C' is modified to match the direction of
+the sort.  If sorted by rows, then on output \verb'C' will be held in row-major
+order (\verb'GrB_ROWMAJOR').  If sorted by columns, then on output, \verb'C'
+will be held in column-major order (\verb'GrB_COLMAJOR').
+
 The \verb'op' must have a return value of \verb'GrB_BOOL', and the types of
 its two inputs must be the same.  The entries in \verb'A' are typecasted to
 the inputs of the \verb'op', if necessary.  Matrices with user-defined types
