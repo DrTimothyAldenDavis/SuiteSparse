@@ -1,3 +1,13 @@
+Nov 20, 2026, version 10.5.4
+
+    * (79) bug fix: JIT'ing the CPU kernel for GrB_select did not check
+        if the matrix type can be JIT'd.
+        See issue #480.  Caught and fixed by Mikhail Svirukov.
+    * (78) bug fix: generic saxpy-based mxm kernel does not properly
+        flip the types of the A and B inputs when using an indexed binary op as
+        the multiplicative operator of the semiring.
+        See issue #479.  Caught and fixed by Mikhail Svirukov.
+
 Nov 16, 2026, version 10.5.3
 
     * (77) bug fix: changing the integer bit-width of a matrix with pending
