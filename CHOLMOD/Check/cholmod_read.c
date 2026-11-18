@@ -596,6 +596,7 @@ static cholmod_triplet *read_triplet
             {
                 // premature end of file - not enough triplets read in
                 ERROR (CHOLMOD_INVALID, "premature EOF") ;
+                CHOLMOD(free_triplet) (&T, Common) ;
                 return (NULL) ;
             }
             if (is_blank_line (buf))
@@ -938,7 +939,7 @@ static cholmod_dense *read_dense
 )
 {
     double x, z ;
-    cholmod_dense *X ;
+    cholmod_dense *X = NULL ;
     Int nitems, xtype = -1, nshould = 0, i, j, k, kup, first ;
 
     //--------------------------------------------------------------------------
@@ -997,6 +998,7 @@ static cholmod_dense *read_dense
                 {
                     // premature end of file - not enough entries read in
                     ERROR (CHOLMOD_INVALID, "premature EOF") ;
+                    CHOLMOD(free_dense) (&X, Common) ;
                     return (NULL) ;
                 }
 
