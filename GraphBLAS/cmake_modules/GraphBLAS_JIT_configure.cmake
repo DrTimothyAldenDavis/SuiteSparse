@@ -45,6 +45,11 @@ endif ( )
 
 string ( REPLACE "\"" "\\\"" GB_C_FLAGS ${GB_C_FLAGS} )
 
+# GB_C_LINK_FLAGS is pasted into a C string literal in Config/GB_config.h, so
+# any double quote in the linker flags (CMAKE_SHARED_LINKER_FLAGS) must be
+# escaped as well, or the generated header does not compile
+string ( REPLACE "\"" "\\\"" GB_C_LINK_FLAGS "${GB_C_LINK_FLAGS}" )
+
 # construct the -I list for OpenMP
 if ( OpenMP_C_FOUND )
     set ( GB_OMP_INC_DIRS ${OpenMP_C_INCLUDE_DIRS} )
